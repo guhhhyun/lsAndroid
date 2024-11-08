@@ -23,7 +23,7 @@ class SplashController extends GetxController {
   void onReady() async {
     Get.log('SplashController- onReady');
     await Future.delayed(Duration(milliseconds: 1000));
-    await Get.offAndToNamed(Routes.MAIN);
-    // gs.loadLoginInfo();
+   // await Get.offAndToNamed(Routes.MAIN);
+     gs.loadLoginInfo();
   }
 }

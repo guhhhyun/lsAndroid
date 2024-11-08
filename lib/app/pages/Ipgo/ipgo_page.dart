@@ -18,11 +18,13 @@ class IpgoPage extends StatelessWidget {
    IpgoPage({super.key});
 
   IpgoController controller = Get.find();
+
   final focusNode2 = FocusNode();
   late double test;
 
   @override
   Widget build(BuildContext context) {
+    controller.isQr.value == false ? controller.requestFocus() : null;
     test = MediaQuery.of(context).size.width - 490;
     return WillPopScope(
       onWillPop: () {
@@ -117,7 +119,7 @@ class IpgoPage extends StatelessWidget {
               ),
               SizedBox(height: 12,),
               SizedBox(
-                height: MediaQuery.of(context).size.height - 200,
+                height: MediaQuery.of(context).size.height,
                 child:TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   controller: controller.tabController,
@@ -189,8 +191,6 @@ class IpgoPage extends StatelessWidget {
            _SearchCondition2(context),
           SizedBox(height: 12,),
           _ipgoList(context),
-
-
 
         ],
       ),
@@ -319,7 +319,8 @@ class IpgoPage extends StatelessWidget {
                  SizedBox(width: 16,),
                  _dropDownItem(),
                  SizedBox(width: 16,),
-                 _invnrTextForm('거래명세서 번호', 0),
+                 _invnrTextForm3(),
+                 //_invnrTextForm('거래명세서 번호', 0),
                  SizedBox(width: 16,),
                  _invnrTextForm('품목코드', 1),
                  SizedBox(width: 16,),
@@ -343,9 +344,11 @@ class IpgoPage extends StatelessWidget {
                              bottomRight: Radius.circular(10)))),
                  padding: MaterialStateProperty.all(
                      const EdgeInsets.all(0))),
-             onPressed: () {
+             onPressed: () async {
                Get.log('조회 클릭!');
-               controller.checkBtn();
+               await controller.checkBtn();
+               controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
+               Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}'); 
                controller.invnrHeight.value = 53*(double.parse((controller.ipgoCancelList.length + 1).toString()));
              },
              child: Container(
@@ -420,6 +423,71 @@ class IpgoPage extends StatelessWidget {
        ],
      );
    }
+   Widget _invnrTextForm3() {
+     return Row(
+       children: [
+         Text('거래명세서 번호',
+             style: AppTheme.a12700
+                 .copyWith(color: AppTheme.black)),
+         SizedBox(width: 8,),
+         Container(
+           padding: EdgeInsets.only(top: 4, left: 8),
+           height: 35,
+           width:  150,
+           decoration: BoxDecoration(
+               borderRadius: BorderRadius.circular(10),
+               border: Border.all(color: AppTheme.ae2e2e2)),
+           child: Center(
+             child: TextFormField(
+               focusNode: controller.focusNode,
+               expands :true,
+               minLines: null,
+               maxLines: null,
+               style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+               // maxLines: 5,
+               controller: controller.textInvnrController2 ,
+               textInputAction: TextInputAction.done,
+               keyboardType: TextInputType.text,
+               decoration: InputDecoration(
+                 contentPadding: EdgeInsets.all(0),
+                 fillColor: Colors.white,
+                 // filled: true,
+                 hintText: '',
+                 hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+                 border: InputBorder.none,
+               ),
+               showCursor: true,
+               onTap: () {
+                 controller.isQr.value = false;
+                 if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
+                 else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+               },
+               onTapOutside:(event) => { controller.focusCnt.value = 0 },
+               onFieldSubmitted: (value) async{
+                 await controller.checkBtn(); // 조회
+                 controller.ipgoQrList.clear();
+                 controller.ipgoList.clear();
+                 controller.gridStateMgr2.removeAllRows();
+                 controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
+                 Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
+                 controller.selectedInvnrIndex.value = controller.gridStateMgr.currentRowIdx!;
+                 controller.isSelectedInvnr.value = true;
+
+                 controller.focusNode.requestFocus();
+                 Future.delayed(const Duration(), (){
+                   controller.focusNode.requestFocus();
+                   //  FocusScope.of(context).requestFocus(focusNode);
+                   Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                 });
+               },
+               // onChanged: ((value) => controller.submitSearch(value)),
+             ),
+           ),
+
+         ),
+       ],
+     );
+   }
 
    Widget _invnrTextForm(String title, int plag) {
     return Row(
@@ -437,6 +505,9 @@ class IpgoPage extends StatelessWidget {
               border: Border.all(color: AppTheme.ae2e2e2)),
           child: Center(
             child: TextFormField(
+                  onTap: () {
+                    controller.isQr.value = true;
+                  },
                   readOnly:  plag == 4 ? true : false,
                   expands :true,
                   minLines: null,
@@ -470,7 +541,7 @@ class IpgoPage extends StatelessWidget {
 
    Widget _invnrList(BuildContext context) {
     // final double height = 49*(double.parse((controller.ipgoList.length + 1).toString()));
-     final double height = 100;
+     final double height = 300;
      return Container(
        child: Column(children: [
          Container(
@@ -490,12 +561,19 @@ class IpgoPage extends StatelessWidget {
                print(event);
              },
              onSelected: (c) {
+
                controller.isSelectedInvnr.value = true;
                controller.selectedInvnrIndex.value != controller.gridStateMgr.currentRowIdx!
                    ? {controller.ipgoQrList.clear(), controller.ipgoList.clear(), controller.gridStateMgr2.removeAllRows()} : null;
                controller.selectedInvnrIndex.value = controller.gridStateMgr.currentRowIdx!;
 
                print(controller.gridStateMgr.currentRowIdx);
+             },
+             rowColorCallback: (c) {
+               if(controller.gridStateMgr.currentRowIdx == c.rowIdx) {
+                 return AppTheme.blue_blue_50;
+               }
+               return Colors.transparent;
              },
              configuration: PlutoGridConfiguration(
                style: PlutoGridStyleConfig(
@@ -865,6 +943,7 @@ class IpgoPage extends StatelessWidget {
                    controller: controller.textQrController,
                    textAlignVertical: TextAlignVertical.center,
                    onTap: () {
+                     controller.isQr.value = true;
                      if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
                      else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
                    },
@@ -911,19 +990,6 @@ class IpgoPage extends StatelessWidget {
                    },
                    keyboardType: TextInputType.text,
                    decoration: InputDecoration(
-                     /*suffixIcon: InkWell(
-                         onTap: () {
-                           Get.log('조회 돋보기 클릭!');
-
-                           focusNode2.requestFocus();
-                           Future.delayed(const Duration(), (){
-                             focusNode2.requestFocus();
-                             //  FocusScope.of(context).requestFocus(focusNode);
-                             Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                           });
-                         },
-                         child: Image.asset('assets/app/search.png', color: AppTheme.a6c6c6c, width: 25, height: 25,)
-                     ),*/
 
                      contentPadding: const EdgeInsets.all(0),
                      fillColor: Colors.white,
@@ -945,43 +1011,45 @@ class IpgoPage extends StatelessWidget {
 
    Widget _ipgoList(BuildContext context) {
      // final double height = 49*(double.parse((controller.ipgoList.length +  1).toString()));
-     final double height = 250;
+     //final double height = 500;
      return Container(
-       child: Column(children: [
-         Container(
-           width: MediaQuery.of(context).size.width-32,
-           height: height,
-           child: Obx(() => PlutoGrid(
-             columns: gridCols2(context),
-             rows: controller.rowDatas2.value,
-             onLoaded: (PlutoGridOnLoadedEvent event) {
-               controller.gridStateMgr2 = event.stateManager;
-               //controller.gridStateMgr2.setShowColumnFilter(true);
-               controller.gridStateMgr2.setSelectingMode(PlutoGridSelectingMode.none);
-             },
-             onChanged: (PlutoGridOnChangedEvent event) {
-               print(event);
-             },
-/*             rowColorCallback: (c) {
-               return c.row.checked == true ? Colors.red : Colors.transparent;
-             },*/
-             configuration: PlutoGridConfiguration(
-               style: PlutoGridStyleConfig(
-                   columnHeight: 40,
-                   rowHeight: 55,
-                   columnTextStyle: AppTheme.a14500.copyWith(color: AppTheme.black),
-                   columnResizeIcon: IconData(0),
-                 // checkedColor: Colors.red.shade100,
-                 /*   //gridBorderColor: Colors.transparent,
-                   activatedColor: Colors.transparent,
-                   checkedColor: Colors.red.shade100,
-                   cellColorInReadOnlyState: Colors.white,
-                   columnTextStyle: AppTheme.a14500.copyWith(color: AppTheme.black)*/
+       child: Expanded(
+         child: Column(children: [
+           Container(
+             width: MediaQuery.of(context).size.width-32,
+             height: MediaQuery.of(context).size.height - 630,
+             child: Obx(() => PlutoGrid(
+               columns: gridCols2(context),
+               rows: controller.rowDatas2.value,
+               onLoaded: (PlutoGridOnLoadedEvent event) {
+                 controller.gridStateMgr2 = event.stateManager;
+                 //controller.gridStateMgr2.setShowColumnFilter(true);
+                 controller.gridStateMgr2.setSelectingMode(PlutoGridSelectingMode.none);
+               },
+               onChanged: (PlutoGridOnChangedEvent event) {
+                 print(event);
+               },
+         /*             rowColorCallback: (c) {
+                 return c.row.checked == true ? Colors.red : Colors.transparent;
+               },*/
+               configuration: PlutoGridConfiguration(
+                 style: PlutoGridStyleConfig(
+                     columnHeight: 40,
+                     rowHeight: 55,
+                     columnTextStyle: AppTheme.a14500.copyWith(color: AppTheme.black),
+                     columnResizeIcon: const IconData(0),
+                   // checkedColor: Colors.red.shade100,
+                   /*   //gridBorderColor: Colors.transparent,
+                     activatedColor: Colors.transparent,
+                     checkedColor: Colors.red.shade100,
+                     cellColorInReadOnlyState: Colors.white,
+                     columnTextStyle: AppTheme.a14500.copyWith(color: AppTheme.black)*/
+                 ),
                ),
-             ),
-           ),)
-         ),
-       ],),
+             ),)
+           ),
+         ],),
+       ),
      );
    }
    List<PlutoColumn> gridCols2(BuildContext context) {
@@ -1336,6 +1404,7 @@ class IpgoPage extends StatelessWidget {
                scrollDirection: Axis.horizontal,
                child: Row(
                  children: [
+                   //_invnrTextForm3(),
                    _invnrTextForm2('거래명세서 번호', 0),
                    SizedBox(width: 16,),
                    _invnrTextForm2('품목코드', 1),
@@ -1392,6 +1461,7 @@ class IpgoPage extends StatelessWidget {
        ),
      );
    }
+
 
    Widget _invnrTextForm2(String title, int plag) {
      return Row(
@@ -1595,7 +1665,7 @@ class IpgoPage extends StatelessWidget {
      return Column(children: [
        Obx(() => Container(
            width: MediaQuery.of(context).size.width-32,
-           height: controller.height.value,
+           height: 500,
            child: PlutoGrid(
              columns: gridCols3(context),
              rows: controller.rowDatas3.value,

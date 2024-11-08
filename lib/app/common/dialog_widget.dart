@@ -25,7 +25,7 @@ class CommonDialogWidget extends StatelessWidget {
       child: Center(
         child: Text(
           contentText ?? '',
-          style: AppTheme.bodyBody2,
+          style: AppTheme.bodyBody2.copyWith(color: AppTheme.black),
           overflow: TextOverflow.ellipsis,
           maxLines: 10,
         ),
@@ -60,6 +60,7 @@ class CommonDialogWidget extends StatelessWidget {
               pageFlag == 4 ? Get.back() : pageFlag == 5 ? Get.offAllNamed(Routes.PROCESS_TRANSFER)  : pageFlag == 6 ?  Get.back()
                   : Get.offAllNamed(Routes.MAIN);*/
               Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+              pageFlag == 10 ? Navigator.of(Get.overlayContext!, rootNavigator: true).pop() : null;
               // Get.back();
             },
             child: Container(

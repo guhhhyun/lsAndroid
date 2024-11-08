@@ -237,7 +237,7 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                     child: Container(
                       padding: EdgeInsets.all(8),
                       child: Center(
-                          child: Icon(Icons.play_circle)),
+                          child: const Icon(Icons.play_circle)),
                     )
                 )
                     : Text('')),
@@ -258,7 +258,7 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                   child: Container(
                     padding: EdgeInsets.all(8),
                     child: Center(
-                        child: Icon(Icons.play_circle)//Text(controller.pickingSecondList[i]['othRackOutBtn'])
+                        child: const Icon(Icons.play_circle)//Text(controller.pickingSecondList[i]['othRackOutBtn'])
                     ),
                   ),
                 ) : Text('')
@@ -342,7 +342,7 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                 SizedBox(width: 1,),
                 _invnrTextForm2('', controller.pickingFirstList[controller.currentFirstIndex.value]['itemNm'].toString().replaceAll('\n', ' ') ?? '',),
                 SizedBox(width: 16,),
-                _invnrTextForm2('제조번호', controller.pickingFirstList[controller.currentFirstIndex.value]['wrkNo']),
+                _invnrTextForm2('제조번호', controller.pickingFirstList[controller.currentFirstIndex.value]['wrkNo'] ?? ''),
                 SizedBox(width: 16,),
               ],
             ),

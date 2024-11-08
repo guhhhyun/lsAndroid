@@ -1,25 +1,25 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lsandroid/app/common/app_theme.dart';
 import 'package:lsandroid/app/common/common_appbar_widget.dart';
 import 'package:lsandroid/app/common/dialog_widget.dart';
+import 'package:lsandroid/app/pages/chulgo/chulgo_controller.dart';
+import 'package:lsandroid/app/pages/chulgo/chulgo_second_page.dart';
 import 'package:lsandroid/app/pages/home/home_page.dart';
-import 'package:lsandroid/app/pages/picking/picking_controller.dart';
-import 'package:lsandroid/app/pages/picking/picking_second_page.dart';
-import 'package:lsandroid/app/routes/app_route.dart';
-
-
+import 'package:lsandroid/app/pages/rackIpgo/rack_ipgo_controller.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
 
-class PickingPage extends StatelessWidget {
-  PickingPage({super.key});
+class ChulgoPage extends StatelessWidget {
+  ChulgoPage({super.key});
 
-  PickingController controller = Get.find();
+  ChulgoController controller = Get.find();
   final focusNode2 = FocusNode();
   final focusNode3 = FocusNode();
   final focusNode4 = FocusNode();
@@ -29,7 +29,7 @@ class PickingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     test = MediaQuery.of(context).size.width - 570;
-    ipgoDateWidth = MediaQuery.of(context).size.width - 760;
+    ipgoDateWidth = MediaQuery.of(context).size.width - 900;
     return WillPopScope(
       onWillPop: () {
         Get.offAll(HomePage());
@@ -42,7 +42,7 @@ class PickingPage extends StatelessWidget {
             children: [
               CustomScrollView(
                 slivers: [
-                  CommonAppbarWidget(title: '피킹 작업(랙출고)', isLogo: false, isFirstPage: true ),
+                  CommonAppbarWidget(title: '출고등록', isLogo: false, isFirstPage: true ),
                   _mainBody(context),
 
                 ],
@@ -64,7 +64,9 @@ class PickingPage extends StatelessWidget {
             color: AppTheme.dark_text_secondary,
             height: 1,
           ),
-          _subBody(context)
+          _subBody(context),
+
+         // _subBody2(context)
         ]),
       ),
     );
@@ -74,8 +76,63 @@ class PickingPage extends StatelessWidget {
     return Container(
       child: Column(
         children: [
+
           SizedBox(height: 4,),
-          Obx(() => _SearchCondition2(context),),
+          Obx(() => _SearchCondition3(context),),
+          SizedBox(height: 4,),
+          Container(
+            color: AppTheme.dark_text_secondary,
+            height: 1,
+          ),
+
+          Container(
+            //margin: EdgeInsets.only(right: 12),
+            width: MediaQuery.of(context).size.width-26,
+            height: 35,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all<
+                          RoundedRectangleBorder>(
+                          const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10)))),
+                      padding: MaterialStateProperty.all(
+                          const EdgeInsets.all(0))),
+                  onPressed: () async {
+                    Get.log('출고등록 클릭!');
+                    // 로직 넣기
+
+                    await controller.reqChulSecond();
+
+                    Get.to(ChulgoSecondPage());
+
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: AppTheme.navy_navy_800,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppTheme.ae2e2e2)
+                    ),
+                    width: 120,
+                    height: 35,
+                    padding: const EdgeInsets.only(
+
+                    ),
+                    child: Center(
+                      child: Text('출고등록',
+                          style: AppTheme.a12700.copyWith(
+                            color: AppTheme.white,
+                          )),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           SizedBox(height: 12,),
           _rackIpgoList(context),
           SizedBox(height: 12,),
@@ -119,7 +176,7 @@ class PickingPage extends StatelessWidget {
                   ? {controller.ipgoQrList.clear(), controller.ipgoList.clear(), controller.gridStateMgr2.removeAllRows()} : null;
               controller.selectedInvnrIndex.value = controller.gridStateMgr.currentRowIdx!;
 */
-             // controller.currentFirstIndex.value = c.rowIdx!;
+              // controller.currentFirstIndex.value = c.rowIdx!;
               print(controller.gridStateMgr.currentRowIdx);
             },
             configuration: PlutoGridConfiguration(
@@ -140,43 +197,10 @@ class PickingPage extends StatelessWidget {
   List<PlutoColumn> gridCols(BuildContext context) {
     final List<PlutoColumn> gridCols = <PlutoColumn>[
       PlutoColumn(
-          title: '랙출고',
-          field: 'rackOutBtn',
-          type: PlutoColumnType.text(),
-          width: 100,
-          enableSorting: false,
-          enableEditingMode: false,
-          enableContextMenu: false,
-          enableRowDrag: false,
-          enableDropToResize: false,
-          enableColumnDrag: false,
-          titleTextAlign: PlutoColumnTextAlign.center,
-          textAlign: PlutoColumnTextAlign.center,
-          backgroundColor: AppTheme.gray_c_gray_200,
-          renderer: (c) {
-            return Container(
-              child: InkWell(
-                  onTap: () async{
-                    Get.log('랙출고 클릭!');
-                    controller.currentFirstIndex.value = c.rowIdx!;
-                    Get.log('랙출고 클릭!');
-                    await controller.reqPickingSecond();
-
-                    Get.to(PickingSecondPage());
-
-                  },
-                  child: Center(
-                    child: const Icon(Icons.play_circle),
-                  )
-              ),
-            );
-          }
-      ),
-      PlutoColumn(
         title: '지시번호',
-        field: 'pickNo',
+        field: 'delOrdNo',
         type: PlutoColumnType.text(),
-        width: 160,
+        width: 180,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -188,8 +212,8 @@ class PickingPage extends StatelessWidget {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '지시자',
-        field: 'pickUser',
+        title: '출고유형',
+        field: 'chulgoType',
         type: PlutoColumnType.text(),
         width: 90,
         enableSorting: false,
@@ -203,23 +227,8 @@ class PickingPage extends StatelessWidget {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '프로젝트',
-        field: 'pjtNm',
-        type: PlutoColumnType.text(),
-        width: 300,
-        enableSorting: false,
-        enableEditingMode: false,
-        enableContextMenu: false,
-        enableRowDrag: false,
-        enableDropToResize: false,
-        enableColumnDrag: false,
-        titleTextAlign: PlutoColumnTextAlign.center,
-        textAlign: PlutoColumnTextAlign.center,
-        backgroundColor: AppTheme.gray_c_gray_200,
-      ),
-      PlutoColumn(
-        title: '자재코드',
-        field: 'itemCd',
+        title: '오더번호',
+        field: 'soNo',
         type: PlutoColumnType.text(),
         width: 200,
         enableSorting: false,
@@ -233,8 +242,8 @@ class PickingPage extends StatelessWidget {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '자재명',
-        field: 'itemNm',
+        title: '프로젝트명',
+        field: 'pjtNm',
         type: PlutoColumnType.text(),
         width: ipgoDateWidth,
         enableSorting: false,
@@ -248,10 +257,55 @@ class PickingPage extends StatelessWidget {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '제조번호',
-        field: 'wrkNo',
+        title: '출고예정일',
+        field: 'delPreDt',
         type: PlutoColumnType.text(),
-        width: 150,
+        width: 200,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: 'BOM 변경',
+        field: 'bomChgSts',
+        type: PlutoColumnType.text(),
+        width: 90,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: 'KIT 작업',
+        field: 'kitCfmSts',
+        type: PlutoColumnType.text(),
+        width: 90,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '출고가능여부',
+        field: 'otbPsbSts',
+        type: PlutoColumnType.text(),
+        width: 100,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -266,18 +320,18 @@ class PickingPage extends StatelessWidget {
     return gridCols;
   }
 
-  Widget _SearchCondition2(BuildContext context) {
+  Widget _SearchCondition3(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
-          width:  MediaQuery.of(context).size.width - 400 ,
-          padding: EdgeInsets.only(left: 50),
+          width:  MediaQuery.of(context).size.width - 200 ,
+          padding: EdgeInsets.only(left: 24),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                Text('일자', style: AppTheme.a12700.copyWith(color: AppTheme.black),),
+                Text('피킹지시일', style: AppTheme.a12700.copyWith(color: AppTheme.black),),
                 SizedBox(width: 8,),
                 Container(
                   child: InkWell(
@@ -301,9 +355,7 @@ class PickingPage extends StatelessWidget {
                         int startIndex = datePicked.toString().indexOf(' ');
                         int lastIndex = datePicked.toString().length;
                         controller.dayStartValue.value = datePicked.toString().replaceRange(startIndex, lastIndex, '');
-                        /*    if(controller.choiceButtonVal.value != 0) {
 
-                           }*/
                       }else {
                         controller.dayStartValue.value = DateFormat('yyyy-MM-dd').format(DateTime.now());
                       }
@@ -385,145 +437,108 @@ class PickingPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 16,),
-                _invnrTextForm2('지시번호', 0),
+                _invnrTextForm2('오더번호', 0),
                 SizedBox(width: 16,),
                 _invnrTextForm2('프로젝트명', 1),
+               // _joneDropDownItem('존 구분', 0),
+                SizedBox(width: 16,),
+                _dropDownItem2(),
+              //  _joneDropDownItem('입고 구분', 1),
+
               ],
             ),
           ),
         ),
-        Row(
-          children: [
-            Container(
-              margin: EdgeInsets.only(right: 12),
+        Container(
+          margin: EdgeInsets.only(right: 12),
+          width: 120,
+          height: 35,
+          child: TextButton(
+            style: ButtonStyle(
+                shape: MaterialStateProperty.all<
+                    RoundedRectangleBorder>(
+                    const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10)))),
+                padding: MaterialStateProperty.all(
+                    const EdgeInsets.all(0))),
+            onPressed: () async {
+              Get.log('조회 클릭!');
+              await controller.checkQR();
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: AppTheme.navy_navy_800,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AppTheme.ae2e2e2)
+              ),
               width: 120,
               height: 35,
-              child: TextButton(
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all<
-                        RoundedRectangleBorder>(
-                        const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10)))),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.all(0))),
-                onPressed: () async {
-                  Get.log('조회 클릭!');
-                  controller.reqPickingFirst();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: AppTheme.navy_navy_800,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppTheme.ae2e2e2)
-                  ),
-                  width: 120,
-                  height: 35,
-                  padding: const EdgeInsets.only(
+              padding: const EdgeInsets.only(
 
-                  ),
-                  child: Center(
-                    child: Text('조회', //입고취소 조회
-                        style: AppTheme.a12700.copyWith(
-                          color: AppTheme.white,
-                        )),
-                  ),
-                ),
+              ),
+              child: Center(
+                child: Text('조회', //입고취소 조회
+                    style: AppTheme.a12700.copyWith(
+                      color: AppTheme.white,
+                    )),
               ),
             ),
-            /*Container(
-              margin: EdgeInsets.only(right: 12),
-              width: 120,
-              height: 35,
-              child: TextButton(
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all<
-                        RoundedRectangleBorder>(
-                        const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10)))),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.all(0))),
-                onPressed: () async {
-                  Get.log('엑셀 클릭!');
-                  Get.log('저장할 리스트!: ${controller.pickingFirstList.length}');
-                  if(controller.pickingFirstList.isNotEmpty) {
-                    await controller.exportToExcel(controller.rowDatas, ['지시번호','지시자','프로젝트','자재코드','자재명','제조번호','랙출고']);
-                    await controller.moveFileToDownloads();
-                    controller.isExelSuc.value ?
-                    Get.dialog(CommonDialogWidget(contentText: '다운로드되었습니다', pageFlag: 3,)) : null;
-                  }
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: AppTheme.navy_navy_800,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppTheme.ae2e2e2)
-                  ),
-                  width: 120,
-                  height: 35,
-                  padding: const EdgeInsets.only(
-
-                  ),
-                  child: Center(
-                    child: Text('엑셀', //입고취소 조회
-                        style: AppTheme.a12700.copyWith(
-                          color: AppTheme.white,
-                        )),
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(right: 12),
-              width: 120,
-              height: 35,
-              child: TextButton(
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all<
-                        RoundedRectangleBorder>(
-                        const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10)))),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.all(0))),
-                onPressed: () async {
-                  if(controller.pickingFirstList.isNotEmpty) {
-                    await controller.exportToPdf(controller.rowDatas, ['지시번호','지시자','프로젝트','자재코드','자재명','제조번호','랙출고']);
-                    await controller.movePdfFileToDownloads();
-                    controller.isPdfSuc.value ?
-                    Get.dialog(CommonDialogWidget(contentText: '다운로드되었습니다', pageFlag: 3,)) : null;
-                  }
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: AppTheme.navy_navy_800,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppTheme.ae2e2e2)
-                  ),
-                  width: 120,
-                  height: 35,
-                  padding: const EdgeInsets.only(
-
-                  ),
-                  child: Center(
-                    child: Text('PDF', //입고취소 조회
-                        style: AppTheme.a12700.copyWith(
-                          color: AppTheme.white,
-                        )),
-                  ),
-                ),
-              ),
-            ),*/
-          ],
+          ),
         ),
       ],
     );
   }
 
+  Widget _dropDownItem2() {
+    return Row(
+      children: [
+        Text('출고유형', style: AppTheme.a12700.copyWith(color: AppTheme.black),),
+        SizedBox(width: 8,),
+        Container(
+          height: 35,
+          width: 150,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppTheme.ae2e2e2)),
+          padding: const EdgeInsets.only(right: 12),
+          child: DropdownButton(
+              padding: EdgeInsets.only(left: 12),
+              borderRadius: BorderRadius.circular(3),
+              isExpanded: true,
+              underline: Container(
+                height: 1,
+                color: Colors.white,
+              ),
+              icon: SvgPicture.asset(
+                'assets/app/arrowBottom.svg',
+                color: AppTheme.light_placeholder,
+              ),
+              dropdownColor: AppTheme.light_ui_01,
+              value: controller.selectedChulgoContainer['NAME'],
+              items: controller.chulgoList.map((value) {
+                return DropdownMenuItem<String>(
+                  value: value['NAME'].toString(),
+                  child: Text(
+                    value['NAME'].toString(),
+                    style: AppTheme.a16400
+                        .copyWith(color: value['NAME'].toString() == '선택해주세요' ? AppTheme.aBCBCBC : AppTheme.a6c6c6c),
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                controller.chulgoList.map((e) {
+                  if(e['NAME'] == value) {
+                    controller.selectedChulgoContainer['CODE'] = e['CODE'];
+                    controller.selectedChulgoContainer['NAME'] = e['NAME'];
+                  }
+                }).toList();
+              }),
+        ),
+      ],
+    );
+  }
 
   Widget _invnrTextForm2(String title, int plag) {
     return Row(
@@ -547,7 +562,8 @@ class PickingPage extends StatelessWidget {
               maxLines: null,
               style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
               // maxLines: 5,
-              controller: plag == 0 ? controller.textJisiController : controller.textProjectController,
+              controller: plag == 0 ? controller.textOrderController : plag == 1 ? controller.textProjectController
+                  : controller.textOrderController,
               textInputAction: TextInputAction.done,
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
@@ -569,6 +585,15 @@ class PickingPage extends StatelessWidget {
     );
   }
 
+
+  void updateRows() {
+    controller.rowDatas.value = List<PlutoRow>.generate(controller.chulgoList.length, (index) =>
+        PlutoRow(cells:
+        Map.from((controller.chulgoList[index]).map((key, value) =>
+            MapEntry(key, PlutoCell(value: value )),
+        )))
+    );
+  }
 
 
 

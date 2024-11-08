@@ -30,12 +30,13 @@ class GlobalService extends GetxService {
           loginPassword.value = Utils.getStorage.read('userPw');
           await prefs.setString('userId', Utils.getStorage.read('userId'));
           var params = {
+            'programId': 'A1020',
             'loginId': loginId.value,
             'password': loginPassword.value,
           };
          var status = await HomeApi.to.reqLogin(params);
          Get.log('로그인~~~~~~~~~~~~~~~~~~~~ $status');
-         status.resultCode == '0000' ? null : logout();
+         status.body!.resCd == '0000' ? Get.toNamed(Routes.MAIN) : logout();
 
 
        }else {

@@ -140,11 +140,27 @@ class MainIconWidget extends StatelessWidget {
                       }, context: context),
                   _buttonArea(
                       imgUrl: 'assets/app/checklist-1.png',
+                      title: '메인 박스 KIT 작업',
+                      subTitle: '',
+                      onPressed: () {
+                        Get.log('메인 KIT 작업');
+                        Get.toNamed(Routes.MAIN_KIT);
+                      }, context: context),
+                  _buttonArea(
+                      imgUrl: 'assets/app/checklist-1.png',
                       title: '피킹 작업(랙출고)',
                       subTitle: '',
                       onPressed: () {
                         Get.log('피킹 작업(랙출고)');
                         Get.toNamed(Routes.PICKING);
+                      }, context: context),
+                  _buttonArea(
+                      imgUrl: 'assets/app/checklist-1.png',
+                      title: '출고등록',
+                      subTitle: '',
+                      onPressed: () {
+                        Get.log('출고등록');
+                        Get.toNamed(Routes.CHULGO);
                       }, context: context),
                 //  gs.datasList.contains(300) == false ? SizedBox(width: 0, height: 0,) :
               /*    _buttonArea(

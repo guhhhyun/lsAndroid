@@ -7,6 +7,7 @@ import 'package:lsandroid/app/net/home_api.dart';
 import 'package:lsandroid/app/routes/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class LoginController extends GetxController {
   RxBool isCheckBox = false.obs;
@@ -36,6 +37,7 @@ class LoginController extends GetxController {
     bLoading.value = true;
 
     var params = {
+      'programId': 'A1020',
       'userId': idTextController.text,
       'userPw': pwTextController.text,
     };
@@ -45,11 +47,11 @@ class LoginController extends GetxController {
       if (retVal != null) {
         if (retVal.resultCode == '0000') {
           Utils.showToast(msg: '로그인 되었습니다.');
-          if (retVal.body != null) {
+          if (retVal.body!.resCd == '0000') {
             Get.offAllNamed(Routes.MAIN);
           } else {
             // 토큰 데이터가 없다
-            Utils.gErrorMessage('서버로부터 토큰값이 없습니다.');
+            Utils.gErrorMessage('아이디/비밀번호를 다시 입력해주세요.');
           }
         } else {
           Get.log('실패');
@@ -67,7 +69,35 @@ class LoginController extends GetxController {
     }
   }
 
+  Future<void> requestBluetoothPermissions() async {
+    // Bluetooth 권한 상태를 확인합니다.
+    var scanStatus = await Permission.bluetoothScan.status;
+    var connectStatus = await Permission.bluetoothConnect.status;
 
+    // 권한이 허용되지 않은 경우 요청합니다.
+    if (!scanStatus.isGranted) {
+      await Permission.bluetoothScan.request();
+    }
+
+    if (!connectStatus.isGranted) {
+      await Permission.bluetoothConnect.request();
+    }
+
+    // 광고 권한도 필요하면 추가
+    var advertiseStatus = await Permission.bluetoothAdvertise.status;
+    if (!advertiseStatus.isGranted) {
+      await Permission.bluetoothAdvertise.request();
+    }
+
+    // 권한 상태를 다시 확인하여 필요한 경우 대응합니다.
+    if (await Permission.bluetoothScan.isGranted &&
+        await Permission.bluetoothConnect.isGranted &&
+        await Permission.bluetoothAdvertise.isGranted) {
+      print("Bluetooth 권한이 모두 허용되었습니다.");
+    } else {
+      print("Bluetooth 권한이 거부되었습니다.");
+    }
+  }
 
 
   @override
@@ -79,7 +109,7 @@ class LoginController extends GetxController {
   @override
   void onInit() async {
     Get.log('LoginController - onInit !!');
-
+    requestBluetoothPermissions();
     super.onInit();
   }
 

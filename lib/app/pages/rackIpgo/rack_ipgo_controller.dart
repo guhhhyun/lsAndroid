@@ -2,6 +2,7 @@
 
 import 'dart:ffi';
 
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
 
 
   RxDouble height = 0.0.obs;
-
+  RxInt currentFirstIndex = 0.obs;
 
 
   /// 그리드
@@ -53,7 +54,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
   RxString zoneCd = ''.obs;
   RxString locText = ''.obs;
   RxString locCd = ''.obs;
-
+  RxBool isQrFocus = false.obs;
 
   RxBool bLoading = false.obs;
   RxInt focusCnt = 0.obs;
@@ -61,6 +62,14 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
   RxBool isDuplQr = false.obs; // 중복qr 선택된 값이 있는지 여부
   RxInt selectedInvnrIndex = 0.obs; // 선택된 거래명세서의 index
   RxString statusText = ''.obs;
+
+
+  final FocusNode focusNode = FocusNode();
+  void requestFocus() {
+    Future.microtask(() => focusNode.requestFocus());
+    if(focusCnt.value++ > 1) focusCnt.value = 0;
+    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+  }
 
   /// 입고대기 취소
   Future<void> yetRackReIpgoBtn() async {
@@ -70,6 +79,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
 
     for(var i = 0; i < rackIpgoList.length; i++) {
       var params = {
+        'programId': 'A1020',
         'procedure': 'USP_A1030_S01',
         'params': [
           {
@@ -80,7 +90,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_QR_CODE',
-            'paramValue': '${rackIpgoList[0]['QR_NO']}',
+            'paramValue': '${rackIpgoList[currentFirstIndex.value]['QR_NO']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -116,19 +126,19 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_TO_ZONE_CD',
-            'paramValue': '',               // 만들어주면 입력
+            'paramValue': textLocController.text.substring(0,1),               // 만들어주면 입력
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
           {
             'paramName': 'p_ITEM_CD',
-            'paramValue': '${rackIpgoList[0]['ITEM_CD']}',
+            'paramValue': '${rackIpgoList[currentFirstIndex.value]['ITEM_CD']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
           {
             'paramName': 'p_INB_NO',
-            'paramValue': '${rackIpgoList[0]['INB_NO']}',
+            'paramValue': '${rackIpgoList[currentFirstIndex.value]['INB_NO']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -178,6 +188,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
 
     for(var i = 0; i < rackIpgoList.length; i++) {
       var params = {
+        'programId': 'A1020',
         'procedure': 'USP_A1030_S01',
         'params': [
           {
@@ -188,7 +199,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_QR_CODE',
-            'paramValue': '${rackIpgoList[0]['QR_NO']}',
+            'paramValue': '${rackIpgoList[currentFirstIndex.value]['QR_NO']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -224,19 +235,19 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_TO_ZONE_CD',
-            'paramValue': '',               // 만들어주면 입력
+            'paramValue': textLocController.text.substring(0,1),               // 만들어주면 입력
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
           {
             'paramName': 'p_ITEM_CD',
-            'paramValue': '${rackIpgoList[0]['ITEM_CD']}',
+            'paramValue': '${rackIpgoList[currentFirstIndex.value]['ITEM_CD']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
           {
             'paramName': 'p_INB_NO',
-            'paramValue': '${rackIpgoList[0]['INB_NO']}',
+            'paramValue': '${rackIpgoList[currentFirstIndex.value]['INB_NO']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -286,6 +297,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
 
     for(var i = 0; i < rackIpgoList.length; i++) {
       var params = {
+        'programId': 'A1020',
         'procedure': 'USP_A1030_S01',
         'params': [
           {
@@ -296,7 +308,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_QR_CODE',
-            'paramValue': '${rackIpgoList[0]['QR_NO']}',
+            'paramValue': '${rackIpgoList[currentFirstIndex.value]['QR_NO']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -332,19 +344,19 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_TO_ZONE_CD',
-            'paramValue': '',               // 만들어주면 입력
+            'paramValue': textLocController.text.substring(0,1),               // 만들어주면 입력
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
           {
             'paramName': 'p_ITEM_CD',
-            'paramValue': '${rackIpgoList[0]['ITEM_CD']}',
+            'paramValue': '${rackIpgoList[currentFirstIndex.value]['ITEM_CD']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
           {
             'paramName': 'p_INB_NO',
-            'paramValue': '${rackIpgoList[0]['INB_NO']}',
+            'paramValue': '${rackIpgoList[currentFirstIndex.value]['INB_NO']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -395,6 +407,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
     rackIpgoList.clear();
 
     var params = {
+      'programId': 'A1020',
       'procedure': 'USP_A1030_R01',
       'params': [
         {
@@ -430,11 +443,13 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
           rackIpgoList.value.addAll(retVal.body![1]);
-          rackIpgoList[0].addAll({'no': '1'});
-          zoneText.value = rackIpgoList[0]['ZONE_NM'];
-          locText.value = rackIpgoList[0]['LAST_LOC'];
-          zoneCd.value = rackIpgoList[0]['ZONE_CD'];
-          locCd.value = rackIpgoList[0]['LOC_CD'];
+          for(var i = 0; i < rackIpgoList.length; i++){
+            rackIpgoList[i].addAll({'no': '${i+1}'});
+          }
+          zoneText.value = rackIpgoList[currentFirstIndex.value]['LAST_ZONE_NM'];
+          locText.value = rackIpgoList[currentFirstIndex.value]['LAST_LOC'];
+          zoneCd.value = rackIpgoList[currentFirstIndex.value]['ZONE_CD'];
+          locCd.value = rackIpgoList[currentFirstIndex.value]['LOC_CD'];
           Get.log(rackIpgoList.toString());
           Get.log('조회 성공');
         }else{

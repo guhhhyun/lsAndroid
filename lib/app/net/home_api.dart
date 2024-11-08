@@ -7,6 +7,10 @@ import 'package:lsandroid/app/common/global_service.dart';
 import 'package:lsandroid/app/common/utils.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:lsandroid/app/model/chulModel/chul_model.dart';
+import 'package:lsandroid/app/model/chulModel/chul_second_model.dart';
+import 'package:lsandroid/app/model/chulModel/chul_third_model.dart';
+import 'package:lsandroid/app/model/chulgoModel/other_kit_model.dart';
 import 'package:lsandroid/app/model/commonModel/common_model.dart';
 import 'package:lsandroid/app/model/commonModel/zone_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_cancel_model.dart';
@@ -14,6 +18,7 @@ import 'package:lsandroid/app/model/ipgoModel/ipgo_cheburn_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_qr_model.dart';
 import 'package:lsandroid/app/model/loginModel/login_model.dart';
+import 'package:lsandroid/app/model/mainKitModel/main_kit_model.dart';
 import 'package:lsandroid/app/model/pickingModel/picking_first_model.dart';
 import 'package:lsandroid/app/model/pickingModel/picking_second_model.dart';
 import 'package:lsandroid/app/model/pickingModel/picking_third_model.dart';
@@ -28,7 +33,343 @@ import 'package:http/http.dart' as http;
 class HomeApi extends NetworkManager{
   static HomeApi get to => Get.find();
 
+  /// 메인키트 디테일 저장
+  Future<String> registMainKitDetailSave(var params) async {
+    String a = '0000';
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/main_kit_save_regist.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        // ipgoModel = IpgoModel.fromJson(jsonResponse);
+      } else {
 
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          //  ipgoModel = IpgoModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('registMainKitDetailSave = ${e.toString()}');
+      a = '1111';
+      // commonError(e);
+    } catch (err) {
+      Get.log('registMainKitDetailSave = ${err.toString()}');
+      a = '1111';
+    }
+    return a;
+  }
+
+  /// 메인키트 확정
+  Future<String> registMainKitSave(var params) async {
+    String a = '0000';
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/main_kit_save_regist.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        // ipgoModel = IpgoModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          //  ipgoModel = IpgoModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('registMainKitSave - error');
+      a = '1111';
+      // commonError(e);
+    } catch (err) {
+      Get.log('registMainKitSave = ${err.toString()}');
+      a = '1111';
+    }
+    return a;
+  }
+
+
+  /// 메인박스 KIT 첫번째 조회
+  Future<MainKitModel> reqMainKit(var params) async {
+    var mainKitModel = MainKitModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        mainKitModel = MainKitModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          mainKitModel = MainKitModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqMainKit - error');
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqMainKit = ${err.toString()}');
+    }
+    return mainKitModel;
+  }
+
+  /// 출고 등록
+  Future<String> registChulgo(var params) async {
+    String a = '0000';
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/ipgo_regist.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('registChulgo - error');
+      // commonError(e);
+      a = '1111';
+    } catch (err) {
+      Get.log('registChulgo = ${err.toString()}');
+      a = '1111';
+    }
+    return a;
+  }
+
+  /// 출고등록 세번째 조회
+  Future<ChulThirdModel> reqChulThird(var params) async {
+    var chulThirdModel = ChulThirdModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/picking_second.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        chulThirdModel = ChulThirdModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          chulThirdModel = ChulThirdModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqChulThird - error');
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqChulThird = ${err.toString()}');
+    }
+    return chulThirdModel;
+  }
+
+  /// 출고등록 두번째 조회
+  Future<ChulSecondModel> reqChulSecond(var params) async {
+    var chulSecondModel = ChulSecondModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/picking_second.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        chulSecondModel = ChulSecondModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          chulSecondModel = ChulSecondModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqChulSecond - error');
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqChulSecond = ${err.toString()}');
+    }
+    return chulSecondModel;
+  }
+
+  /// 출고등록 조회
+  Future<ChulModel> reqChulgo(var params) async {
+    var chulModel = ChulModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/other_kit_save.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        chulModel = ChulModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          chulModel = ChulModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqChulgo - error');
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqChulgo = ${err.toString()}');
+    }
+    return chulModel;
+  }
+
+
+  /// 별도박스 조회
+  Future<OtherKitModel> reqOtherKit(var params) async {
+    var otherKitModel = OtherKitModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/other_kit_save.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        otherKitModel = OtherKitModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          otherKitModel = OtherKitModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqOtherKit - error');
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqOtherKit = ${err.toString()}');
+    }
+    return otherKitModel;
+  }
 
 
   /// 랙입고 등록
@@ -199,6 +540,49 @@ class HomeApi extends NetworkManager{
       Get.log('reqPickingFirst = ${err.toString()}');
     }
     return pickingFirstModel;
+  }
+
+  /// 별도박스 저장
+  Future<String> registOtherKitSave(var params) async {
+    String a = '0000';
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit_save_regist.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        // ipgoModel = IpgoModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/multiPosts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          //  ipgoModel = IpgoModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('registSmallKitSave - error');
+      a = '1111';
+      // commonError(e);
+    } catch (err) {
+      Get.log('registSmallKitSave = ${err.toString()}');
+      a = '1111';
+    }
+    return a;
   }
 
   /// 소박스 저장

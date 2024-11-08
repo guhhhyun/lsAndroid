@@ -2,6 +2,7 @@
 
 import 'dart:ffi';
 
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxList<dynamic> ipgoCancelList = [].obs; // 입고취소리스트
  // RxList<dynamic> selectedCancelList = [].obs; // 선택된 입고취소리스트
   RxList<dynamic> ipgoCancelBollList = [].obs;
-  RxDouble height = 45.0.obs;
+  RxDouble height = 50.0.obs;
 
   RxDouble invnrHeight = 100.0.obs;
 
@@ -75,12 +76,12 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxInt focusCnt = 0.obs;
   RxBool isSelectedInvnr = false.obs; // 거래명세서 선택된 값이 있는지 여부
   RxBool isDuplQr = false.obs; // 중복qr 선택된 값이 있는지 여부
-  RxInt selectedInvnrIndex = 0.obs; // 선택된 거래명세서의 index
+  RxInt selectedInvnrIndex = 1.obs; // 선택된 거래명세서의 index
   RxString statusText = ''.obs;
   RxString cheburnDate = ''.obs; // 채번날짜
   RxString cheburnInbNumber = ''.obs; // 끝 6자리
   RxString cheburnLotNumber = ''.obs; // 끝 6자리
-
+  RxBool isQr = false.obs;
 
 
   /// 공통 드롭다운 조회(zone) -> 존 구분
@@ -90,6 +91,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     //cheburnIpgoList.clear();
 
     var params = {
+      'programId': 'A1020',
       'procedure': 'USP_GET_COMMON_CODE_R01',
       'params': [
         {
@@ -147,6 +149,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     //cheburnIpgoList.clear();
 
     var params = {
+      'programId': 'A1020',
       'procedure': 'USP_GET_COMMON_CODE_R01',
       'params': [
         {
@@ -204,6 +207,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     cheburnIpgoList.clear();
 
     var params = {
+      'programId': 'A1020',
       'procedure': 'USP_A1020_R04',
       'params': [
         {
@@ -236,8 +240,9 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           Get.log('채번 리스트 조회: ${cheburnIpgoList.toString()}');
           Get.log('조회 성공');
           cheburnDate.value = DateFormat('yyMMdd').format(DateTime.now());
-          cheburnInbNumber.value = (int.parse(cheburnIpgoList[0]['inbNo'].toString().replaceRange(0, 9, '')) + 1).toString();
-          cheburnLotNumber.value = (int.parse(cheburnIpgoList[0]['inbLotNo'].toString().replaceRange(0, 9, '')) + 1).toString();
+          int lastTwoDigits = int.parse(cheburnIpgoList[0]['inbNo'].toString().substring(cheburnIpgoList[0]['inbNo'].toString().length - 2));
+          cheburnInbNumber.value = (int.parse(cheburnIpgoList[0]['inbNo'].toString().replaceRange(0, 10, '')) + 1).toString();
+          cheburnLotNumber.value = (int.parse(cheburnIpgoList[0]['inbLotNo'].toString().replaceRange(0, 10, '')) + 1).toString();
 
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
@@ -265,6 +270,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     for(var e = 0; e < ipgoCancelBollList.length; e++) {
       if(ipgoCancelBollList[e] == true) {
           var params = {
+            'programId': 'A1020',
             'procedure': 'USP_A1020_S02',
             'params': [
               {
@@ -346,6 +352,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     ipgoCancelList.clear();
 
     var params = {
+      'programId': 'A1020',
       'procedure': 'USP_A1020_R03',
       'params': [
         {
@@ -444,6 +451,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
 
     for(var i = 0; i < ipgoList.length; i++) {
       var params = {
+        'programId': 'A1020',
         'procedure': 'USP_A1020_S01',
         'params': [
           {
@@ -558,6 +566,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     ipgoQrList.clear();
     statusText.value = '';
     var params = {
+      'programId': 'A1020',
       'procedure': 'USP_A1020_R02',
       'params': [
         {
@@ -622,13 +631,14 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
 
 
   /// 입고 조회
-  void checkBtn() async {
+  Future<void> checkBtn() async {
     Get.log('조회 버튼 클릭');
 
     bLoading.value = true;
     invnrList.clear();
 
     var params = {
+      'programId': 'A1020',
       'procedure': 'USP_A1020_R01',
       'params': [
         {
@@ -665,19 +675,19 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
         },
         {
           'paramName': 'p_DOC1',
-          'paramValue': '',
+          'paramValue': textInvnrController2.text,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
         {
           'paramName': 'p_ITEM_CD',
-          'paramValue': '',
+          'paramValue': textItemController2.text,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
         {
           'paramName': 'p_PJT_NM',
-          'paramValue': '',
+          'paramValue': textProjectController2.text,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -746,10 +756,19 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   }
 
 
+  final FocusNode focusNode = FocusNode();
+
+  void requestFocus() {
+    Future.microtask(() => focusNode.requestFocus());
+    if(focusCnt.value++ > 1) focusCnt.value = 0;
+    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+  }
+
 
   @override
   void onClose() {
     Get.log('IpgoController - onClose !!');
+    focusNode.dispose(); // FocusNode 해제
     super.onClose();
   }
 

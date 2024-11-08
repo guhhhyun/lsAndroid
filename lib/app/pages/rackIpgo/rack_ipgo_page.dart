@@ -28,6 +28,7 @@ class RackIpgoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     test = MediaQuery.of(context).size.width - 570;
     ipgoDateWidth = MediaQuery.of(context).size.width - 760;
+    controller.isQrFocus.value == false ? controller.requestFocus() : null;
     return WillPopScope(
       onWillPop: () {
         Get.offAll(HomePage());
@@ -107,6 +108,7 @@ class RackIpgoPage extends StatelessWidget {
               print(event);
             },
             onSelected: (c) {
+              controller.currentFirstIndex.value = c.rowIdx!;
             /*  controller.zoneText.value = controller.rackIpgoList[controller.gridStateMgr.currentRowIdx!]['ZONE_NM'];
               controller.locText.value = controller.rackIpgoList[controller.gridStateMgr.currentRowIdx!]['LAST_LOC'];
               controller.zoneCd.value = controller.rackIpgoList[controller.gridStateMgr.currentRowIdx!]['ZONE_CD'];
@@ -185,6 +187,21 @@ class RackIpgoPage extends StatelessWidget {
       PlutoColumn(
         title: '수량',
         field: 'QTY',
+        type: PlutoColumnType.text(),
+        width: 90,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '보유수량',
+        field: 'QTY_HOLD',
         type: PlutoColumnType.text(),
         width: 90,
         enableSorting: false,
@@ -372,7 +389,7 @@ class RackIpgoPage extends StatelessWidget {
                   if(controller.rackIpgoList.isNotEmpty) {
                     await controller.yetRackIpgoBtn();
                     Get.log('입고 보류 클릭!');
-                    Get.dialog(CommonDialogWidget(contentText: '보류되었습니다', pageFlag: 3,));
+                    Get.dialog(CommonDialogWidget(contentText: '입고 보류되었습니다', pageFlag: 3,));
                     controller.textQrController.text = '';
                     controller.zoneText.value = '';
                     controller.zoneCd.value = '';
@@ -385,7 +402,7 @@ class RackIpgoPage extends StatelessWidget {
                     controller.rackIpgoList.clear();
                     controller.gridStateMgr.removeAllRows();
                   }else {
-                    Get.log('입고 보류 클릭!');
+                    Get.log('사용재고 보류 클릭!');
                     Get.dialog(CommonDialogWidget(contentText: '자재를 선택해주세요', pageFlag: 0));
                   }
 
@@ -402,7 +419,7 @@ class RackIpgoPage extends StatelessWidget {
 
                   ),
                   child: Center(
-                    child: Text('입고 보류',
+                    child: Text('사용재고 보류',
                         style: AppTheme.a12700.copyWith(
                           color: AppTheme.white,
                         )),
@@ -428,8 +445,8 @@ class RackIpgoPage extends StatelessWidget {
                 onPressed: () async{
                   if(controller.rackIpgoList.isNotEmpty) {
                     await controller.yetRackReIpgoBtn();
-                    Get.log('입고 대기취소 클릭!');
-                    Get.dialog(CommonDialogWidget(contentText: '대기 취소되었습니다', pageFlag: 3,));
+                    Get.log('사용재고 보류 취소 클릭!');
+                    Get.dialog(CommonDialogWidget(contentText: '보류 취소되었습니다', pageFlag: 3,));
                     controller.textQrController.text = '';
                     controller.zoneText.value = '';
                     controller.zoneCd.value = '';
@@ -458,7 +475,7 @@ class RackIpgoPage extends StatelessWidget {
 
                   ),
                   child: Center(
-                    child: Text('입고 대기 취소',
+                    child: Text('사용재고 보류 취소',
                         style: AppTheme.a12700.copyWith(
                           color: AppTheme.white,
                         )),
@@ -531,12 +548,13 @@ class RackIpgoPage extends StatelessWidget {
                   expands :true,
                   minLines: null,
                   maxLines: null,
-                  focusNode: focusNode2,
+                  focusNode: controller.focusNode,
                   style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
                   // maxLines: 5,
                   controller: controller.textQrController,
                   textAlignVertical: TextAlignVertical.center,
                   onTap: () {
+                    controller.isQrFocus.value = false;
                     if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
                     else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
                   },
@@ -568,9 +586,9 @@ class RackIpgoPage extends StatelessWidget {
                           controller.gridStateMgr.setCurrentCell(controller.insertRow[0].cells['no'], controller.registRackIpgoList.length - 1);
                           Get.log('순서 ㅡㅡ : ${controller.gridStateMgr.currentRow!.sortIdx}');*/
                         }
-                        focusNode2.requestFocus();
+                        controller.focusNode.requestFocus();
                         Future.delayed(const Duration(), (){
-                          focusNode2.requestFocus();
+                          controller.focusNode.requestFocus();
                           //  FocusScope.of(context).requestFocus(focusNode);
                           Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
                         });
@@ -732,7 +750,7 @@ class RackIpgoPage extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _invnrTextForm('위치', 1),
+                        Obx(() => _invnrTextForm('위치', 1),)
 
                       ],
                     ),
@@ -913,6 +931,7 @@ class RackIpgoPage extends StatelessWidget {
                 controller: controller.textLocController,
                 textAlignVertical: TextAlignVertical.center,
                 onTap: () {
+                  controller.isQrFocus.value = true;
                   if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
                   else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
                 },

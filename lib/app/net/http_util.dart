@@ -93,7 +93,7 @@ class HttpUtil {
         if (error.response?.statusCode == 401) {
           // 인증 실패 시 401
           Get.log('dio InterceptorsWrapper  onError - 401');
-          Utils.gErrorMessage('인증이 만료되었습니다. 다시 로그인하시기 바랍니다.', title: '알림');
+         // Utils.gErrorMessage('인증이 만료되었습니다. 다시 로그인하시기 바랍니다.', title: '알림');
 
           //Get.offNamed(Routes.LOGIN);
         }

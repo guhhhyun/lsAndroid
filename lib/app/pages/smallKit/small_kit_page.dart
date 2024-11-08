@@ -18,10 +18,10 @@ import 'package:pluto_grid/pluto_grid.dart';
 class SmallKitPage extends StatelessWidget {
    SmallKitPage({super.key});
   SmallKitController controller = Get.find();
-   final focusNode = FocusNode();
    final focusNode2 = FocusNode();
   @override
   Widget build(BuildContext context) {
+    controller.requestFocus();
     final double height = 60*(double.parse((controller.rows.isEmpty ? 1 : controller.rows.length).toString()));
 
     return WillPopScope(
@@ -131,7 +131,7 @@ class SmallKitPage extends StatelessWidget {
                   // NAME 값이 event.value와 같은 항목의 CODE를 가져옴
                   final code = controller.reasonDropdownList
                       .firstWhere((item) => item['NAME'] == event.value, orElse: () => {'CODE': ''})['CODE'];
-
+                  controller.smallBoxSaveList[event.rowIdx]['ncbxRmk'] = code.toString();
                   Get.log('controller.smallBoxSaveList[event.rowIdx]: ${controller.smallBoxSaveList[event.rowIdx]}');
                 }
               },
@@ -190,7 +190,7 @@ class SmallKitPage extends StatelessWidget {
                                     color: AppTheme.white
                                 ),
                                 child: TextFormField(
-                                  focusNode: focusNode,
+                                  focusNode: controller.focusNode,
                                   style:  AppTheme.a16400.copyWith(color: AppTheme.a6c6c6c),
                                   controller: controller.textQrController,
                                   textAlignVertical: TextAlignVertical.center,
@@ -297,9 +297,9 @@ class SmallKitPage extends StatelessWidget {
                                     }
 
 
-                                    focusNode.requestFocus();
+                                    controller.focusNode.requestFocus();
                                     Future.delayed(const Duration(), (){
-                                      focusNode.requestFocus();
+                                      controller.focusNode.requestFocus();
                                       Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
                                     });
                                   },
@@ -411,7 +411,7 @@ class SmallKitPage extends StatelessWidget {
           controller.smallBoxSave[0].addAll({'setQty': '${controller.smallBoxList[controller.no.value]['setQty']}'});
           controller.smallBoxSave[0].addAll({'qtyUnit': '${controller.smallBoxList[controller.no.value]['qtyUnit']}'});
           controller.smallBoxSave[0].addAll({'wrkQtySync': null});
-    controller.smallBoxSave[0]['extrVal'] = 'D';
+          controller.smallBoxSave[0]['extrVal'] = 'D';
           controller.smallBoxDetailList.add(controller.smallBoxSave[0]); 
           if(int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty']) <= int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'])
               + controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']) {
@@ -689,8 +689,10 @@ class SmallKitPage extends StatelessWidget {
                 {
                   Get.log('저장할 리스트!: ${controller.smallBoxSaveList.length}'),
                   await controller.registSmallKitSave(),
-                  await controller.registSmallKitDetailSave()
-                //  await controller.registSmallKitDetailSave()
+                  await controller.registSmallKitDetailSave(),
+                  controller.isSave.value ?
+                  Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0)) :
+                  Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0)),
                 }
             : text == '동기화 취소' ?
             {
@@ -734,7 +736,7 @@ class SmallKitPage extends StatelessWidget {
               controller.isConfirm.value ?
                   Get.dialog(CommonDialogWidget(contentText: '확정되었습니다.', pageFlag: 0)) :
               Get.dialog(CommonDialogWidget(contentText: '${controller.isConfirmText.value}.', pageFlag: 0)),
-            focusNode.unfocus()
+            controller.focusNode.unfocus()
 
             }
             : text == '확정 취소' ?
@@ -743,7 +745,7 @@ class SmallKitPage extends StatelessWidget {
               controller.isConfirm.value ?
               Get.dialog(CommonDialogWidget(contentText: '확정 취소되었습니다.', pageFlag: 0)) :
               Get.dialog(CommonDialogWidget(contentText: '취소되지않았습니다.', pageFlag: 0)),
-              focusNode.unfocus()
+              controller.focusNode.unfocus()
             }
                 : null;
           } ,

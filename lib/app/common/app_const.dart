@@ -4,9 +4,11 @@ class APP_CONST {
   static const bool isProduction = kReleaseMode;
 
 
-   static const String BASE_URL = 'http://118.222.92.42:8888';
- // static const String BASE_URL = 'http://192.168.123.10:21002';
-
+    static const String BASE_URL = 'http://118.222.92.42:8888';
+  // static const String BASE_URL = 'http://192.168.123.10:21002';
+  // static const String BASE_URL = 'http://192.168.225.28:21002';
+ // static const String BASE_URL = 'http://10.152.9.31:80'; // 개발서버
+ // static const String BASE_URL = 'http://192.168.255.28:21002'; // 개발서버
 
   static const int connectTimeout = 20000;
   static const int receiveTimeout = 20000;

@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   // 퇴사자 여부 판단
   void userLeft() async {
     var params = {
+      'programId': 'A1020',
       'loginId': gs.loginId,
       'password': gs.loginPassword,
     };
