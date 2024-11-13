@@ -131,6 +131,30 @@ class AppTheme {
   fontFamily: 'SUIT',
   fontStyle: FontStyle.normal,
   fontSize: 24.0);
+  static const a28700 = TextStyle(
+      letterSpacing: -0.6,
+      fontWeight: FontWeight.w700,
+      fontFamily: 'SUIT',
+      fontStyle: FontStyle.normal,
+      fontSize: 28.0);
+  static const a27700 = TextStyle(
+      letterSpacing: -0.6,
+      fontWeight: FontWeight.w700,
+      fontFamily: 'SUIT',
+      fontStyle: FontStyle.normal,
+      fontSize: 27.0);
+  static const a26700 = TextStyle(
+      letterSpacing: -0.6,
+      fontWeight: FontWeight.w700,
+      fontFamily: 'SUIT',
+      fontStyle: FontStyle.normal,
+      fontSize: 26.0);
+  static const a25700 = TextStyle(
+      letterSpacing: -0.6,
+      fontWeight: FontWeight.w700,
+      fontFamily: 'SUIT',
+      fontStyle: FontStyle.normal,
+      fontSize: 25.0);
   static const a24700 = TextStyle(
       letterSpacing: -0.6,
       fontWeight: FontWeight.w700,

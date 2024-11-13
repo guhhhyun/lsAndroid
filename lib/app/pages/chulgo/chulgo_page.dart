@@ -10,6 +10,7 @@ import 'package:lsandroid/app/common/app_theme.dart';
 import 'package:lsandroid/app/common/common_appbar_widget.dart';
 import 'package:lsandroid/app/common/dialog_widget.dart';
 import 'package:lsandroid/app/pages/chulgo/chulgo_controller.dart';
+import 'package:lsandroid/app/pages/chulgo/chulgo_second_new_page.dart';
 import 'package:lsandroid/app/pages/chulgo/chulgo_second_page.dart';
 import 'package:lsandroid/app/pages/home/home_page.dart';
 import 'package:lsandroid/app/pages/rackIpgo/rack_ipgo_controller.dart';
@@ -88,7 +89,7 @@ class ChulgoPage extends StatelessWidget {
           Container(
             //margin: EdgeInsets.only(right: 12),
             width: MediaQuery.of(context).size.width-26,
-            height: 35,
+            height: 40,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -105,10 +106,10 @@ class ChulgoPage extends StatelessWidget {
                   onPressed: () async {
                     Get.log('출고등록 클릭!');
                     // 로직 넣기
-
+                    await controller.checkQR2();
                     await controller.reqChulSecond();
 
-                    Get.to(ChulgoSecondPage());
+                    Get.to(ChulgoSecondNewPage());
 
                   },
                   child: Container(
@@ -118,13 +119,13 @@ class ChulgoPage extends StatelessWidget {
                         border: Border.all(color: AppTheme.ae2e2e2)
                     ),
                     width: 120,
-                    height: 35,
+                    height: 40,
                     padding: const EdgeInsets.only(
 
                     ),
                     child: Center(
                       child: Text('출고등록',
-                          style: AppTheme.a12700.copyWith(
+                          style: AppTheme.a16700.copyWith(
                             color: AppTheme.white,
                           )),
                     ),
@@ -149,7 +150,7 @@ class ChulgoPage extends StatelessWidget {
       child: Column(children: [
         Container(
           width: MediaQuery.of(context).size.width-32,
-          height: height,
+          height: MediaQuery.of(context).size.height - 200,
           child: PlutoGrid(
             mode: PlutoGridMode.selectWithOneTap, // 탭 한번으로 반응하게?
             columns: gridCols(context),
@@ -186,7 +187,8 @@ class ChulgoPage extends StatelessWidget {
                   //gridBorderColor: Colors.transparent,
                   //   activatedColor: Colors.transparent,
                   //  cellColorInReadOnlyState: Colors.white,
-                  columnTextStyle: AppTheme.a14500.copyWith(color: AppTheme.black)
+                  columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black),
+                  cellTextStyle: AppTheme.a16700.copyWith(color: AppTheme.black),
               ),
             ),
           ),
@@ -208,14 +210,44 @@ class ChulgoPage extends StatelessWidget {
         enableDropToResize: false,
         enableColumnDrag: false,
         titleTextAlign: PlutoColumnTextAlign.center,
-        textAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.left,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
         title: '출고유형',
-        field: 'chulgoType',
+        field: 'delOrdType',
         type: PlutoColumnType.text(),
         width: 90,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '출고상태',
+        field: 'oubStsNm',
+        type: PlutoColumnType.text(),
+        width: 90,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '오더구분',
+        field: 'ordType2Nm',
+        type: PlutoColumnType.text(),
+        width: 100,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -230,7 +262,22 @@ class ChulgoPage extends StatelessWidget {
         title: '오더번호',
         field: 'soNo',
         type: PlutoColumnType.text(),
-        width: 200,
+        width: 150,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '보관판매오더번호',
+        field: 'soNo2',
+        type: PlutoColumnType.text(),
+        width: 150,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -253,6 +300,36 @@ class ChulgoPage extends StatelessWidget {
         enableDropToResize: false,
         enableColumnDrag: false,
         titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.left,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '지시자',
+        field: 'delOrdUsrNm',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '지시일',
+        field: 'delOrdDt',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
@@ -260,7 +337,7 @@ class ChulgoPage extends StatelessWidget {
         title: '출고예정일',
         field: 'delPreDt',
         type: PlutoColumnType.text(),
-        width: 200,
+        width: 120,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -273,7 +350,7 @@ class ChulgoPage extends StatelessWidget {
       ),
       PlutoColumn(
         title: 'BOM 변경',
-        field: 'bomChgSts',
+        field: 'bcStatusNm',
         type: PlutoColumnType.text(),
         width: 90,
         enableSorting: false,
@@ -288,7 +365,7 @@ class ChulgoPage extends StatelessWidget {
       ),
       PlutoColumn(
         title: 'KIT 작업',
-        field: 'kitCfmSts',
+        field: 'kcStatusNm',
         type: PlutoColumnType.text(),
         width: 90,
         enableSorting: false,
@@ -303,7 +380,7 @@ class ChulgoPage extends StatelessWidget {
       ),
       PlutoColumn(
         title: '출고가능여부',
-        field: 'otbPsbSts',
+        field: 'opStatusNm',
         type: PlutoColumnType.text(),
         width: 100,
         enableSorting: false,
@@ -325,13 +402,13 @@ class ChulgoPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
-          width:  MediaQuery.of(context).size.width - 200 ,
+          width:  MediaQuery.of(context).size.width - 170 ,
           padding: EdgeInsets.only(left: 24),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                Text('피킹지시일', style: AppTheme.a12700.copyWith(color: AppTheme.black),),
+                Text('피킹지시일', style: AppTheme.a16700.copyWith(color: AppTheme.black),),
                 SizedBox(width: 8,),
                 Container(
                   child: InkWell(
@@ -364,8 +441,8 @@ class ChulgoPage extends StatelessWidget {
                       }
                     },
                     child: Container(
-                      height: 35,
-                      width: 150,
+                      height: 40,
+                      width: 130,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all( color: AppTheme.ae2e2e2)),
@@ -418,11 +495,11 @@ class ChulgoPage extends StatelessWidget {
                       //  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     },
                     child: Container(
-                      height: 35,
+                      height: 40,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: AppTheme.ae2e2e2)),
-                      width: 150,
+                      width: 130,
                       padding: const EdgeInsets.only( right: 12),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -452,7 +529,7 @@ class ChulgoPage extends StatelessWidget {
         Container(
           margin: EdgeInsets.only(right: 12),
           width: 120,
-          height: 35,
+          height: 40,
           child: TextButton(
             style: ButtonStyle(
                 shape: MaterialStateProperty.all<
@@ -474,13 +551,13 @@ class ChulgoPage extends StatelessWidget {
                   border: Border.all(color: AppTheme.ae2e2e2)
               ),
               width: 120,
-              height: 35,
+              height: 40,
               padding: const EdgeInsets.only(
 
               ),
               child: Center(
                 child: Text('조회', //입고취소 조회
-                    style: AppTheme.a12700.copyWith(
+                    style: AppTheme.a16700.copyWith(
                       color: AppTheme.white,
                     )),
               ),
@@ -494,11 +571,11 @@ class ChulgoPage extends StatelessWidget {
   Widget _dropDownItem2() {
     return Row(
       children: [
-        Text('출고유형', style: AppTheme.a12700.copyWith(color: AppTheme.black),),
+        Text('출고유형', style: AppTheme.a16700.copyWith(color: AppTheme.black),),
         SizedBox(width: 8,),
         Container(
-          height: 35,
-          width: 150,
+          height: 40,
+          width: 200,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppTheme.ae2e2e2)),
@@ -544,13 +621,13 @@ class ChulgoPage extends StatelessWidget {
     return Row(
       children: [
         Text(title,
-            style: AppTheme.a12700
+            style: AppTheme.a16700
                 .copyWith(color: AppTheme.black)),
         SizedBox(width: 8,),
         Container(
           padding: EdgeInsets.only(top: 4, left: 8),
-          height: 35,
-          width: plag == 4 ? 250 : 150,
+          height: 40,
+          width: 130,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppTheme.ae2e2e2)),
@@ -590,7 +667,7 @@ class ChulgoPage extends StatelessWidget {
     controller.rowDatas.value = List<PlutoRow>.generate(controller.chulgoList.length, (index) =>
         PlutoRow(cells:
         Map.from((controller.chulgoList[index]).map((key, value) =>
-            MapEntry(key, PlutoCell(value: value )),
+            MapEntry(key, PlutoCell(value: value ?? '' )),
         )))
     );
   }

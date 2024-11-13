@@ -2,6 +2,7 @@
 
 import 'dart:ffi';
 
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
@@ -26,7 +27,8 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
 
   late  PlutoGridStateManager gridStateMgr;
   late  PlutoGridStateManager gridStateMgr2;
-
+  late  PlutoGridStateManager gridStateMgr3;
+  late  PlutoGridStateManager gridStateMgr4;
 
   /// 리스트
  // RxList<dynamic> pickingFirstList = [].obs; // 피킹 첫번째 조회된 리스트
@@ -36,7 +38,12 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
   RxList<dynamic> registPickingList = [].obs; //
   RxList<dynamic> registPickingList2 = [].obs; //
   RxList<dynamic> chulList = [].obs; //
+  RxList<dynamic> chulOneList = [].obs; //
   RxList<dynamic> chulSecondList = [].obs; //
+  RxList<dynamic> uniqueChulSecondList = [].obs; //중복 제거된 리스트 두번째 화면에서 쓰임
+  RxList<dynamic> itemChulSecondList = [].obs; //중복 제거된 리스트에서 선택된 리스트의 자재들 리스트
+  RxList<RxList<dynamic>> itemTotalList = [[].obs].obs;
+
   RxList<dynamic> chulThirdList = [].obs; //
 
   RxList<dynamic> scanOxList = [].obs; //
@@ -49,19 +56,22 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
 
   RxInt rowspan = 0.obs;
 
+  RxBool tete = false.obs;
+
 
 
   /// 그리드
   //List<PlutoRow> rowDatas = [];
   var rowDatas = <PlutoRow>[].obs;
   var rowDatas2 = <PlutoRow>[].obs;
-
+  var rowDatas3 = <PlutoRow>[].obs;
+  var rowDatas4 = <PlutoRow>[].obs;
   List<PlutoRow> insertRow = [];
 
 
 
-  RxMap<String, String> selectedChulgoContainer = {'CODE':'', 'NAME': ''}.obs;
-  RxList<dynamic> chulgoList = [{'CODE':'', 'NAME': ''}].obs;
+  RxMap<String, String> selectedChulgoContainer = {'CODE':'', 'NAME': '전체'}.obs;
+  RxList<dynamic> chulgoList = [{'CODE':'', 'NAME': '전체'}].obs;
   RxList<dynamic> chulgoTotalList = [].obs;
 
 
@@ -130,7 +140,9 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
   RxInt selectedRow = 0.obs;
   RxString scanText = ''.obs;
   RxBool isSuccessThird = false.obs;
-
+  RxInt currentRowIndex = 0.obs;
+  RxBool isPlutoRow2 = false.obs;
+  RxBool isQr = false.obs;
 
   /// 출고 등록/취소
   Future<void> registChulgoBtn(int flag) async {
@@ -336,10 +348,22 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
         if(retVal.body![0]['resultMessage'] == '') {
           chulSecondList.addAll(retVal.body![1]);
           for(var i = 0; i < chulSecondList.length; i++) {
+            chulSecondList[i].addAll({'scanNm': chulSecondList[i]['scan'] == false ? 'X' : 'O'});
             chulSecondList[i]['scan'] == false ? scanOxList.add('X') : scanOxList.add('O');
 
             chulSecondList[i].addAll({'chulgoType': ''});
           }
+
+          uniqueChulSecondList.value = chulSecondList
+              .fold<Map<String, dynamic>>({}, (map, item) {
+            map[item['no'].toString()] = item; // no 키로 사용하여 중복 제거
+            return map;
+          }).values.toList();
+          for(var i = 0; i < uniqueChulSecondList.length; i++) {
+            uniqueChulSecondList[i].addAll({'noV': '${i+1}'});
+          }
+
+          Get.log('uniqueChulSecondList: ${uniqueChulSecondList}');
           Get.log('조회 성공');
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
@@ -355,7 +379,9 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
       Get.log(e.toString());
     } finally {
       bLoading.value = false;
-      plutoRow();
+     await plutoRow2();
+      await  plutoRow3();
+      await  plutoRow4();
     }
   }
 
@@ -408,23 +434,213 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     } finally {
       bLoading.value = false;
       plutoRow();
+    //  plutoRow2();
     }
   }
 
+  /// 출고등록 조회2
+  Future<void> checkQR2() async {
+    Get.log('조회');
+
+    bLoading.value = true;
+    chulOneList.clear();
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A3020_R01',
+      'params': [
+        { "paramName": "p_work_type", "paramValue": "Q", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_PLANT", "paramValue": "1302", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_DEL_ORD_DT_FR", "paramValue": dayStartValue.value.replaceAll('-', ''), "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_DEL_ORD_DT_TO", "paramValue": dayEndValue.value.replaceAll('-', ''), "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_SO_NO", "paramValue": textOrderController.text, "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_PJT_NM", "paramValue": textProjectController.text, "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_DEL_ORD_TYPE", "paramValue": selectedChulgoContainer['CODE'], "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_DEL_ORD_NO", "paramValue": chulList[currentFirstIndex.value]['delOrdNo'], "paramJdbcType": "VARCHAR", "paramMode": "IN"}
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqChulgo(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          chulOneList.addAll(retVal.body![1]);
+          for(var i = 0; i < chulOneList.length; i++) {
+            chulOneList[i].addAll({'chulgoType': ''});
+          }
+
+          Get.log('조회 성공');
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+          statusText.value = retVal.body![0]['resultMessage'];
+        }
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('checkQR2 catch !!!!');
+      Get.log(e.toString());
+    } finally {
+      bLoading.value = false;
+    }
+  }
+
+  Future<void> plutoRow4() async {
+    rowDatas4.value = List<PlutoRow>.generate(
+      chulOneList.length,
+          (index) => PlutoRow(
+        cells: Map.from(
+          (chulOneList[index]).map((key, value) => MapEntry(
+            key,
+            PlutoCell(
+              value: value == null
+                  ? ''
+                  : key == 'delOrdType'
+                  ? chulgoList.firstWhere(
+                      (item) => item['CODE'] == value,
+                  orElse: () => {'NAME': ''}
+              )['NAME'] ?? ''
+                  : value,
+            ),
+          )),
+        ),
+      ),
+    );
+
+  }
+
+  Future<void> plutoRow3() async {
+    itemTotalList.clear();
+    Map<dynamic, List<Map<String, dynamic>>> groupedMap = {};
+    // chulSecondList를 순회하면서 no 값을 키로 그룹화
+    for (var item in chulSecondList) {
+      var key = item['no'];
+      if (groupedMap.containsKey(key)) {
+        groupedMap[key]!.add(item);
+      } else {
+        groupedMap[key] = [item];
+      }
+    }
+
+    // 그룹화된 맵의 각 값을 RxList로 변환하여 itemTotalList에 추가
+    groupedMap.values.forEach((group) {
+      itemTotalList.add(group.obs);  // 각 그룹을 RxList로 변환 후 itemTotalList에 추가
+    });
+    Get.log('itemTotalList::: ${itemTotalList}');
+    rowDatas3.value = List<PlutoRow>.generate(
+      itemTotalList[currentRowIndex.value].length,
+          (index) => PlutoRow(
+        cells: Map.from(
+          (itemTotalList[currentRowIndex.value][index]).map((key, value) => MapEntry(
+            key,
+            PlutoCell(
+              value: value == null
+                  ? ''
+                  : value,
+            ),
+          )),
+        ),
+      ),
+    );
+
+
+  /*  gridStateMgr3.removeAllRows();
+    gridStateMgr3.appendRows(rowDatas3.value);*/
+  }
+
+  Future<void> plutoRow2() async {
+
+    rowDatas2.value = List<PlutoRow>.generate(
+      uniqueChulSecondList.length,
+          (index) => PlutoRow(
+        cells: Map.from(
+          (uniqueChulSecondList[index]).map((key, value) => MapEntry(
+            key,
+            PlutoCell(
+              value: value == null
+                  ? ''
+
+                  : value,
+            ),
+          )),
+        ),
+      ),
+    );
+  }
 
 
   Future<void> plutoRow() async {
-    rowDatas.value = List<PlutoRow>.generate(chulList.length, (index) =>
+   var name ='';
+  /*  rowDatas.value = List<PlutoRow>.generate(chulList.length, (index) =>
         PlutoRow(cells:
         Map.from((chulList[index]).map((key, value) =>
-            MapEntry(key, PlutoCell(value: value == null ? '' : /*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : */value )),
+            MapEntry(key, PlutoCell(value: value == null ? ''
+                : key == 'delOrdType' ? {
+              name = chulgoList
+                .firstWhere((item) => item['CODE'] == value, orElse: () => {'NAME': ''})['NAME'],
+              value = name
+            } :
+
+
+            *//*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : *//*value )),
         )))
-    );
+    );*/
+
+
+   rowDatas.value = List<PlutoRow>.generate(
+     chulList.length,
+         (index) => PlutoRow(
+       cells: Map.from(
+         (chulList[index]).map((key, value) => MapEntry(
+           key,
+           PlutoCell(
+             value: value == null
+                 ? ''
+                 : key == 'delOrdType'
+                 ? chulgoList.firstWhere(
+                     (item) => item['CODE'] == value,
+                 orElse: () => {'NAME': ''}
+             )['NAME'] ?? ''
+                 : value,
+           ),
+         )),
+       ),
+     ),
+   );
+
+   /*rowDatas2.value = List<PlutoRow>.generate(
+     uniqueChulSecondList.length,
+         (index) => PlutoRow(
+       cells: Map.from(
+         (uniqueChulSecondList[index]).map((key, value) => MapEntry(
+           key,
+           PlutoCell(
+             value: value == null
+                 ? ''
+
+                 : value,
+           ),
+         )),
+       ),
+     ),
+   );*/
+
+
     gridStateMgr.removeAllRows();
     gridStateMgr.appendRows(rowDatas.value);
+
     gridStateMgr.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
   }
 
+  final focusNode2 = FocusNode();
+  void requestFocus() {
+    Future.microtask(() => focusNode2.requestFocus());
+    if(focusCnt.value++ > 1) focusCnt.value = 0;
+    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+  }
 
 
 

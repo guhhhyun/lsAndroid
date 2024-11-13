@@ -84,6 +84,8 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
   RxString isConfirmText = ''.obs; //확정 불가능상태 이유
   RxBool isOther = false.obs; //행추가 시 똑같은 itemcd는 넣지않기
   RxBool isFocus = false.obs; // 포커스 잡냐 마냐
+  RxBool isDonggi = false.obs;
+  RxBool noSync = false.obs;
 
 
   final FocusNode focusNode = FocusNode();

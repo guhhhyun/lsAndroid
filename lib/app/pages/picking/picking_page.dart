@@ -92,7 +92,7 @@ class PickingPage extends StatelessWidget {
       child: Column(children: [
         Container(
           width: MediaQuery.of(context).size.width-32,
-          height: height,
+          height: MediaQuery.of(context).size.height - 150,
           child: PlutoGrid(
             mode: PlutoGridMode.selectWithOneTap, // 탭 한번으로 반응하게?
             columns: gridCols(context),
@@ -129,7 +129,8 @@ class PickingPage extends StatelessWidget {
                   //gridBorderColor: Colors.transparent,
                   //   activatedColor: Colors.transparent,
                   //  cellColorInReadOnlyState: Colors.white,
-                  columnTextStyle: AppTheme.a14500.copyWith(color: AppTheme.black)
+                  columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black),
+                  cellTextStyle: AppTheme.a16700.copyWith(color: AppTheme.black)
               ),
             ),
           ),
@@ -214,7 +215,7 @@ class PickingPage extends StatelessWidget {
         enableDropToResize: false,
         enableColumnDrag: false,
         titleTextAlign: PlutoColumnTextAlign.center,
-        textAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.left,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
@@ -244,7 +245,7 @@ class PickingPage extends StatelessWidget {
         enableDropToResize: false,
         enableColumnDrag: false,
         titleTextAlign: PlutoColumnTextAlign.center,
-        textAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.left,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
@@ -277,7 +278,7 @@ class PickingPage extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                Text('일자', style: AppTheme.a12700.copyWith(color: AppTheme.black),),
+                Text('일자', style: AppTheme.a16700.copyWith(color: AppTheme.black),),
                 SizedBox(width: 8,),
                 Container(
                   child: InkWell(
@@ -397,7 +398,7 @@ class PickingPage extends StatelessWidget {
             Container(
               margin: EdgeInsets.only(right: 12),
               width: 120,
-              height: 35,
+              height: 40,
               child: TextButton(
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all<
@@ -425,7 +426,7 @@ class PickingPage extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text('조회', //입고취소 조회
-                        style: AppTheme.a12700.copyWith(
+                        style: AppTheme.a16700.copyWith(
                           color: AppTheme.white,
                         )),
                   ),
@@ -529,7 +530,7 @@ class PickingPage extends StatelessWidget {
     return Row(
       children: [
         Text(title,
-            style: AppTheme.a12700
+            style: AppTheme.a16700
                 .copyWith(color: AppTheme.black)),
         SizedBox(width: 8,),
         Container(

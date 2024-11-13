@@ -1,3 +1,4 @@
+/*
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -495,7 +496,8 @@ class _ChulgoSecondPageState extends State<ChulgoSecondPage> {
                   },
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    /*suffixIcon: InkWell(
+                    */
+/*suffixIcon: InkWell(
                         onTap: () {
                           Get.log('조회 돋보기 클릭!');
 
@@ -508,7 +510,8 @@ class _ChulgoSecondPageState extends State<ChulgoSecondPage> {
                         },
                         child: Image.asset('assets/app/search.png', color: AppTheme.a6c6c6c, width: 25, height: 25,)
                     ),
-*/
+*//*
+
                     contentPadding: const EdgeInsets.all(0),
                     fillColor: Colors.white,
                     filled: true,
@@ -688,3 +691,4 @@ class _ChulgoSecondPageState extends State<ChulgoSecondPage> {
 }
 
 
+*/

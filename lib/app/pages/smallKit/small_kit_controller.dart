@@ -23,7 +23,8 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
   GlobalService gs = Get.find();
 
 
-  RxSet<int> changedRows = <int>{}.obs;
+  RxSet<String> changedRows = <String>{}.obs; // 동기화 시에
+  RxSet<String> changedRows2 = <String>{}.obs;
   /// 리스트
   var rows = <PlutoRow>[].obs;
   var rows2 = <PlutoRow>[].obs;
@@ -53,6 +54,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
   RxString wrkCfmDt = ''.obs;
   RxInt no = 990.obs;
   RxList<dynamic> noList = [].obs;
+  RxList<dynamic> noList2 = [].obs;
   RxBool duplicationQr = false.obs; // 이미 스캔한 자재를 또 스캔했을 때
   RxBool duplicationQr2 = false.obs; // 이미 스캔한 자재를 또 스캔했을 때
   RxDouble gridHeight = 0.0.obs; // 그리드 높이 동적으로
@@ -66,10 +68,12 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
   RxInt dupSaveListIndex = 0.obs; // 우측리스트에 이미 있는 자재qr 자재 입력 시 우측리스트의 해당 자재 index
   RxBool isColor = false.obs;
   RxBool isSaveColor = false.obs;
+  RxBool isDonggi = false.obs; // 동기화 여부
   RxBool isSave = false.obs; //저장성공 여부
   RxString isSaveText = ''.obs; //저장 불가능상태 이유
   RxBool isConfirm = false.obs; //확정 가능상태 여부
   RxString isConfirmText = ''.obs; //확정 불가능상태 이유
+  RxBool noSync = false.obs; // 이전에 동기화된 내역 확인
 
 
 
@@ -191,8 +195,8 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
     bLoading.value = true;
     if(smallBoxList.length == smallBoxSaveList.length) {
       for(var i = 0; i < smallBoxList.length; i++) {
-        if(smallBoxList[i]['cbxQty'] == smallBoxSaveList[i]['cbxQty']){
-          if(smallBoxSaveList[i]['extrVal'] == 'D'){
+        if(smallBoxList[i]['cbxQty'] == smallBoxSaveList[i]['qty']){
+          if(smallBoxSaveList[i]['prtNo'] == 'O'){
             if(smallBoxSaveList[i]['ncbxRmk'] != null && smallBoxSaveList[i]['ncbxRmk'] != '') {
               isConfirm.value = true;
             }else {
@@ -232,7 +236,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_CBX_SU_NO',
-            'paramValue': smallBoxList[0]['tagNo'],
+            'paramValue': smallBoxList[0]['cbxSuNo'],
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -510,7 +514,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
 
             {
               'paramName': 'p_INIT',
-              'paramValue': i == startIndex.value ? 0 : 1,
+              'paramValue': startIndex.value == 0 ? 1 : 0,
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },

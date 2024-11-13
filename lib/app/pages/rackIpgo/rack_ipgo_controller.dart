@@ -446,10 +446,10 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           for(var i = 0; i < rackIpgoList.length; i++){
             rackIpgoList[i].addAll({'no': '${i+1}'});
           }
-          zoneText.value = rackIpgoList[currentFirstIndex.value]['LAST_ZONE_NM'];
-          locText.value = rackIpgoList[currentFirstIndex.value]['LAST_LOC'];
-          zoneCd.value = rackIpgoList[currentFirstIndex.value]['ZONE_CD'];
-          locCd.value = rackIpgoList[currentFirstIndex.value]['LOC_CD'];
+          zoneText.value = rackIpgoList[currentFirstIndex.value]['LAST_ZONE_NM']?? '';
+          locText.value = rackIpgoList[currentFirstIndex.value]['LAST_LOC']?? '';
+          zoneCd.value = rackIpgoList[currentFirstIndex.value]['ZONE_CD']?? '';
+          locCd.value = rackIpgoList[currentFirstIndex.value]['LOC_CD'] ?? '';
           Get.log(rackIpgoList.toString());
           Get.log('조회 성공');
         }else{

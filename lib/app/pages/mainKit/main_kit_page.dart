@@ -59,7 +59,7 @@ class MainKitPage extends StatelessWidget {
         children: [
           Container(
             color: Colors.white,
-            height: 400, //controller.gridHeight.value,
+            height: MediaQuery.of(context).size.height - 300, //controller.gridHeight.value,
             width: MediaQuery.of(context).size.width/2 - 20,
             child: PlutoGrid(
               columns: gridCols(context),
@@ -75,6 +75,9 @@ class MainKitPage extends StatelessWidget {
                   return Colors.white; // 이미 변경된 색상 유지
                 }
                 if (controller.changedRows.contains(c.row.cells['itemCd']?.value.toString())) {
+                  return Colors.white; // 이미 변경된 색상 유지
+                }
+                if (controller.changedRows.contains(controller.uniqueSmallBoxList[0]['itemCd'])) {
                   return Colors.white; // 이미 변경된 색상 유지
                 }
                 // 특정 조건에 해당하는 row의 색을 바꾸기
@@ -95,6 +98,9 @@ class MainKitPage extends StatelessWidget {
                     for(var i = 0; i < controller.noList3.length; i++) {
                       // controller.changedRows.value.add(controller.noList[i]);
                       controller.changedRows.value.add(controller.noList3[i]);
+                      if (controller.changedRows.contains(controller.uniqueSmallBoxList[0]['itemCd'])) {
+                        return Colors.white; // 이미 변경된 색상 유지
+                      }
                     }
                   //  controller.changedRows.value.add(c.rowIdx); // 색상이 변경된 행을 RxSet에 추가
                   //  return Colors.white; // 조건에 맞는 경우에만 색 변경
@@ -128,7 +134,7 @@ class MainKitPage extends StatelessWidget {
           SizedBox(width: 24,),
           Container(
             color: Colors.white,
-            height: 400, //controller.gridHeight.value,
+            height: MediaQuery.of(context).size.height - 300, //controller.gridHeight.value,
             width: MediaQuery.of(context).size.width/2 - 20,
             child: PlutoGrid(
               //  mode: PlutoGridMode.select, // 탭 한번으로 반응하게?
@@ -172,14 +178,14 @@ class MainKitPage extends StatelessWidget {
 
     var orientation = MediaQuery.of(context).orientation;
 
-    double containerWidth = orientation == Orientation.portrait ? 300.0 : 680.0;
+    double containerWidth = orientation == Orientation.portrait ? 350.0 : 730.0;
     return SliverToBoxAdapter(
       child: Column(
         children: [
           Container(
             padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: AppTheme.black), bottom: BorderSide(color: AppTheme.black))
+                border: Border(top: BorderSide(color: AppTheme.black))
             ),
             width: MediaQuery.of(context).size.width,
             child: Column(
@@ -198,13 +204,13 @@ class MainKitPage extends StatelessWidget {
                             ),
                             SizedBox(width: 12,),
                             Container(
-                              width: 200,
+                              width: 130,
                               child: Container(
                                 padding: const EdgeInsets.only(left: 16, right: 6),
                                 decoration: BoxDecoration(
                                     border: Border.all(color: AppTheme.ae2e2e2),
                                     borderRadius: BorderRadius.circular(10),
-                                    color: AppTheme.white
+                                    color:  Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                                 ),
                                 child: TextFormField(
                                   focusNode: controller.focusNode,
@@ -303,6 +309,7 @@ class MainKitPage extends StatelessWidget {
                                           /// 저장된 값이 있다면 / detail일 결우도 추가해야할 듯 소박스랑 별도로
                                           if(controller.smallBoxList[i]['wrkQty'] != null) {
                                             if(controller.smallBoxList[i]['wrkQty'] > 0) {
+
                                               /// 목박스나 별도박스의 경우 (저장된 값이 있을 때)
                                               if(controller.smallBoxList[i]['mboxExcluded'] != null) {
                                                   controller.smallBoxList[i]['ncbxRmk'] = controller.smallBoxList[i]['mboxExcluded'];
@@ -410,7 +417,10 @@ class MainKitPage extends StatelessWidget {
                                                  }
                                                 }
                                               }
-
+                                              if(controller.smallBoxList[i]['syncYn'] == 'Y'){
+                                                controller.isDropdownEnabled.value = true;
+                                                controller.stateManager2.columns[4]!.enableEditingMode = controller.isDropdownEnabled.value; //enableEditingMode
+                                              }
                                             }
                                           }else {
                                             /// 목박스나 별도박스의 경우 (저장된 값이 없을 때)
@@ -437,7 +447,7 @@ class MainKitPage extends StatelessWidget {
                                           }
 
                                         }
-
+                                        await controller.test();
                                       }
 
                                       if(controller.addRowSaveList.isNotEmpty) {
@@ -480,8 +490,6 @@ class MainKitPage extends StatelessWidget {
                                       await controller.checkItemQr('');
                                       await controller.test();
                                       await aa2();
-
-
                                     }
 
                                     await controller.test();
@@ -494,7 +502,7 @@ class MainKitPage extends StatelessWidget {
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.all(0),
-                                    fillColor: AppTheme.white,
+                                    fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                                     filled: true,
                                     // hintText: 'BC 번호를 입력해주세요',
                                     hintStyle: AppTheme.a16400.copyWith(color: AppTheme.aBCBCBC),
@@ -1110,17 +1118,21 @@ class MainKitPage extends StatelessWidget {
 
              if(controller.smallBoxList[0]['wrkCfmYn'] != 'Y') {
                controller.smallBoxSaveList.removeWhere((item) {
-                 bool shouldRemove = item['ncbxRmk'] == '' && item['prtNo'] == 'O';
+                 bool shouldRemove = false;
                  if (item['ncbxRmk'] == '' && item['prtNo'] == 'O') {
-                   int index = controller.uniqueSmallBoxList.indexWhere((element) => element['no'] == item['no']);
-                   controller.changedRows.remove(index);
-                   controller.test();
+                   if(item['wrkQtySync'].toString() == '0') {
+                     int index = controller.uniqueSmallBoxList.indexWhere((element) => element['no'] == item['no']);
+                     controller.changedRows.remove(index);
+                     controller.test();
+                     shouldRemove = true;
+                   }else {
+                     int index = controller.uniqueSmallBoxList.indexWhere((element) => element['no'] == item['no']);
+                     controller.smallBoxSaveList[index]['qty'] = controller.smallBoxSaveList[index]['wrkQtySync'];
+                     Get.log('qty::: ${controller.smallBoxSaveList[index]['qty']}');
+                     shouldRemove = false;
+                   }
                  }else if(item['ncbxRmk'] != '' && item['prtNo'] == 'O') {
-                   Get.dialog(CommonDialogWidget(contentText: '동기화 된 자재 중 사유가 선택된 항목이 있습니다.', pageFlag: 0));
-                 } else if(item['prtNo'] == 'O') {
-                   int index = controller.uniqueSmallBoxList.indexWhere((element) => element['no'] == item['no']);
-                   controller.smallBoxSaveList[index]['qty'] = controller.smallBoxSaveList[index]['wrkQtySync'];
-                   Get.log('qty::: ${controller.smallBoxSaveList[index]['qty']}');
+
                  }
                  return shouldRemove;
                });
@@ -1451,7 +1463,7 @@ class MainKitPage extends StatelessWidget {
           enableDropToResize: false,
           enableColumnDrag: false,
           titleTextAlign: PlutoColumnTextAlign.center,
-          textAlign: PlutoColumnTextAlign.center,
+          textAlign: PlutoColumnTextAlign.left,
           width: 320,
           title: '자재명',
           field: 'itemNm',
@@ -1462,12 +1474,10 @@ class MainKitPage extends StatelessWidget {
               padding: EdgeInsets.all(0),
               width: 60,
               // color: textColor,
-              child: Center(
-                child: Text(
+              child: Text(
                     rendererContext.cell.value.toString(),
                     style: AppTheme.a14500.copyWith(color: Colors.black)
                 ),
-              ),
             );
           }
       ),
@@ -1657,7 +1667,7 @@ class MainKitPage extends StatelessWidget {
           enableColumnDrag: false,
           width: 320,
           titleTextAlign: PlutoColumnTextAlign.center,
-          textAlign: PlutoColumnTextAlign.center,
+          textAlign: PlutoColumnTextAlign.left,
           title: '자재명',
           field: 'itemNm',
           type: PlutoColumnType.text(),
@@ -1667,12 +1677,10 @@ class MainKitPage extends StatelessWidget {
               padding: EdgeInsets.all(0),
               width: 60,
               // color: textColor,
-              child: Center(
-                child: Text(
+              child: Text(
                     rendererContext.cell.value.toString(),
                     style: AppTheme.a14500.copyWith(color: Colors.black)
-                ),
-              ),
+              )
             );
           }
       ),

@@ -18,7 +18,8 @@ class MainIconWidget extends StatelessWidget {
         required Function() onPressed,
         required BuildContext context}) {
     return Container(
-      width: MediaQuery.of(context).size.width / 3 - 30,
+      width: MediaQuery.of(context).size.width / 2 - 100,
+     // width: MediaQuery.of(context).size.width / 3 - 30,
       margin: EdgeInsets.only(right: 12, bottom: 12),
       child: Column(
         children: [
@@ -32,17 +33,17 @@ class MainIconWidget extends StatelessWidget {
                   padding: EdgeInsets.only(top: 16, bottom: 16, left: 14, right: 14),
                   child: Column(
                     children: [
-                     /* Row(
+                      /*Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Ink.image(
                             image: AssetImage(imgUrl),
-                            width: 24,
-                            height: 24,
+                            width: 45,
+                            height: 45,
                           ),
                         ],
-                      ),*/
-                      SizedBox(height: 4,),
+                      ),
+                      SizedBox(height: 4,),*/
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -51,13 +52,13 @@ class MainIconWidget extends StatelessWidget {
                             children: [
                               Text(
                                 title,
-                                style: AppTheme.newBody.copyWith(
+                                style: AppTheme.a24700.copyWith(
                                   color: AppTheme.a787878,
                                 ),
                               ),
                               Text(
                                 subTitle,
-                                style: AppTheme.newBody.copyWith(
+                                style: AppTheme.a24700.copyWith(
                                   color: AppTheme.a787878,
                                 ),
                               ),
@@ -90,7 +91,7 @@ class MainIconWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text('메뉴', style: AppTheme.newTitle.copyWith(color: AppTheme.black))
+                Text('메뉴', style: AppTheme.a27700.copyWith(color: AppTheme.black))
               ],
             ),
 

@@ -88,7 +88,7 @@ class RackIpgoPage extends StatelessWidget {
 
   Widget _rackIpgoList(BuildContext context) {
     // final double height = 49*(double.parse((controller.ipgoList.length + 1).toString()));
-    final double height = 100;
+    final double height = 300;
     return Container(
       child: Column(children: [
         Container(
@@ -129,7 +129,7 @@ class RackIpgoPage extends StatelessWidget {
                   //gridBorderColor: Colors.transparent,
                   //   activatedColor: Colors.transparent,
                   //  cellColorInReadOnlyState: Colors.white,
-                  columnTextStyle: AppTheme.a14500.copyWith(color: AppTheme.black)
+                  columnTextStyle: AppTheme.a18400.copyWith(color: AppTheme.black)
               ),
             ),
           ),
@@ -173,7 +173,7 @@ class RackIpgoPage extends StatelessWidget {
         title: '자재명',
         field: 'ITEM_NM',
         type: PlutoColumnType.text(),
-        width: 200,
+        width: MediaQuery.of(context).size.width - 896,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -181,7 +181,7 @@ class RackIpgoPage extends StatelessWidget {
         enableDropToResize: false,
         enableColumnDrag: false,
         titleTextAlign: PlutoColumnTextAlign.center,
-        textAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.left,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
@@ -226,14 +226,14 @@ class RackIpgoPage extends StatelessWidget {
         enableDropToResize: false,
         enableColumnDrag: false,
         titleTextAlign: PlutoColumnTextAlign.center,
-        textAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.left,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
         title: '현재 위치',
         field: 'LOC_CD',
         type: PlutoColumnType.text(),
-        width: 90,
+        width: 120,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -263,7 +263,7 @@ class RackIpgoPage extends StatelessWidget {
         title: '입고일',
         field: 'LOC_DT',
         type: PlutoColumnType.text(),
-        width: ipgoDateWidth,
+        width: 120,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -305,7 +305,7 @@ class RackIpgoPage extends StatelessWidget {
             Container(
              // margin: EdgeInsets.only(right: 12),
               width: 120,
-              height: 35,
+              height: 40,
               child: TextButton(
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all<
@@ -356,13 +356,13 @@ class RackIpgoPage extends StatelessWidget {
                       border: Border.all(color: AppTheme.ae2e2e2)
                   ),
                   width: 120,
-                  height: 35,
+                  height: 40,
                   padding: const EdgeInsets.only(
 
                   ),
                   child: Center(
                     child: Text('랙 입고',
-                        style: AppTheme.a12700.copyWith(
+                        style: AppTheme.a16700.copyWith(
                           color: AppTheme.white,
                         )),
                   ),
@@ -373,7 +373,7 @@ class RackIpgoPage extends StatelessWidget {
             Container(
              // margin: EdgeInsets.only(right: 12),
               width: 120,
-              height: 35,
+              height: 40,
               child: TextButton(
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all<
@@ -414,13 +414,13 @@ class RackIpgoPage extends StatelessWidget {
                       border: Border.all(color: AppTheme.ae2e2e2)
                   ),
                   width: 120,
-                  height: 35,
+                  height: 40,
                   padding: const EdgeInsets.only(
 
                   ),
                   child: Center(
                     child: Text('사용재고 보류',
-                        style: AppTheme.a12700.copyWith(
+                        style: AppTheme.a16700.copyWith(
                           color: AppTheme.white,
                         )),
                   ),
@@ -430,8 +430,8 @@ class RackIpgoPage extends StatelessWidget {
             SizedBox(width: 4,),
             Container(
               margin: EdgeInsets.only(right: 12),
-              width: 120,
-              height: 35,
+              width: 140,
+              height: 40,
               child: TextButton(
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all<
@@ -469,14 +469,14 @@ class RackIpgoPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: AppTheme.ae2e2e2)
                   ),
-                  width: 120,
-                  height: 35,
+                  width: 140,
+                  height: 40,
                   padding: const EdgeInsets.only(
 
                   ),
                   child: Center(
                     child: Text('사용재고 보류 취소',
-                        style: AppTheme.a12700.copyWith(
+                        style: AppTheme.a16700.copyWith(
                           color: AppTheme.white,
                         )),
                   ),
@@ -493,7 +493,7 @@ class RackIpgoPage extends StatelessWidget {
     return Row(
       children: [
         Text('상태',
-            style: AppTheme.a12700
+            style: AppTheme.a16700
                 .copyWith(color: AppTheme.black)),
         SizedBox(width: 8,),
         Container(
@@ -529,20 +529,21 @@ class RackIpgoPage extends StatelessWidget {
     return Row(
       children: [
         Text('QR 코드',
-            style: AppTheme.a12700
+            style: AppTheme.a16700
                 .copyWith(color: AppTheme.black)),
         SizedBox(width: 8,),
         Container(
           padding: EdgeInsets.only(top: 4),
           width: 250,
-          height: 35,
+          height: 40,
           // padding: const EdgeInsets.only(left: 20, right: 12, top: 4),
           child: Center(
               child: Container(
                 padding: const EdgeInsets.only(left: 8, right: 6),
                 decoration: BoxDecoration(
                     border: Border.all(color: AppTheme.ae2e2e2),
-                    borderRadius: BorderRadius.circular(10)
+                    borderRadius: BorderRadius.circular(10),
+                    color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                 ),
                 child: TextFormField(
                   expands :true,
@@ -614,7 +615,7 @@ class RackIpgoPage extends StatelessWidget {
                     ),
 */
                     contentPadding: const EdgeInsets.all(0),
-                    fillColor: Colors.white,
+                    fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                     filled: true,
                     hintText: '',
                     hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
@@ -699,7 +700,7 @@ class RackIpgoPage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('입고 권고 위치', style: AppTheme.a15700.copyWith(color: AppTheme.black),)
+                      Text('입고 권고 위치', style: AppTheme.a16700.copyWith(color: AppTheme.black),)
                     ],
                   ),
                 ),
@@ -717,7 +718,7 @@ class RackIpgoPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text('입고 위치', style: AppTheme.a15700.copyWith(color: AppTheme.black),)
+                    Text('입고 위치', style: AppTheme.a16700.copyWith(color: AppTheme.black),)
                   ],
                 ),
               ),
@@ -825,7 +826,7 @@ class RackIpgoPage extends StatelessWidget {
         Container(
           width: 30,
           child: Text(title,
-            style: AppTheme.a12700
+            style: AppTheme.a16700
                 .copyWith(color: AppTheme.black), textAlign: TextAlign.end,),
         ),
         SizedBox(width: 8,),
@@ -839,7 +840,7 @@ class RackIpgoPage extends StatelessWidget {
               border: Border.all(color: AppTheme.ae2e2e2)),
           child: Center(
             child: Text(plag == 0 ? controller.zoneText.value : controller.locText.value,
-              style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+              style:  AppTheme.a16400.copyWith(color: AppTheme.a6c6c6c),
 
             ),
           ),
@@ -909,7 +910,7 @@ class RackIpgoPage extends StatelessWidget {
         Container(
           width: 30,
           child: Text(title,
-            style: AppTheme.a12700
+            style: AppTheme.a16700
                 .copyWith(color: AppTheme.black), textAlign: TextAlign.end,),
         ),
         SizedBox(width: 8,),
@@ -919,7 +920,10 @@ class RackIpgoPage extends StatelessWidget {
           width: 300,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppTheme.ae2e2e2)),
+              border: Border.all(color: AppTheme.ae2e2e2),
+            color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
+          ),
+
           child: Center(
               child: TextFormField(
                 expands :true,
@@ -942,7 +946,7 @@ class RackIpgoPage extends StatelessWidget {
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(0),
-                  fillColor: Colors.white,
+                  fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                   filled: true,
                   hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
                   border: InputBorder.none,
