@@ -16,6 +16,8 @@ class GlobalService extends GetxService {
   var loginId = ''.obs;
   var loginPassword = ''.obs;
   var loginNm = ''.obs;
+  RxList<dynamic> loginList = [].obs;
+
 
   // var userInfo = UserModel();
 

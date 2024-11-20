@@ -13,6 +13,8 @@ import 'package:lsandroid/app/model/chulModel/chul_third_model.dart';
 import 'package:lsandroid/app/model/chulgoModel/other_kit_model.dart';
 import 'package:lsandroid/app/model/commonModel/common_model.dart';
 import 'package:lsandroid/app/model/commonModel/zone_model.dart';
+import 'package:lsandroid/app/model/etcIpgoModel/etc_ipgo_model.dart';
+import 'package:lsandroid/app/model/etcIpgoModel/etc_ipgo_second_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_cancel_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_cheburn_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_model.dart';
@@ -26,12 +28,149 @@ import 'package:lsandroid/app/model/rackIpgoModel/rack_ipgo_model.dart';
 import 'package:lsandroid/app/model/smallKitModel/small_kit_item_model.dart';
 import 'package:lsandroid/app/model/smallKitModel/small_kit_model.dart';
 import 'package:lsandroid/app/model/smallKitModel/small_kit_save_model.dart';
+import 'package:lsandroid/app/pages/Ipgo/ipgo_controller.dart';
+import 'package:lsandroid/app/pages/chulgo/chulgo_controller.dart';
+import 'package:lsandroid/app/pages/mainKit/main_kit_controller.dart';
+import 'package:lsandroid/app/pages/otherKit/other_kit_controller.dart';
+import 'package:lsandroid/app/pages/picking/picking_controller.dart';
+import 'package:lsandroid/app/pages/rackIpgo/rack_ipgo_controller.dart';
+import 'package:lsandroid/app/pages/smallKit/small_kit_controller.dart';
 import 'http_util.dart';
 import 'network_manager.dart';
 import 'package:http/http.dart' as http;
 
 class HomeApi extends NetworkManager{
   static HomeApi get to => Get.find();
+
+
+  /// 기타 입고취소/저장 처리
+  Future<String> registEtcCancelIpgo(var params) async {
+    //  var ipgoModel = IpgoModel();
+    String a = '0000';
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/ipgo_regist.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        //   ipgoModel = IpgoModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          //  ipgoModel = IpgoModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('registEtcCancelIpgo - error');
+      // commonError(e);
+      a = '1111';
+    } catch (err) {
+      Get.log('registEtcCancelIpgo = ${err.toString()}');
+      a = '1111';
+    }
+    return a;
+  }
+
+
+  /// 기타입고 QR 조회
+  Future<EtcIpgoSecondModel> reqEtcIpgoQr(var params) async {
+    var etcIpgoSecondModel = EtcIpgoSecondModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        etcIpgoSecondModel = EtcIpgoSecondModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          etcIpgoSecondModel = EtcIpgoSecondModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqEtcIpgoQr - error');
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqEtcIpgoQr = ${err.toString()}');
+    }
+    return etcIpgoSecondModel;
+  }
+
+  /// 기타입고 조회
+  Future<EtcIpgoModel> reqEtcIpgo(var params) async {
+    var etcIpgoModel = EtcIpgoModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        etcIpgoModel = EtcIpgoModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          etcIpgoModel = EtcIpgoModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqEtcIpgo - error');
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqEtcIpgo = ${err.toString()}');
+    }
+    return etcIpgoModel;
+  }
 
   /// 메인키트 디테일 저장
   Future<String> registMainKitDetailSave(var params) async {
@@ -68,6 +207,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('registMainKitDetailSave = ${e.toString()}');
       a = '1111';
+      MainKitController controller = Get.find();
+      controller.isDbConnected.value = false;
       // commonError(e);
     } catch (err) {
       Get.log('registMainKitDetailSave = ${err.toString()}');
@@ -111,6 +252,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('registMainKitSave - error');
       a = '1111';
+      MainKitController controller = Get.find();
+      controller.isDbConnected.value = false;
       // commonError(e);
     } catch (err) {
       Get.log('registMainKitSave = ${err.toString()}');
@@ -156,6 +299,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('reqMainKit - error');
       // commonError(e);
+      MainKitController controller = Get.find();
+      controller.isDbConnected.value = false;
     } catch (err) {
       Get.log('reqMainKit = ${err.toString()}');
     }
@@ -195,6 +340,8 @@ class HomeApi extends NetworkManager{
       Get.log('registChulgo - error');
       // commonError(e);
       a = '1111';
+      ChulgoController controller = Get.find();
+      controller.isDbConnected.value = false;
     } catch (err) {
       Get.log('registChulgo = ${err.toString()}');
       a = '1111';
@@ -238,6 +385,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('reqChulThird - error');
       // commonError(e);
+      ChulgoController controller = Get.find();
+      controller.isDbConnected.value = false;
     } catch (err) {
       Get.log('reqChulThird = ${err.toString()}');
     }
@@ -280,6 +429,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('reqChulSecond - error');
       // commonError(e);
+      ChulgoController controller = Get.find();
+      controller.isDbConnected.value = false;
     } catch (err) {
       Get.log('reqChulSecond = ${err.toString()}');
     }
@@ -322,6 +473,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('reqChulgo - error');
       // commonError(e);
+      ChulgoController controller = Get.find();
+      controller.isDbConnected.value = false;
     } catch (err) {
       Get.log('reqChulgo = ${err.toString()}');
     }
@@ -365,6 +518,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('reqOtherKit - error');
       // commonError(e);
+      OtherKitController controller = Get.find();
+      controller.isDbConnected.value = false;
     } catch (err) {
       Get.log('reqOtherKit = ${err.toString()}');
     }
@@ -408,6 +563,8 @@ class HomeApi extends NetworkManager{
       Get.log('registPicking - error');
       a = '1111';
       // commonError(e);
+      PickingController controller = Get.find();
+      controller.isDbConnected.value = false;
     } catch (err) {
       a = '1111';
       Get.log('registPicking = ${err.toString()}');
@@ -452,6 +609,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('reqPickingThird - error');
       // commonError(e);
+      PickingController controller = Get.find();
+      controller.isDbConnected.value = false;
     } catch (err) {
       Get.log('reqPickingThird = ${err.toString()}');
     }
@@ -494,6 +653,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('reqPickingSecond - error');
       // commonError(e);
+      PickingController controller = Get.find();
+      controller.isDbConnected.value = false;
     } catch (err) {
       Get.log('reqPickingSecond = ${err.toString()}');
     }
@@ -536,6 +697,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('reqPickingFirst - error');
       // commonError(e);
+      PickingController controller = Get.find();
+      controller.isDbConnected.value = false;
     } catch (err) {
       Get.log('reqPickingFirst = ${err.toString()}');
     }
@@ -578,6 +741,8 @@ class HomeApi extends NetworkManager{
       Get.log('registSmallKitSave - error');
       a = '1111';
       // commonError(e);
+      OtherKitController controller = Get.find();
+      controller.isDbConnected.value = false;
     } catch (err) {
       Get.log('registSmallKitSave = ${err.toString()}');
       a = '1111';
@@ -620,6 +785,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('registSmallKitSave - error');
       a = '1111';
+      SmallKitController controller = Get.find();
+      controller.isDbConnected.value = false;
       // commonError(e);
     } catch (err) {
       Get.log('registSmallKitSave = ${err.toString()}');
@@ -663,6 +830,8 @@ class HomeApi extends NetworkManager{
 
     } on DioError catch (e) {
       Get.log('reqSmallKitSave - error');
+      SmallKitController controller = Get.find();
+      controller.isDbConnected.value = false;
       // commonError(e);
     } catch (err) {
       Get.log('reqSmallKitSave = ${err.toString()}');
@@ -706,6 +875,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('reqSmallKitItem - error');
       // commonError(e);
+      SmallKitController controller = Get.find();
+      controller.isDbConnected.value = false;
     } catch (err) {
       Get.log('reqSmallKitItem = ${err.toString()}');
     }
@@ -748,6 +919,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('reqSmallKit - error');
       // commonError(e);
+      SmallKitController controller = Get.find();
+      controller.isDbConnected.value = false;
     } catch (err) {
       Get.log('reqSmallKit = ${err.toString()}');
     }
@@ -789,6 +962,8 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('registRackIpgo - error');
       a = '1111';
+      RackIpgoController controller = Get.find();
+      controller.isDbConnected.value = false;
       // commonError(e);
     } catch (err) {
       Get.log('registRackIpgo = ${err.toString()}');
@@ -832,6 +1007,8 @@ class HomeApi extends NetworkManager{
 
     } on DioError catch (e) {
       Get.log('reqRackIpgo - error');
+      RackIpgoController controller = Get.find();
+      controller.isDbConnected.value = false;
       // commonError(e);
     } catch (err) {
       Get.log('reqRackIpgo = ${err.toString()}');
@@ -874,6 +1051,8 @@ class HomeApi extends NetworkManager{
 
     } on DioError catch (e) {
       Get.log('reqCheburnIpgo - error');
+      IpgoController controller = Get.find();
+      controller.isDbConnected.value = false;
       // commonError(e);
     } catch (err) {
       Get.log('reqCheburnIpgo = ${err.toString()}');
@@ -917,6 +1096,8 @@ class HomeApi extends NetworkManager{
 
     } on DioError catch (e) {
       Get.log('registCancelIpgo - error');
+      IpgoController controller = Get.find();
+      controller.isDbConnected.value = false;
       // commonError(e);
       a = '1111';
     } catch (err) {
@@ -928,6 +1109,7 @@ class HomeApi extends NetworkManager{
 
   /// 입고취소 조회
   Future<IpgoCancelModel> reqCancelIpgo(var params) async {
+    IpgoController controller = Get.find();
     var ipgoCancelModel = IpgoCancelModel();
 
     try {
@@ -961,9 +1143,11 @@ class HomeApi extends NetworkManager{
 
     } on DioError catch (e) {
       Get.log('reqCancelIpgo - error');
+      controller.isDbConnected.value = false;
       // commonError(e);
     } catch (err) {
       Get.log('reqCancelIpgo = ${err.toString()}');
+      controller.isDbConnected.value = false;
     }
     return ipgoCancelModel;
   }
@@ -1003,6 +1187,8 @@ class HomeApi extends NetworkManager{
 
     } on DioError catch (e) {
       Get.log('registIpgo - error');
+      IpgoController controller = Get.find();
+      controller.isDbConnected.value = false;
       // commonError(e);
       a = '1111';
     } catch (err) {
@@ -1047,6 +1233,8 @@ class HomeApi extends NetworkManager{
 
     } on DioError catch (e) {
       Get.log('reqIpgoQr - error');
+      IpgoController controller = Get.find();
+      controller.isDbConnected.value = false;
       // commonError(e);
     } catch (err) {
       Get.log('reqIpgoQr = ${err.toString()}');
@@ -1064,7 +1252,6 @@ class HomeApi extends NetworkManager{
         final jsonResponse = await localJsonPaser(urlPath);
         loginModel = LoginModel.fromJson(jsonResponse);
       } else {
-
         final response = await HttpUtil.getDio()
             .post('/api/authentication/login', data: jsonEncode(params),
          );

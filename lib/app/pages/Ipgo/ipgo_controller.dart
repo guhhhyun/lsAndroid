@@ -82,6 +82,10 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxString cheburnInbNumber = ''.obs; // 끝 6자리
   RxString cheburnLotNumber = ''.obs; // 끝 6자리
   RxBool isQr = false.obs;
+  RxBool isChecked = false.obs;
+  RxBool isCancelChecked = false.obs;
+  RxBool isIpgoClick = false.obs;
+  RxBool isDbConnected = true.obs;
 
 
   /// 공통 드롭다운 조회(zone) -> 존 구분
@@ -125,6 +129,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           }
           Get.log('조회 성공');
           Get.log('$zoneList');
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
         }
@@ -136,6 +141,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     } catch (e) {
       Get.log('reqCommon catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
 
@@ -183,6 +189,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           }
           Get.log('조회 성공');
           Get.log('$ipgoDropdownList');
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
         }
@@ -194,6 +201,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     } catch (e) {
       Get.log('reqCommon catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
 
@@ -243,7 +251,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           int lastTwoDigits = int.parse(cheburnIpgoList[0]['inbNo'].toString().substring(cheburnIpgoList[0]['inbNo'].toString().length - 2));
           cheburnInbNumber.value = (int.parse(cheburnIpgoList[0]['inbNo'].toString().replaceRange(0, 10, '')) + 1).toString();
           cheburnLotNumber.value = (int.parse(cheburnIpgoList[0]['inbLotNo'].toString().replaceRange(0, 10, '')) + 1).toString();
-
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
         }
@@ -255,9 +263,10 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     } catch (e) {
       Get.log('cheburnIpgoList catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
-
+      isIpgoClick.value = false;
     }
   }
 
@@ -275,7 +284,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
             'params': [
               {
                 'paramName': 'p_work_type',
-                'paramValue': 'D',
+                'paramValue': 'C',
                 'paramJdbcType': 'VARCHAR',
                 'paramMode': 'IN'
               },
@@ -325,7 +334,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
 
             if (retVal == '0000') {
               Get.log('입고취소되었습니다');
-
+              isDbConnected.value = true;
             } else {
               Get.log('취소 실패');
 
@@ -333,6 +342,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           } catch (e) {
             Get.log('registCancelIpgoBtn catch !!!!');
             Get.log(e.toString());
+            isDbConnected.value = false;
           } finally {
             bLoading.value = false;
 
@@ -350,6 +360,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
 
     bLoading.value = true;
     ipgoCancelList.clear();
+    ipgoCancelBollList.clear();
 
     var params = {
       'programId': 'A1020',
@@ -430,6 +441,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
         }
         Get.log(ipgoCancelList.toString());
         Get.log('입고취소 조회 성공');
+        isDbConnected.value = true;
       } else {
         Get.log('입고취소 조회 실패');
 
@@ -437,8 +449,10 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     } catch (e) {
       Get.log('checkBtn catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
+      isCancelChecked.value = false;
       plutoRow3();
     }
   }
@@ -542,7 +556,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
 
         if (retVal == '0000') {
           Get.log('등록되었습니다');
-
+          isDbConnected.value = true;
         } else {
           Get.log('등록 실패');
 
@@ -550,9 +564,10 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
       } catch (e) {
         Get.log('registIpgoBtn catch !!!!');
         Get.log(e.toString());
+        isDbConnected.value = false;
       } finally {
         bLoading.value = false;
-
+        isIpgoClick.value = false;
       }
     }
 
@@ -611,6 +626,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           ipgoQrList.value.addAll(retVal.body![1]);
           Get.log(ipgoQrList.toString());
           Get.log('조회 성공');
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -623,6 +639,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
 
@@ -701,6 +718,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
         invnrList.value.addAll(retVal.body![1]);
         Get.log(invnrList.toString());
         Get.log('조회 성공');
+        isDbConnected.value = true;
       } else {
         Get.log('조회 실패');
 
@@ -708,8 +726,10 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     } catch (e) {
       Get.log('checkBtn catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
+      isChecked.value = false;
       plutoRow();
     }
   }

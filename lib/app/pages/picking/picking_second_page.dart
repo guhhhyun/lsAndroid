@@ -417,7 +417,7 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
     return Row(
       children: [
         Text(title,
-            style: AppTheme.a12700
+            style: AppTheme.a16700
                 .copyWith(color: AppTheme.black)),
         SizedBox(width: 8,),
         Container(
@@ -428,7 +428,7 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppTheme.ae2e2e2)),
           child: Center(
-            child: Text(value, style: AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),softWrap: false)
+            child: Text(value, style: AppTheme.a14400.copyWith(color: AppTheme.black),softWrap: false)
           ),
 
         ),
@@ -584,7 +584,7 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
           child: Column(children: [
             Container(
               width: MediaQuery.of(context).size.width-32,
-              height: controller.height.value,
+              height: MediaQuery.of(context).size.height-420,
               child: PlutoGrid(
                 mode: PlutoGridMode.selectWithOneTap, // 탭 한번으로 반응하게?
                 columns: gridCols(context),

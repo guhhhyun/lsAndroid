@@ -29,6 +29,7 @@ class ChulgoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.isFocus.value == false ? controller.requestFocus2() : null;
     test = MediaQuery.of(context).size.width - 570;
     ipgoDateWidth = MediaQuery.of(context).size.width - 900;
     return WillPopScope(
@@ -85,7 +86,9 @@ class ChulgoPage extends StatelessWidget {
             color: AppTheme.dark_text_secondary,
             height: 1,
           ),
-
+          Container(
+            height: 4,
+          ),
           Container(
             //margin: EdgeInsets.only(right: 12),
             width: MediaQuery.of(context).size.width-26,
@@ -93,6 +96,53 @@ class ChulgoPage extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                Obx(() => Container(
+                  margin: EdgeInsets.only(right: 14),
+                  decoration: BoxDecoration(
+                      color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  width: 100,
+                  height: 40,
+                ),),
+                    Container(
+                      margin: EdgeInsets.only(right: 12),
+                      width: 120,
+                      height: 40,
+                      child: TextButton(
+                        style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                                const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(10),
+                                        bottomRight: Radius.circular(10)))),
+                            padding: MaterialStateProperty.all(
+                                const EdgeInsets.all(0))),
+                        onPressed: () async {
+                          Get.log('조회 클릭!');
+
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: AppTheme.navy_navy_800,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: AppTheme.ae2e2e2)
+                          ),
+                          width: 120,
+                          height: 40,
+                          padding: const EdgeInsets.only(
+
+                          ),
+                          child: Center(
+                            child: Text('BOM변경확인', //입고취소 조회
+                                style: AppTheme.a16700.copyWith(
+                                  color: AppTheme.white,
+                                )),
+                          ),
+                        ),
+                      ),
+                    ),
                 TextButton(
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all<
@@ -382,7 +432,7 @@ class ChulgoPage extends StatelessWidget {
         title: '출고가능여부',
         field: 'opStatusNm',
         type: PlutoColumnType.text(),
-        width: 100,
+        width: 130,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -542,7 +592,10 @@ class ChulgoPage extends StatelessWidget {
                     const EdgeInsets.all(0))),
             onPressed: () async {
               Get.log('조회 클릭!');
+              controller.isFocus.value = true;
+              controller.focusNode.unfocus();
               await controller.checkQR();
+
             },
             child: Container(
               decoration: BoxDecoration(
@@ -633,6 +686,7 @@ class ChulgoPage extends StatelessWidget {
               border: Border.all(color: AppTheme.ae2e2e2)),
           child: Center(
             child: TextFormField(
+              focusNode: title == '오더번호' ? controller.focusNode : null,
               readOnly:  plag == 4 ? true : false,
               expands :true,
               minLines: null,
@@ -652,7 +706,16 @@ class ChulgoPage extends StatelessWidget {
                 border: InputBorder.none,
               ),
               showCursor: true,
+              onTap: () {
+                controller.isFocus.value = true;
+                if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
+                else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+              },
+              onTapOutside:(event) => { controller.focusCnt.value = 0 },
 
+              onFieldSubmitted: (value) async {
+
+              }
               // onChanged: ((value) => controller.submitSearch(value)),
             ),
           ),

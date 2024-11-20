@@ -21,11 +21,13 @@ class IpgoPage extends StatelessWidget {
 
   final focusNode2 = FocusNode();
   late double test;
+   late double test2;
 
   @override
   Widget build(BuildContext context) {
     controller.isQr.value == false ? controller.requestFocus() : null;
-    test = MediaQuery.of(context).size.width - 490;
+    test = MediaQuery.of(context).size.width - 800;
+    test2 = MediaQuery.of(context).size.width - 485;
     return WillPopScope(
       onWillPop: () {
         Get.offAll(HomePage());
@@ -63,7 +65,7 @@ class IpgoPage extends StatelessWidget {
           Container(
             child: Column(children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
                     width: 200,
@@ -111,6 +113,16 @@ class IpgoPage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  Obx(() => Container(
+                    margin: EdgeInsets.only(right: 14),
+                    decoration: BoxDecoration(
+                        color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(10)
+                    ),
+                    width: 100,
+                    height: 40,
+                  ),),
+
                 ],
               ),
               Container(
@@ -346,10 +358,14 @@ class IpgoPage extends StatelessWidget {
                      const EdgeInsets.all(0))),
              onPressed: () async {
                Get.log('조회 클릭!');
-               await controller.checkBtn();
-               controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
-               Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}'); 
-               controller.invnrHeight.value = 53*(double.parse((controller.ipgoCancelList.length + 1).toString()));
+               if(controller.isChecked.value == false) {
+                 controller.isChecked.value = true;
+                 await controller.checkBtn();
+                 controller.isSelectedInvnr.value = true;
+                 controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
+                 Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
+                 controller.invnrHeight.value = 53*(double.parse((controller.ipgoCancelList.length + 1).toString()));
+               }
              },
              child: Container(
                decoration: BoxDecoration(
@@ -775,7 +791,7 @@ class IpgoPage extends StatelessWidget {
                  _qrCodeTextForm(),
                 // _invnrTextForm('QR 코드', 3),
                  SizedBox(width: 16,),
-                 _statusText(),
+                 Obx(()=> _statusText()),
                ],
              ),
            ),
@@ -843,16 +859,20 @@ class IpgoPage extends StatelessWidget {
                      padding: MaterialStateProperty.all(
                          const EdgeInsets.all(0))),
                  onPressed: () async {
-                   Get.log('입고등록 클릭!');
-                   await controller.reqCheburnIpgo();
-                   await controller.registIpgoBtn();
+                   if(controller.isIpgoClick.value == false) {
+                     controller.isIpgoClick.value = true;
+                     Get.log('입고등록 클릭!');
+                     await controller.reqCheburnIpgo();
+                     await controller.registIpgoBtn();
 
-                   SchedulerBinding.instance!.addPostFrameCallback((_) {
-                     Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
-                   });
-                   controller.ipgoQrList.clear();
-                   controller.ipgoList.clear();
-                   controller.gridStateMgr2.removeAllRows();
+                     SchedulerBinding.instance!.addPostFrameCallback((_) {
+                       Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
+                     });
+                     controller.ipgoQrList.clear();
+                     controller.ipgoList.clear();
+                     controller.gridStateMgr2.removeAllRows();
+                   }
+
 
                  },
                  child: Container(
@@ -1096,7 +1116,7 @@ class IpgoPage extends StatelessWidget {
          enableEditingMode: false,
          enableContextMenu: false,
          enableRowDrag: false,
-         enableDropToResize: true,
+         enableDropToResize: false,
          enableColumnDrag: false,
          titleTextAlign: PlutoColumnTextAlign.center,
          textAlign: PlutoColumnTextAlign.center,
@@ -1111,7 +1131,7 @@ class IpgoPage extends StatelessWidget {
          enableEditingMode: false,
          enableContextMenu: false,
          enableRowDrag: false,
-         enableDropToResize: true,
+         enableDropToResize: false,
          enableColumnDrag: false,
          titleTextAlign: PlutoColumnTextAlign.center,
          textAlign: PlutoColumnTextAlign.center,
@@ -1121,12 +1141,13 @@ class IpgoPage extends StatelessWidget {
          title: '품목명',
          field: 'itemNm',
          type: PlutoColumnType.text(),
-         width: test,
+         width: test2,
          enableSorting: false,
          enableEditingMode: false,
          enableContextMenu: false,
          enableRowDrag: false,
-         enableDropToResize: true,
+           enableDropToResize: false,
+         //enableDropToResize: true,
          enableColumnDrag: false,
          titleTextAlign: PlutoColumnTextAlign.center,
          textAlign: PlutoColumnTextAlign.left,
@@ -1153,7 +1174,7 @@ class IpgoPage extends StatelessWidget {
          enableEditingMode: false,
          enableContextMenu: false,
          enableRowDrag: false,
-         enableDropToResize: true,
+         enableDropToResize: false,
          enableColumnDrag: false,
          titleTextAlign: PlutoColumnTextAlign.center,
          textAlign: PlutoColumnTextAlign.center,
@@ -1169,7 +1190,7 @@ class IpgoPage extends StatelessWidget {
          enableEditingMode: false,
          enableContextMenu: false,
          enableRowDrag: false,
-         enableDropToResize: true,
+         enableDropToResize: false,
          enableColumnDrag: false,
          titleTextAlign: PlutoColumnTextAlign.center,
          textAlign: PlutoColumnTextAlign.center,
@@ -1365,9 +1386,13 @@ class IpgoPage extends StatelessWidget {
                      const EdgeInsets.all(0))),
              onPressed: () async {
                Get.log('조회 클릭!');
-               await controller.cancelCheckBtn();
-               _ipgoCancelList(context);
-               controller.height.value = 53*(double.parse((controller.ipgoCancelList.length + 1).toString()));
+               if(controller.isCancelChecked.value == false) {
+                 controller.isCancelChecked.value = true;
+                 await controller.cancelCheckBtn();
+                 _ipgoCancelList(context);
+                 controller.height.value = 53*(double.parse((controller.ipgoCancelList.length + 1).toString()));
+               }
+
               /* if(controller.ipgoCancelList.isNotEmpty) {
                  for(var i = 0; i < controller.ipgoCancelList.length; i++) {
                    controller.ipgoCancelList[i].addAll({'checkBox': ''});
@@ -1681,7 +1706,7 @@ class IpgoPage extends StatelessWidget {
      return Column(children: [
        Obx(() => Container(
            width: MediaQuery.of(context).size.width-32,
-           height: MediaQuery.of(context).size.width-710,
+           height: MediaQuery.of(context).size.height-270,
            child: PlutoGrid(
              columns: gridCols3(context),
              rows: controller.rowDatas3.value,
@@ -1823,7 +1848,7 @@ class IpgoPage extends StatelessWidget {
          title: '거래명세서 번호',
          field: 'docNo',
          type: PlutoColumnType.text(),
-         width: 120,
+         width: 150,
          enableSorting: false,
          enableEditingMode: false,
          enableContextMenu: false,
@@ -1958,7 +1983,7 @@ class IpgoPage extends StatelessWidget {
          title: '입고담당자',
          field: 'inbUserNm',
          type: PlutoColumnType.text(),
-         width: 90,
+         width: 130,
          enableSorting: false,
          enableEditingMode: false,
          enableContextMenu: false,

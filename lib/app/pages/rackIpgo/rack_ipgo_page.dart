@@ -302,6 +302,15 @@ class RackIpgoPage extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            Obx(() => Container(
+              margin: EdgeInsets.only(right: 14),
+              decoration: BoxDecoration(
+                  color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(10)
+              ),
+              width: 100,
+              height: 40,
+            ),),
             Container(
              // margin: EdgeInsets.only(right: 12),
               width: 120,
@@ -587,6 +596,7 @@ class RackIpgoPage extends StatelessWidget {
                           controller.gridStateMgr.setCurrentCell(controller.insertRow[0].cells['no'], controller.registRackIpgoList.length - 1);
                           Get.log('순서 ㅡㅡ : ${controller.gridStateMgr.currentRow!.sortIdx}');*/
                         }
+                        controller.textQrController.text = '';
                         controller.focusNode.requestFocus();
                         Future.delayed(const Duration(), (){
                           controller.focusNode.requestFocus();
@@ -795,7 +805,7 @@ class RackIpgoPage extends StatelessWidget {
                     child: Row(
                       // mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _invnrTextForm('존', 0),
+                        Obx(()=> _invnrTextForm('존', 0),)
 
                       ],
                     ),

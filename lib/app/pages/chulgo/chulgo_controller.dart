@@ -143,6 +143,9 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
   RxInt currentRowIndex = 0.obs;
   RxBool isPlutoRow2 = false.obs;
   RxBool isQr = false.obs;
+  RxBool isFocus = false.obs;
+  RxBool isDbConnected = true.obs;
+
 
   /// 출고 등록/취소
   Future<void> registChulgoBtn(int flag) async {
@@ -204,7 +207,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
 
         if (retVal == '0000') {
           Get.log('등록되었습니다');
-
+          isDbConnected.value = true;
         } else {
           Get.log('등록 실패');
 
@@ -212,6 +215,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
       } catch (e) {
         Get.log('registIpgoBtn catch !!!!');
         Get.log(e.toString());
+        isDbConnected.value = false;
       } finally {
         bLoading.value = false;
 
@@ -260,6 +264,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
           }
           Get.log('조회 성공');
           Get.log('$chulgoList');
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
         }
@@ -271,6 +276,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     } catch (e) {
       Get.log('reqCommon catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
 
@@ -305,6 +311,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
           chulThirdList.addAll(retVal.body![1]);
           Get.log('조회 성공');
           statusText.value = '정상 조회되었습니다.';
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -318,6 +325,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
     }
@@ -365,6 +373,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
 
           Get.log('uniqueChulSecondList: ${uniqueChulSecondList}');
           Get.log('조회 성공');
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -377,6 +386,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
      await plutoRow2();
@@ -419,6 +429,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
           }
 
           Get.log('조회 성공');
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -431,6 +442,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
       plutoRow();
@@ -471,6 +483,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
           }
 
           Get.log('조회 성공');
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -483,6 +496,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     } catch (e) {
       Get.log('checkQR2 catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
     }
@@ -634,12 +648,20 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
 
     gridStateMgr.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
   }
-
+  final focusNode = FocusNode();
   final focusNode2 = FocusNode();
   void requestFocus() {
     Future.microtask(() => focusNode2.requestFocus());
     if(focusCnt.value++ > 1) focusCnt.value = 0;
     else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+    isQr.value = true;
+  }
+
+  void requestFocus2() {
+    Future.microtask(() => focusNode.requestFocus());
+    if(focusCnt.value++ > 1) focusCnt.value = 0;
+    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+    isQr.value = true;
   }
 
 

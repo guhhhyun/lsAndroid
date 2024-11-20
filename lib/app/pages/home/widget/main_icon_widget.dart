@@ -33,7 +33,7 @@ class MainIconWidget extends StatelessWidget {
                   padding: EdgeInsets.only(top: 16, bottom: 16, left: 14, right: 14),
                   child: Column(
                     children: [
-                      /*Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Ink.image(
@@ -43,7 +43,7 @@ class MainIconWidget extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 4,),*/
+                      SizedBox(height: 4,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -104,7 +104,132 @@ class MainIconWidget extends StatelessWidget {
             const SizedBox(height: 27,),
             /*Obx(()=> */Container(
               width: MediaQuery.of(context).size.width-30,
-              child: Wrap(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(child: _buttonArea(
+                          imgUrl: 'assets/app/Group-6.png',
+                          title: '입고등록',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('입고등록');
+                            Get.toNamed(Routes.IPGO);
+                          }, context: context),),
+                      Expanded(child: _buttonArea(
+                          imgUrl: 'assets/app/Group-2.png',
+                          title: '랙입고',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('랙입고');
+                            Get.toNamed(Routes.RACK_IPGO);
+                          }, context: context),
+                      )
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(child: _buttonArea(
+                          imgUrl: 'assets/app/Group-5.png',
+                          title: '소박스 KIT 작업',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('소박스 KIT 작업');
+                            Get.toNamed(Routes.SMALL_KIT);
+                          }, context: context),),
+                      Expanded(child: _buttonArea(
+                          imgUrl: 'assets/app/Group-5.png',
+                          title: '별도 박스 KIT 작업',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('별도박스 KIT 작업');
+                            Get.toNamed(Routes.OTHER_KIT);
+                          }, context: context),
+                      )
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(child: _buttonArea(
+                          imgUrl: 'assets/app/Group-5.png',
+                          title: '메인 박스 KIT 작업',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('메인 KIT 작업');
+                            Get.toNamed(Routes.MAIN_KIT);
+                          }, context: context),),
+                      Expanded(child: _buttonArea(
+                          imgUrl: 'assets/app/Group-2.png',
+                          title: '피킹 작업(랙출고)',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('피킹 작업(랙출고)');
+                            Get.toNamed(Routes.PICKING);
+                          }, context: context),
+                      )
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(child: _buttonArea(
+                          imgUrl: 'assets/app/Group-6.png',
+                          title: '출고등록',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('출고등록');
+                            Get.toNamed(Routes.CHULGO);
+                          }, context: context),),
+                      Expanded(child: Utils.getStorage.hasData('userId') &&
+                          Utils.getStorage.hasData('userPw') == false ? SizedBox(width: 0, height: 0,) :
+                      _buttonArea(
+                          imgUrl: 'assets/app/logout.png',
+                          title: '로그아웃',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('로그아웃');
+                            gs.logout();
+                          }, context: context),
+                      )
+                      /*Expanded(child: _buttonArea(
+                          imgUrl: 'assets/app/Group-6.png',
+                          title: '기타입고',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('기타입고');
+                            Get.toNamed(Routes.ETC_IPGO);
+                          }, context: context),
+                      )*/
+                    ],
+                  ),
+                  /*Row(
+                    children: [
+                      *//*Expanded(child: _buttonArea(
+                          imgUrl: 'assets/app/Group-6.png',
+                          title: '기타출고',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('기타출고');
+                            Get.toNamed(Routes.ETC_CHULGO);
+                          }, context: context),),*//*
+                      Expanded(child: Utils.getStorage.hasData('userId') &&
+                          Utils.getStorage.hasData('userPw') == false ? SizedBox(width: 0, height: 0,) :
+                          _buttonArea(
+                              imgUrl: 'assets/app/logout.png',
+                              title: '로그아웃',
+                              subTitle: '',
+                              onPressed: () {
+                                Get.log('로그아웃');
+                                gs.logout();
+                              }, context: context),
+                      )
+                    ],
+                  ),*/
+
+                ],
+              )
+
+
+              /*Wrap(
                 children: [
                 //  gs.datasList.contains(200) == false ? SizedBox(width: 0, height: 0,) :
                   _buttonArea(
@@ -163,8 +288,24 @@ class MainIconWidget extends StatelessWidget {
                         Get.log('출고등록');
                         Get.toNamed(Routes.CHULGO);
                       }, context: context),
+                  _buttonArea(
+                      imgUrl: 'assets/app/checklist-1.png',
+                      title: '기타입고',
+                      subTitle: '',
+                      onPressed: () {
+                        Get.log('기타입고');
+                        Get.toNamed(Routes.ETC_IPGO);
+                      }, context: context),
+                  _buttonArea(
+                      imgUrl: 'assets/app/checklist-1.png',
+                      title: '기타출고',
+                      subTitle: '',
+                      onPressed: () {
+                        Get.log('기타출고');
+                        Get.toNamed(Routes.ETC_CHULGO);
+                      }, context: context),
                 //  gs.datasList.contains(300) == false ? SizedBox(width: 0, height: 0,) :
-              /*    _buttonArea(
+              *//*    _buttonArea(
                       imgUrl: 'assets/app/online-test-1.png',
                       title: '설비/안전',
                       subTitle: '내역등록',
@@ -275,7 +416,8 @@ class MainIconWidget extends StatelessWidget {
                         Get.log('가공설');
                       //  Get.toNamed(Routes.GAGONG_FACILITY);
                       }, context: context
-                  ),*/
+                  ),*//*
+
                   Utils.getStorage.hasData('userId') &&
                       Utils.getStorage.hasData('userPw') == false ? SizedBox(width: 0, height: 0,) :
                   _buttonArea(
@@ -288,7 +430,7 @@ class MainIconWidget extends StatelessWidget {
                       }, context: context
                   ),
                 ],
-              ),
+              ),*/
             ),
 
               ],

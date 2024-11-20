@@ -28,6 +28,8 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
   /// 리스트
   var rows = <PlutoRow>[].obs;
   var rows2 = <PlutoRow>[].obs;
+  var rows3 = <PlutoRow>[].obs; //BOM
+  var rows4 = <PlutoRow>[].obs; //BOM2
   var insertRow = <PlutoRow>[].obs;
   RxList<dynamic> isRow = [].obs; // 리스트 길이만큼 false 추가용
 
@@ -44,8 +46,17 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
 
   late PlutoGridStateManager stateManager;
   late PlutoGridStateManager stateManager2;
+  late PlutoGridStateManager stateManager3; // BOM 리스트
+  late PlutoGridStateManager stateManager4; // BOM 리스트 디테일
   TextEditingController textQrController = TextEditingController();
   TextEditingController textMemoController = TextEditingController();
+
+  /// BOM
+  TextEditingController textSaleOrdController = TextEditingController();
+  TextEditingController textItemCdController = TextEditingController();
+  TextEditingController textPrdOrdController = TextEditingController();
+
+
   RxInt focusCnt = 0.obs;
   RxString projectNm = ''.obs;
   RxString itemCdNm = ''.obs;
@@ -74,7 +85,11 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
   RxBool isConfirm = false.obs; //확정 가능상태 여부
   RxString isConfirmText = ''.obs; //확정 불가능상태 이유
   RxBool noSync = false.obs; // 이전에 동기화된 내역 확인
+  RxBool isQrFocus = false.obs;
 
+  RxBool isSaveClick = false.obs; // 중복클릭 방지
+  RxBool isConfirmClick = false.obs; // 중복클릭 방지
+  RxBool isDbConnected = true.obs;
 
 
   final FocusNode focusNode = FocusNode();
@@ -83,6 +98,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
     Future.microtask(() => focusNode.requestFocus());
     if(focusCnt.value++ > 1) focusCnt.value = 0;
     else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+    isQrFocus.value = true;
   }
 
   List<PlutoCell> createPlutoCells(List<String> columnNames) {
@@ -175,7 +191,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
               .toList();
           Get.log('조회 성공');
           Get.log('reasonDropdownList: $reasonDropdownList');
-
+          isDbConnected.value = true;
       } else {
         Get.log('조회 실패');
 
@@ -183,6 +199,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
     } catch (e) {
       Get.log('reqCommon catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
 
@@ -269,6 +286,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
 
           if (retVal == '0000') {
             Get.log('등록되었습니다');
+            isDbConnected.value = true;
           } else {
             Get.log('등록 실패');
 
@@ -278,9 +296,85 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
       } catch (e) {
         Get.log('registSmallKitConfirm catch !!!!');
         Get.log(e.toString());
+        isDbConnected.value = false;
       } finally {
         bLoading.value = false;
+        isConfirmClick.value = false;
+        isSaveClick.value = false;
+      }
 
+  }
+
+  /// 메모 저장
+  Future<void> registMemoSmallKitSave() async {
+      var params = {
+        'programId': 'A1020',
+        'procedure': 'USP_A2025_S01',
+        'params': [
+          {
+            'paramName': 'p_work_type',
+            'paramValue': 'N4',
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_PLANT',
+            'paramValue': '1302',
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_CBX_SU_NO',
+            'paramValue': smallBoxList[0]['CBX_SU_NO'],
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_WRK_REMARK',
+            'paramValue': textMemoController.text,
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_USR_ID',
+            'paramValue': gs.loginId.value,
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_USR_IP',
+            'paramValue': 'MOBILE',
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          }
+
+
+        ]
+      };
+
+      try {
+
+          final retVal = await HomeApi.to.registSmallKitSave(params);
+
+          if (retVal == '0000') {
+            Get.log('등록되었습니다');
+            isSave.value = true;
+            isSaveText.value = '저장되었습니다.';
+            isDbConnected.value = true;
+          } else {
+            Get.log('등록 실패');
+            isSave.value = false;
+            isSaveText.value = '저장에 실패하였습니다.';
+          }
+
+      } catch (e) {
+        Get.log('registMemoSmallKitSave catch !!!!');
+        Get.log(e.toString());
+        isSaveText.value = '저장에 실패하였습니다.';
+        isDbConnected.value = false;
+      } finally {
+        bLoading.value = false;
+        isSaveClick.value = false;
       }
 
   }
@@ -481,6 +575,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
             Get.log('등록되었습니다');
             isSave.value = true;
             isSaveText.value = '저장되었습니다.';
+            isDbConnected.value = true;
           } else {
             Get.log('등록 실패');
             isSave.value = false;
@@ -492,9 +587,11 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
         Get.log('registSmallKitSave catch !!!!');
         Get.log(e.toString());
         isSaveText.value = '저장에 실패하였습니다.';
+        isDbConnected.value = false;
       } finally {
         bLoading.value = false;
-
+        isConfirmClick.value = false;
+        isSaveClick.value = false;
       }
     }
 
@@ -687,6 +784,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
         if (retVal == '0000') {
           Get.log('디테일 등록되었습니다');
           isSave.value = true;
+          isDbConnected.value = true;
         } else {
           Get.log('디테일 등록 실패');
           isSave.value = false;
@@ -695,9 +793,11 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
       } catch (e) {
         Get.log('registSmallKitDetailSave catch !!!!');
         Get.log(e.toString());
+        isDbConnected.value = false;
       } finally {
         bLoading.value = false;
-        isSaveText.value = '저장에 실패하였습니다.';
+        isConfirmClick.value = false;
+        isSaveClick.value = false;
       }
     }
 
@@ -743,6 +843,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
             stateManager2.removeAllRows();
             await checkQR();
             await smallBoxScan();
+            isDbConnected.value = true;
           }else {
             smallBoxSave.addAll(retVal.body![1]);
             _duplicationRow();
@@ -754,6 +855,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
+          isDbConnected.value = false;
         }
 
       } else {
@@ -852,6 +954,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
           Get.log(smallBoxList.toString());
           Get.log('조회 성공');
           statusText.value = '정상 조회되었습니다.';
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -862,7 +965,10 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
       }
     } catch (e) {
       Get.log('checkQR catch !!!!');
+      statusText.value = '올바른 소박스 QR번호를 입력해주세요';
+      textQrController.text = '';
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
       //  plutoRow();

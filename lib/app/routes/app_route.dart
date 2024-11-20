@@ -5,8 +5,10 @@ import 'package:lsandroid/app/pages/Ipgo/ipgo_binding.dart';
 import 'package:lsandroid/app/pages/Ipgo/ipgo_page.dart';
 import 'package:lsandroid/app/pages/chulgo/chulgo_binding.dart';
 import 'package:lsandroid/app/pages/chulgo/chulgo_page.dart';
-import 'package:lsandroid/app/pages/home/home_binding.dart';
-import 'package:lsandroid/app/pages/home/home_page.dart';
+import 'package:lsandroid/app/pages/etcChulgo/etc_chulgo_binding.dart';
+import 'package:lsandroid/app/pages/etcChulgo/etc_chulgo_page.dart';
+import 'package:lsandroid/app/pages/etcIpgo/etc_ipgo_binding.dart';
+import 'package:lsandroid/app/pages/etcIpgo/etc_ipgo_page.dart';
 import 'package:lsandroid/app/pages/loginPage/login_binding.dart';
 import 'package:lsandroid/app/pages/loginPage/login_page.dart';
 import 'package:lsandroid/app/pages/main/main_binding.dart';
@@ -52,6 +54,8 @@ abstract class Routes {
   static const OTHER_KIT = _PathName.OTHER_KIT;
   static const CHULGO = _PathName.CHULGO;
   static const MAIN_KIT = _PathName.MAIN_KIT;
+  static const ETC_IPGO = _PathName.ETC_IPGO;
+  static const ETC_CHULGO = _PathName.ETC_CHULGO;
 }
 
 abstract class _PathName {
@@ -81,6 +85,8 @@ abstract class _PathName {
   static const String OTHER_KIT = '/other_kit'; // 별도박스 kit 페이지
   static const String CHULGO = '/chulgo'; // 출고등록 페이지
   static const String MAIN_KIT = '/main_kit'; // 메인 kit 페이지
+  static const String ETC_IPGO = '/etc_ipgo'; // 기타입고 페이지
+  static const String ETC_CHULGO = '/etc_chulgo'; // 기타출고 페이지
 
 
 
@@ -110,6 +116,10 @@ class AppRoute {
         name: _PathName.CHULGO, page: () => ChulgoPage(), binding: ChulgoBinding()),
     GetPage(
         name: _PathName.MAIN_KIT, page: () => MainKitPage(), binding: MainKitBinding()),
+    GetPage(
+        name: _PathName.ETC_IPGO, page: () => EtcIpgoPage(), binding: EtcIpgoBinding()),
+    GetPage(
+        name: _PathName.ETC_CHULGO, page: () => EtcChulgoPage(), binding: EtcChulgoBinding()),
   /*    GetPage(
         name: _PathName.FACILITY, page: () => FacilityPage(), binding: FacilityBinding()),
     GetPage(

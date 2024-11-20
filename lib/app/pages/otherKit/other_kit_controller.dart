@@ -23,14 +23,16 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
   GlobalService gs = Get.find();
 
 
-  RxSet<int> changedRows = <int>{}.obs;
+  RxSet<String> changedRows = <String>{}.obs;
+  RxSet<String> changedRows2 = <String>{}.obs;
   /// 리스트
   var rows = <PlutoRow>[].obs;
   var rows2 = <PlutoRow>[].obs;
   var insertRow = <PlutoRow>[].obs;
   RxList<dynamic> isRow = [].obs; // 리스트 길이만큼 false 추가용
 
-  RxList<dynamic> smallBoxList = [].obs; // 별도박스 qr찍고 난 정보
+  RxList<dynamic> smallBoxList = [].obs; // 별도박스 qr찍고 난 정보(왼쪽, 오른쪽)
+  RxList<dynamic> smallBoxListZero = [].obs; // 왼쪽리스트
   RxList<dynamic> smallBoxSave = [].obs;
   RxList<dynamic> smallBoxSaveList = [].obs; // 자재 qr찍고 오른쪽 최종 리스트
   RxList<dynamic> smallBoxDetailList = [].obs; // 자재 qr찍고 오른쪽 최종 리스트
@@ -64,7 +66,8 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
   RxString boxNo = ''.obs;
   RxString wrkCfmDt = ''.obs;
   RxInt no = 990.obs;
-  RxList<dynamic> noList = [].obs;
+  RxList<dynamic> noList = [].obs; // 색 구분을 위해 itemCd 담는 그릇
+  RxList<dynamic> noList2 = [].obs;
   RxBool duplicationQr = false.obs; // 이미 스캔한 자재를 또 스캔했을 때
   RxBool duplicationQr2 = false.obs; // 이미 스캔한 자재를 또 스캔했을 때
   RxDouble gridHeight = 0.0.obs; // 그리드 높이 동적으로
@@ -86,7 +89,12 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
   RxBool isFocus = false.obs; // 포커스 잡냐 마냐
   RxBool isDonggi = false.obs;
   RxBool noSync = false.obs;
+  RxBool isQrFocus = false.obs;
+  RxBool isSaveListDup = false.obs; // 저장된 값 불러올 때 우측에 이미 넘어간 itemCd 있는지 확인
 
+  RxBool isSaveClick = false.obs; // 중복클릭 방지
+  RxBool isConfirmClick = false.obs; // 중복클릭 방지
+  RxBool isDbConnected = true.obs;
 
   final FocusNode focusNode = FocusNode();
 
@@ -94,6 +102,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
     Future.microtask(() => focusNode.requestFocus());
     if(focusCnt.value++ > 1) focusCnt.value = 0;
     else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+    isFocus.value = true;
   }
 
   List<PlutoCell> createPlutoCells(List<String> columnNames) {
@@ -132,7 +141,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
             .toList();
         Get.log('조회 성공');
         Get.log('reasonDropdownList: $reasonDropdownList');
-
+        isDbConnected.value = true;
       } else {
         Get.log('조회 실패');
 
@@ -140,6 +149,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
     } catch (e) {
       Get.log('reqCommon catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
 
@@ -178,10 +188,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
         }
 
       }
-   /* }else {
-      isConfirmText.value = '스캔/동기화 되지않은 자재가 있습니다.';
-      isConfirm.value = false;
-    }*/
+
 
     var params = {
       'programId': 'A1020',
@@ -234,6 +241,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
 
         if (retVal == '0000') {
           Get.log('등록되었습니다');
+          isDbConnected.value = true;
         } else {
           Get.log('등록 실패');
 
@@ -243,9 +251,84 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
     } catch (e) {
       Get.log('registSmallKitConfirm catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
+      isConfirmClick.value = false;
+    }
 
+  }
+
+  /// 메모 저장
+  Future<void> registMemoSmallKitSave() async {
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A2065_S01',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'N4',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_CBX_SU_NO',
+          'paramValue': smallBoxList[0]['CBX_SU_NO'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_WRK_REMARK',
+          'paramValue': textMemoController.text,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_ID',
+          'paramValue': gs.loginId.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_IP',
+          'paramValue': 'MOBILE',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+
+
+      ]
+    };
+
+    try {
+
+      final retVal = await HomeApi.to.registSmallKitSave(params);
+
+      if (retVal == '0000') {
+        Get.log('등록되었습니다');
+        isSave.value = true;
+        isSaveText.value = '저장되었습니다.';
+        isDbConnected.value = true;
+      } else {
+        Get.log('등록 실패');
+        isSave.value = false;
+        isSaveText.value = '저장에 실패하였습니다.';
+      }
+
+    } catch (e) {
+      Get.log('registMemoSmallKitSave catch !!!!');
+      Get.log(e.toString());
+      isSaveText.value = '저장에 실패하였습니다.';
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+      isSaveClick.value = false;
     }
 
   }
@@ -284,7 +367,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
         'params': [
           {
             'paramName': 'p_INIT',
-            'paramValue': '${i}',
+            'paramValue': i == startIndex.value ? '0' : '1',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -481,6 +564,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
             Get.log('등록되었습니다');
             isSave.value = true;
             isSaveText.value = '저장되었습니다.';
+            isDbConnected.value = true;
           } else {
             Get.log('등록 실패');
             isSave.value = false;
@@ -492,9 +576,11 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
         Get.log('registSmallKitSave catch !!!!');
         Get.log(e.toString());
         isSaveText.value = '저장에 실패하였습니다.';
+        isDbConnected.value = false;
       } finally {
         bLoading.value = false;
-
+        isConfirmClick.value = false;
+        isSaveClick.value = false;
       }
     }
 
@@ -514,7 +600,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
 
           {
             'paramName': 'p_INIT',
-            'paramValue': i == startIndex.value ? 0 : 1,
+            'paramValue': startIndex.value == 0 ? 1 : 0,
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -711,6 +797,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
         if (retVal == '0000') {
           Get.log('디테일 등록되었습니다');
           isSave.value = true;
+          isDbConnected.value = true;
         } else {
           Get.log('디테일 등록 실패');
           isSave.value = false;
@@ -720,9 +807,11 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
         Get.log('registSmallKitDetailSave catch !!!!');
         Get.log(e.toString());
         isSaveText.value = '저장에 실패하였습니다.';
+        isDbConnected.value = false;
       } finally {
         bLoading.value = false;
-
+        isConfirmClick.value = false;
+        isSaveClick.value = false;
       }
     }
 
@@ -777,6 +866,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
           Get.log(smallBoxSave.toString());
           Get.log('조회 성공');
           statusText.value = '정상 조회 되었습니다.';
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -788,6 +878,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
     } catch (e) {
       Get.log('checkItemQr catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
       //plutoRow();
@@ -827,7 +918,71 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
   }
 
 
-  /// 소박스 KIT QR 조회
+
+  /// 별도박스 KIT QR 조회
+  Future<void> checkQRZero() async {
+    Get.log('QR 조회');
+
+    bLoading.value = true;
+    smallBoxListZero.clear();
+
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A2065_R01',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q0',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_QR_NO',
+          'paramValue': textQrController.text,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqSmallKit(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+
+          smallBoxListZero.addAll(retVal.body![1]);
+
+          Get.log(smallBoxListZero.toString());
+          Get.log('조회 성공');
+          statusText.value = '정상 조회 되었습니다.';
+          isDbConnected.value = true;
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+          statusText.value = retVal.body![0]['resultMessage'];
+        }
+
+      } else {
+        Get.log('조회 실패');
+      }
+    } catch (e) {
+      Get.log('checkQRZero catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+      //  plutoRow();
+    }
+  }
+
+  /// 별도박스 KIT QR 조회
   Future<void> checkQR() async {
     Get.log('QR 조회');
 
@@ -892,6 +1047,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
           Get.log(smallBoxList.toString());
           Get.log('조회 성공');
           statusText.value = '정상 조회 되었습니다.';
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -903,11 +1059,15 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
       //  plutoRow();
     }
   }
+
+
+
   Future<void> test() async{
     stateManager.rowColorCallback!;
     // 그리드 재렌더링

@@ -1,16 +1,21 @@
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:lsandroid/app/common/app_theme.dart';
 import 'package:lsandroid/app/common/common_appbar_widget.dart';
-import 'package:lsandroid/app/common/dialog_widget.dart';
+
 import 'package:lsandroid/app/pages/home/home_page.dart';
+
+import 'package:pluto_grid/pluto_grid.dart';
+
+import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
+import 'package:intl/intl.dart';
+
 import 'package:lsandroid/app/pages/picking/picking_controller.dart';
 import 'package:lsandroid/app/pages/picking/picking_second_page.dart';
-import 'package:lsandroid/app/routes/app_route.dart';
+
 
 
 import 'package:pluto_grid/pluto_grid.dart';
@@ -20,16 +25,10 @@ class PickingPage extends StatelessWidget {
   PickingPage({super.key});
 
   PickingController controller = Get.find();
-  final focusNode2 = FocusNode();
-  final focusNode3 = FocusNode();
-  final focusNode4 = FocusNode();
-  late double test;
-  late double ipgoDateWidth;
 
   @override
   Widget build(BuildContext context) {
-    test = MediaQuery.of(context).size.width - 570;
-    ipgoDateWidth = MediaQuery.of(context).size.width - 760;
+    controller.isFocus.value == false ? controller.requestFocus() : null;
     return WillPopScope(
       onWillPop: () {
         Get.offAll(HomePage());
@@ -43,7 +42,7 @@ class PickingPage extends StatelessWidget {
               CustomScrollView(
                 slivers: [
                   CommonAppbarWidget(title: '피킹 작업(랙출고)', isLogo: false, isFirstPage: true ),
-                  _mainBody(context),
+                  _mainBody(context)
 
                 ],
               ),
@@ -86,8 +85,6 @@ class PickingPage extends StatelessWidget {
 
 
   Widget _rackIpgoList(BuildContext context) {
-    // final double height = 49*(double.parse((controller.ipgoList.length + 1).toString()));
-    final double height = 500;
     return Container(
       child: Column(children: [
         Container(
@@ -237,7 +234,7 @@ class PickingPage extends StatelessWidget {
         title: '자재명',
         field: 'itemNm',
         type: PlutoColumnType.text(),
-        width: ipgoDateWidth,
+        width: MediaQuery.of(context).size.width - 760,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -395,6 +392,15 @@ class PickingPage extends StatelessWidget {
         ),
         Row(
           children: [
+            Obx(() => Container(
+              margin: EdgeInsets.only(right: 14),
+              decoration: BoxDecoration(
+                  color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(10)
+              ),
+              width: 100,
+              height: 40,
+            ),),
             Container(
               margin: EdgeInsets.only(right: 12),
               width: 120,
@@ -411,6 +417,8 @@ class PickingPage extends StatelessWidget {
                         const EdgeInsets.all(0))),
                 onPressed: () async {
                   Get.log('조회 클릭!');
+                  controller.isFocus.value = true;
+                  controller.focusNode.unfocus();
                   controller.reqPickingFirst();
                 },
                 child: Container(
@@ -420,7 +428,7 @@ class PickingPage extends StatelessWidget {
                       border: Border.all(color: AppTheme.ae2e2e2)
                   ),
                   width: 120,
-                  height: 35,
+                  height: 40,
                   padding: const EdgeInsets.only(
 
                   ),
@@ -433,92 +441,7 @@ class PickingPage extends StatelessWidget {
                 ),
               ),
             ),
-            /*Container(
-              margin: EdgeInsets.only(right: 12),
-              width: 120,
-              height: 35,
-              child: TextButton(
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all<
-                        RoundedRectangleBorder>(
-                        const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10)))),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.all(0))),
-                onPressed: () async {
-                  Get.log('엑셀 클릭!');
-                  Get.log('저장할 리스트!: ${controller.pickingFirstList.length}');
-                  if(controller.pickingFirstList.isNotEmpty) {
-                    await controller.exportToExcel(controller.rowDatas, ['지시번호','지시자','프로젝트','자재코드','자재명','제조번호','랙출고']);
-                    await controller.moveFileToDownloads();
-                    controller.isExelSuc.value ?
-                    Get.dialog(CommonDialogWidget(contentText: '다운로드되었습니다', pageFlag: 3,)) : null;
-                  }
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: AppTheme.navy_navy_800,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppTheme.ae2e2e2)
-                  ),
-                  width: 120,
-                  height: 35,
-                  padding: const EdgeInsets.only(
 
-                  ),
-                  child: Center(
-                    child: Text('엑셀', //입고취소 조회
-                        style: AppTheme.a12700.copyWith(
-                          color: AppTheme.white,
-                        )),
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(right: 12),
-              width: 120,
-              height: 35,
-              child: TextButton(
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all<
-                        RoundedRectangleBorder>(
-                        const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10)))),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.all(0))),
-                onPressed: () async {
-                  if(controller.pickingFirstList.isNotEmpty) {
-                    await controller.exportToPdf(controller.rowDatas, ['지시번호','지시자','프로젝트','자재코드','자재명','제조번호','랙출고']);
-                    await controller.movePdfFileToDownloads();
-                    controller.isPdfSuc.value ?
-                    Get.dialog(CommonDialogWidget(contentText: '다운로드되었습니다', pageFlag: 3,)) : null;
-                  }
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: AppTheme.navy_navy_800,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppTheme.ae2e2e2)
-                  ),
-                  width: 120,
-                  height: 35,
-                  padding: const EdgeInsets.only(
-
-                  ),
-                  child: Center(
-                    child: Text('PDF', //입고취소 조회
-                        style: AppTheme.a12700.copyWith(
-                          color: AppTheme.white,
-                        )),
-                  ),
-                ),
-              ),
-            ),*/
           ],
         ),
       ],
@@ -542,8 +465,9 @@ class PickingPage extends StatelessWidget {
               border: Border.all(color: AppTheme.ae2e2e2)),
           child: Center(
             child: TextFormField(
+              focusNode: title == '지시번호' ? controller.focusNode : null,
               readOnly:  plag == 4 ? true : false,
-              expands :true,
+              expands : true,
               minLines: null,
               maxLines: null,
               style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
@@ -560,7 +484,16 @@ class PickingPage extends StatelessWidget {
                 border: InputBorder.none,
               ),
               showCursor: true,
+                onTap: () {
+                  controller.isFocus.value = true;
+                  if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
+                  else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                },
+                onTapOutside:(event) => { controller.focusCnt.value = 0 },
 
+                onFieldSubmitted: (value) async {
+
+                }
               // onChanged: ((value) => controller.submitSearch(value)),
             ),
           ),

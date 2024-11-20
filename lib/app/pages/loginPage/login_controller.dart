@@ -46,8 +46,10 @@ class LoginController extends GetxController {
 
       if (retVal != null) {
         if (retVal.resultCode == '0000') {
-          Utils.showToast(msg: '로그인 되었습니다.');
           if (retVal.body!.resCd == '0000') {
+            Utils.showToast(msg: '로그인 되었습니다.');
+            gs.loginList.value = retVal.body!.authorities!;
+            gs.loginNm.value = retVal.body!.userName;
             Get.offAllNamed(Routes.MAIN);
           } else {
             // 토큰 데이터가 없다

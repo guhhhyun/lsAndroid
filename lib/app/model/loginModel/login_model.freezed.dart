@@ -24,6 +24,7 @@ mixin _$LoginModel {
   String get resultCode => throw _privateConstructorUsedError;
   String get resultMessage => throw _privateConstructorUsedError;
   Body? get body => throw _privateConstructorUsedError;
+  bool get hasError => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -38,7 +39,11 @@ abstract class $LoginModelCopyWith<$Res> {
       _$LoginModelCopyWithImpl<$Res, LoginModel>;
   @useResult
   $Res call(
-      {Header? header, String resultCode, String resultMessage, Body? body});
+      {Header? header,
+      String resultCode,
+      String resultMessage,
+      Body? body,
+      bool hasError});
 
   $HeaderCopyWith<$Res>? get header;
   $BodyCopyWith<$Res>? get body;
@@ -61,6 +66,7 @@ class _$LoginModelCopyWithImpl<$Res, $Val extends LoginModel>
     Object? resultCode = null,
     Object? resultMessage = null,
     Object? body = freezed,
+    Object? hasError = null,
   }) {
     return _then(_value.copyWith(
       header: freezed == header
@@ -79,6 +85,10 @@ class _$LoginModelCopyWithImpl<$Res, $Val extends LoginModel>
           ? _value.body
           : body // ignore: cast_nullable_to_non_nullable
               as Body?,
+      hasError: null == hasError
+          ? _value.hasError
+          : hasError // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 
@@ -116,7 +126,11 @@ abstract class _$$LoginModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {Header? header, String resultCode, String resultMessage, Body? body});
+      {Header? header,
+      String resultCode,
+      String resultMessage,
+      Body? body,
+      bool hasError});
 
   @override
   $HeaderCopyWith<$Res>? get header;
@@ -139,6 +153,7 @@ class __$$LoginModelImplCopyWithImpl<$Res>
     Object? resultCode = null,
     Object? resultMessage = null,
     Object? body = freezed,
+    Object? hasError = null,
   }) {
     return _then(_$LoginModelImpl(
       header: freezed == header
@@ -157,6 +172,10 @@ class __$$LoginModelImplCopyWithImpl<$Res>
           ? _value.body
           : body // ignore: cast_nullable_to_non_nullable
               as Body?,
+      hasError: null == hasError
+          ? _value.hasError
+          : hasError // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -166,9 +185,10 @@ class __$$LoginModelImplCopyWithImpl<$Res>
 class _$LoginModelImpl implements _LoginModel {
   const _$LoginModelImpl(
       {this.header,
-      this.resultCode = 'false',
+      this.resultCode = '',
       this.resultMessage = '',
-      this.body});
+      this.body,
+      this.hasError = false});
 
   factory _$LoginModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$LoginModelImplFromJson(json);
@@ -183,10 +203,13 @@ class _$LoginModelImpl implements _LoginModel {
   final String resultMessage;
   @override
   final Body? body;
+  @override
+  @JsonKey()
+  final bool hasError;
 
   @override
   String toString() {
-    return 'LoginModel(header: $header, resultCode: $resultCode, resultMessage: $resultMessage, body: $body)';
+    return 'LoginModel(header: $header, resultCode: $resultCode, resultMessage: $resultMessage, body: $body, hasError: $hasError)';
   }
 
   @override
@@ -199,13 +222,15 @@ class _$LoginModelImpl implements _LoginModel {
                 other.resultCode == resultCode) &&
             (identical(other.resultMessage, resultMessage) ||
                 other.resultMessage == resultMessage) &&
-            (identical(other.body, body) || other.body == body));
+            (identical(other.body, body) || other.body == body) &&
+            (identical(other.hasError, hasError) ||
+                other.hasError == hasError));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, header, resultCode, resultMessage, body);
+  int get hashCode => Object.hash(
+      runtimeType, header, resultCode, resultMessage, body, hasError);
 
   @JsonKey(ignore: true)
   @override
@@ -226,7 +251,8 @@ abstract class _LoginModel implements LoginModel {
       {final Header? header,
       final String resultCode,
       final String resultMessage,
-      final Body? body}) = _$LoginModelImpl;
+      final Body? body,
+      final bool hasError}) = _$LoginModelImpl;
 
   factory _LoginModel.fromJson(Map<String, dynamic> json) =
       _$LoginModelImpl.fromJson;
@@ -239,6 +265,8 @@ abstract class _LoginModel implements LoginModel {
   String get resultMessage;
   @override
   Body? get body;
+  @override
+  bool get hasError;
   @override
   @JsonKey(ignore: true)
   _$$LoginModelImplCopyWith<_$LoginModelImpl> get copyWith =>
@@ -254,8 +282,8 @@ mixin _$Header {
   int get currentPage => throw _privateConstructorUsedError;
   int get pageSize => throw _privateConstructorUsedError;
   int get totalRecords => throw _privateConstructorUsedError;
-  dynamic get orders => throw _privateConstructorUsedError; // Optional fields
-  dynamic get chnlCd => throw _privateConstructorUsedError;
+  String get orders => throw _privateConstructorUsedError;
+  String get chnlCd => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -271,8 +299,8 @@ abstract class $HeaderCopyWith<$Res> {
       {int currentPage,
       int pageSize,
       int totalRecords,
-      dynamic orders,
-      dynamic chnlCd});
+      String orders,
+      String chnlCd});
 }
 
 /// @nodoc
@@ -291,8 +319,8 @@ class _$HeaderCopyWithImpl<$Res, $Val extends Header>
     Object? currentPage = null,
     Object? pageSize = null,
     Object? totalRecords = null,
-    Object? orders = freezed,
-    Object? chnlCd = freezed,
+    Object? orders = null,
+    Object? chnlCd = null,
   }) {
     return _then(_value.copyWith(
       currentPage: null == currentPage
@@ -307,14 +335,14 @@ class _$HeaderCopyWithImpl<$Res, $Val extends Header>
           ? _value.totalRecords
           : totalRecords // ignore: cast_nullable_to_non_nullable
               as int,
-      orders: freezed == orders
+      orders: null == orders
           ? _value.orders
           : orders // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      chnlCd: freezed == chnlCd
+              as String,
+      chnlCd: null == chnlCd
           ? _value.chnlCd
           : chnlCd // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String,
     ) as $Val);
   }
 }
@@ -330,8 +358,8 @@ abstract class _$$HeaderImplCopyWith<$Res> implements $HeaderCopyWith<$Res> {
       {int currentPage,
       int pageSize,
       int totalRecords,
-      dynamic orders,
-      dynamic chnlCd});
+      String orders,
+      String chnlCd});
 }
 
 /// @nodoc
@@ -348,8 +376,8 @@ class __$$HeaderImplCopyWithImpl<$Res>
     Object? currentPage = null,
     Object? pageSize = null,
     Object? totalRecords = null,
-    Object? orders = freezed,
-    Object? chnlCd = freezed,
+    Object? orders = null,
+    Object? chnlCd = null,
   }) {
     return _then(_$HeaderImpl(
       currentPage: null == currentPage
@@ -364,14 +392,14 @@ class __$$HeaderImplCopyWithImpl<$Res>
           ? _value.totalRecords
           : totalRecords // ignore: cast_nullable_to_non_nullable
               as int,
-      orders: freezed == orders
+      orders: null == orders
           ? _value.orders
           : orders // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      chnlCd: freezed == chnlCd
+              as String,
+      chnlCd: null == chnlCd
           ? _value.chnlCd
           : chnlCd // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String,
     ));
   }
 }
@@ -383,8 +411,8 @@ class _$HeaderImpl implements _Header {
       {this.currentPage = 0,
       this.pageSize = 0,
       this.totalRecords = 0,
-      this.orders,
-      this.chnlCd});
+      this.orders = '',
+      this.chnlCd = ''});
 
   factory _$HeaderImpl.fromJson(Map<String, dynamic> json) =>
       _$$HeaderImplFromJson(json);
@@ -399,10 +427,11 @@ class _$HeaderImpl implements _Header {
   @JsonKey()
   final int totalRecords;
   @override
-  final dynamic orders;
-// Optional fields
+  @JsonKey()
+  final String orders;
   @override
-  final dynamic chnlCd;
+  @JsonKey()
+  final String chnlCd;
 
   @override
   String toString() {
@@ -420,19 +449,14 @@ class _$HeaderImpl implements _Header {
                 other.pageSize == pageSize) &&
             (identical(other.totalRecords, totalRecords) ||
                 other.totalRecords == totalRecords) &&
-            const DeepCollectionEquality().equals(other.orders, orders) &&
-            const DeepCollectionEquality().equals(other.chnlCd, chnlCd));
+            (identical(other.orders, orders) || other.orders == orders) &&
+            (identical(other.chnlCd, chnlCd) || other.chnlCd == chnlCd));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      currentPage,
-      pageSize,
-      totalRecords,
-      const DeepCollectionEquality().hash(orders),
-      const DeepCollectionEquality().hash(chnlCd));
+      runtimeType, currentPage, pageSize, totalRecords, orders, chnlCd);
 
   @JsonKey(ignore: true)
   @override
@@ -453,8 +477,8 @@ abstract class _Header implements Header {
       {final int currentPage,
       final int pageSize,
       final int totalRecords,
-      final dynamic orders,
-      final dynamic chnlCd}) = _$HeaderImpl;
+      final String orders,
+      final String chnlCd}) = _$HeaderImpl;
 
   factory _Header.fromJson(Map<String, dynamic> json) = _$HeaderImpl.fromJson;
 
@@ -465,9 +489,9 @@ abstract class _Header implements Header {
   @override
   int get totalRecords;
   @override
-  dynamic get orders;
-  @override // Optional fields
-  dynamic get chnlCd;
+  String get orders;
+  @override
+  String get chnlCd;
   @override
   @JsonKey(ignore: true)
   _$$HeaderImplCopyWith<_$HeaderImpl> get copyWith =>
@@ -485,14 +509,17 @@ mixin _$Body {
   String get userKey => throw _privateConstructorUsedError;
   String get duplicationKey => throw _privateConstructorUsedError;
   String get userName => throw _privateConstructorUsedError;
-  dynamic get orgNm => throw _privateConstructorUsedError;
-  dynamic get deptCd => throw _privateConstructorUsedError;
+  String get orgNm => throw _privateConstructorUsedError;
+  String get deptCd => throw _privateConstructorUsedError;
   String get deptNm => throw _privateConstructorUsedError;
   bool get resetPassword => throw _privateConstructorUsedError;
   int get loginFailCnt => throw _privateConstructorUsedError;
   int get pwdUnchangedDays => throw _privateConstructorUsedError;
   bool get completed => throw _privateConstructorUsedError;
-  List<Authority?>? get authorities => throw _privateConstructorUsedError;
+  List<Authority>? get authorities => throw _privateConstructorUsedError;
+  List<dynamic>? get userMenus => throw _privateConstructorUsedError;
+  String get sessionId => throw _privateConstructorUsedError;
+  bool get authenticated => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -510,14 +537,17 @@ abstract class $BodyCopyWith<$Res> {
       String userKey,
       String duplicationKey,
       String userName,
-      dynamic orgNm,
-      dynamic deptCd,
+      String orgNm,
+      String deptCd,
       String deptNm,
       bool resetPassword,
       int loginFailCnt,
       int pwdUnchangedDays,
       bool completed,
-      List<Authority?>? authorities});
+      List<Authority>? authorities,
+      List<dynamic>? userMenus,
+      String sessionId,
+      bool authenticated});
 }
 
 /// @nodoc
@@ -538,14 +568,17 @@ class _$BodyCopyWithImpl<$Res, $Val extends Body>
     Object? userKey = null,
     Object? duplicationKey = null,
     Object? userName = null,
-    Object? orgNm = freezed,
-    Object? deptCd = freezed,
+    Object? orgNm = null,
+    Object? deptCd = null,
     Object? deptNm = null,
     Object? resetPassword = null,
     Object? loginFailCnt = null,
     Object? pwdUnchangedDays = null,
     Object? completed = null,
     Object? authorities = freezed,
+    Object? userMenus = freezed,
+    Object? sessionId = null,
+    Object? authenticated = null,
   }) {
     return _then(_value.copyWith(
       resCd: null == resCd
@@ -568,14 +601,14 @@ class _$BodyCopyWithImpl<$Res, $Val extends Body>
           ? _value.userName
           : userName // ignore: cast_nullable_to_non_nullable
               as String,
-      orgNm: freezed == orgNm
+      orgNm: null == orgNm
           ? _value.orgNm
           : orgNm // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      deptCd: freezed == deptCd
+              as String,
+      deptCd: null == deptCd
           ? _value.deptCd
           : deptCd // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String,
       deptNm: null == deptNm
           ? _value.deptNm
           : deptNm // ignore: cast_nullable_to_non_nullable
@@ -599,7 +632,19 @@ class _$BodyCopyWithImpl<$Res, $Val extends Body>
       authorities: freezed == authorities
           ? _value.authorities
           : authorities // ignore: cast_nullable_to_non_nullable
-              as List<Authority?>?,
+              as List<Authority>?,
+      userMenus: freezed == userMenus
+          ? _value.userMenus
+          : userMenus // ignore: cast_nullable_to_non_nullable
+              as List<dynamic>?,
+      sessionId: null == sessionId
+          ? _value.sessionId
+          : sessionId // ignore: cast_nullable_to_non_nullable
+              as String,
+      authenticated: null == authenticated
+          ? _value.authenticated
+          : authenticated // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -617,14 +662,17 @@ abstract class _$$BodyImplCopyWith<$Res> implements $BodyCopyWith<$Res> {
       String userKey,
       String duplicationKey,
       String userName,
-      dynamic orgNm,
-      dynamic deptCd,
+      String orgNm,
+      String deptCd,
       String deptNm,
       bool resetPassword,
       int loginFailCnt,
       int pwdUnchangedDays,
       bool completed,
-      List<Authority?>? authorities});
+      List<Authority>? authorities,
+      List<dynamic>? userMenus,
+      String sessionId,
+      bool authenticated});
 }
 
 /// @nodoc
@@ -642,14 +690,17 @@ class __$$BodyImplCopyWithImpl<$Res>
     Object? userKey = null,
     Object? duplicationKey = null,
     Object? userName = null,
-    Object? orgNm = freezed,
-    Object? deptCd = freezed,
+    Object? orgNm = null,
+    Object? deptCd = null,
     Object? deptNm = null,
     Object? resetPassword = null,
     Object? loginFailCnt = null,
     Object? pwdUnchangedDays = null,
     Object? completed = null,
     Object? authorities = freezed,
+    Object? userMenus = freezed,
+    Object? sessionId = null,
+    Object? authenticated = null,
   }) {
     return _then(_$BodyImpl(
       resCd: null == resCd
@@ -672,14 +723,14 @@ class __$$BodyImplCopyWithImpl<$Res>
           ? _value.userName
           : userName // ignore: cast_nullable_to_non_nullable
               as String,
-      orgNm: freezed == orgNm
+      orgNm: null == orgNm
           ? _value.orgNm
           : orgNm // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      deptCd: freezed == deptCd
+              as String,
+      deptCd: null == deptCd
           ? _value.deptCd
           : deptCd // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String,
       deptNm: null == deptNm
           ? _value.deptNm
           : deptNm // ignore: cast_nullable_to_non_nullable
@@ -703,7 +754,19 @@ class __$$BodyImplCopyWithImpl<$Res>
       authorities: freezed == authorities
           ? _value._authorities
           : authorities // ignore: cast_nullable_to_non_nullable
-              as List<Authority?>?,
+              as List<Authority>?,
+      userMenus: freezed == userMenus
+          ? _value._userMenus
+          : userMenus // ignore: cast_nullable_to_non_nullable
+              as List<dynamic>?,
+      sessionId: null == sessionId
+          ? _value.sessionId
+          : sessionId // ignore: cast_nullable_to_non_nullable
+              as String,
+      authenticated: null == authenticated
+          ? _value.authenticated
+          : authenticated // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -717,15 +780,19 @@ class _$BodyImpl implements _Body {
       this.userKey = '',
       this.duplicationKey = '',
       this.userName = '',
-      this.orgNm,
-      this.deptCd,
+      this.orgNm = '',
+      this.deptCd = '',
       this.deptNm = '',
       this.resetPassword = false,
       this.loginFailCnt = 0,
       this.pwdUnchangedDays = 0,
       this.completed = false,
-      final List<Authority?>? authorities})
-      : _authorities = authorities;
+      final List<Authority>? authorities,
+      final List<dynamic>? userMenus,
+      this.sessionId = '',
+      this.authenticated = false})
+      : _authorities = authorities,
+        _userMenus = userMenus;
 
   factory _$BodyImpl.fromJson(Map<String, dynamic> json) =>
       _$$BodyImplFromJson(json);
@@ -746,9 +813,11 @@ class _$BodyImpl implements _Body {
   @JsonKey()
   final String userName;
   @override
-  final dynamic orgNm;
+  @JsonKey()
+  final String orgNm;
   @override
-  final dynamic deptCd;
+  @JsonKey()
+  final String deptCd;
   @override
   @JsonKey()
   final String deptNm;
@@ -764,9 +833,9 @@ class _$BodyImpl implements _Body {
   @override
   @JsonKey()
   final bool completed;
-  final List<Authority?>? _authorities;
+  final List<Authority>? _authorities;
   @override
-  List<Authority?>? get authorities {
+  List<Authority>? get authorities {
     final value = _authorities;
     if (value == null) return null;
     if (_authorities is EqualUnmodifiableListView) return _authorities;
@@ -774,9 +843,26 @@ class _$BodyImpl implements _Body {
     return EqualUnmodifiableListView(value);
   }
 
+  final List<dynamic>? _userMenus;
+  @override
+  List<dynamic>? get userMenus {
+    final value = _userMenus;
+    if (value == null) return null;
+    if (_userMenus is EqualUnmodifiableListView) return _userMenus;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  @JsonKey()
+  final String sessionId;
+  @override
+  @JsonKey()
+  final bool authenticated;
+
   @override
   String toString() {
-    return 'Body(resCd: $resCd, hasUser: $hasUser, userKey: $userKey, duplicationKey: $duplicationKey, userName: $userName, orgNm: $orgNm, deptCd: $deptCd, deptNm: $deptNm, resetPassword: $resetPassword, loginFailCnt: $loginFailCnt, pwdUnchangedDays: $pwdUnchangedDays, completed: $completed, authorities: $authorities)';
+    return 'Body(resCd: $resCd, hasUser: $hasUser, userKey: $userKey, duplicationKey: $duplicationKey, userName: $userName, orgNm: $orgNm, deptCd: $deptCd, deptNm: $deptNm, resetPassword: $resetPassword, loginFailCnt: $loginFailCnt, pwdUnchangedDays: $pwdUnchangedDays, completed: $completed, authorities: $authorities, userMenus: $userMenus, sessionId: $sessionId, authenticated: $authenticated)';
   }
 
   @override
@@ -791,8 +877,8 @@ class _$BodyImpl implements _Body {
                 other.duplicationKey == duplicationKey) &&
             (identical(other.userName, userName) ||
                 other.userName == userName) &&
-            const DeepCollectionEquality().equals(other.orgNm, orgNm) &&
-            const DeepCollectionEquality().equals(other.deptCd, deptCd) &&
+            (identical(other.orgNm, orgNm) || other.orgNm == orgNm) &&
+            (identical(other.deptCd, deptCd) || other.deptCd == deptCd) &&
             (identical(other.deptNm, deptNm) || other.deptNm == deptNm) &&
             (identical(other.resetPassword, resetPassword) ||
                 other.resetPassword == resetPassword) &&
@@ -803,7 +889,13 @@ class _$BodyImpl implements _Body {
             (identical(other.completed, completed) ||
                 other.completed == completed) &&
             const DeepCollectionEquality()
-                .equals(other._authorities, _authorities));
+                .equals(other._authorities, _authorities) &&
+            const DeepCollectionEquality()
+                .equals(other._userMenus, _userMenus) &&
+            (identical(other.sessionId, sessionId) ||
+                other.sessionId == sessionId) &&
+            (identical(other.authenticated, authenticated) ||
+                other.authenticated == authenticated));
   }
 
   @JsonKey(ignore: true)
@@ -815,14 +907,17 @@ class _$BodyImpl implements _Body {
       userKey,
       duplicationKey,
       userName,
-      const DeepCollectionEquality().hash(orgNm),
-      const DeepCollectionEquality().hash(deptCd),
+      orgNm,
+      deptCd,
       deptNm,
       resetPassword,
       loginFailCnt,
       pwdUnchangedDays,
       completed,
-      const DeepCollectionEquality().hash(_authorities));
+      const DeepCollectionEquality().hash(_authorities),
+      const DeepCollectionEquality().hash(_userMenus),
+      sessionId,
+      authenticated);
 
   @JsonKey(ignore: true)
   @override
@@ -845,14 +940,17 @@ abstract class _Body implements Body {
       final String userKey,
       final String duplicationKey,
       final String userName,
-      final dynamic orgNm,
-      final dynamic deptCd,
+      final String orgNm,
+      final String deptCd,
       final String deptNm,
       final bool resetPassword,
       final int loginFailCnt,
       final int pwdUnchangedDays,
       final bool completed,
-      final List<Authority?>? authorities}) = _$BodyImpl;
+      final List<Authority>? authorities,
+      final List<dynamic>? userMenus,
+      final String sessionId,
+      final bool authenticated}) = _$BodyImpl;
 
   factory _Body.fromJson(Map<String, dynamic> json) = _$BodyImpl.fromJson;
 
@@ -867,9 +965,9 @@ abstract class _Body implements Body {
   @override
   String get userName;
   @override
-  dynamic get orgNm;
+  String get orgNm;
   @override
-  dynamic get deptCd;
+  String get deptCd;
   @override
   String get deptNm;
   @override
@@ -881,7 +979,13 @@ abstract class _Body implements Body {
   @override
   bool get completed;
   @override
-  List<Authority?>? get authorities;
+  List<Authority>? get authorities;
+  @override
+  List<dynamic>? get userMenus;
+  @override
+  String get sessionId;
+  @override
+  bool get authenticated;
   @override
   @JsonKey(ignore: true)
   _$$BodyImplCopyWith<_$BodyImpl> get copyWith =>
@@ -897,7 +1001,6 @@ mixin _$Authority {
   String get menuId => throw _privateConstructorUsedError;
   String get authority => throw _privateConstructorUsedError;
   String get clientAuthority => throw _privateConstructorUsedError;
-  String? get programId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -910,11 +1013,7 @@ abstract class $AuthorityCopyWith<$Res> {
   factory $AuthorityCopyWith(Authority value, $Res Function(Authority) then) =
       _$AuthorityCopyWithImpl<$Res, Authority>;
   @useResult
-  $Res call(
-      {String menuId,
-      String authority,
-      String clientAuthority,
-      String? programId});
+  $Res call({String menuId, String authority, String clientAuthority});
 }
 
 /// @nodoc
@@ -933,7 +1032,6 @@ class _$AuthorityCopyWithImpl<$Res, $Val extends Authority>
     Object? menuId = null,
     Object? authority = null,
     Object? clientAuthority = null,
-    Object? programId = freezed,
   }) {
     return _then(_value.copyWith(
       menuId: null == menuId
@@ -948,10 +1046,6 @@ class _$AuthorityCopyWithImpl<$Res, $Val extends Authority>
           ? _value.clientAuthority
           : clientAuthority // ignore: cast_nullable_to_non_nullable
               as String,
-      programId: freezed == programId
-          ? _value.programId
-          : programId // ignore: cast_nullable_to_non_nullable
-              as String?,
     ) as $Val);
   }
 }
@@ -964,11 +1058,7 @@ abstract class _$$AuthorityImplCopyWith<$Res>
       __$$AuthorityImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {String menuId,
-      String authority,
-      String clientAuthority,
-      String? programId});
+  $Res call({String menuId, String authority, String clientAuthority});
 }
 
 /// @nodoc
@@ -985,7 +1075,6 @@ class __$$AuthorityImplCopyWithImpl<$Res>
     Object? menuId = null,
     Object? authority = null,
     Object? clientAuthority = null,
-    Object? programId = freezed,
   }) {
     return _then(_$AuthorityImpl(
       menuId: null == menuId
@@ -1000,10 +1089,6 @@ class __$$AuthorityImplCopyWithImpl<$Res>
           ? _value.clientAuthority
           : clientAuthority // ignore: cast_nullable_to_non_nullable
               as String,
-      programId: freezed == programId
-          ? _value.programId
-          : programId // ignore: cast_nullable_to_non_nullable
-              as String?,
     ));
   }
 }
@@ -1012,10 +1097,7 @@ class __$$AuthorityImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$AuthorityImpl implements _Authority {
   const _$AuthorityImpl(
-      {this.menuId = '',
-      this.authority = '',
-      this.clientAuthority = '',
-      this.programId});
+      {this.menuId = '', this.authority = '', this.clientAuthority = ''});
 
   factory _$AuthorityImpl.fromJson(Map<String, dynamic> json) =>
       _$$AuthorityImplFromJson(json);
@@ -1029,12 +1111,10 @@ class _$AuthorityImpl implements _Authority {
   @override
   @JsonKey()
   final String clientAuthority;
-  @override
-  final String? programId;
 
   @override
   String toString() {
-    return 'Authority(menuId: $menuId, authority: $authority, clientAuthority: $clientAuthority, programId: $programId)';
+    return 'Authority(menuId: $menuId, authority: $authority, clientAuthority: $clientAuthority)';
   }
 
   @override
@@ -1046,15 +1126,13 @@ class _$AuthorityImpl implements _Authority {
             (identical(other.authority, authority) ||
                 other.authority == authority) &&
             (identical(other.clientAuthority, clientAuthority) ||
-                other.clientAuthority == clientAuthority) &&
-            (identical(other.programId, programId) ||
-                other.programId == programId));
+                other.clientAuthority == clientAuthority));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, menuId, authority, clientAuthority, programId);
+      Object.hash(runtimeType, menuId, authority, clientAuthority);
 
   @JsonKey(ignore: true)
   @override
@@ -1074,8 +1152,7 @@ abstract class _Authority implements Authority {
   const factory _Authority(
       {final String menuId,
       final String authority,
-      final String clientAuthority,
-      final String? programId}) = _$AuthorityImpl;
+      final String clientAuthority}) = _$AuthorityImpl;
 
   factory _Authority.fromJson(Map<String, dynamic> json) =
       _$AuthorityImpl.fromJson;
@@ -1086,8 +1163,6 @@ abstract class _Authority implements Authority {
   String get authority;
   @override
   String get clientAuthority;
-  @override
-  String? get programId;
   @override
   @JsonKey(ignore: true)
   _$$AuthorityImplCopyWith<_$AuthorityImpl> get copyWith =>

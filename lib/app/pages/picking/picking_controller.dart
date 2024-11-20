@@ -115,11 +115,16 @@ class PickingController extends GetxController with GetSingleTickerProviderState
   RxString pdfFileName = ''.obs; // pdf파일 이름
   RxBool isExelSuc = false.obs; // 엑셀파일생성 성공여부
   RxBool isPdfSuc = false.obs; // PDF 파일생성 성공여부
-/*  RxString projectNm = ''.obs;
-  RxString projectNm = ''.obs;
-  RxString projectNm = ''.obs;*/
+  RxBool isFocus = false.obs;
+  RxBool isDbConnected = true.obs;
 
 
+  void requestFocus() {
+    Future.microtask(() => focusNode.requestFocus());
+    if(focusCnt.value++ > 1) focusCnt.value = 0;
+    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+    isFocus.value = true;
+  }
 
   /// 다른 위치 랙출고
   Future<void> registOtherRackBtn(int i) async {
@@ -238,6 +243,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
         if (retVal == '0000') {
           Get.log('다른 위치 랙출고');
           isRegistOtherRackBtn.value = true;
+          isDbConnected.value = true;
         } else {
           Get.log('다른 위치 랙출고 실패');
 
@@ -245,6 +251,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
       } catch (e) {
         Get.log('registOtherRackBtn catch !!!!');
         Get.log(e.toString());
+        isDbConnected.value = false;
       } finally {
         bLoading.value = false;
 
@@ -315,6 +322,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
           if (retVal == '0000') {
             Get.log('랙출고');
             isRegistRackBtn.value = true;
+            isDbConnected.value = true;
           } else {
             Get.log('랙출고 실패');
 
@@ -322,6 +330,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
         } catch (e) {
           Get.log('registRackBtn catch !!!!');
           Get.log(e.toString());
+          isDbConnected.value = false;
         } finally {
           bLoading.value = false;
 
@@ -383,6 +392,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
           });*/
           Get.log(pickingThirdList.toString());
           Get.log('조회 성공');
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -395,6 +405,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
     } catch (e) {
       Get.log('reqPickingThird catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
       plutoRow2();
@@ -448,6 +459,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
           Get.log('${pickingSecondList.length}');
           Get.log(pickingSecondList.toString());
           Get.log('조회 성공');
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -460,6 +472,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
     }
@@ -529,6 +542,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
           pickingFirstList.value.addAll(retVal.body![1]);
           Get.log(pickingFirstList.toString());
           Get.log('조회 성공');
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -541,6 +555,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
     } catch (e) {
       Get.log('reqPickingFirst catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
       plutoRow();
@@ -715,7 +730,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
     gridStateMgr2.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
   }
 
-
+  final FocusNode focusNode = FocusNode();
 
   @override
   void onClose() {
@@ -730,7 +745,6 @@ class PickingController extends GetxController with GetSingleTickerProviderState
     firstDayOfMonth = DateTime(now.year, now.month, 1);
     dayStartValue.value = DateFormat('yyyy-MM-dd').format(firstDayOfMonth);
     registRackIpgoList.clear();
-
   }
 
   @override

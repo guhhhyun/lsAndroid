@@ -28,7 +28,8 @@ class ChulgoSecondNewPage extends StatefulWidget {
 class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
   @override
   void initState() {
-  //  late  PlutoGridStateManager gridStateMgr3;
+    controller.isQr.value == false ?
+    controller.requestFocus() : null;
     super.initState();
 
   }
@@ -38,7 +39,6 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return WillPopScope(
       onWillPop: () {
         Get.offAll(HomePage());
@@ -351,7 +351,6 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                               const EdgeInsets.all(0))),
                       onPressed: () async {
                         controller.isQr.value = true;
-                        controller.focusNode2.unfocus();
                         Get.log('출고등록 클릭!');
                         for(var i = 0; i < controller.chulSecondList.length; i++) {
                           if(controller.chulSecondList[i]['scanRowspan'] != 0) {
@@ -628,8 +627,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                   controller.gridStateMgr3.removeAllRows();
                   controller.gridStateMgr3.appendRows(controller.rowDatas3);
                   controller.isQr.value = false;
-                  controller.isQr.value == false ?
-                  controller.requestFocus() : null;
+                   // controller.requestFocus();
                 },
                 rowColorCallback: (c) {
                   if(controller.tete.value) {

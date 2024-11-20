@@ -103,6 +103,15 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
   RxString cellValue = ''.obs;
   RxString currentValue = ''.obs;
   RxBool isNewItem = false.obs; // 처음 스캔되는 자재인지 판단
+  RxBool isDonggi = false.obs;
+  RxBool noSync = false.obs;
+
+  RxBool isSaveClick = false.obs; // 중복클릭 방지
+  RxBool isConfirmClick = false.obs; // 중복클릭 방지
+
+  RxBool isDbConnected = true.obs;
+
+
 
 
   final FocusNode focusNode = FocusNode();
@@ -111,6 +120,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     Future.microtask(() => focusNode.requestFocus());
     if(focusCnt.value++ > 1) focusCnt.value = 0;
     else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+    isFocus.value = true;
   }
 
   List<PlutoCell> createPlutoCells(List<String> columnNames) {
@@ -148,7 +158,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
             .toList();
         Get.log('조회 성공');
         Get.log('reasonDropdownList: $reasonDropdownList');
-
+        isDbConnected.value = true;
       } else {
         Get.log('조회 실패');
 
@@ -156,11 +166,16 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     } catch (e) {
       Get.log('reqCommon catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
 
     }
   }
+
+  RxBool isWrkQty = false.obs; // 스캔 확인
+  RxBool isQty = false.obs; // 수량확인
+  RxBool isReason = false.obs; // 동기화 사유 확인
 
   /// 확정/확정취소 (confirmYn == 'Y' ? 확정 : 확정취소) // 왼쪽 오른쪽 리스트 길이 같고 수량 같고 동기화 시에 사유 다 있어야하고
   Future<void> registSmallKitConfirm(String confirmYn) async {
@@ -193,33 +208,47 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
       Get.log('uniqueSmallBoxList2: ${uniqueSmallBoxList2.value.length}');
       Get.log('smallBoxList2: ${smallBoxList2.length}');
       for(var i = 0; i < uniqueSmallBoxList2.length; i++) {
-
-        if (uniqueSmallBoxList2[i]['wrkQty'] != null) {
-          if (uniqueSmallBoxList2[i]['cbxQty'].toString() == uniqueSmallBoxList2[i]['wrkQty'].toString()) {
-            if (uniqueSmallBoxList2[i]['syncYn'] == 'Y') {
-              if (uniqueSmallBoxList2[i]['ncbxRmk'] != null &&
-                  uniqueSmallBoxList2[i]['ncbxRmk'] != '') {
-                isConfirm.value = true;
-              } else {
-                isConfirmText.value = '동기화 된 자재의 사유를 입력해주세요.';
-                isConfirm.value = false;
-                break;
-              }
-            } else {
-              isConfirm.value = true;
-            }
-          } else {
-            isConfirmText.value = '수량이 일치하지않습니다.';
-            isConfirm.value = false;
-            break;
-          }
+        if (uniqueSmallBoxList2[i]['wrkQty'] != null && uniqueSmallBoxList2[i]['wrkQty'].toString() != '0') {
+          isWrkQty.value = true;
         } else {
           isConfirmText.value = '스캔/동기화 되지않은 자재가 있습니다.';
           isConfirm.value = false;
+          isWrkQty.value = false;
+          break;
+        }
+      }
+      if(isWrkQty.value) {
+        for(var i = 0; i < uniqueSmallBoxList2.length; i++) {
+          if (uniqueSmallBoxList2[i]['cbxQty'].toString() == uniqueSmallBoxList2[i]['wrkQty'].toString()) {
+            isQty.value = true;
+          } else {
+            isConfirmText.value = '수량이 일치하지않습니다.';
+            isConfirm.value = false;
+            isQty.value = false;
+            break;
+          }
+        }
+      }
+      if(isQty.value) {
+        for(var i = 0; i < uniqueSmallBoxList2.length; i++) {
+          if (uniqueSmallBoxList2[i]['syncYn'] == 'Y') {
+            if (uniqueSmallBoxList2[i]['ncbxRmk'] != null &&
+                uniqueSmallBoxList2[i]['ncbxRmk'] != '') {
+              isReason.value = true;
+            } else {
+              isConfirmText.value = '동기화 된 자재의 사유를 입력해주세요.';
+              isConfirm.value = false;
+              isReason.value = false;
+              break;
+            }
+          }
         }
       }
 
     }else {
+      isConfirm.value = true;
+    }
+    if(isWrkQty.value && isQty.value && isReason.value) {
       isConfirm.value = true;
     }
 
@@ -275,6 +304,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
         if (retVal == '0000') {
           Get.log('등록되었습니다');
+          isDbConnected.value = true;
         } else {
           Get.log('등록 실패');
 
@@ -284,9 +314,84 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     } catch (e) {
       Get.log('registSmallKitConfirm catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
+      isSaveClick.value = false;
+    }
 
+  }
+
+  /// 메모 저장
+  Future<void> registMemoSmallKitSave() async {
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A2060_S01',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'N4',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_CBX_SU_NO',
+          'paramValue': smallBoxList[0]['CBX_SU_NO'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_WRK_REMARK',
+          'paramValue': textMemoController.text,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_ID',
+          'paramValue': gs.loginId.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_IP',
+          'paramValue': 'MOBILE',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+
+
+      ]
+    };
+
+    try {
+
+      final retVal = await HomeApi.to.registSmallKitSave(params);
+
+      if (retVal == '0000') {
+        Get.log('등록되었습니다');
+        isSave.value = true;
+        isSaveText.value = '저장되었습니다.';
+        isDbConnected.value = true;
+      } else {
+        Get.log('등록 실패');
+        isSave.value = false;
+        isSaveText.value = '저장에 실패하였습니다.';
+      }
+
+    } catch (e) {
+      Get.log('registMemoSmallKitSave catch !!!!');
+      Get.log(e.toString());
+      isSaveText.value = '저장에 실패하였습니다.';
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+      isConfirmClick.value = false;
     }
 
   }
@@ -519,6 +624,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
             Get.log('등록되었습니다');
             isSave.value = true;
             isSaveText.value = '저장되었습니다.';
+            isDbConnected.value = true;
           } else {
             Get.log('등록 실패');
             isSave.value = false;
@@ -530,9 +636,11 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         Get.log('registSmallKitSave catch !!!!');
         Get.log(e.toString());
         isSaveText.value = '저장에 실패하였습니다.';
+        isDbConnected.value = false;
       } finally {
         bLoading.value = false;
-
+        isSaveClick.value = false;
+        isConfirmClick.value = false;
       }
     }
     isTotalSave.value = true;
@@ -755,6 +863,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         if (retVal == '0000') {
           Get.log('디테일 등록되었습니다');
           isDetailSave.value = true;
+          isDbConnected.value = true;
         } else {
           Get.log('디테일 등록 실패');
           isDetailSave.value = false;
@@ -764,9 +873,11 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         Get.log('registSmallKitDetailSave catch !!!!');
         Get.log(e.toString());
         isSaveText.value = '저장에 실패하였습니다.';
+        isDbConnected.value = false;
       } finally {
         bLoading.value = false;
-
+        isSaveClick.value = false;
+        isConfirmClick.value = false;
       }
     }
     isTotalDetailSave.value = true;
@@ -822,6 +933,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
           Get.log('조회 성공');
           statusText.value = '정상 조회 되었습니다.';
             duplicationQr3.value ? statusText.value = '이미 스캔된 QR코드입니다.' : null;
+            isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -833,6 +945,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     } catch (e) {
       Get.log('checkItemQr catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
       //plutoRow();
@@ -958,6 +1071,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
           Get.log(smallBoxList.toString());
           Get.log('조회 성공');
           statusText.value = '정상 조회 되었습니다.';
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -969,6 +1083,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
       //  plutoRow();
@@ -1024,7 +1139,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
           Get.log(smallBoxList2.toString());
           Get.log('조회 성공');
-
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
         }
@@ -1035,6 +1150,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
       //  plutoRow();

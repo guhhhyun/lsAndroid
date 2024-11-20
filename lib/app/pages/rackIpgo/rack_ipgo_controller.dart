@@ -62,6 +62,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
   RxBool isDuplQr = false.obs; // 중복qr 선택된 값이 있는지 여부
   RxInt selectedInvnrIndex = 0.obs; // 선택된 거래명세서의 index
   RxString statusText = ''.obs;
+  RxBool isDbConnected = true.obs;
 
 
   final FocusNode focusNode = FocusNode();
@@ -164,7 +165,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
 
         if (retVal == '0000') {
           Get.log('보류되었습니다');
-
+          isDbConnected.value = true;
         } else {
           Get.log('보류 실패');
 
@@ -172,6 +173,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
       } catch (e) {
         Get.log('registRackIpgo catch !!!!');
         Get.log(e.toString());
+        isDbConnected.value = false;
       } finally {
         bLoading.value = false;
 
@@ -273,7 +275,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
 
         if (retVal == '0000') {
           Get.log('보류되었습니다');
-
+          isDbConnected.value = true;
         } else {
           Get.log('보류 실패');
 
@@ -281,6 +283,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
       } catch (e) {
         Get.log('registRackIpgo catch !!!!');
         Get.log(e.toString());
+        isDbConnected.value = false;
       } finally {
         bLoading.value = false;
 
@@ -382,7 +385,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
 
         if (retVal == '0000') {
           Get.log('등록되었습니다');
-
+          isDbConnected.value = true;
         } else {
           Get.log('등록 실패');
 
@@ -390,6 +393,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
       } catch (e) {
         Get.log('registRackIpgo catch !!!!');
         Get.log(e.toString());
+        isDbConnected.value = false;
       } finally {
         bLoading.value = false;
 
@@ -452,6 +456,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           locCd.value = rackIpgoList[currentFirstIndex.value]['LOC_CD'] ?? '';
           Get.log(rackIpgoList.toString());
           Get.log('조회 성공');
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -464,6 +469,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
       plutoRow();
