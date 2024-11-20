@@ -224,7 +224,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
           },
           {
             'paramName': 'p_USR_ID',
-            'paramValue': gs.loginId,
+            'paramValue': gs.loginId.value,
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },

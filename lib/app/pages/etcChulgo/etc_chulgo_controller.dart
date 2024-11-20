@@ -114,7 +114,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
       if(etcChulgoCheckList[e] == true) {
         var params = {
           'programId': 'A1020',
-          'procedure': 'USP_A4020_S01',
+          'procedure': 'USP_A4030_S01',
           'params': [
             {
               'paramName': 'p_work_type',
@@ -135,13 +135,13 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
               'paramMode': 'IN'
             },
             {
-              'paramName': 'p_INB_NO',
+              'paramName': 'p_OTB_NO',
               'paramValue': '',
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
-              'paramName': 'p_INB_LOT_NO',
+              'paramName': 'p_OTB_LOT_NO',
               'paramValue': etcChulgoQrList[e]['inbLotNo'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
@@ -153,7 +153,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
               'paramMode': 'IN'
             },
             {
-              'paramName': 'p_INB_USER_ID',
+              'paramName': 'p_OTB_USER_ID',
               'paramValue': textMgrController.text,
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
@@ -285,7 +285,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
       if(etcChulgoCheckList[e] == true) {
         var params = {
           'programId': 'A1020',
-          'procedure': 'USP_A4020_S01',
+          'procedure': 'USP_A4030_S01',
           'params': [
             {
               'paramName': 'p_work_type',
@@ -306,13 +306,13 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
               'paramMode': 'IN'
             },
             {
-              'paramName': 'p_INB_NO',
+              'paramName': 'p_OTB_NO',
               'paramValue': etcChulgoList[e]['inbNo'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
-              'paramName': 'p_INB_LOT_NO',
+              'paramName': 'p_OTB_LOT_NO',
               'paramValue': etcChulgoList[e]['inbLotNo'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
@@ -324,7 +324,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
               'paramMode': 'IN'
             },
             {
-              'paramName': 'p_INB_USER_ID',
+              'paramName': 'p_OTB_USER_ID',
               'paramValue': etcChulgoList[e]['inbUserId'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
@@ -550,7 +550,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
   }
 
 
-  /// 기타입고 조회1
+  /// 기타출고 조회1
   Future<void> checkQR() async {
     Get.log('조회');
 
@@ -561,20 +561,20 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
 
     var params = {
       'programId': 'A1020',
-      'procedure': 'USP_A4020_R03',
+      'procedure': 'USP_A4030_R01',
       'params': [
         { "paramName": "p_work_type", "paramValue": "Q", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_PLANT", "paramValue": "1302", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_WH_CD", "paramValue": "WH01", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
-        { "paramName": "p_INB_DT_FROM", "paramValue": dayStartValue.value.replaceAll('-', ''), "paramJdbcType": "VARCHAR", "paramMode": "IN"},
-        { "paramName": "p_INB_DT_TO", "paramValue": dayEndValue.value.replaceAll('-', ''), "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_OTB_DT_FROM", "paramValue": dayStartValue.value.replaceAll('-', ''), "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_OTB_DT_TO", "paramValue": dayEndValue.value.replaceAll('-', ''), "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_ITEM_CD", "paramValue": textItemCdController.text, "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_ITEM_NM", "paramValue": textItemNmController.text, "paramJdbcType": "VARCHAR", "paramMode": "IN"}
       ]
     };
 
     try {
-      final retVal = await HomeApi.to.reqEtcIpgo(params);
+      final retVal = await HomeApi.to.reqEtcChulgo(params);
 
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
@@ -619,21 +619,21 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
 
     var params = {
       'programId': 'A1020',
-      'procedure': 'USP_A4020_R04',
+      'procedure': 'USP_A4030_R02',
       'params': [
         { "paramName": "p_work_type", "paramValue": "Q", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_PLANT", "paramValue": "1302", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_WH_CD", "paramValue": "WH01", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_QR_NO", "paramValue": textQrController.text, "paramJdbcType": "VARCHAR", "paramMode": "IN"},
-        { "paramName": "p_INB_NO", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_OTB_NO", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_LOC_CD", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
-        { "paramName": "p_INB_USER_ID", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
-        { "paramName": "p_REMARK", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"}
+        { "paramName": "p_OTB_USER_ID", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"}
+
       ]
     };
 
     try {
-      final retVal = await HomeApi.to.reqEtcIpgoQr(params);
+      final retVal = await HomeApi.to.reqEtcChulgoQr(params);
 
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
@@ -786,13 +786,13 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
 
   @override
   void onClose() {
-    Get.log('IpgoController - onClose !!');
+    Get.log('EtcChulgoController - onClose !!');
     super.onClose();
   }
 
   @override
   void onInit() async {
-    Get.log('IpgoController - onInit !!');
+    Get.log('EtcChulgoController - onInit !!');
     super.onInit();
     firstDayOfMonth = DateTime(now.year, now.month, 1);
     dayStartValue.value = DateFormat('yyyy-MM-dd').format(firstDayOfMonth);
@@ -804,7 +804,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
 
   @override
   void onReady() {
-    Get.log('IpgoController - onReady !!');
+    Get.log('EtcChulgoController - onReady !!');
 
   }
 }

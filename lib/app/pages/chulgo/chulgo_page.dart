@@ -97,7 +97,7 @@ class ChulgoPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Obx(() => Container(
-                  margin: EdgeInsets.only(right: 14),
+                  margin: const EdgeInsets.only(right: 14),
                   decoration: BoxDecoration(
                       color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
                       borderRadius: BorderRadius.circular(10)

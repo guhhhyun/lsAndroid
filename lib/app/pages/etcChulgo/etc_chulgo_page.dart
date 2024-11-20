@@ -681,7 +681,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
       ),
       PlutoColumn(
         title: '출고번호',
-        field: 'inbNo',
+        field: 'otbNo',
         type: PlutoColumnType.text(),
         width: 200,
         enableSorting: false,
@@ -741,7 +741,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
       ),
       PlutoColumn(
         title: '출고일',
-        field: 'inbDt',
+        field: 'otbDt',
         type: PlutoColumnType.text(),
         width: 130,
         enableSorting: false,
@@ -917,7 +917,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
       ),
       PlutoColumn(
         title: '출고수량',
-        field: 'qty2',
+        field: 'qtyUse',
         type: PlutoColumnType.text(),
         width: 90,
         enableSorting: false,
@@ -932,7 +932,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
       ),
       PlutoColumn(
         title: '잔량',
-        field: 'qty3',
+        field: 'qtyRemain',
         type: PlutoColumnType.text(),
         width: 90,
         enableSorting: false,
@@ -947,7 +947,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
       ),
       PlutoColumn(
         title: '단위',
-        field: 'qtyUnit',
+        field: 'qtyUnitMaster',
         type: PlutoColumnType.text(),
         width: 90,
         enableSorting: false,
@@ -1233,9 +1233,9 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         backgroundColor: AppTheme.gray_c_gray_200,
 
       ),
-      /*PlutoColumn(
-        title: '입고번호',
-        field: 'inbNo',
+      PlutoColumn(
+        title: '출고번호',
+        field: 'otbNo',
         type: PlutoColumnType.text(),
         width: 200,
         enableSorting: false,
@@ -1247,7 +1247,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
-      ),*/
+      ),
       PlutoColumn(
         title: '존 구분',
         field: 'zoneNm',
@@ -1294,8 +1294,8 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '입고일',
-        field: 'inbDt',
+        title: '출고일',
+        field: 'otbDt',
         type: PlutoColumnType.text(),
         width: 130,
         enableSorting: false,
@@ -1400,7 +1400,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
       ),
       PlutoColumn(
         title: '단위',
-        field: 'qtyUnit',
+        field: 'qtyUnitMaster',
         type: PlutoColumnType.text(),
         width: 90,
         enableSorting: false,
@@ -1473,21 +1473,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
-      PlutoColumn(
-        title: '비고',
-        field: 'remark',
-        type: PlutoColumnType.text(),
-        width: 100,
-        enableSorting: false,
-        enableEditingMode: false,
-        enableContextMenu: false,
-        enableRowDrag: false,
-        enableDropToResize: false,
-        enableColumnDrag: false,
-        titleTextAlign: PlutoColumnTextAlign.center,
-        textAlign: PlutoColumnTextAlign.center,
-        backgroundColor: AppTheme.gray_c_gray_200,
-      ),
+
     ];
     return gridCols;
   }
@@ -1560,9 +1546,9 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                       }),
                 ),
                 SizedBox(width: 24,),
-                _invnrTextForm2('입고번호', 0),
+                _invnrTextForm2('출고번호', 0),
                 SizedBox(width: 24,),
-                _invnrTextForm2('입고담당자', 1),
+                _invnrTextForm2('출고담당자', 1),
                 SizedBox(width: 24,),
                 _invnrTextForm2('저장위치', 2),
                 SizedBox(width: 24,),

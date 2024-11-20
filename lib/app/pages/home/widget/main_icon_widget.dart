@@ -179,18 +179,7 @@ class MainIconWidget extends StatelessWidget {
                             Get.log('출고등록');
                             Get.toNamed(Routes.CHULGO);
                           }, context: context),),
-                      Expanded(child: Utils.getStorage.hasData('userId') &&
-                          Utils.getStorage.hasData('userPw') == false ? SizedBox(width: 0, height: 0,) :
-                      _buttonArea(
-                          imgUrl: 'assets/app/logout.png',
-                          title: '로그아웃',
-                          subTitle: '',
-                          onPressed: () {
-                            Get.log('로그아웃');
-                            gs.logout();
-                          }, context: context),
-                      )
-                      /*Expanded(child: _buttonArea(
+                      Expanded(child: _buttonArea(
                           imgUrl: 'assets/app/Group-6.png',
                           title: '기타입고',
                           subTitle: '',
@@ -198,19 +187,19 @@ class MainIconWidget extends StatelessWidget {
                             Get.log('기타입고');
                             Get.toNamed(Routes.ETC_IPGO);
                           }, context: context),
-                      )*/
+                      )
                     ],
                   ),
-                  /*Row(
+                  Row(
                     children: [
-                      *//*Expanded(child: _buttonArea(
+                      Expanded(child: _buttonArea(
                           imgUrl: 'assets/app/Group-6.png',
                           title: '기타출고',
                           subTitle: '',
                           onPressed: () {
                             Get.log('기타출고');
                             Get.toNamed(Routes.ETC_CHULGO);
-                          }, context: context),),*//*
+                          }, context: context),),
                       Expanded(child: Utils.getStorage.hasData('userId') &&
                           Utils.getStorage.hasData('userPw') == false ? SizedBox(width: 0, height: 0,) :
                           _buttonArea(
@@ -223,7 +212,7 @@ class MainIconWidget extends StatelessWidget {
                               }, context: context),
                       )
                     ],
-                  ),*/
+                  ),
 
                 ],
               )

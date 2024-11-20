@@ -194,7 +194,7 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                     onTap: () async{
                       await controller.registRackBtn(i);
                       controller.isRegistRackBtn.value ?
-                      Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,)) : null;
+                      Get.dialog(CommonDialogWidget(contentText: '출고되었습니다', pageFlag: 3,)) : null;
                       await controller.reqPickingSecond();
                       await test22();
                       controller.update();
@@ -369,50 +369,6 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
       ],
     );
   }
-  Widget _invnrTextForm(String title, int plag) {
-    return Row(
-      children: [
-        Text(title,
-            style: AppTheme.a12700
-                .copyWith(color: AppTheme.black)),
-        SizedBox(width: 8,),
-        Container(
-          padding: EdgeInsets.only(top: 4),
-          height: 35,
-          width: plag == 4 ? 250 : 150,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppTheme.ae2e2e2)),
-          child: Center(
-            child: TextFormField(
-              readOnly:  plag == 4 ? true : false,
-              expands :true,
-              minLines: null,
-              maxLines: null,
-              style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
-              // maxLines: 5,
-              controller: plag == 0 ? controller.textProjectController2 : plag == 1 ? controller.textItemCdController
-                  : plag == 2 ? controller.textItemNmController: controller.textWrkNoController,
-              textInputAction: TextInputAction.done,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(0),
-                fillColor: Colors.white,
-                // filled: true,
-                hintText: '',
-                hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
-                border: InputBorder.none,
-              ),
-              showCursor: true,
-
-              // onChanged: ((value) => controller.submitSearch(value)),
-            ),
-          ),
-
-        ),
-      ],
-    );
-  }
   Widget _invnrTextForm2(String title, String value) {
     return Row(
       children: [
@@ -508,8 +464,7 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                         Get.log('${controller.gridStateMgr2.currentRowIdx!}');
                         await controller.registOtherRackBtn(controller.gridStateMgr2.currentRowIdx!);
                         controller.isRegistOtherRackBtn.value ?
-                        Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,)) : null;
-                       // Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+                        Get.dialog(CommonDialogWidget(contentText: '변경출고되었습니다.', pageFlag: 3,)) : null;
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -572,8 +527,6 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
   }
 
   Widget _rackIpgoList(BuildContext context) {
-    // final double height = 49*(double.parse((controller.ipgoList.length + 1).toString()));
-    final double height = 200;
     return Container(
       padding: EdgeInsets.only(bottom: 20),
       width: 550,
@@ -592,8 +545,6 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                 onLoaded: (PlutoGridOnLoadedEvent event) {
                   controller.gridStateMgr2 = event.stateManager;
                   controller.gridStateMgr2.setSelectingMode(PlutoGridSelectingMode.none);
-                 // Get.log('${controller.gridStateMgr2.currentRowIdx!}');
-                  //gridStateMgr.setShowColumnFilter(true);
                 },
                 onChanged: (PlutoGridOnChangedEvent event) {
                   print(event);
@@ -605,9 +556,6 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                   style: PlutoGridStyleConfig(
                       columnHeight: 40,
                       rowHeight: 55,
-                      //gridBorderColor: Colors.transparent,
-                      //   activatedColor: Colors.transparent,
-                      //  cellColorInReadOnlyState: Colors.white,
                       columnTextStyle: AppTheme.a14500.copyWith(color: AppTheme.black)
                   ),
                 ),
