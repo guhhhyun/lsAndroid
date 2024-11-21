@@ -63,6 +63,7 @@ class IpgoPage extends StatelessWidget {
             height: 1,
           ),
           Container(
+            padding: EdgeInsets.only(top: 4, bottom: 4),
             child: Column(children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,12 +115,12 @@ class IpgoPage extends StatelessWidget {
                     ),
                   ),
                   Obx(() => Container(
-                    margin: EdgeInsets.only(right: 14),
+                    margin: EdgeInsets.only(right: 14, bottom: 4),
                     decoration: BoxDecoration(
                         color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(10)
+                        borderRadius: BorderRadius.circular(8)
                     ),
-                    width: 100,
+                    width: 40,
                     height: 40,
                   ),),
 
@@ -1004,11 +1005,7 @@ class IpgoPage extends StatelessWidget {
                        controller.textQrController.text = '';
                       // Get.dialog(_dialog('거래명세서를 선택해주세요'));
                      }
-                     Future.delayed(const Duration(), (){
-                       focusNode2.requestFocus();
-                       //  FocusScope.of(context).requestFocus(focusNode);
-                       Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                     });
+                     controller.isQr.value = false;
                    },
                    keyboardType: TextInputType.text,
                    decoration: InputDecoration(

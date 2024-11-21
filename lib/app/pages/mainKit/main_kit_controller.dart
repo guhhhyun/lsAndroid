@@ -937,14 +937,17 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
+          textQrController.text = '';
         }
 
       } else {
         Get.log('조회 실패');
+        textQrController.text = '';
       }
     } catch (e) {
       Get.log('checkItemQr catch !!!!');
       Get.log(e.toString());
+      textQrController.text = '';
       isDbConnected.value = false;
     } finally {
       bLoading.value = false;
@@ -1075,15 +1078,18 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
+          textQrController.text = '';
         }
 
       } else {
         Get.log('조회 실패');
+        textQrController.text = '';
       }
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
       isDbConnected.value = false;
+      textQrController.text = '';
     } finally {
       bLoading.value = false;
       //  plutoRow();

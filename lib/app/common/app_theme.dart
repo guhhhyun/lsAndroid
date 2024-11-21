@@ -370,6 +370,7 @@ class AppTheme {
   static const a959595 = const Color(0xff959595);
   static const a969696 = const Color(0xff969696);
   static const a787878 = const Color(0xff787878);
+  static const a454545 = const Color(0xff454545);
   static const aBCBCBC = const Color(0xffbcbcbc);
   static const a6c6c6c = const Color(0xff6c6c6c);
   static const af3f3f3 = const Color(0xfff3f3f3);

@@ -100,9 +100,9 @@ class ChulgoPage extends StatelessWidget {
                   margin: const EdgeInsets.only(right: 14),
                   decoration: BoxDecoration(
                       color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(10)
+                      borderRadius: BorderRadius.circular(8)
                   ),
-                  width: 100,
+                  width: 40,
                   height: 40,
                 ),),
                     Container(

@@ -443,15 +443,6 @@ class SmallKitPage extends StatelessWidget {
                     _subDataMemo('메모'),
                     Row(
                       children: [
-                        Obx(() => Container(
-                          margin: EdgeInsets.only(right: 14),
-                          decoration: BoxDecoration(
-                              color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(10)
-                          ),
-                          width: 100,
-                          height: 55,
-                        ),),
                         Container(
                           margin: EdgeInsets.only(right: 12),
                           width: 120,
@@ -506,12 +497,12 @@ class SmallKitPage extends StatelessWidget {
                                     const EdgeInsets.all(0))),
                             onPressed: () async {
                               Get.log('BOM변경확인 클릭!');
-                              showDialog(
+                              /*showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return _alertDialog(context);
                                 },
-                              );
+                              );*/
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -533,6 +524,15 @@ class SmallKitPage extends StatelessWidget {
                             ),
                           ),
                         ),
+                        Obx(() => Container(
+                          margin: EdgeInsets.only(right: 14),
+                          decoration: BoxDecoration(
+                              color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.8) : Colors.redAccent.withOpacity(0.6),
+                              borderRadius: BorderRadius.circular(8)
+                          ),
+                          width: 55,
+                          height: 55,
+                        ),),
                       ],
                     )
                   ],

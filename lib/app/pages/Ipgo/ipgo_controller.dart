@@ -249,8 +249,22 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           Get.log('조회 성공');
           cheburnDate.value = DateFormat('yyMMdd').format(DateTime.now());
           int lastTwoDigits = int.parse(cheburnIpgoList[0]['inbNo'].toString().substring(cheburnIpgoList[0]['inbNo'].toString().length - 2));
-          cheburnInbNumber.value = (int.parse(cheburnIpgoList[0]['inbNo'].toString().replaceRange(0, 10, '')) + 1).toString();
-          cheburnLotNumber.value = (int.parse(cheburnIpgoList[0]['inbLotNo'].toString().replaceRange(0, 10, '')) + 1).toString();
+        //  cheburnInbNumber.value = (int.parse(cheburnIpgoList[0]['inbNo'].toString().replaceRange(0, 9, '')) + 1).toString();
+
+         // String prefix = cheburnIpgoList[0]['inbNo'].toString().substring(0, cheburnIpgoList[0]['inbNo'].toString().length - 5); // "INBN241121"
+          String numberPart = cheburnIpgoList[0]['inbNo'].toString().substring(cheburnIpgoList[0]['inbNo'].toString().length - 6); // "00001"
+          String numberPart2 = cheburnIpgoList[0]['inbLotNo'].toString().substring(cheburnIpgoList[0]['inbLotNo'].toString().length - 6); // "00001"
+
+          // 숫자로 변환 후 1 증가
+          int number = int.parse(numberPart) + 1;
+          int number2 = int.parse(numberPart2) + 1;
+
+          // 다시 5자리 문자열로 변환
+          String newNumberPart = number.toString().padLeft(6, '0'); // "000002"
+          String newNumberPart2 = number2.toString().padLeft(6, '0'); // "00002"
+          cheburnInbNumber.value = newNumberPart;
+          cheburnLotNumber.value = newNumberPart2;
+       //   cheburnLotNumber.value = (int.parse(cheburnIpgoList[0]['inbLotNo'].toString().replaceRange(0, 9, '')) + 1).toString();
           isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
@@ -627,6 +641,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           Get.log(ipgoQrList.toString());
           Get.log('조회 성공');
           isDbConnected.value = true;
+          statusText.value = '정상 조회되었습니다.';
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -803,6 +818,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     tabController = TabController(length: 2, vsync: this);
     reqCommon();
     reqCommon2();
+    reqCheburnIpgo();
   }
 
   @override

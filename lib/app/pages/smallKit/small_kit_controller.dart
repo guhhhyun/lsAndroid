@@ -958,12 +958,15 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
+          textQrController.text = '';
         }
 
       } else {
         Get.log('조회 실패');
+        textQrController.text = '';
       }
     } catch (e) {
+      textQrController.text = '';
       Get.log('checkQR catch !!!!');
       statusText.value = '올바른 소박스 QR번호를 입력해주세요';
       textQrController.text = '';

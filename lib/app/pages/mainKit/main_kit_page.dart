@@ -585,15 +585,6 @@ class MainKitPage extends StatelessWidget {
                     _subDataMemo('메모'),
                     Row(
                       children: [
-                        Obx(() => Container(
-                          margin: EdgeInsets.only(right: 14),
-                          decoration: BoxDecoration(
-                              color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(10)
-                          ),
-                          width: 100,
-                          height: 55,
-                        ),),
                         Container(
                           margin: EdgeInsets.only(right: 12),
                           width: 120,
@@ -669,6 +660,15 @@ class MainKitPage extends StatelessWidget {
                             ),
                           ),
                         ),
+                        Obx(() => Container(
+                          margin: EdgeInsets.only(right: 14),
+                          decoration: BoxDecoration(
+                              color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
+                              borderRadius: BorderRadius.circular(8)
+                          ),
+                          width: 55,
+                          height: 55,
+                        ),),
                       ],
                     )
                   ],
@@ -971,60 +971,7 @@ class MainKitPage extends StatelessWidget {
                       controller.uniqueSmallBoxList.length; i++) {
                     if (controller.uniqueSmallBoxList[i]['itemCd'] ==
                         controller.smallBoxSave[ii]['itemCd']) {
-                      /*/// 일단 분할자재 때문에 이렇게 했는데 고쳐야할 수도 너무 지저분
-                      for (var a = 0; a < controller.smallBoxList.length; a++) {
-                        if (controller.smallBoxSave[ii]['qrNo'].toString() ==
-                            controller.smallBoxList[a]['testQr'].toString()
-                            &&
-                            controller.smallBoxSave[ii]['itemCd'].toString() ==
-                                controller.smallBoxList[a]['itemCd']
-                                    .toString()) {
-                          controller.no.value = i;
-                          controller.smallBoxSave[ii].addAll({
-                            'no': '${controller.uniqueSmallBoxList[i]['no']}'
-                          });
-                          controller.smallBoxSave[ii].addAll({'scanYn': 'Y'});
-                          controller.smallBoxSave[ii].addAll(
-                              {'scanNo': controller.textQrController.text});
-                          controller.smallBoxSave[ii].addAll({'syncYn': 'N'});
-                          controller.smallBoxSave[ii].addAll(
-                              {'cbxMaNo': '${controller
-                                  .uniqueSmallBoxList[i]['cbxMaNo']}'});
-                          controller.smallBoxSave[ii].addAll(
-                              {'cbxMaSeq': '${controller
-                                  .smallBoxList[a]['cbxMaSeq']}'});
-                          controller.smallBoxSave[ii].addAll(
-                              {'cbxSuNo': '${controller
-                                  .smallBoxList[a]['cbxSuNo']}'});
-                          controller.smallBoxSave[ii].addAll(
-                              {'scanSeq': '${controller
-                                  .uniqueSmallBoxList[i]['scanSeq']}'});
-                          controller.smallBoxSave[ii].addAll(
-                              {'itemCd': '${controller
-                                  .uniqueSmallBoxList[i]['itemCd']}'});
-                          controller.smallBoxSave[ii].addAll(
-                              {'setCbxQty': '${controller
-                                  .uniqueSmallBoxList[i]['setCbxQty']}'});
-                          controller.smallBoxSave[ii].addAll(
-                              {'cbxQty': '${controller
-                                  .uniqueSmallBoxList[i]['cbxQty']}'});
-                          controller.smallBoxSave[ii].addAll(
-                              {'setQty': '${controller
-                                  .uniqueSmallBoxList[i]['setQty']}'});
-                          controller.smallBoxSave[ii].addAll(
-                              {'qtyUnit': '${controller
-                                  .uniqueSmallBoxList[i]['qtyUnit']}'});
-                          controller.smallBoxSave[ii].addAll(
-                              {'boxNo': '${controller
-                                  .uniqueSmallBoxList[controller.no
-                                  .value]['boxNo']}'});
-                          controller.smallBoxSave[ii].addAll(
-                              {'ncbxRmkName': name.toString()});
-                          controller.smallBoxSave[ii].addAll(
-                              {'wrkQtySync': null});
-                          controller.smallBoxSave[ii].addAll({'prtNo': 'X'});
-                        }
-                      }*/
+
                       controller.no.value = i;
                       controller.smallBoxSave[ii].addAll({'no': '${controller.uniqueSmallBoxList[i]['no']}'});
                       controller.smallBoxSave[ii].addAll({'scanYn': 'Y'});
@@ -1075,15 +1022,6 @@ class MainKitPage extends StatelessWidget {
                   controller.smallBoxSaveList[controller.smallBoxSaveList
                       .length - 1]['prtNo'] = 'X';
                   Get.log('ㅁㄴㅇㅁㄴㅇㄴ: ${controller.smallBoxSave.length}');
-
-
-                  /*controller.rows2.value = List<PlutoRow>.generate(controller.smallBoxSaveList.length, (index) =>
-                    PlutoRow(cells:
-                    Map.from((controller.smallBoxSaveList[index]).map((key, value) =>
-                        MapEntry(key, PlutoCell(value: value == null ? '' : value )),
-                    )))
-                );*/
-
 
                 }
               }
@@ -2378,7 +2316,7 @@ class MainKitPage extends StatelessWidget {
                     : title == '세트' ? controller.textSetController : title == '단위' ? controller.textUnitController : controller.textItemCdController,
                 textAlignVertical: TextAlignVertical.center,
                 textInputAction: TextInputAction.done,
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.text,
                 decoration: InputDecoration(
 
                   contentPadding: const EdgeInsets.all(0),

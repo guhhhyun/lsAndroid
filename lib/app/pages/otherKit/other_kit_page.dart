@@ -538,15 +538,7 @@ class OtherKitPage extends StatelessWidget {
                     _subDataMemo('메모'),
                     Row(
                       children: [
-                        Obx(() => Container(
-                          margin: EdgeInsets.only(right: 14),
-                          decoration: BoxDecoration(
-                              color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(10)
-                          ),
-                          width: 100,
-                          height: 55,
-                        ),),
+
                         Container(
                           margin: EdgeInsets.only(right: 12),
                           width: 120,
@@ -622,6 +614,15 @@ class OtherKitPage extends StatelessWidget {
                             ),
                           ),
                         ),
+                        Obx(() => Container(
+                          margin: EdgeInsets.only(right: 14),
+                          decoration: BoxDecoration(
+                              color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
+                              borderRadius: BorderRadius.circular(8)
+                          ),
+                          width: 55,
+                          height: 55,
+                        ),),
                       ],
                     )
                   ],
@@ -2059,7 +2060,7 @@ class OtherKitPage extends StatelessWidget {
                  : title == '세트' ? controller.textSetController : title == '단위' ? controller.textUnitController : controller.textItemCdController,
                 textAlignVertical: TextAlignVertical.center,
                 textInputAction: TextInputAction.done,
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.text,
                 decoration: InputDecoration(
 
                   contentPadding: const EdgeInsets.all(0),

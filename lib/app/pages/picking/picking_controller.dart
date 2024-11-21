@@ -46,7 +46,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
 
   RxInt rowspan = 0.obs;
 
-
+  RxInt testt = 0.obs;
 
   /// 그리드
   //List<PlutoRow> rowDatas = [];
@@ -158,13 +158,13 @@ class PickingController extends GetxController with GetSingleTickerProviderState
           },
           {
             'paramName': 'p_PICK_NO',
-            'paramValue': registPickingList2[0]['pickNo'],
+            'paramValue': pickingSecondList[testt.value]['pickNo'],
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
           {
             'paramName': 'p_PICK_SEQ',
-            'paramValue': registPickingList2[0]['pickSeq'],
+            'paramValue': pickingSecondList[testt.value]['pickSeq'],
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -176,7 +176,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
           },
           {
             'paramName': 'p_LOT_NO',
-            'paramValue': registPickingList2[0]['boxNo'],
+            'paramValue': registPickingList2[0]['lotNo'],
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -343,7 +343,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
   /// 피킹 세번째 조회
   Future<void> reqPickingThird(int i) async {
     Get.log('조회');
-
+    testt.value = i;
     bLoading.value = true;
     pickingThirdList.clear();
 

@@ -306,9 +306,9 @@ class RackIpgoPage extends StatelessWidget {
               margin: EdgeInsets.only(right: 14),
               decoration: BoxDecoration(
                   color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(10)
+                  borderRadius: BorderRadius.circular(8)
               ),
-              width: 100,
+              width: 40,
               height: 40,
             ),),
             Container(
@@ -564,7 +564,7 @@ class RackIpgoPage extends StatelessWidget {
                   controller: controller.textQrController,
                   textAlignVertical: TextAlignVertical.center,
                   onTap: () {
-                    controller.isQrFocus.value = false;
+                    controller.isQrFocus.value = true;
                     if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
                     else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
                   },
@@ -582,30 +582,14 @@ class RackIpgoPage extends StatelessWidget {
                       }else{
                         await controller.checkQR(); // 조회
                         if(controller.rackIpgoList.isNotEmpty) {
-                          /*controller.rackIpgoList[0].addAll({'no': '${controller.registRackIpgoList.length + 1}'});
-                          controller.registRackIpgoList.add(controller.rackIpgoList[0]);
-                          controller.insertRow = List<PlutoRow>.generate(controller.rackIpgoList.length, (index) =>
-                              PlutoRow(cells:
-                              Map.from((controller.rackIpgoList[index]).map((key, value) =>
-                                  MapEntry(key, PlutoCell(value: value ?? '' )),
-                              )))
-                          );
-                          //  controller.rowDatas2.add(controller.insertRow[0]);
-                          controller.gridStateMgr.insertRows(controller.registRackIpgoList.length, controller.insertRow);
-                          controller.textQrController.text = '';
-                          controller.gridStateMgr.setCurrentCell(controller.insertRow[0].cells['no'], controller.registRackIpgoList.length - 1);
-                          Get.log('순서 ㅡㅡ : ${controller.gridStateMgr.currentRow!.sortIdx}');*/
+
                         }
                         controller.textQrController.text = '';
-                        controller.focusNode.requestFocus();
-                        Future.delayed(const Duration(), (){
-                          controller.focusNode.requestFocus();
-                          //  FocusScope.of(context).requestFocus(focusNode);
-                          Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                        });
+
+
                       }
 
-
+                    controller.isQrFocus.value = false;
 
                   },
                   keyboardType: TextInputType.text,

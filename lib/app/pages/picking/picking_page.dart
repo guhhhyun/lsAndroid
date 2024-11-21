@@ -392,15 +392,6 @@ class PickingPage extends StatelessWidget {
         ),
         Row(
           children: [
-            Obx(() => Container(
-              margin: EdgeInsets.only(right: 14),
-              decoration: BoxDecoration(
-                  color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(10)
-              ),
-              width: 100,
-              height: 40,
-            ),),
             Container(
               margin: EdgeInsets.only(right: 12),
               width: 120,
@@ -417,8 +408,6 @@ class PickingPage extends StatelessWidget {
                         const EdgeInsets.all(0))),
                 onPressed: () async {
                   Get.log('조회 클릭!');
-                  controller.isFocus.value = true;
-                  controller.focusNode.unfocus();
                   controller.reqPickingFirst();
                 },
                 child: Container(
@@ -428,7 +417,7 @@ class PickingPage extends StatelessWidget {
                       border: Border.all(color: AppTheme.ae2e2e2)
                   ),
                   width: 120,
-                  height: 40,
+                  height: 35,
                   padding: const EdgeInsets.only(
 
                   ),
@@ -492,7 +481,7 @@ class PickingPage extends StatelessWidget {
                 onTapOutside:(event) => { controller.focusCnt.value = 0 },
 
                 onFieldSubmitted: (value) async {
-
+                
                 }
               // onChanged: ((value) => controller.submitSearch(value)),
             ),
