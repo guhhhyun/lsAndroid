@@ -225,6 +225,27 @@ class MainIconWidget extends StatelessWidget {
 
                     ],
                   ),
+                 /* Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buttonArea2(
+                          imgUrl: 'assets/app/Group 1014.svg',
+                          title: '기타입고',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('기타입고');
+                            Get.toNamed(Routes.ETC_IPGO);
+                          }, context: context),
+                      _buttonArea2(
+                          imgUrl: 'assets/app/Group 1014-3.svg',
+                          title: '기타출고',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('기타출고');
+                            Get.toNamed(Routes.ETC_CHULGO);
+                          }, context: context),
+                    ],
+                  ),*/
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

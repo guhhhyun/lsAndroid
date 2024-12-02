@@ -725,9 +725,9 @@ class PickingController extends GetxController with GetSingleTickerProviderState
             MapEntry(key, PlutoCell(value:  value )),
         )))
     );
-    gridStateMgr2.removeAllRows();
+  /*  gridStateMgr2.removeAllRows();
     gridStateMgr2.appendRows(rowDatas2.value);
-    gridStateMgr2.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
+    gridStateMgr2.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100)); */ // 안바뀌면 주석 풀어야할지도?
   }
 
   final FocusNode focusNode = FocusNode();

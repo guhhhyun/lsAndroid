@@ -29,7 +29,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
   RxList<dynamic> rackIpgoList = [].obs; // 랙입고 조회된 리스트
   RxList<dynamic> registRackIpgoList = [].obs; // 최종 리스트(qr입력마다 다 넣어준 리스트)
 
-
+  RxString locTextS = ''.obs;
 
   RxDouble height = 0.0.obs;
   RxInt currentFirstIndex = 0.obs;
@@ -121,13 +121,13 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_TO_LOC_CD',
-            'paramValue': textLocController.text,               // 만들어주면 입력
+            'paramValue': locTextS.value,               // 만들어주면 입력
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
           {
             'paramName': 'p_TO_ZONE_CD',
-            'paramValue': textLocController.text.substring(0,1),               // 만들어주면 입력
+            'paramValue': locTextS.value.substring(0,1),               // 만들어주면 입력
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -231,13 +231,13 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_TO_LOC_CD',
-            'paramValue': textLocController.text,               // 만들어주면 입력
+            'paramValue': locTextS.value,               // 만들어주면 입력
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
           {
             'paramName': 'p_TO_ZONE_CD',
-            'paramValue': textLocController.text.substring(0,1),               // 만들어주면 입력
+            'paramValue': locTextS.value.substring(0,1),               // 만들어주면 입력
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -341,13 +341,13 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_TO_LOC_CD',
-            'paramValue': textLocController.text, // 만들어주면 입력
+            'paramValue': locTextS.value, // 만들어주면 입력
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
           {
             'paramName': 'p_TO_ZONE_CD',
-            'paramValue': textLocController.text.substring(0,1),               // 만들어주면 입력
+            'paramValue': locTextS.value.substring(0,1),               // 만들어주면 입력
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },

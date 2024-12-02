@@ -121,13 +121,13 @@ class PickingPage extends StatelessWidget {
             },
             configuration: PlutoGridConfiguration(
               style: PlutoGridStyleConfig(
-                  columnHeight: 40,
+                  columnHeight: 55,
                   rowHeight: 55,
                   //gridBorderColor: Colors.transparent,
                   //   activatedColor: Colors.transparent,
                   //  cellColorInReadOnlyState: Colors.white,
-                  columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black),
-                  cellTextStyle: AppTheme.a16700.copyWith(color: AppTheme.black)
+                  columnTextStyle: AppTheme.a18400.copyWith(color: AppTheme.black),
+                  cellTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black)
               ),
             ),
           ),
@@ -174,7 +174,7 @@ class PickingPage extends StatelessWidget {
         title: '지시번호',
         field: 'pickNo',
         type: PlutoColumnType.text(),
-        width: 160,
+        width: 200,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -269,13 +269,13 @@ class PickingPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
-          width:  MediaQuery.of(context).size.width - 400 ,
+          width:  MediaQuery.of(context).size.width - 350 ,
           padding: EdgeInsets.only(left: 50),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                Text('일자', style: AppTheme.a16700.copyWith(color: AppTheme.black),),
+                Text('일자', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
                 SizedBox(width: 8,),
                 Container(
                   child: InkWell(
@@ -310,7 +310,7 @@ class PickingPage extends StatelessWidget {
                       }
                     },
                     child: Container(
-                      height: 35,
+                      height: 40,
                       width: 150,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
@@ -364,7 +364,7 @@ class PickingPage extends StatelessWidget {
                       //  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     },
                     child: Container(
-                      height: 35,
+                      height: 40,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: AppTheme.ae2e2e2)),
@@ -417,13 +417,13 @@ class PickingPage extends StatelessWidget {
                       border: Border.all(color: AppTheme.ae2e2e2)
                   ),
                   width: 120,
-                  height: 35,
+                  height: 40,
                   padding: const EdgeInsets.only(
 
                   ),
                   child: Center(
                     child: Text('조회', //입고취소 조회
-                        style: AppTheme.a16700.copyWith(
+                        style: AppTheme.a20700.copyWith(
                           color: AppTheme.white,
                         )),
                   ),
@@ -442,12 +442,12 @@ class PickingPage extends StatelessWidget {
     return Row(
       children: [
         Text(title,
-            style: AppTheme.a16700
+            style: AppTheme.a20700
                 .copyWith(color: AppTheme.black)),
         SizedBox(width: 8,),
         Container(
           padding: EdgeInsets.only(top: 4, left: 8),
-          height: 35,
+          height: 40,
           width: plag == 4 ? 250 : 150,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
@@ -459,7 +459,7 @@ class PickingPage extends StatelessWidget {
               expands : true,
               minLines: null,
               maxLines: null,
-              style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+              style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
               // maxLines: 5,
               controller: plag == 0 ? controller.textJisiController : controller.textProjectController,
               textInputAction: TextInputAction.done,
@@ -469,7 +469,7 @@ class PickingPage extends StatelessWidget {
                 fillColor: Colors.white,
                 // filled: true,
                 hintText: '',
-                hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+                hintStyle: AppTheme.a20400.copyWith(color: AppTheme.aBCBCBC),
                 border: InputBorder.none,
               ),
               showCursor: true,

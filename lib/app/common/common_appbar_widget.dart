@@ -60,7 +60,7 @@ class CommonAppbarWidget extends StatelessWidget {
       title: titleWidget ??
               Text(
                 title,
-                style: AppTheme.a18700.copyWith(color: Colors.black),
+                style: AppTheme.a22700.copyWith(color: Colors.black),
               ),
       backgroundColor: Colors.white,
       iconTheme: const IconThemeData(

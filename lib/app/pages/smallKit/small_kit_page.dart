@@ -361,9 +361,9 @@ class SmallKitPage extends StatelessWidget {
                                       await controller.test();
                                     }
 
-                                    Future.delayed(const Duration(), (){
+                                   /* Future.delayed(const Duration(), (){
                                       Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                                    });
+                                    });*/
                                   },
                                   keyboardType: TextInputType.text,
                                   decoration: InputDecoration(
@@ -497,12 +497,12 @@ class SmallKitPage extends StatelessWidget {
                                     const EdgeInsets.all(0))),
                             onPressed: () async {
                               Get.log('BOM변경확인 클릭!');
-                              /*showDialog(
+                              showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return _alertDialog(context);
                                 },
-                              );*/
+                              );
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -678,6 +678,7 @@ class SmallKitPage extends StatelessWidget {
       }
 
     }
+    controller.textQrController.text = '';
   }
 
 

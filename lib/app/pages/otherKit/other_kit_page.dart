@@ -772,6 +772,8 @@ class OtherKitPage extends StatelessWidget {
 
       }
 
+    }else {
+      controller.textQrController.text = '';
     }
   }
 

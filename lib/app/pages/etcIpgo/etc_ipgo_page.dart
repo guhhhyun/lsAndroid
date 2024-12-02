@@ -169,10 +169,10 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
       children: [
         Row(
           children: [
-            Text('창고', style: AppTheme.a16700.copyWith(color: AppTheme.black),),
+            Text('창고', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
             SizedBox(width: 8,),
             Container(
-              height: 35,
+              height: 40,
               width: 150,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -197,7 +197,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                       value: value['NAME'].toString(),
                       child: Text(
                         value['NAME'].toString(),
-                        style: AppTheme.a16400
+                        style: AppTheme.a20400
                             .copyWith(color: value['NAME'].toString() == '선택해주세요' ? AppTheme.aBCBCBC : AppTheme.a6c6c6c),
                       ),
                     );
@@ -212,7 +212,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   }),
             ),
             SizedBox(width: 24,),
-            Text('일자', style: AppTheme.a15700.copyWith(color: AppTheme.black),),
+            Text('일자', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
             SizedBox(width: 8,),
             Container(
               child: InkWell(
@@ -247,7 +247,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   }
                 },
                 child: Container(
-                  height: 35,
+                  height: 40,
                   width: 150,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
@@ -256,7 +256,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(controller.dayStartValue.value, style: AppTheme.a12500
+                      Text(controller.dayStartValue.value, style: AppTheme.a20400
                           .copyWith(color: AppTheme.a6c6c6c
                           , fontSize: 17),),
                     ],
@@ -271,7 +271,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                 onTap: () async{
                   var datePicked = await DatePicker.showSimpleDatePicker(
                     titleText: '날짜 선택',
-                    itemTextStyle: AppTheme.a16400.copyWith(color: AppTheme.black),
+                    itemTextStyle: AppTheme.a20400.copyWith(color: AppTheme.black),
                     context,
                     confirmText: '확인',
                     cancelText: '취소',
@@ -301,7 +301,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   //  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 },
                 child: Container(
-                  height: 35,
+                  height: 40,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: AppTheme.ae2e2e2)),
@@ -310,7 +310,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(controller.dayEndValue.value, style: AppTheme.a14500
+                      Text(controller.dayEndValue.value, style: AppTheme.a20400
                           .copyWith(color: AppTheme.a6c6c6c
                           , fontSize: 17),),
                     ],
@@ -370,7 +370,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   ),
                   child: Center(
                     child: Text('조회',
-                        style: AppTheme.a16700.copyWith(
+                        style: AppTheme.a20700.copyWith(
                           color: AppTheme.white,
                         )),
                   ),
@@ -418,7 +418,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   ),
                   child: Center(
                     child: Text('신규',
-                        style: AppTheme.a16700.copyWith(
+                        style: AppTheme.a20700.copyWith(
                           color: AppTheme.white,
                         )),
                   ),
@@ -459,7 +459,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   ),
                   child: Center(
                     child: Text('삭제',
-                        style: AppTheme.a16700.copyWith(
+                        style: AppTheme.a20700.copyWith(
                           color: AppTheme.white,
                         )),
                   ),
@@ -477,12 +477,12 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
     return Row(
       children: [
         Text(title,
-            style: AppTheme.a16700
+            style: AppTheme.a20700
                 .copyWith(color: AppTheme.black)),
         SizedBox(width: 8,),
         Container(
           padding: EdgeInsets.only(top: 4, left: 8),
-          height: 35,
+          height: 40,
           width: plag != 0 ? 300 : 150,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
@@ -493,7 +493,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
               expands :true,
               minLines: null,
               maxLines: null,
-              style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+              style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
               // maxLines: 5,
               controller: plag == 0 ? controller.textItemCdController : controller.textItemNmController ,
               textInputAction: TextInputAction.done,
@@ -503,7 +503,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                 fillColor: Colors.white,
                 // filled: true,
                 hintText: '',
-                hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+                hintStyle: AppTheme.a20400.copyWith(color: AppTheme.aBCBCBC),
                 border: InputBorder.none,
               ),
               showCursor: true,
@@ -630,13 +630,13 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                 },
                 configuration: PlutoGridConfiguration(
                   style: PlutoGridStyleConfig(
-                    columnHeight: 40,
+                    columnHeight: 55,
                     rowHeight: 55,
                     //gridBorderColor: Colors.transparent,
                     //   activatedColor: Colors.transparent,
                     //  cellColorInReadOnlyState: Colors.white,
-                    columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black),
-                    cellTextStyle: AppTheme.a16700.copyWith(color: AppTheme.black),
+                    columnTextStyle: AppTheme.a18400.copyWith(color: AppTheme.black),
+                    cellTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black),
                   ),
                 ),
               ),
@@ -808,13 +808,13 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                 },
                 configuration: PlutoGridConfiguration(
                   style: PlutoGridStyleConfig(
-                    columnHeight: 40,
+                    columnHeight: 55,
                     rowHeight: 55,
                     //gridBorderColor: Colors.transparent,
                     //   activatedColor: Colors.transparent,
                     //  cellColorInReadOnlyState: Colors.white,
-                    columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black),
-                    cellTextStyle: AppTheme.a16700.copyWith(color: AppTheme.black),
+                    columnTextStyle: AppTheme.a18400.copyWith(color: AppTheme.black),
+                    cellTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black),
                   ),
                 ),
               ),
@@ -1200,7 +1200,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         title: '창고',
         field: 'whNm',
         type: PlutoColumnType.text(),
-        width: 100,
+        width: 120,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,

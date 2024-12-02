@@ -916,18 +916,18 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
-          /*if(retVal.body![1][0]['tagType'] == '90' && retVal.body![1][0]['qrNo'] != boxNo.value) { // 다른 소박스 찍었을 때?
+          if(retVal.body![1][0]['tagType'] == '20'/* && retVal.body![1][0]['qrNo'] != boxNo.value*/) { // 다른 소박스 찍었을 때?
             smallBoxSave.clear();
             smallBoxSaveList.clear();
             stateManager.removeAllRows();
             stateManager2.removeAllRows();
             await checkQR();
             await smallBoxScan();
-          }else {*/
+          }else {
             smallBoxSave.addAll(retVal.body![1]);
             _duplicationRow();
             //  duplicationQr.value == true ? null : smallBoxSave.addAll(retVal.body![1]);
-        //  }
+          }
 
           Get.log(smallBoxSave.toString());
           Get.log('조회 성공');

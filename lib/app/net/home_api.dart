@@ -963,6 +963,7 @@ class HomeApi extends NetworkManager{
       // commonError(e);
       SmallKitController controller = Get.find();
       controller.isDbConnected.value = false;
+      controller.textQrController.text = '';
     } catch (err) {
       Get.log('reqSmallKitItem = ${err.toString()}');
     }
@@ -1007,6 +1008,7 @@ class HomeApi extends NetworkManager{
       // commonError(e);
       SmallKitController controller = Get.find();
       controller.isDbConnected.value = false;
+      controller.textQrController.text = '';
     } catch (err) {
       Get.log('reqSmallKit = ${err.toString()}');
     }

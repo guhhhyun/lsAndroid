@@ -107,7 +107,7 @@ class ChulgoPage extends StatelessWidget {
                 ),),
                     Container(
                       margin: EdgeInsets.only(right: 12),
-                      width: 120,
+                      width: 140,
                       height: 40,
                       child: TextButton(
                         style: ButtonStyle(
@@ -129,14 +129,14 @@ class ChulgoPage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(color: AppTheme.ae2e2e2)
                           ),
-                          width: 120,
+                          width: 140,
                           height: 40,
                           padding: const EdgeInsets.only(
 
                           ),
                           child: Center(
                             child: Text('BOM변경확인', //입고취소 조회
-                                style: AppTheme.a16700.copyWith(
+                                style: AppTheme.a20700.copyWith(
                                   color: AppTheme.white,
                                 )),
                           ),
@@ -175,7 +175,7 @@ class ChulgoPage extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text('출고등록',
-                          style: AppTheme.a16700.copyWith(
+                          style: AppTheme.a20700.copyWith(
                             color: AppTheme.white,
                           )),
                     ),
@@ -232,13 +232,13 @@ class ChulgoPage extends StatelessWidget {
             },
             configuration: PlutoGridConfiguration(
               style: PlutoGridStyleConfig(
-                  columnHeight: 40,
+                  columnHeight: 55,
                   rowHeight: 55,
                   //gridBorderColor: Colors.transparent,
                   //   activatedColor: Colors.transparent,
                   //  cellColorInReadOnlyState: Colors.white,
-                  columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black),
-                  cellTextStyle: AppTheme.a16700.copyWith(color: AppTheme.black),
+                  columnTextStyle: AppTheme.a20400.copyWith(color: AppTheme.black),
+                  cellTextStyle: AppTheme.a20700.copyWith(color: AppTheme.black),
               ),
             ),
           ),
@@ -252,7 +252,7 @@ class ChulgoPage extends StatelessWidget {
         title: '지시번호',
         field: 'delOrdNo',
         type: PlutoColumnType.text(),
-        width: 180,
+        width: 210,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -327,7 +327,7 @@ class ChulgoPage extends StatelessWidget {
         title: '보관판매오더번호',
         field: 'soNo2',
         type: PlutoColumnType.text(),
-        width: 150,
+        width: 170,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -402,7 +402,7 @@ class ChulgoPage extends StatelessWidget {
         title: 'BOM 변경',
         field: 'bcStatusNm',
         type: PlutoColumnType.text(),
-        width: 90,
+        width: 120,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -417,7 +417,7 @@ class ChulgoPage extends StatelessWidget {
         title: 'KIT 작업',
         field: 'kcStatusNm',
         type: PlutoColumnType.text(),
-        width: 90,
+        width: 120,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -452,13 +452,13 @@ class ChulgoPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
-          width:  MediaQuery.of(context).size.width - 170 ,
+          width:  MediaQuery.of(context).size.width - 135 ,
           padding: EdgeInsets.only(left: 24),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                Text('피킹지시일', style: AppTheme.a16700.copyWith(color: AppTheme.black),),
+                Text('피킹지시일', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
                 SizedBox(width: 8,),
                 Container(
                   child: InkWell(
@@ -500,7 +500,7 @@ class ChulgoPage extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(controller.dayStartValue.value, style: AppTheme.a12500
+                          Text(controller.dayStartValue.value, style: AppTheme.a20400
                               .copyWith(color: AppTheme.a6c6c6c
                               , fontSize: 17),),
                         ],
@@ -515,7 +515,7 @@ class ChulgoPage extends StatelessWidget {
                     onTap: () async{
                       var datePicked = await DatePicker.showSimpleDatePicker(
                         titleText: '날짜 선택',
-                        itemTextStyle: AppTheme.a16400.copyWith(color: AppTheme.black),
+                        itemTextStyle: AppTheme.a20400.copyWith(color: AppTheme.black),
                         context,
                         confirmText: '확인',
                         cancelText: '취소',
@@ -554,7 +554,7 @@ class ChulgoPage extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(controller.dayEndValue.value, style: AppTheme.a14500
+                          Text(controller.dayEndValue.value, style: AppTheme.a20400
                               .copyWith(color: AppTheme.a6c6c6c
                               , fontSize: 17),),
                         ],
@@ -610,7 +610,7 @@ class ChulgoPage extends StatelessWidget {
               ),
               child: Center(
                 child: Text('조회', //입고취소 조회
-                    style: AppTheme.a16700.copyWith(
+                    style: AppTheme.a20700.copyWith(
                       color: AppTheme.white,
                     )),
               ),
@@ -624,7 +624,7 @@ class ChulgoPage extends StatelessWidget {
   Widget _dropDownItem2() {
     return Row(
       children: [
-        Text('출고유형', style: AppTheme.a16700.copyWith(color: AppTheme.black),),
+        Text('출고유형', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
         SizedBox(width: 8,),
         Container(
           height: 40,
@@ -652,7 +652,7 @@ class ChulgoPage extends StatelessWidget {
                   value: value['NAME'].toString(),
                   child: Text(
                     value['NAME'].toString(),
-                    style: AppTheme.a16400
+                    style: AppTheme.a20400
                         .copyWith(color: value['NAME'].toString() == '선택해주세요' ? AppTheme.aBCBCBC : AppTheme.a6c6c6c),
                   ),
                 );
@@ -674,7 +674,7 @@ class ChulgoPage extends StatelessWidget {
     return Row(
       children: [
         Text(title,
-            style: AppTheme.a16700
+            style: AppTheme.a20700
                 .copyWith(color: AppTheme.black)),
         SizedBox(width: 8,),
         Container(
@@ -691,7 +691,7 @@ class ChulgoPage extends StatelessWidget {
               expands :true,
               minLines: null,
               maxLines: null,
-              style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+              style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
               // maxLines: 5,
               controller: plag == 0 ? controller.textOrderController : plag == 1 ? controller.textProjectController
                   : controller.textOrderController,
@@ -702,7 +702,7 @@ class ChulgoPage extends StatelessWidget {
                 fillColor: Colors.white,
                 // filled: true,
                 hintText: '',
-                hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+                hintStyle: AppTheme.a20400.copyWith(color: AppTheme.aBCBCBC),
                 border: InputBorder.none,
               ),
               showCursor: true,

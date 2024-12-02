@@ -852,18 +852,22 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
           statusText.value = '정상 조회되었습니다.';
           Get.log(smallBoxSave.toString());
           Get.log('조회 성공');
+          isDonggi.value = false;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
           isDbConnected.value = false;
+          textQrController.text = '';
         }
 
       } else {
         Get.log('조회 실패');
+        textQrController.text = '';
       }
     } catch (e) {
       Get.log('checkItemQr catch !!!!');
       Get.log(e.toString());
+      textQrController.text = '';
     } finally {
       bLoading.value = false;
       //plutoRow();
@@ -955,6 +959,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
           Get.log('조회 성공');
           statusText.value = '정상 조회되었습니다.';
           isDbConnected.value = true;
+          isDonggi.value = false;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];

@@ -34,6 +34,8 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxList<dynamic> invnrList = [].obs; // 거래명세서 리스트
   RxList<dynamic> ipgoList = [].obs; // 최종입고등록 리스트
   RxList<dynamic> ipgoQrList = [].obs; // qr코드 찍을 때 조회되는 리스트
+  RxList<dynamic> ipgoDupQrList = [].obs; // 중복qr코드 떄문에 담고있을 그릇
+  RxList<dynamic> isSelect = [].obs;
 
   RxList<dynamic> ipgoCancelList = [].obs; // 입고취소리스트
  // RxList<dynamic> selectedCancelList = [].obs; // 선택된 입고취소리스트
@@ -86,7 +88,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxBool isCancelChecked = false.obs;
   RxBool isIpgoClick = false.obs;
   RxBool isDbConnected = true.obs;
-
+  RxInt alertIndex = 3.obs;
 
   /// 공통 드롭다운 조회(zone) -> 존 구분
   Future<void> reqCommon2() async {
@@ -593,6 +595,8 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
 
     bLoading.value = true;
     ipgoQrList.clear();
+    ipgoDupQrList.clear();
+    isSelect.clear();
     statusText.value = '';
     var params = {
       'programId': 'A1020',
@@ -638,6 +642,10 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
           ipgoQrList.value.addAll(retVal.body![1]);
+          ipgoDupQrList.value.addAll(retVal.body![1]);
+          for(var i = 0; i < ipgoDupQrList.length; i++) {
+            isSelect.add(false);
+          }
           Get.log(ipgoQrList.toString());
           Get.log('조회 성공');
           isDbConnected.value = true;
@@ -707,19 +715,19 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
         },
         {
           'paramName': 'p_DOC1',
-          'paramValue': textInvnrController2.text,
+          'paramValue': textInvnrController.text,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
         {
           'paramName': 'p_ITEM_CD',
-          'paramValue': textItemController2.text,
+          'paramValue': textItemController.text,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
         {
           'paramName': 'p_PJT_NM',
-          'paramValue': textProjectController2.text,
+          'paramValue': textProjectController.text,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },

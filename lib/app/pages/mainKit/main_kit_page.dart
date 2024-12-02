@@ -1069,6 +1069,8 @@ class MainKitPage extends StatelessWidget {
 
       // 3. 정렬된 리스트로 다시 로드
       controller.stateManager2.appendRows(sortedRows);
+    }else {
+      controller.textQrController.text = '';
     }
   }
 

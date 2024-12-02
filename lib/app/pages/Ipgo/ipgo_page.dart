@@ -69,7 +69,7 @@ class IpgoPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    width: 200,
+                    width: 230,
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: TabBar(
@@ -93,12 +93,11 @@ class IpgoPage extends StatelessWidget {
                         unselectedLabelColor: AppTheme.light_ui_05,
                         tabs: [
                           Container(
-
                             height: 50,
                             alignment: Alignment.center,
                             child: const Text(
                               '입고등록',
-                              style: AppTheme.a18700,
+                              style: AppTheme.a20700,
                             ),
                           ),
                           Container(
@@ -107,7 +106,7 @@ class IpgoPage extends StatelessWidget {
                             alignment: Alignment.center,
                             child: const Text(
                               '입고취소',
-                              style: AppTheme.a18700,
+                              style: AppTheme.a20700,
                             ),
                           ),
                         ],
@@ -173,7 +172,7 @@ class IpgoPage extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text('거래명세서 정보', style: AppTheme.a18700.copyWith(color: AppTheme.black),)
+                Text('거래명세서 정보', style: AppTheme.a20700.copyWith(color: AppTheme.black),)
               ],
             ),
           ),
@@ -196,7 +195,7 @@ class IpgoPage extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text('입고 등록', style: AppTheme.a18700.copyWith(color: AppTheme.black),)
+                Text('입고 등록', style: AppTheme.a20700.copyWith(color: AppTheme.black),)
               ],
             ),
           ),
@@ -222,14 +221,14 @@ class IpgoPage extends StatelessWidget {
              scrollDirection: Axis.horizontal,
              child: Row(
                children: [
-                 Text('입고일자', style: AppTheme.a15700.copyWith(color: AppTheme.black),),
+                 Text('입고일자', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
                  SizedBox(width: 8,),
                  Container(
                      child: InkWell(
                        onTap: () async{
                          var datePicked = await DatePicker.showSimpleDatePicker(
                            titleText: '날짜 선택',
-                           itemTextStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.black),
+                           itemTextStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: Colors.black),
                            context,
                            confirmText: '확인',
                            cancelText: '취소',
@@ -257,7 +256,7 @@ class IpgoPage extends StatelessWidget {
                          }
                        },
                        child: Container(
-                         height: 35,
+                         height: 40,
                          width: 150,
                          decoration: BoxDecoration(
                              borderRadius: BorderRadius.circular(10),
@@ -266,7 +265,7 @@ class IpgoPage extends StatelessWidget {
                          child: Row(
                            mainAxisAlignment: MainAxisAlignment.center,
                            children: [
-                             Text(controller.dayStartValue.value, style: AppTheme.a12500
+                             Text(controller.dayStartValue.value, style: AppTheme.a20400
                                  .copyWith(color: AppTheme.a6c6c6c
                                  , fontSize: 17),),
                            ],
@@ -281,7 +280,7 @@ class IpgoPage extends StatelessWidget {
                        onTap: () async{
                          var datePicked = await DatePicker.showSimpleDatePicker(
                            titleText: '날짜 선택',
-                           itemTextStyle: AppTheme.a16400.copyWith(color: AppTheme.black),
+                           itemTextStyle: AppTheme.a20400.copyWith(color: AppTheme.black),
                            context,
                            confirmText: '확인',
                            cancelText: '취소',
@@ -311,7 +310,7 @@ class IpgoPage extends StatelessWidget {
                          //  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                        },
                        child: Container(
-                         height: 35,
+                         height: 40,
                          decoration: BoxDecoration(
                              borderRadius: BorderRadius.circular(10),
                              border: Border.all(color: AppTheme.ae2e2e2)),
@@ -320,7 +319,7 @@ class IpgoPage extends StatelessWidget {
                          child: Row(
                            mainAxisAlignment: MainAxisAlignment.center,
                            children: [
-                             Text(controller.dayEndValue.value, style: AppTheme.a14500
+                             Text(controller.dayEndValue.value, style: AppTheme.a20400
                                  .copyWith(color: AppTheme.a6c6c6c
                                  , fontSize: 17),),
                            ],
@@ -375,13 +374,13 @@ class IpgoPage extends StatelessWidget {
                    border: Border.all(color: AppTheme.ae2e2e2)
                ),
                width: 120,
-               height: 35,
+               height: 40,
                padding: const EdgeInsets.only(
 
                ),
                child: Center(
                  child: Text('조회',
-                     style: AppTheme.a16700.copyWith(
+                     style: AppTheme.a18700.copyWith(
                          color: AppTheme.white,
                          )),
                ),
@@ -395,10 +394,10 @@ class IpgoPage extends StatelessWidget {
    Widget _dropDownItem() {
      return Row(
        children: [
-         Text('창고', style: AppTheme.a16700.copyWith(color: AppTheme.black),),
+         Text('창고', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
          SizedBox(width: 8,),
          Container(
-           height: 35,
+           height: 40,
            width: 150,
            decoration: BoxDecoration(
                borderRadius: BorderRadius.circular(10),
@@ -423,7 +422,7 @@ class IpgoPage extends StatelessWidget {
                    value: value['NAME'].toString(),
                    child: Text(
                      value['NAME'].toString(),
-                     style: AppTheme.a16400
+                     style: AppTheme.a20400
                          .copyWith(color: value['NAME'].toString() == '선택해주세요' ? AppTheme.aBCBCBC : AppTheme.a6c6c6c),
                    ),
                  );
@@ -444,7 +443,7 @@ class IpgoPage extends StatelessWidget {
      return Row(
        children: [
          Text('거래명세서 번호',
-             style: AppTheme.a16700
+             style: AppTheme.a20700
                  .copyWith(color: AppTheme.black)),
          SizedBox(width: 8,),
          Container(
@@ -510,7 +509,7 @@ class IpgoPage extends StatelessWidget {
     return Row(
       children: [
         Text(title,
-            style: AppTheme.a16700
+            style: AppTheme.a20700
                 .copyWith(color: AppTheme.black)),
         SizedBox(width: 8,),
         Container(
@@ -529,7 +528,7 @@ class IpgoPage extends StatelessWidget {
                   expands :true,
                   minLines: null,
                   maxLines: null,
-                    style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+                    style:  AppTheme.a18700.copyWith(color: AppTheme.a6c6c6c),
                     // maxLines: 5,
                     controller: plag == 0 ? controller.textInvnrController : plag == 1 ? controller.textItemController
                                           : controller.textProjectController,
@@ -540,7 +539,7 @@ class IpgoPage extends StatelessWidget {
                       fillColor: Colors.white,
                      // filled: true,
                       hintText: '',
-                      hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+                      hintStyle: AppTheme.a18700.copyWith(color: AppTheme.aBCBCBC),
                       border: InputBorder.none,
                     ),
                     showCursor: true,
@@ -594,13 +593,13 @@ class IpgoPage extends StatelessWidget {
              },
              configuration: PlutoGridConfiguration(
                style: PlutoGridStyleConfig(
-                   columnHeight: 40,
+                   columnHeight: 55,
                    rowHeight: 55,
                  //gridBorderColor: Colors.transparent,
                 //   activatedColor: Colors.transparent,
                  //  cellColorInReadOnlyState: Colors.white,
-                   columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black),
-                 cellTextStyle: AppTheme.a16700.copyWith(color: AppTheme.black)
+                   columnTextStyle: AppTheme.a18400.copyWith(color: AppTheme.black),
+                 cellTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black)
                ),
              ),
            ),
@@ -659,7 +658,7 @@ class IpgoPage extends StatelessWidget {
        title: '품목코드',
        field: 'itemCd',
        type: PlutoColumnType.text(),
-       width: 90,
+       width: 130,
        enableSorting: false,
        enableEditingMode: false,
        enableContextMenu: false,
@@ -689,7 +688,7 @@ class IpgoPage extends StatelessWidget {
        title: 'SAP 수량',
        field: 'sapQty',
        type: PlutoColumnType.text(),
-       width: 90,
+       width: 120,
        enableSorting: false,
        enableEditingMode: false,
        enableContextMenu: false,
@@ -704,7 +703,7 @@ class IpgoPage extends StatelessWidget {
        title: 'WMS 수량',
        field: 'wmsQty',
        type: PlutoColumnType.text(),
-       width: 100,
+       width: 120,
        enableSorting: false,
        enableEditingMode: false,
        enableContextMenu: false,
@@ -719,7 +718,7 @@ class IpgoPage extends StatelessWidget {
        title: 'SAP 잔량',
        field: 'rmnQty',
        type: PlutoColumnType.text(),
-       width: 90,
+       width: 120,
        enableSorting: false,
        enableEditingMode: false,
        enableContextMenu: false,
@@ -789,7 +788,7 @@ class IpgoPage extends StatelessWidget {
              scrollDirection: Axis.horizontal,
              child: Row(
                children: [
-                 _qrCodeTextForm(),
+                 _qrCodeTextForm(context),
                 // _invnrTextForm('QR 코드', 3),
                  SizedBox(width: 16,),
                  Obx(()=> _statusText()),
@@ -837,7 +836,7 @@ class IpgoPage extends StatelessWidget {
                    ),
                    child: Center(
                      child: Text('행 삭제',
-                         style: AppTheme.a16700.copyWith(
+                         style: AppTheme.a18700.copyWith(
                            color: AppTheme.white,
                          )),
                    ),
@@ -889,7 +888,7 @@ class IpgoPage extends StatelessWidget {
                    ),
                    child: Center(
                      child: Text('입고 등록',
-                         style: AppTheme.a16700.copyWith(
+                         style: AppTheme.a18700.copyWith(
                            color: AppTheme.white,
                          )),
                    ),
@@ -906,18 +905,18 @@ class IpgoPage extends StatelessWidget {
      return Row(
        children: [
          Text('상태',
-             style: AppTheme.a16700
+             style: AppTheme.a20700
                  .copyWith(color: AppTheme.black)),
          SizedBox(width: 8,),
          Container(
            padding: EdgeInsets.only(top: 6, left: 8, right: 8),
-           height: 35,
+           height: 40,
            width: controller.statusText.value == '' ? 250 : null,
            decoration: BoxDecoration(
                borderRadius: BorderRadius.circular(10),
                border: Border.all(color: AppTheme.ae2e2e2)),
            child: Text(controller.statusText.value,
-               style:  AppTheme.a14700.copyWith(color: AppTheme.red_red_900),
+               style:  AppTheme.a20700.copyWith(color: AppTheme.red_red_900),
                // maxLines: 5,
 
              ),
@@ -936,17 +935,17 @@ class IpgoPage extends StatelessWidget {
      );
    }
 
-   Widget _qrCodeTextForm() {
+   Widget _qrCodeTextForm(BuildContext context) {
      return Row(
        children: [
          Text('QR 코드',
-             style: AppTheme.a16700
+             style: AppTheme.a20700
                  .copyWith(color: AppTheme.black)),
          SizedBox(width: 8,),
          Container(
            padding: EdgeInsets.only(top: 4),
            width: 250,
-           height: 35,
+           height: 40,
            // padding: const EdgeInsets.only(left: 20, right: 12, top: 4),
            child: Center(
                child: Container(
@@ -971,7 +970,7 @@ class IpgoPage extends StatelessWidget {
                      else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
                    },
                    onTapOutside:(event) => { controller.focusCnt.value = 0 },
-                   onFieldSubmitted: (value) async{
+                   onFieldSubmitted: (value) async {
                      controller.isDuplQr.value = false;
                      if(controller.isSelectedInvnr.value) {
                        for(var i = 0; i < controller.ipgoList.length; i++) {
@@ -985,16 +984,27 @@ class IpgoPage extends StatelessWidget {
                        }else{
                          await controller.checkQR();
                          if(controller.ipgoQrList.isNotEmpty) {
-                           controller.ipgoQrList[0].addAll({'no': '${controller.ipgoList.length + 1}'});
-                           controller.ipgoList.add(controller.ipgoQrList[0]);
-                           controller.insertRow = List<PlutoRow>.generate(controller.ipgoQrList.length, (index) =>
-                               PlutoRow(cells:
-                               Map.from((controller.ipgoQrList[index]).map((key, value) =>
-                                   MapEntry(key, PlutoCell(value: value ?? '' )),
-                               )))
-                           );
-                           //  controller.rowDatas2.add(controller.insertRow[0]);
-                           controller.gridStateMgr2.insertRows(controller.ipgoList.length, controller.insertRow);
+                           if(controller.ipgoQrList.length > 1) {
+                             // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
+                             showDialog(
+                               context: context, //context
+                               builder: (BuildContext context) {
+                                 return _alertDialog(context);
+                               },
+                             ); // context가 왜?
+                           }else {
+                             controller.ipgoQrList[0].addAll({'no': '${controller.ipgoList.length + 1}'});
+                             controller.ipgoList.add(controller.ipgoQrList[0]);
+                             controller.insertRow = List<PlutoRow>.generate(controller.ipgoQrList.length, (index) =>
+                                 PlutoRow(cells:
+                                 Map.from((controller.ipgoQrList[index]).map((key, value) =>
+                                     MapEntry(key, PlutoCell(value: value ?? '' )),
+                                 )))
+                             );
+                             //  controller.rowDatas2.add(controller.insertRow[0]);
+                             controller.gridStateMgr2.insertRows(controller.ipgoList.length, controller.insertRow);
+                           }
+
                          }
                          controller.textQrController.text = '';
                          focusNode2.requestFocus();
@@ -1028,6 +1038,196 @@ class IpgoPage extends StatelessWidget {
 
    }
 
+
+   Widget _alertDialog(BuildContext context) {
+
+     return AlertDialog(
+         backgroundColor: AppTheme.white,
+         shape: RoundedRectangleBorder(
+             borderRadius: BorderRadius.circular(15.0)),
+         title: Column(
+           children: [
+             const SizedBox(
+               height: AppTheme.spacing_l_20,
+             ),
+             Row(
+               children: [
+                 Container(
+                   margin: EdgeInsets.only(left: 24, right: 12),
+                   child: Text(
+                     'QR 선택',
+                     style: AppTheme.a18700
+                         .copyWith(color: AppTheme.black),
+                   ),
+                 ),
+               ],
+             ),
+             const SizedBox(
+               height: 12,
+             ),
+             Container(
+               width: double.infinity,
+               height: 1,
+               color: Colors.black,
+             ),
+             const SizedBox(
+               height: 20,
+             ),
+           ],
+         ),
+
+         content: _alertList(context), /// 내부 메인body
+
+         buttonPadding: const EdgeInsets.all(0),
+         // insetPadding 이게 전체크기 조정
+         insetPadding: const EdgeInsets.only(left: 45, right: 45),
+         contentPadding: const EdgeInsets.all(0),
+         actionsPadding: const EdgeInsets.all(0),
+         titlePadding: const EdgeInsets.all(0),
+         //
+         actions: [
+           Column(
+             children: [
+               Container(
+                 width: double.infinity,
+                 height: 1,
+                 color: const Color(0x5c3c3c43),
+               ),
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.center,
+                 children: [
+                   Expanded(
+                     child: TextButton(
+                       style: ButtonStyle(
+                           shape: MaterialStateProperty.all<
+                               RoundedRectangleBorder>(
+                               const RoundedRectangleBorder(
+                                   borderRadius: BorderRadius.only(
+                                       bottomLeft: Radius.circular(15),
+                                       bottomRight: Radius.circular(15)))),
+                           padding: MaterialStateProperty.all(
+                               const EdgeInsets.all(0))),
+                       onPressed: () {
+                         Get.log('닫기 클릭!');
+                         controller.ipgoQrList.clear();
+                         controller.ipgoQrList.add(controller.ipgoDupQrList[controller.alertIndex.value]);
+                         controller.ipgoQrList[0].addAll({'no': '${controller.ipgoList.length + 1}'});
+                         controller.ipgoList.add(controller.ipgoQrList[0]);
+                         controller.insertRow = List<PlutoRow>.generate(controller.ipgoQrList.length, (index) =>
+                             PlutoRow(cells:
+                             Map.from((controller.ipgoQrList[index]).map((key, value) =>
+                                 MapEntry(key, PlutoCell(value: value ?? '' )),
+                             )))
+                         );
+                         //  controller.rowDatas2.add(controller.insertRow[0]);
+                         controller.gridStateMgr2.insertRows(controller.ipgoList.length, controller.insertRow);
+                         Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+                       },
+                       child: Container(
+                         decoration: BoxDecoration(
+                             border: Border(
+                                 right: BorderSide(color: const Color(0x5c3c3c43),)
+                             ),
+                             borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
+                             color: AppTheme.navy_navy_900
+                         ),
+                         width: MediaQuery.of(context).size.width,
+                         padding: const EdgeInsets.only(
+                           top: AppTheme.spacing_s_12,
+                           bottom: AppTheme.spacing_s_12,
+                         ),
+                         child: Center(
+                           child: Text('선택',
+                               style: AppTheme.titleHeadline.copyWith(
+                                   color: AppTheme.white,
+                                   fontSize: 17)),
+                         ),
+                       ),
+                     ),
+                   )
+                 ],
+               ),
+             ],
+           )
+         ]);
+   }
+
+   Widget _alertList(BuildContext context) {
+     return Container(
+       height: 300,
+       width: 300,
+       child: CustomScrollView(
+         slivers: [
+           _listArea()
+         ],
+       ),
+     );
+   }
+
+
+   Widget _listArea() {
+     return Obx(() => SliverList(
+         delegate: SliverChildBuilderDelegate((context, index) {
+           return _listItem(index: index, context: context);
+         }, childCount: controller.ipgoDupQrList.length)));
+   }
+
+
+   Widget _listItem({required BuildContext context, required int index}) {
+     return  TextButton(
+         style: ButtonStyle(shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+             const RoundedRectangleBorder(
+                 borderRadius: BorderRadius.only(
+                     bottomRight: Radius.circular(5)))),
+             /*backgroundColor: MaterialStateProperty.all<Color>(
+                AppTheme.light_primary,
+              ),*/
+             padding:
+             MaterialStateProperty.all(const EdgeInsets.all(0))),
+         onPressed: () async{
+           if(controller.isSelect[index] == true) {
+             controller.isSelect[index] = false;
+           }else {
+             controller.isSelect[index] = true;
+           }
+           controller.alertIndex.value = index;
+         //  Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+         },
+         child: Obx(() => Container(
+           margin: const EdgeInsets.only(left: 18, right: 18, bottom: 18),
+           padding: const EdgeInsets.only(top: 18, bottom: 18, left: 18, right: 18),
+           decoration: BoxDecoration(
+               borderRadius: BorderRadius.circular(10),
+               border: controller.isSelect[index] ? Border.all(color: AppTheme.black, width: 3) : Border.all(color: AppTheme.ae2e2e2),
+               color: AppTheme.white,
+               boxShadow: [
+                 BoxShadow(
+                   color: AppTheme.gray_c_gray_100.withOpacity(0.5),
+                   spreadRadius: 5,
+                   blurRadius: 7,
+                   offset: const Offset(0, 3), // changes position of shadow
+                 ),
+               ]
+           ),
+           child: Column(
+             children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('${controller.ipgoDupQrList[0]['qrNo']}'),
+                      SizedBox(width: 12,),
+                      Text('${controller.ipgoDupQrList[0]['itemCd']}'),
+                      SizedBox(width: 12,),
+                      Text('${controller.ipgoDupQrList[0]['itemNm']}')
+                    ],
+                  )
+
+             ],
+           ),
+         ),)
+     );
+   }
+
    Widget _ipgoList(BuildContext context) {
      // final double height = 49*(double.parse((controller.ipgoList.length +  1).toString()));
      //final double height = 500;
@@ -1053,10 +1253,10 @@ class IpgoPage extends StatelessWidget {
                },*/
                configuration: PlutoGridConfiguration(
                  style: PlutoGridStyleConfig(
-                     columnHeight: 40,
+                     columnHeight: 55,
                      rowHeight: 55,
-                     columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black),
-                     cellTextStyle: AppTheme.a16700.copyWith(color: AppTheme.black),
+                     columnTextStyle: AppTheme.a18400.copyWith(color: AppTheme.black),
+                     cellTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black),
                      columnResizeIcon: const IconData(0),
                    // checkedColor: Colors.red.shade100,
                    /*   //gridBorderColor: Colors.transparent,
@@ -1078,7 +1278,7 @@ class IpgoPage extends StatelessWidget {
          title: '번호',
          field: 'no',
          type: PlutoColumnType.text(),
-         width: 60,
+         width: 80,
          enableSorting: false,
          enableEditingMode: false,
          enableContextMenu: false,
@@ -1123,7 +1323,7 @@ class IpgoPage extends StatelessWidget {
          title: '품목코드',
          field: 'itemCd',
          type: PlutoColumnType.text(),
-         width: 120,
+         width: 130,
          enableSorting: false,
          enableEditingMode: false,
          enableContextMenu: false,
@@ -1157,7 +1357,7 @@ class IpgoPage extends StatelessWidget {
                // color: textColor,
                child: Text(
                      rendererContext.cell.value.toString(),
-                     style: AppTheme.a14500.copyWith(color: Colors.black)
+                     style: AppTheme.a18400.copyWith(color: Colors.black)
                ),
              );
            }
@@ -1249,7 +1449,7 @@ class IpgoPage extends StatelessWidget {
              scrollDirection: Axis.horizontal,
              child: Row(
                children: [
-                 Text('입고일자', style: AppTheme.a15700.copyWith(color: AppTheme.black),),
+                 Text('입고일자', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
                  SizedBox(width: 8,),
                  Container(
                    child: InkWell(
@@ -1284,8 +1484,8 @@ class IpgoPage extends StatelessWidget {
                        }
                      },
                      child: Container(
-                       height: 35,
-                       width: 150,
+                       height: 40,
+                       width: 130,
                        decoration: BoxDecoration(
                            borderRadius: BorderRadius.circular(10),
                            border: Border.all( color: AppTheme.ae2e2e2)),
@@ -1338,11 +1538,11 @@ class IpgoPage extends StatelessWidget {
                        //  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                      },
                      child: Container(
-                       height: 35,
+                       height: 40,
                        decoration: BoxDecoration(
                            borderRadius: BorderRadius.circular(10),
                            border: Border.all(color: AppTheme.ae2e2e2)),
-                       width: 150,
+                       width: 130,
                        padding: const EdgeInsets.only( right: 12),
                        child: Row(
                          mainAxisAlignment: MainAxisAlignment.center,
@@ -1411,13 +1611,13 @@ class IpgoPage extends StatelessWidget {
                    border: Border.all(color: AppTheme.ae2e2e2)
                ),
                width: 120,
-               height: 35,
+               height: 40,
                padding: const EdgeInsets.only(
 
                ),
                child: Center(
                  child: Text('조회', //입고취소 조회
-                     style: AppTheme.a16700.copyWith(
+                     style: AppTheme.a18700.copyWith(
                        color: AppTheme.white,
                      )),
                ),
@@ -1447,7 +1647,7 @@ class IpgoPage extends StatelessWidget {
                    SizedBox(width: 16,),
                    _invnrTextForm2('품목코드', 1),
                    SizedBox(width: 16,),
-                   _invnrTextForm2('프로젝트명', 2),
+                   _invnrTextForm2('프로젝트명', 2)
                  ],
                ),
              ),
@@ -1482,13 +1682,13 @@ class IpgoPage extends StatelessWidget {
                      border: Border.all(color: AppTheme.ae2e2e2)
                  ),
                  width: 120,
-                 height: 35,
+                 height: 40,
                  padding: const EdgeInsets.only(
 
                  ),
                  child: Center(
                    child: Text('입고 취소',
-                       style: AppTheme.a16700.copyWith(
+                       style: AppTheme.a18700.copyWith(
                          color: AppTheme.white,
                        )),
                  ),
@@ -1505,12 +1705,12 @@ class IpgoPage extends StatelessWidget {
      return Row(
        children: [
          Text(title,
-             style: AppTheme.a16700
+             style: AppTheme.a20700
                  .copyWith(color: AppTheme.black)),
          SizedBox(width: 8,),
          Container(
            padding: EdgeInsets.only(top: 4, left: 8),
-           height: 35,
+           height: 40,
            width: plag == 4 ? 250 : 150,
            decoration: BoxDecoration(
                borderRadius: BorderRadius.circular(10),
@@ -1521,7 +1721,7 @@ class IpgoPage extends StatelessWidget {
                expands :true,
                minLines: null,
                maxLines: null,
-               style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+               style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
                // maxLines: 5,
                controller: plag == 0 ? controller.textInvnrController2 : plag == 1 ? controller.textItemController2
                    : controller.textProjectController2,
@@ -1549,10 +1749,10 @@ class IpgoPage extends StatelessWidget {
    Widget _dropDownItem2() {
      return Row(
        children: [
-         Text('창고', style: AppTheme.a15700.copyWith(color: AppTheme.black),),
+         Text('창고', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
          SizedBox(width: 8,),
          Container(
-           height: 35,
+           height: 40,
            width: 150,
            decoration: BoxDecoration(
                borderRadius: BorderRadius.circular(10),
@@ -1577,7 +1777,7 @@ class IpgoPage extends StatelessWidget {
                    value: value['NAME'].toString(),
                    child: Text(
                      value['NAME'].toString(),
-                     style: AppTheme.a16400
+                     style: AppTheme.a20400
                          .copyWith(color: value['NAME'].toString() == '선택해주세요' ? AppTheme.aBCBCBC : AppTheme.a6c6c6c),
                    ),
                  );
@@ -1598,10 +1798,10 @@ class IpgoPage extends StatelessWidget {
    Widget _joneDropDownItem(String title, int gubun) {
      return Row(
        children: [
-         Text(title, style: AppTheme.a15700.copyWith(color: AppTheme.black),),
+         Text(title, style: AppTheme.a20700.copyWith(color: AppTheme.black),),
          SizedBox(width: 8,),
          Container(
-           height: 35,
+           height: 40,
            width: 185,
            decoration: BoxDecoration(
                borderRadius: BorderRadius.circular(10),
@@ -1626,7 +1826,7 @@ class IpgoPage extends StatelessWidget {
                    value: value['NAME'].toString(),
                    child: Text(
                      value['NAME'].toString(),
-                     style: AppTheme.a16400
+                     style: AppTheme.a20400
                          .copyWith(color: value['NAME'].toString() == '선택해주세요' ? AppTheme.aBCBCBC : AppTheme.a6c6c6c),
                    ),
                  );
@@ -1636,7 +1836,7 @@ class IpgoPage extends StatelessWidget {
                    value: value['NAME'].toString(),
                    child: Text(
                      value['NAME'].toString(),
-                     style: AppTheme.a16400
+                     style: AppTheme.a20400
                          .copyWith(color: value['NAME'].toString() == '선택해주세요' ? AppTheme.aBCBCBC : AppTheme.a6c6c6c),
                    ),
                  );
@@ -1748,13 +1948,13 @@ class IpgoPage extends StatelessWidget {
              },
              configuration: PlutoGridConfiguration(
                style: PlutoGridStyleConfig(
-                   columnHeight: 40,
+                   columnHeight: 55,
                    rowHeight: 55,
                    //gridBorderColor: Colors.transparent,
                    //  activatedColor: Colors.transparent,
                    cellColorInReadOnlyState: Colors.white,
-                   columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black),
-                 cellTextStyle: AppTheme.a16700.copyWith(color: AppTheme.black),
+                   columnTextStyle: AppTheme.a18400.copyWith(color: AppTheme.black),
+                 cellTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black),
                ),
              ),
            ),)
@@ -1784,7 +1984,7 @@ class IpgoPage extends StatelessWidget {
          title: '번호',
          field: 'no',
          type: PlutoColumnType.text(),
-         width: 100,
+         width: 120,
           enableRowChecked: true,
          enableSorting: false,
          enableEditingMode: false,
@@ -1860,7 +2060,7 @@ class IpgoPage extends StatelessWidget {
          title: '품목코드',
          field: 'itemCd',
          type: PlutoColumnType.text(),
-         width: 90,
+         width: 130,
          enableSorting: false,
          enableEditingMode: false,
          enableContextMenu: false,

@@ -384,7 +384,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                         ),
                         child: Center(
                           child: Text('출고등록',
-                              style: AppTheme.a16700.copyWith(
+                              style: AppTheme.a20700.copyWith(
                                 color: AppTheme.white,
                               )),
                         ),
@@ -419,7 +419,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                         ),
                         child: Center(
                           child: Text('출고취소',
-                              style: AppTheme.a16700.copyWith(
+                              style: AppTheme.a20700.copyWith(
                                 color: AppTheme.white,
                               )),
                         ),
@@ -439,20 +439,20 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
     return Row(
       children: [
         Text('상태',
-            style: AppTheme.a16700
+            style: AppTheme.a20700
                 .copyWith(color: AppTheme.black)),
         SizedBox(width: 8,),
         Container(
 
           padding: EdgeInsets.only(top: 6, left: 8, right: 8),
-          height: 35,
+          height: 40,
           width: controller.statusText.value == '' ? 250 : null,
           decoration: BoxDecoration(
               color: AppTheme.gray_gray_100,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppTheme.ae2e2e2)),
           child: Text(controller.statusText.value,
-            style:  AppTheme.a14700.copyWith(color: AppTheme.red_red_900),
+            style:  AppTheme.a20700.copyWith(color: AppTheme.red_red_900),
             // maxLines: 5,
 
           ),
@@ -466,7 +466,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
     return Row(
       children: [
         Text('QR 코드',
-            style: AppTheme.a16700
+            style: AppTheme.a20700
                 .copyWith(color: AppTheme.black)),
         SizedBox(width: 8,),
         Container(
@@ -486,7 +486,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                   minLines: null,
                   maxLines: null,
                   focusNode: controller.focusNode2,
-                  style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+                  style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
                   // maxLines: 5,
                   controller: controller.textQrController,
                   textAlignVertical: TextAlignVertical.center,
@@ -539,7 +539,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                     fillColor: Colors.white,
                     filled: true,
                     hintText: '',
-                    hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+                    hintStyle: AppTheme.a20400.copyWith(color: AppTheme.aBCBCBC),
                     border: InputBorder.none,
                   ),
                   showCursor: true,
@@ -640,13 +640,13 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                 },
                 configuration: PlutoGridConfiguration(
                   style: PlutoGridStyleConfig(
-                      columnHeight: 40,
+                      columnHeight: 55,
                       rowHeight: 55,
                       //gridBorderColor: Colors.transparent,
                       //   activatedColor: Colors.transparent,
                       //  cellColorInReadOnlyState: Colors.white,
-                      columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black),
-                     cellTextStyle: AppTheme.a16700.copyWith(color: AppTheme.black),
+                      columnTextStyle: AppTheme.a18400.copyWith(color: AppTheme.black),
+                     cellTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black),
                   ),
                 ),
               ),
@@ -887,13 +887,13 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                 },
                 configuration: PlutoGridConfiguration(
                   style: PlutoGridStyleConfig(
-                      columnHeight: 40,
+                      columnHeight: 55,
                       rowHeight: 55,
                       //gridBorderColor: Colors.transparent,
                       //   activatedColor: Colors.transparent,
                       //  cellColorInReadOnlyState: Colors.white,
-                      columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black),
-                    cellTextStyle: AppTheme.a16700.copyWith(color: AppTheme.black),
+                      columnTextStyle: AppTheme.a18400.copyWith(color: AppTheme.black),
+                    cellTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black),
                   ),
                 ),
               ),
@@ -974,14 +974,14 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
     final double height = 200;
     return Container(
       width: MediaQuery.of(context).size.width - 24,
-      height: 100,
+      height: 115,
       margin: EdgeInsets.only(left: 12, right: 12),
       child: SingleChildScrollView(
         child: Container(
           child: Column(children: [
             Container(
               width: MediaQuery.of(context).size.width -24,
-              height: 100,
+              height: 115,
               child: PlutoGrid(
                 columns: gridCols3(context),
                 rows: controller.rowDatas4.value,
@@ -999,13 +999,13 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                 },
                 configuration: PlutoGridConfiguration(
                   style: PlutoGridStyleConfig(
-                      columnHeight: 40,
+                      columnHeight: 55,
                       rowHeight: 55,
                       //gridBorderColor: Colors.transparent,
                       //   activatedColor: Colors.transparent,
                       //  cellColorInReadOnlyState: Colors.white,
-                      columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black),
-                    cellTextStyle: AppTheme.a16700.copyWith(color: AppTheme.black),
+                      columnTextStyle: AppTheme.a18400.copyWith(color: AppTheme.black),
+                    cellTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black),
                   ),
                 ),
               ),
@@ -1022,7 +1022,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         title: '지시번호',
         field: 'delOrdNo',
         type: PlutoColumnType.text(),
-        width: 180,
+        width: 210,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -1097,7 +1097,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         title: '보관판매오더번호',
         field: 'soNo2',
         type: PlutoColumnType.text(),
-        width: 150,
+        width: 180,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,

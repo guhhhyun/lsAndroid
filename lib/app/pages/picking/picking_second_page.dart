@@ -76,80 +76,80 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                padding: EdgeInsets.all(8), child: Center(child: Text('랙출고', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                padding: EdgeInsets.all(8), child: Center(child: Text('랙출고', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                padding: EdgeInsets.all(8), child: Center(child: Text('다른 위치 출고', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                padding: EdgeInsets.all(8), child: Center(child: Text('다른 위치 출고', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                 padding: EdgeInsets.all(8), child: Center(child: Text('피킹지시번호', style: AppTheme.a18400.copyWith(color: AppTheme.black),))),
+                ), height: 55,
+                 padding: EdgeInsets.all(8), child: Center(child: Text('피킹지시번호', style: AppTheme.a20400.copyWith(color: AppTheme.black),))),
 
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                 padding: EdgeInsets.all(8), child: Center(child: Text('프로젝트명', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                 padding: EdgeInsets.all(8), child: Center(child: Text('프로젝트명', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
 
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                 padding: EdgeInsets.all(8), child: Center(child: Text('판매오더', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                 padding: EdgeInsets.all(8), child: Center(child: Text('판매오더', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                padding: EdgeInsets.all(8), child: Center(child: Text('품번', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                padding: EdgeInsets.all(8), child: Center(child: Text('품번', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                 padding: EdgeInsets.all(8), child: Center(child: Text('품명', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                 padding: EdgeInsets.all(8), child: Center(child: Text('품명', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                padding: EdgeInsets.all(8), child: Center(child: Text('자재번호', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                padding: EdgeInsets.all(8), child: Center(child: Text('자재번호', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                padding: EdgeInsets.all(8), child: Center(child: Text('자재명', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                padding: EdgeInsets.all(8), child: Center(child: Text('자재명', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                 padding: EdgeInsets.all(8), child: Center(child: Text('제조번호', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                 padding: EdgeInsets.all(8), child: Center(child: Text('제조번호', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                 padding: EdgeInsets.all(8), child: Center(child: Text('피킹지시수량', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                 padding: EdgeInsets.all(8), child: Center(child: Text('피킹지시수량', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                 padding: EdgeInsets.all(8), child: Center(child: Text('피킹수량', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                 padding: EdgeInsets.all(8), child: Center(child: Text('피킹수량', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                padding: EdgeInsets.all(8), child: Center(child: Text('중요 자재 여부', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                padding: EdgeInsets.all(8), child: Center(child: Text('중요 자재 여부', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                padding: EdgeInsets.all(8), child: Center(child: Text('재고위치', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                padding: EdgeInsets.all(8), child: Center(child: Text('재고위치', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
-                ), height: 40,
-                padding: EdgeInsets.all(8), child: Center(child: Text('피킹 순서', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+                ), height: 55,
+                padding: EdgeInsets.all(8), child: Center(child: Text('피킹 순서', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
 
           ],
         ),
@@ -190,6 +190,8 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
             Container(
 
                 child: controller.pickingSecondList[i]['rackOutBtnRowspan'] != 0 ?
+                        controller.pickingSecondList[i]['rackOutBtnVisible'].toString() == 'false' ?
+
                 InkWell(
                     onTap: () async{
                       await controller.registRackBtn(i);
@@ -204,11 +206,21 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                       child: Center(
                           child: const Icon(Icons.play_circle, color: AppTheme.black,)),
                     )
-                )
+                ) : InkWell(
+                            onTap: () async{
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              child: Center(
+                                  child: const Icon(Icons.play_circle, color: AppTheme.gray_c_gray_400,)),
+                            )
+                        )
                     : Text('', style: AppTheme.a18400.copyWith(color: AppTheme.black))),
             Container(
 
-              child: controller.pickingSecondList[i]['othRackOutBtnRowspan'] != 0 ?InkWell(
+              child: controller.pickingSecondList[i]['othRackOutBtnRowspan'] != 0 ?
+              controller.pickingSecondList[i]['othRackOutBtnVisible'].toString() == 'false' ?
+              InkWell(
                 onTap: () async {
                   Get.log("Clicked index: $i");
                   await controller.reqPickingThird(i);
@@ -226,7 +238,16 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                       child: const Icon(Icons.play_circle)//Text(controller.pickingSecondList[i]['othRackOutBtn'])
                   ),
                 ),
-              ) : Text(''),
+              ) : InkWell(
+                  onTap: () async{
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    child: Center(
+                        child: const Icon(Icons.play_circle, color: AppTheme.gray_c_gray_400,)),
+                  )
+              )
+              : Text(''),
             ),
             Container(
                 padding: EdgeInsets.all(8),
@@ -313,7 +334,7 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                 child: Table(
                   columnWidths: {
                     0: FixedColumnWidth(90.0),
-                    1: FixedColumnWidth(90.0),
+                    1: FixedColumnWidth(130.0),
                     2: FixedColumnWidth(200.0),
                     3: FixedColumnWidth(500.0),
                     4: FixedColumnWidth(200.0),
@@ -373,18 +394,18 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
     return Row(
       children: [
         Text(title,
-            style: AppTheme.a16700
+            style: AppTheme.a20700
                 .copyWith(color: AppTheme.black)),
         SizedBox(width: 8,),
         Container(
           padding: EdgeInsets.only(top: 4, left: 12, right: 12),
-          height: 35,
+          height: 40,
          // width: title == '' ? 300 : null,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppTheme.ae2e2e2)),
           child: Center(
-            child: Text(value, style: AppTheme.a14400.copyWith(color: AppTheme.black),softWrap: false)
+            child: Text(value, style: AppTheme.a20400.copyWith(color: AppTheme.black),softWrap: false)
           ),
 
         ),
