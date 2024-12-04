@@ -1,4 +1,6 @@
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
@@ -341,6 +343,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   Get.log('조회 클릭!');
                   if(controller.isChecked.value == false) {
                     controller.isChecked.value = true;
+                    controller.gridStateMgr3.removeAllRows();
                     await controller.checkQR();
                     if(controller.etcIpgoList.isNotEmpty) {
                       controller.gridStateMgr2.setCurrentCell(controller.gridStateMgr2.firstCell, 0);
@@ -1564,7 +1567,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
             ),
             Row(
               children: [
-                Container(
+                /*Container(
                   margin: EdgeInsets.only(right: 12),
                   width: 120,
                   height: 40,
@@ -1601,7 +1604,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                       ),
                     ),
                   ),
-                ),
+                ),*/
                 Container(
                   margin: EdgeInsets.only(right: 12),
                   width: 120,
@@ -1619,6 +1622,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                     onPressed: () async {
                       Get.log('저장 클릭!');
                       await controller.registSaveIpgoBtn();
+                      Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -1670,7 +1674,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                           )))
                       );
                       controller.gridStateMgr4.appendRows(controller.rowDatas4.value);
-
+                      // inbe창고 창고// 가속도의 힘으로
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -1803,10 +1807,6 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                       controller.textQrController.text = '';
                       controller.gridStateMgr4.removeAllRows();
                       controller.gridStateMgr4.appendRows(controller.rowDatas4);
-
-
-
-
                       controller.focusNode.requestFocus();
                       Future.delayed(const Duration(), (){
                         controller.focusNode.requestFocus();
@@ -1814,9 +1814,6 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                         Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
                       });
                     }
-
-
-
                   },
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
@@ -1867,6 +1864,11 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
       ],
     );
   }
+
+
+
+
+
 }
 
 

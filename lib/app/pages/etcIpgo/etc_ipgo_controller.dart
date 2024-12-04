@@ -107,8 +107,8 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
 
     bLoading.value = true;
 
-    for(var e = 0; e < etcIpgoCheckList.length; e++) {
-      if(etcIpgoCheckList[e] == true) {
+    for(var e = 0; e < etcIpgoQrCheckList.length; e++) {
+      if(etcIpgoQrCheckList[e] == true) {
         var params = {
           'programId': 'A1020',
           'procedure': 'USP_A4020_S01',
@@ -445,7 +445,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
 
   /// 공통 드롭다운 조회(INB_TYPE) -> 입고구분
   Future<void> reqCommon() async {
-
+    //tai
     bLoading.value = true;
 
     var params = {

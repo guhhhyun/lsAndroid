@@ -1571,7 +1571,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
             ),
             Row(
               children: [
-                Container(
+                /*Container(
                   margin: EdgeInsets.only(right: 12),
                   width: 120,
                   height: 40,
@@ -1607,8 +1607,8 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                             )),
                       ),
                     ),
-                  ),
-                ),
+                  ), // 초기화가 왜 필요함?
+                ),*/
                 Container(
                   margin: EdgeInsets.only(right: 12),
                   width: 120,

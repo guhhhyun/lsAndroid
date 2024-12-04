@@ -225,7 +225,7 @@ class MainIconWidget extends StatelessWidget {
 
                     ],
                   ),
-                 /* Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _buttonArea2(
@@ -245,7 +245,7 @@ class MainIconWidget extends StatelessWidget {
                             Get.toNamed(Routes.ETC_CHULGO);
                           }, context: context),
                     ],
-                  ),*/
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

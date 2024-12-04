@@ -110,8 +110,8 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
 
     bLoading.value = true;
 
-    for(var e = 0; e < etcChulgoCheckList.length; e++) {
-      if(etcChulgoCheckList[e] == true) {
+    for(var e = 0; e < etcChulgoQrCheckList.length; e++) {
+      if(etcChulgoQrCheckList[e] == true) {
         var params = {
           'programId': 'A1020',
           'procedure': 'USP_A4030_S01',
@@ -142,7 +142,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
             },
             {
               'paramName': 'p_OTB_LOT_NO',
-              'paramValue': etcChulgoQrList[e]['inbLotNo'],
+              'paramValue': null, //etcChulgoQrList[e]['inbLotNo'], // 이 컬럼이 없어졌다?
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },

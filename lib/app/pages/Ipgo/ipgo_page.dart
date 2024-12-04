@@ -987,6 +987,7 @@ class IpgoPage extends StatelessWidget {
                            if(controller.ipgoQrList.length > 1) {
                              // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
                              showDialog(
+                               barrierDismissible: false,
                                context: context, //context
                                builder: (BuildContext context) {
                                  return _alertDialog(context);
@@ -1187,8 +1188,13 @@ class IpgoPage extends StatelessWidget {
          onPressed: () async{
            if(controller.isSelect[index] == true) {
              controller.isSelect[index] = false;
+
            }else {
+             for(var i = 0; i < controller.isSelect.length; i++) {
+               controller.isSelect[i] = false;
+             }
              controller.isSelect[index] = true;
+
            }
            controller.alertIndex.value = index;
          //  Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
@@ -1214,11 +1220,11 @@ class IpgoPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('${controller.ipgoDupQrList[0]['qrNo']}'),
+                      Text('${controller.ipgoDupQrList[index]['qrNo']}'),
                       SizedBox(width: 12,),
-                      Text('${controller.ipgoDupQrList[0]['itemCd']}'),
+                      Text('${controller.ipgoDupQrList[index]['itemCd']}'),
                       SizedBox(width: 12,),
-                      Text('${controller.ipgoDupQrList[0]['itemNm']}')
+                      Text('${controller.ipgoDupQrList[index]['itemNm']}')
                     ],
                   )
 

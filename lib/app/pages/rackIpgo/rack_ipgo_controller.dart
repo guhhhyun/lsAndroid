@@ -27,12 +27,17 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
 
   /// 리스트
   RxList<dynamic> rackIpgoList = [].obs; // 랙입고 조회된 리스트
+  RxList<dynamic> rackIpgoDupList = [].obs; // 랙입고 조회된 리스트 여러개 경우
   RxList<dynamic> registRackIpgoList = [].obs; // 최종 리스트(qr입력마다 다 넣어준 리스트)
+
+  RxList<dynamic> isSelect = [].obs;
 
   RxString locTextS = ''.obs;
 
   RxDouble height = 0.0.obs;
   RxInt currentFirstIndex = 0.obs;
+
+  RxInt alertIndex = 0.obs;
 
 
   /// 그리드
@@ -409,6 +414,8 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
 
     bLoading.value = true;
     rackIpgoList.clear();
+    rackIpgoDupList.clear();
+    isSelect.clear();
 
     var params = {
       'programId': 'A1020',
@@ -447,13 +454,13 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
           rackIpgoList.value.addAll(retVal.body![1]);
+          rackIpgoDupList.value.addAll(retVal.body![1]);
           for(var i = 0; i < rackIpgoList.length; i++){
             rackIpgoList[i].addAll({'no': '${i+1}'});
           }
-          zoneText.value = rackIpgoList[currentFirstIndex.value]['LAST_ZONE_NM']?? '';
-          locText.value = rackIpgoList[currentFirstIndex.value]['LAST_LOC']?? '';
-          zoneCd.value = rackIpgoList[currentFirstIndex.value]['ZONE_CD']?? '';
-          locCd.value = rackIpgoList[currentFirstIndex.value]['LOC_CD'] ?? '';
+          for(var i = 0; i < rackIpgoDupList.length; i++) {
+            isSelect.add(false);
+          }
           Get.log(rackIpgoList.toString());
           Get.log('조회 성공');
           isDbConnected.value = true;
@@ -472,7 +479,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
       isDbConnected.value = false;
     } finally {
       bLoading.value = false;
-      plutoRow();
+     // plutoRow();
     }
   }
 

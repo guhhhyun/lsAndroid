@@ -292,7 +292,7 @@ class RackIpgoPage extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _qrCodeTextForm(),
+                _qrCodeTextForm(context),
                 // _invnrTextForm('QR 코드', 3),
                 SizedBox(width: 16,),
                 _statusText(),
@@ -533,7 +533,7 @@ class RackIpgoPage extends StatelessWidget {
     );
   }
 
-  Widget _qrCodeTextForm() {
+  Widget _qrCodeTextForm(BuildContext context) {
     return Row(
       children: [
         Text('QR 코드',
@@ -580,11 +580,23 @@ class RackIpgoPage extends StatelessWidget {
                         controller.textQrController.text = '';
                       }else{
                         await controller.checkQR(); // 조회
-                        if(controller.rackIpgoList.isNotEmpty) {
-
+                        if(controller.rackIpgoList.length > 1) {
+                          // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context, //context
+                            builder: (BuildContext context) {
+                              return _alertDialog(context);
+                            },
+                          ); // context가 왜?
+                        }else {
+                          controller.zoneText.value = controller.rackIpgoList[0]['LAST_ZONE_NM']?? '';
+                          controller.locText.value = controller.rackIpgoList[0]['LAST_LOC']?? '';
+                          controller.zoneCd.value = controller.rackIpgoList[0]['ZONE_CD']?? '';
+                          controller.locCd.value = controller.rackIpgoList[0]['LOC_CD'] ?? '';
+                          controller.textQrController.text = '';
                         }
                         controller.textQrController.text = '';
-
 
                       }
 
@@ -625,6 +637,236 @@ class RackIpgoPage extends StatelessWidget {
 
   }
 
+
+  Widget _alertDialog(BuildContext context) {
+
+    return AlertDialog(
+        backgroundColor: AppTheme.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0)),
+        title: Column(
+          children: [
+            const SizedBox(
+              height: AppTheme.spacing_l_20,
+            ),
+            Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 24, right: 12),
+                  child: Text(
+                    'QR 선택',
+                    style: AppTheme.a18700
+                        .copyWith(color: AppTheme.black),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            Container(
+              width: double.infinity,
+              height: 1,
+              color: Colors.black,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+
+        content: _alertList(context), /// 내부 메인body
+
+        buttonPadding: const EdgeInsets.all(0),
+        // insetPadding 이게 전체크기 조정
+        insetPadding: const EdgeInsets.only(left: 45, right: 45),
+        contentPadding: const EdgeInsets.all(0),
+        actionsPadding: const EdgeInsets.all(0),
+        titlePadding: const EdgeInsets.all(0),
+        //
+        actions: [
+          Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 1,
+                color: const Color(0x5c3c3c43),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15)))),
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(0))),
+                      onPressed: () {
+                        Get.log('선택 클릭!');
+                        controller.rackIpgoList.clear();
+                        controller.rackIpgoList.add(controller.rackIpgoDupList[controller.alertIndex.value]);
+
+                        controller.zoneText.value = controller.rackIpgoList[0]['LAST_ZONE_NM']?? '';
+                        controller.locText.value = controller.rackIpgoList[0]['LAST_LOC']?? '';
+                        controller.zoneCd.value = controller.rackIpgoList[0]['ZONE_CD']?? '';
+                        controller.locCd.value = controller.rackIpgoList[0]['LOC_CD'] ?? '';
+                        controller.textQrController.text = '';
+
+                        controller.insertRow = List<PlutoRow>.generate(controller.rackIpgoList.length, (index) =>
+                            PlutoRow(cells:
+                            Map.from((controller.rackIpgoList[index]).map((key, value) =>
+                                MapEntry(key, PlutoCell(value: value ?? '' )),
+                            )))
+                        );
+                        //  controller.rowDatas2.add(controller.insertRow[0]);
+                        controller.gridStateMgr.insertRows(controller.rackIpgoList.length, controller.insertRow);
+                        Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                right: BorderSide(color: const Color(0x5c3c3c43),)
+                            ),
+                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
+                            color: AppTheme.navy_navy_900
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.only(
+                          top: AppTheme.spacing_s_12,
+                          bottom: AppTheme.spacing_s_12,
+                        ),
+                        child: Center(
+                          child: Text('선택',
+                              style: AppTheme.titleHeadline.copyWith(
+                                  color: AppTheme.white,
+                                  fontSize: 17)),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          )
+        ]);
+  }
+
+  Widget _alertList(BuildContext context) {
+    return Container(
+      height: 300,
+      width: 300,
+      child: CustomScrollView(
+        slivers: [
+          _listArea()
+        ],
+      ),
+    );
+  }
+
+
+  Widget _listArea() {
+    return Obx(() => SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
+          return _listItem(index: index, context: context);
+        }, childCount: controller.rackIpgoDupList.length)));
+  }
+
+
+  Widget _listItem({required BuildContext context, required int index}) {
+    return  TextButton(
+        style: ButtonStyle(shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(5)))),
+            /*backgroundColor: MaterialStateProperty.all<Color>(
+                AppTheme.light_primary,
+              ),*/
+            padding:
+            MaterialStateProperty.all(const EdgeInsets.all(0))),
+        onPressed: () async{
+          if(controller.isSelect[index] == true) {
+            controller.isSelect[index] = false;
+
+          }else {
+            for(var i = 0; i < controller.isSelect.length; i++) {
+              controller.isSelect[i] = false;
+            }
+            controller.isSelect[index] = true;
+
+          }
+          controller.alertIndex.value = index;
+          //  Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+        },
+        child: Obx(() => Container(
+          margin: const EdgeInsets.only(left: 18, right: 18, bottom: 18),
+          padding: const EdgeInsets.only(top: 18, bottom: 18, left: 18, right: 18),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: controller.isSelect[index] ? Border.all(color: AppTheme.black, width: 3) : Border.all(color: AppTheme.ae2e2e2),
+              color: AppTheme.white,
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.gray_c_gray_100.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(0, 3), // changes position of shadow
+                ),
+              ]
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text('QR코드: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.rackIpgoDupList[index]['QR_NO']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      SizedBox(width: 12,),
+                      Text('품목코드: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.rackIpgoDupList[index]['ITEM_CD']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      SizedBox(width: 12,),
+                      Text('품명: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.rackIpgoDupList[index]['ITEM_NM'].toString().trim()}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                    ],
+                  ),
+                  SizedBox(width: 12,),
+                  Row(
+                    children: [
+                      Text('마지막 위치: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.rackIpgoDupList[index]['LAST_ZONE_NM']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),)
+                    ],
+                  )
+                ],
+              )
+
+            ],
+          ),
+        ),)
+    );
+  }
+
   /// /////////////////////////////////////////////////////// 입고 권고 위치 //////////////////////////////////
 
   Widget _subBody2(BuildContext context) {
@@ -643,9 +885,9 @@ class RackIpgoPage extends StatelessWidget {
             ),*/
 
           ),
-          SizedBox(height: 4,),
+          const SizedBox(height: 4,),
           _SearchCondition3(context),
-          SizedBox(height: 4,),
+          const SizedBox(height: 4,),
 
           Container(
             margin: EdgeInsets.only(left: 12, right: 12),
@@ -659,7 +901,7 @@ class RackIpgoPage extends StatelessWidget {
 
           // _SearchCondition4(context),
           Container(
-            margin: EdgeInsets.only(left: 12, right: 12),
+            margin: const EdgeInsets.only(left: 12, right: 12),
             decoration: BoxDecoration(
                 border: Border(
                     top: BorderSide(color: AppTheme.black)
