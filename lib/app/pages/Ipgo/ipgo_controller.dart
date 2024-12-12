@@ -21,21 +21,38 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   var textItemController = TextEditingController();
   var textProjectController = TextEditingController();
   var textQrController = TextEditingController();
-  var textStatusController = TextEditingController();
+
   late  PlutoGridStateManager gridStateMgr;
   late  PlutoGridStateManager gridStateMgr2;
+
+  /// 소박스등록
+  var textQrController2 = TextEditingController(); // 소박스등록 qr
+  late  PlutoGridStateManager gridStateMgr4;
+  late  PlutoGridStateManager gridStateMgr5;
+  var rowDatas4 = <PlutoRow>[].obs;
+  var rowDatas5 = <PlutoRow>[].obs;
+  List<PlutoRow> insertRow2 = [];
+  List<PlutoRow> insertRow3 = [];
+
   /// 입고취소
   var textInvnrController2 = TextEditingController();
   var textItemController2 = TextEditingController();
   var textProjectController2 = TextEditingController();
   late  PlutoGridStateManager gridStateMgr3;
 
+
+
   /// 리스트
   RxList<dynamic> invnrList = [].obs; // 거래명세서 리스트
   RxList<dynamic> ipgoList = [].obs; // 최종입고등록 리스트
   RxList<dynamic> ipgoQrList = [].obs; // qr코드 찍을 때 조회되는 리스트
   RxList<dynamic> ipgoDupQrList = [].obs; // 중복qr코드 떄문에 담고있을 그릇
+  RxList<dynamic> ipgoQrBoxList = [].obs; // 소박스등록 qr코드 찍을 때 조회되는 리스트
+  RxList<dynamic> ipgoQrBoxItemList = [].obs; // 소박스등록 qr코드 찍을 때 조회되는 오른쪽 자재 리스트
+  RxList<List<dynamic>> itemTotalList = [[]].obs; // 소박스등록 qr코드 오른쪽
+  RxList<dynamic> ipgoBoxList = [].obs; // 최종입고등록 리스트
   RxList<dynamic> isSelect = [].obs;
+  RxList<dynamic> isSelect2 = [].obs; //소박스등록
 
   RxList<dynamic> ipgoCancelList = [].obs; // 입고취소리스트
  // RxList<dynamic> selectedCancelList = [].obs; // 선택된 입고취소리스트
@@ -76,19 +93,24 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxMap<String, String> selectedIpgoDropdown = {'CODE':'', 'NAME': '전체'}.obs;
   RxBool bLoading = false.obs;
   RxInt focusCnt = 0.obs;
+  RxInt focusCnt2 = 0.obs;
   RxBool isSelectedInvnr = false.obs; // 거래명세서 선택된 값이 있는지 여부
   RxBool isDuplQr = false.obs; // 중복qr 선택된 값이 있는지 여부
   RxInt selectedInvnrIndex = 1.obs; // 선택된 거래명세서의 index
   RxString statusText = ''.obs;
+  RxString statusText2 = ''.obs;
   RxString cheburnDate = ''.obs; // 채번날짜
   RxString cheburnInbNumber = ''.obs; // 끝 6자리
   RxString cheburnLotNumber = ''.obs; // 끝 6자리
   RxBool isQr = false.obs;
+  RxBool isQr2 = false.obs;
   RxBool isChecked = false.obs;
   RxBool isCancelChecked = false.obs;
   RxBool isIpgoClick = false.obs;
+  RxBool isIpgoClick2 = false.obs; // 소박스용
   RxBool isDbConnected = true.obs;
   RxInt alertIndex = 3.obs;
+  RxInt currentRowIndex = 0.obs; // 소박스 등록에서 왼쪽 선택된 리스트의 자재들이 우측 리스트에 보여주기 위함
 
   /// 공통 드롭다운 조회(zone) -> 존 구분
   Future<void> reqCommon2() async {
@@ -473,6 +495,282 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     }
   }
 
+
+  /// 소박스 등록 QR 오른쪽 자재 리스트 뽑기
+  Future<void> checkBoxItemQR() async {
+    Get.log('QR 조회');
+
+    bLoading.value = true;
+    ipgoQrBoxItemList.clear();
+    ipgoBoxList.length == 1 ? itemTotalList.clear() : null;
+
+    statusText2.value = '';
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A1020_R05',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_TAG_ID',
+          'paramValue': ipgoQrBoxList[0]['tagId'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqIpgoSmallboxQr2(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          ipgoQrBoxItemList.value.addAll(retVal.body![1]);
+
+          itemTotalList.add(ipgoQrBoxItemList.value);
+
+
+          // ipgoDupQrList.value.addAll(retVal.body![1]);
+          /* for(var i = 0; i < ipgoDupQrList.length; i++) {
+            isSelect.add(false);
+          }*/
+          Get.log('itemTotalList[0].length: ${itemTotalList[0].length}');
+          Get.log('조회 성공');
+          isDbConnected.value = true;
+          statusText2.value = '정상 조회되었습니다.';
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+          statusText2.value = retVal.body![0]['resultMessage'];
+        }
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('checkBoxQR catch !!!!');
+      Get.log(e.toString());
+      statusText2.value = e.toString();
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+
+    }
+  }
+
+  /// 소박스 등록 QR
+  Future<void> checkBoxQR() async {
+    Get.log('QR 조회');
+
+    bLoading.value = true;
+    ipgoQrBoxList.clear();
+   /* ipgoDupQrList.clear();*/
+    isSelect.clear();
+    statusText2.value = '';
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A1020_R02',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q2',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_WH_CD',
+          'paramValue': 'WH01',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_DOC1',
+          'paramValue': null,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_QR_NO',
+          'paramValue': textQrController2.text,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqIpgoSmallboxQr(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          ipgoQrBoxList.value.addAll(retVal.body![1]);
+
+          ipgoQrBoxList[0].addAll({'no': '${ipgoBoxList.length + 1}'});
+          ipgoBoxList.add(ipgoQrBoxList[0]);
+
+
+       // ipgoDupQrList.value.addAll(retVal.body![1]);
+         /* for(var i = 0; i < ipgoDupQrList.length; i++) {
+            isSelect.add(false);
+          }*/
+          Get.log(ipgoQrBoxList.toString());
+          Get.log('조회 성공');
+          isDbConnected.value = true;
+          statusText2.value = '정상 조회되었습니다.';
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+          statusText2.value = retVal.body![0]['resultMessage'];
+          isDbConnected.value = false;
+        }
+
+      } else {
+        Get.log('조회 실패');
+        statusText2.value = retVal.body![0]['resultMessage'];
+        isDbConnected.value = false;
+      }
+    } catch (e) {
+      Get.log('checkBoxQR catch !!!!');
+      Get.log(e.toString());
+      statusText2.value = e.toString();
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+      isDbConnected.value == true ?
+      await checkBoxItemQR() : null;
+    }
+  }
+
+
+  /// 소박스 입고 등록
+  Future<void> registIpgoBoxBtn() async {
+    Get.log('소박스 입고 등록 클릭');
+
+    bLoading.value = true;
+      for (var i = 0; i < ipgoBoxList.length; i++) {
+        var params = {
+          'programId': 'A1020',
+          'procedure': 'USP_A1020_S03',
+          'params': [
+            {
+              'paramName': 'p_work_type',
+              'paramValue': 'N',
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_PLANT',
+              'paramValue': '1302',
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_WH_CD',
+              'paramValue': 'WH01',
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_INB_NO',
+              'paramValue': 'INBN$cheburnDate$cheburnInbNumber',
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_INB_TYPE',
+              'paramValue': ipgoBoxList[i]['inbType'],
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_INB_DT',
+              'paramValue': DateFormat('yyyyMMdd').format(DateTime.now()),
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_INB_LOT_NO',
+              'paramValue': 'LINB$cheburnDate$cheburnLotNumber',
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_DOC_NO',
+              'paramValue': ipgoBoxList[i]['inbType'] == '20' ? null : ipgoBoxList[i]['doc1'],
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_QR_NO',
+              'paramValue': ipgoBoxList[i]['qrNo'],
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_QTY',
+              'paramValue': ipgoBoxList[i]['qty'],
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_FST_ROW_YN',
+              'paramValue': i == 0 ? 'Y' : 'N',
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_USR_ID',
+              'paramValue': gs.loginId.value,
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_USR_IP',
+              'paramValue': 'MOBILE',
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            }
+
+
+          ]
+        };
+
+        try {
+          final retVal = await HomeApi.to.registIpgo(params);
+
+          if (retVal == '0000') {
+            Get.log('등록되었습니다');
+            isDbConnected.value = true;
+          } else {
+            Get.log('등록 실패');
+
+          }
+        } catch (e) {
+          Get.log('registIpgoBtn catch !!!!');
+          Get.log(e.toString());
+          isDbConnected.value = false;
+        } finally {
+          bLoading.value = false;
+          isIpgoClick.value = false;
+        }
+      }
+
+
+
+  }
+
+
   /// 입고 등록
   Future<void> registIpgoBtn() async {
     Get.log('입고 등록 클릭');
@@ -726,6 +1024,12 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           'paramMode': 'IN'
         },
         {
+          'paramName': 'p_ITEM_NM',
+          'paramValue': '',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
           'paramName': 'p_PJT_NM',
           'paramValue': textProjectController.text,
           'paramJdbcType': 'VARCHAR',
@@ -799,11 +1103,20 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   }
 
 
+
   final FocusNode focusNode = FocusNode();
 
   void requestFocus() {
     Future.microtask(() => focusNode.requestFocus());
     if(focusCnt.value++ > 1) focusCnt.value = 0;
+    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+  }
+
+  final FocusNode focusNode2 = FocusNode();
+
+  void requestFocus2() {
+    Future.microtask(() => focusNode2.requestFocus());
+    if(focusCnt2.value++ > 1) focusCnt2.value = 0;
     else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
   }
 
@@ -820,10 +1133,10 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     Get.log('IpgoController - onInit !!');
     super.onInit();
     firstDayOfMonth = DateTime(now.year, now.month, 1);
-    firstDayOfMonth2 = DateTime(now.year, now.month -1, 1);
+    firstDayOfMonth2 = DateTime(now.year, now.month, 1);
     dayStartValue.value = DateFormat('yyyy-MM-dd').format(firstDayOfMonth);
     dayStartValue2.value = DateFormat('yyyy-MM-dd').format(firstDayOfMonth2);
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
     reqCommon();
     reqCommon2();
     reqCheburnIpgo();

@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'etc_ipgo_second_model.dart';
+part of 'ipgo_smallbox_item_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$EtcIpgoSecondModelImpl _$$EtcIpgoSecondModelImplFromJson(
+_$IpgoSmallboxItemModelImpl _$$IpgoSmallboxItemModelImplFromJson(
         Map<String, dynamic> json) =>
-    _$EtcIpgoSecondModelImpl(
+    _$IpgoSmallboxItemModelImpl(
       header: json['header'] == null
           ? null
           : Header.fromJson(json['header'] as Map<String, dynamic>),
@@ -18,8 +18,8 @@ _$EtcIpgoSecondModelImpl _$$EtcIpgoSecondModelImplFromJson(
       hasError: json['hasError'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$$EtcIpgoSecondModelImplToJson(
-        _$EtcIpgoSecondModelImpl instance) =>
+Map<String, dynamic> _$$IpgoSmallboxItemModelImplToJson(
+        _$IpgoSmallboxItemModelImpl instance) =>
     <String, dynamic>{
       'header': instance.header,
       'resultCode': instance.resultCode,
@@ -54,9 +54,6 @@ _$BodyItemImpl _$$BodyItemImplFromJson(Map<String, dynamic> json) =>
       errorState: json['errorState'] as String? ?? '',
       errorProcedure: json['errorProcedure'] as String? ?? '',
       returnMessage: json['returnMessage'] as String? ?? '',
-      items: (json['items'] as List<dynamic>?)
-          ?.map((e) => SubBodyItem.fromJson(e as Map<String, dynamic>))
-          .toList(),
     );
 
 Map<String, dynamic> _$$BodyItemImplToJson(_$BodyItemImpl instance) =>
@@ -68,59 +65,72 @@ Map<String, dynamic> _$$BodyItemImplToJson(_$BodyItemImpl instance) =>
       'errorState': instance.errorState,
       'errorProcedure': instance.errorProcedure,
       'returnMessage': instance.returnMessage,
-      'items': instance.items,
     };
 
-_$SubBodyItemImpl _$$SubBodyItemImplFromJson(Map<String, dynamic> json) =>
-    _$SubBodyItemImpl(
+_$SubItemImpl _$$SubItemImplFromJson(Map<String, dynamic> json) =>
+    _$SubItemImpl(
+      no: (json['no'] as num?)?.toInt() ?? 0,
       wht: json['wht'] as String? ?? '',
+      custCd: json['custCd'] as String? ?? '',
       tagId: (json['tagId'] as num?)?.toInt() ?? 0,
-      locCd: json['locCd'] as String? ?? '',
-      whCd: json['whCd'] as String? ?? '',
-      inbNo: json['inbNo'] as String? ?? '',
+      pjtNm: json['pjtNm'] as String? ?? '',
       grpKey: json['grpKey'] as String? ?? '',
-      whNm: json['whNm'] as String? ?? '',
+      pjtNo: json['pjtNo'] as String? ?? '',
       expDt: json['expDt'] as String? ?? '',
       remark: json['remark'] as String? ?? '',
-      tagNo: json['tagNo'] as String? ?? '',
-      itemCd: json['itemCd'] as String? ?? '',
-      whtUnit: json['whtUnit'] as String? ?? '',
+      prtNo: json['prtNo'] as String? ?? '',
+      itemNm: json['itemNm'] as String? ?? '',
       lotNo: json['lotNo'] as String? ?? '',
-      zoneNm: json['zoneNm'] as String? ?? '',
-      usrNm: json['usrNm'] as String? ?? '',
-      inbDt: json['inbDt'] as String? ?? '',
-      plant: json['plant'] as String? ?? '',
+      tagType: json['tagType'] as String? ?? '',
+      vendNm: json['vendNm'] as String? ?? '',
+      dQty: json['dQty'] as String? ?? '',
+      wmsQty: (json['wmsQty'] as num?)?.toDouble() ?? 0.0,
+      itemCd: json['itemCd'] as String? ?? '',
+      tagNo: json['tagNo'] as String? ?? '',
+      totWht: json['totWht'] as String? ?? '',
+      whtUnit: json['whtUnit'] as String? ?? '',
+      setQty: json['setQty'] as String? ?? '',
+      boxWht: json['boxWht'] as String? ?? '',
       qrNo: json['qrNo'] as String? ?? '',
       qty: (json['qty'] as num?)?.toDouble() ?? 0.0,
-      tagType: json['tagType'] as String? ?? '',
-      tagTypeNm: json['tagTypeNm'] as String? ?? '',
+      wmsQtyUnit: json['wmsQtyUnit'] as String? ?? '',
+      vendCd: json['vendCd'] as String? ?? '',
       qtyUnit: json['qtyUnit'] as String? ?? '',
+      tagTypeNm: json['tagTypeNm'] as String? ?? '',
+      mstKey: json['mstKey'] as String? ?? '',
       prtDt: json['prtDt'] as String? ?? '',
     );
 
-Map<String, dynamic> _$$SubBodyItemImplToJson(_$SubBodyItemImpl instance) =>
+Map<String, dynamic> _$$SubItemImplToJson(_$SubItemImpl instance) =>
     <String, dynamic>{
+      'no': instance.no,
       'wht': instance.wht,
+      'custCd': instance.custCd,
       'tagId': instance.tagId,
-      'locCd': instance.locCd,
-      'whCd': instance.whCd,
-      'inbNo': instance.inbNo,
+      'pjtNm': instance.pjtNm,
       'grpKey': instance.grpKey,
-      'whNm': instance.whNm,
+      'pjtNo': instance.pjtNo,
       'expDt': instance.expDt,
       'remark': instance.remark,
-      'tagNo': instance.tagNo,
-      'itemCd': instance.itemCd,
-      'whtUnit': instance.whtUnit,
+      'prtNo': instance.prtNo,
+      'itemNm': instance.itemNm,
       'lotNo': instance.lotNo,
-      'zoneNm': instance.zoneNm,
-      'usrNm': instance.usrNm,
-      'inbDt': instance.inbDt,
-      'plant': instance.plant,
+      'tagType': instance.tagType,
+      'vendNm': instance.vendNm,
+      'dQty': instance.dQty,
+      'wmsQty': instance.wmsQty,
+      'itemCd': instance.itemCd,
+      'tagNo': instance.tagNo,
+      'totWht': instance.totWht,
+      'whtUnit': instance.whtUnit,
+      'setQty': instance.setQty,
+      'boxWht': instance.boxWht,
       'qrNo': instance.qrNo,
       'qty': instance.qty,
-      'tagType': instance.tagType,
-      'tagTypeNm': instance.tagTypeNm,
+      'wmsQtyUnit': instance.wmsQtyUnit,
+      'vendCd': instance.vendCd,
       'qtyUnit': instance.qtyUnit,
+      'tagTypeNm': instance.tagTypeNm,
+      'mstKey': instance.mstKey,
       'prtDt': instance.prtDt,
     };

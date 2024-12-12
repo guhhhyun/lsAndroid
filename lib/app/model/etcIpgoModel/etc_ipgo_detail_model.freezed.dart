@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'etc_ipgo_second_model.dart';
+part of 'etc_ipgo_detail_model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,12 +14,12 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-EtcIpgoSecondModel _$EtcIpgoSecondModelFromJson(Map<String, dynamic> json) {
-  return _EtcIpgoSecondModel.fromJson(json);
+EtcIpgoDetailModel _$EtcIpgoDetailModelFromJson(Map<String, dynamic> json) {
+  return _EtcIpgoDetailModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$EtcIpgoSecondModel {
+mixin _$EtcIpgoDetailModel {
   Header? get header => throw _privateConstructorUsedError;
   String get resultCode => throw _privateConstructorUsedError;
   String get resultMessage => throw _privateConstructorUsedError;
@@ -28,15 +28,15 @@ mixin _$EtcIpgoSecondModel {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $EtcIpgoSecondModelCopyWith<EtcIpgoSecondModel> get copyWith =>
+  $EtcIpgoDetailModelCopyWith<EtcIpgoDetailModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $EtcIpgoSecondModelCopyWith<$Res> {
-  factory $EtcIpgoSecondModelCopyWith(
-          EtcIpgoSecondModel value, $Res Function(EtcIpgoSecondModel) then) =
-      _$EtcIpgoSecondModelCopyWithImpl<$Res, EtcIpgoSecondModel>;
+abstract class $EtcIpgoDetailModelCopyWith<$Res> {
+  factory $EtcIpgoDetailModelCopyWith(
+          EtcIpgoDetailModel value, $Res Function(EtcIpgoDetailModel) then) =
+      _$EtcIpgoDetailModelCopyWithImpl<$Res, EtcIpgoDetailModel>;
   @useResult
   $Res call(
       {Header? header,
@@ -49,9 +49,9 @@ abstract class $EtcIpgoSecondModelCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$EtcIpgoSecondModelCopyWithImpl<$Res, $Val extends EtcIpgoSecondModel>
-    implements $EtcIpgoSecondModelCopyWith<$Res> {
-  _$EtcIpgoSecondModelCopyWithImpl(this._value, this._then);
+class _$EtcIpgoDetailModelCopyWithImpl<$Res, $Val extends EtcIpgoDetailModel>
+    implements $EtcIpgoDetailModelCopyWith<$Res> {
+  _$EtcIpgoDetailModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -105,11 +105,11 @@ class _$EtcIpgoSecondModelCopyWithImpl<$Res, $Val extends EtcIpgoSecondModel>
 }
 
 /// @nodoc
-abstract class _$$EtcIpgoSecondModelImplCopyWith<$Res>
-    implements $EtcIpgoSecondModelCopyWith<$Res> {
-  factory _$$EtcIpgoSecondModelImplCopyWith(_$EtcIpgoSecondModelImpl value,
-          $Res Function(_$EtcIpgoSecondModelImpl) then) =
-      __$$EtcIpgoSecondModelImplCopyWithImpl<$Res>;
+abstract class _$$EtcIpgoDetailModelImplCopyWith<$Res>
+    implements $EtcIpgoDetailModelCopyWith<$Res> {
+  factory _$$EtcIpgoDetailModelImplCopyWith(_$EtcIpgoDetailModelImpl value,
+          $Res Function(_$EtcIpgoDetailModelImpl) then) =
+      __$$EtcIpgoDetailModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -124,11 +124,11 @@ abstract class _$$EtcIpgoSecondModelImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$EtcIpgoSecondModelImplCopyWithImpl<$Res>
-    extends _$EtcIpgoSecondModelCopyWithImpl<$Res, _$EtcIpgoSecondModelImpl>
-    implements _$$EtcIpgoSecondModelImplCopyWith<$Res> {
-  __$$EtcIpgoSecondModelImplCopyWithImpl(_$EtcIpgoSecondModelImpl _value,
-      $Res Function(_$EtcIpgoSecondModelImpl) _then)
+class __$$EtcIpgoDetailModelImplCopyWithImpl<$Res>
+    extends _$EtcIpgoDetailModelCopyWithImpl<$Res, _$EtcIpgoDetailModelImpl>
+    implements _$$EtcIpgoDetailModelImplCopyWith<$Res> {
+  __$$EtcIpgoDetailModelImplCopyWithImpl(_$EtcIpgoDetailModelImpl _value,
+      $Res Function(_$EtcIpgoDetailModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -140,7 +140,7 @@ class __$$EtcIpgoSecondModelImplCopyWithImpl<$Res>
     Object? body = freezed,
     Object? hasError = null,
   }) {
-    return _then(_$EtcIpgoSecondModelImpl(
+    return _then(_$EtcIpgoDetailModelImpl(
       header: freezed == header
           ? _value.header
           : header // ignore: cast_nullable_to_non_nullable
@@ -167,8 +167,8 @@ class __$$EtcIpgoSecondModelImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$EtcIpgoSecondModelImpl implements _EtcIpgoSecondModel {
-  const _$EtcIpgoSecondModelImpl(
+class _$EtcIpgoDetailModelImpl implements _EtcIpgoDetailModel {
+  const _$EtcIpgoDetailModelImpl(
       {this.header,
       this.resultCode = '',
       this.resultMessage = '',
@@ -176,8 +176,8 @@ class _$EtcIpgoSecondModelImpl implements _EtcIpgoSecondModel {
       this.hasError = false})
       : _body = body;
 
-  factory _$EtcIpgoSecondModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$EtcIpgoSecondModelImplFromJson(json);
+  factory _$EtcIpgoDetailModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$EtcIpgoDetailModelImplFromJson(json);
 
   @override
   final Header? header;
@@ -203,14 +203,14 @@ class _$EtcIpgoSecondModelImpl implements _EtcIpgoSecondModel {
 
   @override
   String toString() {
-    return 'EtcIpgoSecondModel(header: $header, resultCode: $resultCode, resultMessage: $resultMessage, body: $body, hasError: $hasError)';
+    return 'EtcIpgoDetailModel(header: $header, resultCode: $resultCode, resultMessage: $resultMessage, body: $body, hasError: $hasError)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$EtcIpgoSecondModelImpl &&
+            other is _$EtcIpgoDetailModelImpl &&
             (identical(other.header, header) || other.header == header) &&
             (identical(other.resultCode, resultCode) ||
                 other.resultCode == resultCode) &&
@@ -229,28 +229,28 @@ class _$EtcIpgoSecondModelImpl implements _EtcIpgoSecondModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$EtcIpgoSecondModelImplCopyWith<_$EtcIpgoSecondModelImpl> get copyWith =>
-      __$$EtcIpgoSecondModelImplCopyWithImpl<_$EtcIpgoSecondModelImpl>(
+  _$$EtcIpgoDetailModelImplCopyWith<_$EtcIpgoDetailModelImpl> get copyWith =>
+      __$$EtcIpgoDetailModelImplCopyWithImpl<_$EtcIpgoDetailModelImpl>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$EtcIpgoSecondModelImplToJson(
+    return _$$EtcIpgoDetailModelImplToJson(
       this,
     );
   }
 }
 
-abstract class _EtcIpgoSecondModel implements EtcIpgoSecondModel {
-  const factory _EtcIpgoSecondModel(
+abstract class _EtcIpgoDetailModel implements EtcIpgoDetailModel {
+  const factory _EtcIpgoDetailModel(
       {final Header? header,
       final String resultCode,
       final String resultMessage,
       final List<dynamic>? body,
-      final bool hasError}) = _$EtcIpgoSecondModelImpl;
+      final bool hasError}) = _$EtcIpgoDetailModelImpl;
 
-  factory _EtcIpgoSecondModel.fromJson(Map<String, dynamic> json) =
-      _$EtcIpgoSecondModelImpl.fromJson;
+  factory _EtcIpgoDetailModel.fromJson(Map<String, dynamic> json) =
+      _$EtcIpgoDetailModelImpl.fromJson;
 
   @override
   Header? get header;
@@ -264,7 +264,7 @@ abstract class _EtcIpgoSecondModel implements EtcIpgoSecondModel {
   bool get hasError;
   @override
   @JsonKey(ignore: true)
-  _$$EtcIpgoSecondModelImplCopyWith<_$EtcIpgoSecondModelImpl> get copyWith =>
+  _$$EtcIpgoDetailModelImplCopyWith<_$EtcIpgoDetailModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -277,7 +277,7 @@ mixin _$Header {
   int get currentPage => throw _privateConstructorUsedError;
   int get pageSize => throw _privateConstructorUsedError;
   int get totalRecords => throw _privateConstructorUsedError;
-  String get orders => throw _privateConstructorUsedError;
+  List<dynamic>? get orders => throw _privateConstructorUsedError;
   String get chnlCd => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -294,7 +294,7 @@ abstract class $HeaderCopyWith<$Res> {
       {int currentPage,
       int pageSize,
       int totalRecords,
-      String orders,
+      List<dynamic>? orders,
       String chnlCd});
 }
 
@@ -314,7 +314,7 @@ class _$HeaderCopyWithImpl<$Res, $Val extends Header>
     Object? currentPage = null,
     Object? pageSize = null,
     Object? totalRecords = null,
-    Object? orders = null,
+    Object? orders = freezed,
     Object? chnlCd = null,
   }) {
     return _then(_value.copyWith(
@@ -330,10 +330,10 @@ class _$HeaderCopyWithImpl<$Res, $Val extends Header>
           ? _value.totalRecords
           : totalRecords // ignore: cast_nullable_to_non_nullable
               as int,
-      orders: null == orders
+      orders: freezed == orders
           ? _value.orders
           : orders // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<dynamic>?,
       chnlCd: null == chnlCd
           ? _value.chnlCd
           : chnlCd // ignore: cast_nullable_to_non_nullable
@@ -353,7 +353,7 @@ abstract class _$$HeaderImplCopyWith<$Res> implements $HeaderCopyWith<$Res> {
       {int currentPage,
       int pageSize,
       int totalRecords,
-      String orders,
+      List<dynamic>? orders,
       String chnlCd});
 }
 
@@ -371,7 +371,7 @@ class __$$HeaderImplCopyWithImpl<$Res>
     Object? currentPage = null,
     Object? pageSize = null,
     Object? totalRecords = null,
-    Object? orders = null,
+    Object? orders = freezed,
     Object? chnlCd = null,
   }) {
     return _then(_$HeaderImpl(
@@ -387,10 +387,10 @@ class __$$HeaderImplCopyWithImpl<$Res>
           ? _value.totalRecords
           : totalRecords // ignore: cast_nullable_to_non_nullable
               as int,
-      orders: null == orders
-          ? _value.orders
+      orders: freezed == orders
+          ? _value._orders
           : orders // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<dynamic>?,
       chnlCd: null == chnlCd
           ? _value.chnlCd
           : chnlCd // ignore: cast_nullable_to_non_nullable
@@ -406,8 +406,9 @@ class _$HeaderImpl implements _Header {
       {this.currentPage = 0,
       this.pageSize = 0,
       this.totalRecords = 0,
-      this.orders = '',
-      this.chnlCd = ''});
+      final List<dynamic>? orders,
+      this.chnlCd = ''})
+      : _orders = orders;
 
   factory _$HeaderImpl.fromJson(Map<String, dynamic> json) =>
       _$$HeaderImplFromJson(json);
@@ -421,9 +422,16 @@ class _$HeaderImpl implements _Header {
   @override
   @JsonKey()
   final int totalRecords;
+  final List<dynamic>? _orders;
   @override
-  @JsonKey()
-  final String orders;
+  List<dynamic>? get orders {
+    final value = _orders;
+    if (value == null) return null;
+    if (_orders is EqualUnmodifiableListView) return _orders;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   @override
   @JsonKey()
   final String chnlCd;
@@ -444,14 +452,14 @@ class _$HeaderImpl implements _Header {
                 other.pageSize == pageSize) &&
             (identical(other.totalRecords, totalRecords) ||
                 other.totalRecords == totalRecords) &&
-            (identical(other.orders, orders) || other.orders == orders) &&
+            const DeepCollectionEquality().equals(other._orders, _orders) &&
             (identical(other.chnlCd, chnlCd) || other.chnlCd == chnlCd));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, currentPage, pageSize, totalRecords, orders, chnlCd);
+  int get hashCode => Object.hash(runtimeType, currentPage, pageSize,
+      totalRecords, const DeepCollectionEquality().hash(_orders), chnlCd);
 
   @JsonKey(ignore: true)
   @override
@@ -472,7 +480,7 @@ abstract class _Header implements Header {
       {final int currentPage,
       final int pageSize,
       final int totalRecords,
-      final String orders,
+      final List<dynamic>? orders,
       final String chnlCd}) = _$HeaderImpl;
 
   factory _Header.fromJson(Map<String, dynamic> json) = _$HeaderImpl.fromJson;
@@ -484,7 +492,7 @@ abstract class _Header implements Header {
   @override
   int get totalRecords;
   @override
-  String get orders;
+  List<dynamic>? get orders;
   @override
   String get chnlCd;
   @override
@@ -506,7 +514,6 @@ mixin _$BodyItem {
   String get errorState => throw _privateConstructorUsedError;
   String get errorProcedure => throw _privateConstructorUsedError;
   String get returnMessage => throw _privateConstructorUsedError;
-  List<SubBodyItem>? get items => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -526,8 +533,7 @@ abstract class $BodyItemCopyWith<$Res> {
       String resultMessage,
       String errorState,
       String errorProcedure,
-      String returnMessage,
-      List<SubBodyItem>? items});
+      String returnMessage});
 }
 
 /// @nodoc
@@ -550,7 +556,6 @@ class _$BodyItemCopyWithImpl<$Res, $Val extends BodyItem>
     Object? errorState = null,
     Object? errorProcedure = null,
     Object? returnMessage = null,
-    Object? items = freezed,
   }) {
     return _then(_value.copyWith(
       resultValue: null == resultValue
@@ -581,10 +586,6 @@ class _$BodyItemCopyWithImpl<$Res, $Val extends BodyItem>
           ? _value.returnMessage
           : returnMessage // ignore: cast_nullable_to_non_nullable
               as String,
-      items: freezed == items
-          ? _value.items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<SubBodyItem>?,
     ) as $Val);
   }
 }
@@ -604,8 +605,7 @@ abstract class _$$BodyItemImplCopyWith<$Res>
       String resultMessage,
       String errorState,
       String errorProcedure,
-      String returnMessage,
-      List<SubBodyItem>? items});
+      String returnMessage});
 }
 
 /// @nodoc
@@ -626,7 +626,6 @@ class __$$BodyItemImplCopyWithImpl<$Res>
     Object? errorState = null,
     Object? errorProcedure = null,
     Object? returnMessage = null,
-    Object? items = freezed,
   }) {
     return _then(_$BodyItemImpl(
       resultValue: null == resultValue
@@ -657,10 +656,6 @@ class __$$BodyItemImplCopyWithImpl<$Res>
           ? _value.returnMessage
           : returnMessage // ignore: cast_nullable_to_non_nullable
               as String,
-      items: freezed == items
-          ? _value._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<SubBodyItem>?,
     ));
   }
 }
@@ -675,9 +670,7 @@ class _$BodyItemImpl implements _BodyItem {
       this.resultMessage = '',
       this.errorState = '',
       this.errorProcedure = '',
-      this.returnMessage = '',
-      final List<SubBodyItem>? items})
-      : _items = items;
+      this.returnMessage = ''});
 
   factory _$BodyItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$BodyItemImplFromJson(json);
@@ -703,19 +696,10 @@ class _$BodyItemImpl implements _BodyItem {
   @override
   @JsonKey()
   final String returnMessage;
-  final List<SubBodyItem>? _items;
-  @override
-  List<SubBodyItem>? get items {
-    final value = _items;
-    if (value == null) return null;
-    if (_items is EqualUnmodifiableListView) return _items;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
 
   @override
   String toString() {
-    return 'BodyItem(resultValue: $resultValue, resultRowCount: $resultRowCount, resultCode: $resultCode, resultMessage: $resultMessage, errorState: $errorState, errorProcedure: $errorProcedure, returnMessage: $returnMessage, items: $items)';
+    return 'BodyItem(resultValue: $resultValue, resultRowCount: $resultRowCount, resultCode: $resultCode, resultMessage: $resultMessage, errorState: $errorState, errorProcedure: $errorProcedure, returnMessage: $returnMessage)';
   }
 
   @override
@@ -736,22 +720,13 @@ class _$BodyItemImpl implements _BodyItem {
             (identical(other.errorProcedure, errorProcedure) ||
                 other.errorProcedure == errorProcedure) &&
             (identical(other.returnMessage, returnMessage) ||
-                other.returnMessage == returnMessage) &&
-            const DeepCollectionEquality().equals(other._items, _items));
+                other.returnMessage == returnMessage));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      resultValue,
-      resultRowCount,
-      resultCode,
-      resultMessage,
-      errorState,
-      errorProcedure,
-      returnMessage,
-      const DeepCollectionEquality().hash(_items));
+  int get hashCode => Object.hash(runtimeType, resultValue, resultRowCount,
+      resultCode, resultMessage, errorState, errorProcedure, returnMessage);
 
   @JsonKey(ignore: true)
   @override
@@ -775,8 +750,7 @@ abstract class _BodyItem implements BodyItem {
       final String resultMessage,
       final String errorState,
       final String errorProcedure,
-      final String returnMessage,
-      final List<SubBodyItem>? items}) = _$BodyItemImpl;
+      final String returnMessage}) = _$BodyItemImpl;
 
   factory _BodyItem.fromJson(Map<String, dynamic> json) =
       _$BodyItemImpl.fromJson;
@@ -796,85 +770,66 @@ abstract class _BodyItem implements BodyItem {
   @override
   String get returnMessage;
   @override
-  List<SubBodyItem>? get items;
-  @override
   @JsonKey(ignore: true)
   _$$BodyItemImplCopyWith<_$BodyItemImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
-SubBodyItem _$SubBodyItemFromJson(Map<String, dynamic> json) {
-  return _SubBodyItem.fromJson(json);
+DataItem _$DataItemFromJson(Map<String, dynamic> json) {
+  return _DataItem.fromJson(json);
 }
 
 /// @nodoc
-mixin _$SubBodyItem {
-  String get wht => throw _privateConstructorUsedError;
-  int get tagId => throw _privateConstructorUsedError;
-  String get locCd => throw _privateConstructorUsedError;
-  String get whCd => throw _privateConstructorUsedError;
-  String get inbNo => throw _privateConstructorUsedError;
-  String get grpKey => throw _privateConstructorUsedError;
-  String get whNm => throw _privateConstructorUsedError;
-  String get expDt => throw _privateConstructorUsedError;
-  String get remark => throw _privateConstructorUsedError;
+mixin _$DataItem {
+  String get pjtNm => throw _privateConstructorUsedError;
+  int get inbSeq => throw _privateConstructorUsedError;
+  int get tagTypeNmRowspan => throw _privateConstructorUsedError;
   String get tagNo => throw _privateConstructorUsedError;
   String get itemCd => throw _privateConstructorUsedError;
-  String get whtUnit => throw _privateConstructorUsedError;
-  String get lotNo => throw _privateConstructorUsedError;
-  String get zoneNm => throw _privateConstructorUsedError;
-  String get usrNm => throw _privateConstructorUsedError;
-  String get inbDt => throw _privateConstructorUsedError;
-  String get plant => throw _privateConstructorUsedError;
-  String get qrNo => throw _privateConstructorUsedError;
-  double get qty => throw _privateConstructorUsedError;
-  String get tagType => throw _privateConstructorUsedError;
+  String get itemNm => throw _privateConstructorUsedError;
+  int get tagNoRowspan => throw _privateConstructorUsedError;
+  int get setQty => throw _privateConstructorUsedError;
+  int get qty => throw _privateConstructorUsedError;
   String get tagTypeNm => throw _privateConstructorUsedError;
   String get qtyUnit => throw _privateConstructorUsedError;
+  String get vendNm => throw _privateConstructorUsedError;
+  int get tagSeq => throw _privateConstructorUsedError;
   String get prtDt => throw _privateConstructorUsedError;
+  String get INB_NO => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $SubBodyItemCopyWith<SubBodyItem> get copyWith =>
+  $DataItemCopyWith<DataItem> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $SubBodyItemCopyWith<$Res> {
-  factory $SubBodyItemCopyWith(
-          SubBodyItem value, $Res Function(SubBodyItem) then) =
-      _$SubBodyItemCopyWithImpl<$Res, SubBodyItem>;
+abstract class $DataItemCopyWith<$Res> {
+  factory $DataItemCopyWith(DataItem value, $Res Function(DataItem) then) =
+      _$DataItemCopyWithImpl<$Res, DataItem>;
   @useResult
   $Res call(
-      {String wht,
-      int tagId,
-      String locCd,
-      String whCd,
-      String inbNo,
-      String grpKey,
-      String whNm,
-      String expDt,
-      String remark,
+      {String pjtNm,
+      int inbSeq,
+      int tagTypeNmRowspan,
       String tagNo,
       String itemCd,
-      String whtUnit,
-      String lotNo,
-      String zoneNm,
-      String usrNm,
-      String inbDt,
-      String plant,
-      String qrNo,
-      double qty,
-      String tagType,
+      String itemNm,
+      int tagNoRowspan,
+      int setQty,
+      int qty,
       String tagTypeNm,
       String qtyUnit,
-      String prtDt});
+      String vendNm,
+      int tagSeq,
+      String prtDt,
+      String INB_NO});
 }
 
 /// @nodoc
-class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
-    implements $SubBodyItemCopyWith<$Res> {
-  _$SubBodyItemCopyWithImpl(this._value, this._then);
+class _$DataItemCopyWithImpl<$Res, $Val extends DataItem>
+    implements $DataItemCopyWith<$Res> {
+  _$DataItemCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -884,67 +839,35 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? wht = null,
-    Object? tagId = null,
-    Object? locCd = null,
-    Object? whCd = null,
-    Object? inbNo = null,
-    Object? grpKey = null,
-    Object? whNm = null,
-    Object? expDt = null,
-    Object? remark = null,
+    Object? pjtNm = null,
+    Object? inbSeq = null,
+    Object? tagTypeNmRowspan = null,
     Object? tagNo = null,
     Object? itemCd = null,
-    Object? whtUnit = null,
-    Object? lotNo = null,
-    Object? zoneNm = null,
-    Object? usrNm = null,
-    Object? inbDt = null,
-    Object? plant = null,
-    Object? qrNo = null,
+    Object? itemNm = null,
+    Object? tagNoRowspan = null,
+    Object? setQty = null,
     Object? qty = null,
-    Object? tagType = null,
     Object? tagTypeNm = null,
     Object? qtyUnit = null,
+    Object? vendNm = null,
+    Object? tagSeq = null,
     Object? prtDt = null,
+    Object? INB_NO = null,
   }) {
     return _then(_value.copyWith(
-      wht: null == wht
-          ? _value.wht
-          : wht // ignore: cast_nullable_to_non_nullable
+      pjtNm: null == pjtNm
+          ? _value.pjtNm
+          : pjtNm // ignore: cast_nullable_to_non_nullable
               as String,
-      tagId: null == tagId
-          ? _value.tagId
-          : tagId // ignore: cast_nullable_to_non_nullable
+      inbSeq: null == inbSeq
+          ? _value.inbSeq
+          : inbSeq // ignore: cast_nullable_to_non_nullable
               as int,
-      locCd: null == locCd
-          ? _value.locCd
-          : locCd // ignore: cast_nullable_to_non_nullable
-              as String,
-      whCd: null == whCd
-          ? _value.whCd
-          : whCd // ignore: cast_nullable_to_non_nullable
-              as String,
-      inbNo: null == inbNo
-          ? _value.inbNo
-          : inbNo // ignore: cast_nullable_to_non_nullable
-              as String,
-      grpKey: null == grpKey
-          ? _value.grpKey
-          : grpKey // ignore: cast_nullable_to_non_nullable
-              as String,
-      whNm: null == whNm
-          ? _value.whNm
-          : whNm // ignore: cast_nullable_to_non_nullable
-              as String,
-      expDt: null == expDt
-          ? _value.expDt
-          : expDt // ignore: cast_nullable_to_non_nullable
-              as String,
-      remark: null == remark
-          ? _value.remark
-          : remark // ignore: cast_nullable_to_non_nullable
-              as String,
+      tagTypeNmRowspan: null == tagTypeNmRowspan
+          ? _value.tagTypeNmRowspan
+          : tagTypeNmRowspan // ignore: cast_nullable_to_non_nullable
+              as int,
       tagNo: null == tagNo
           ? _value.tagNo
           : tagNo // ignore: cast_nullable_to_non_nullable
@@ -953,42 +876,22 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
           ? _value.itemCd
           : itemCd // ignore: cast_nullable_to_non_nullable
               as String,
-      whtUnit: null == whtUnit
-          ? _value.whtUnit
-          : whtUnit // ignore: cast_nullable_to_non_nullable
+      itemNm: null == itemNm
+          ? _value.itemNm
+          : itemNm // ignore: cast_nullable_to_non_nullable
               as String,
-      lotNo: null == lotNo
-          ? _value.lotNo
-          : lotNo // ignore: cast_nullable_to_non_nullable
-              as String,
-      zoneNm: null == zoneNm
-          ? _value.zoneNm
-          : zoneNm // ignore: cast_nullable_to_non_nullable
-              as String,
-      usrNm: null == usrNm
-          ? _value.usrNm
-          : usrNm // ignore: cast_nullable_to_non_nullable
-              as String,
-      inbDt: null == inbDt
-          ? _value.inbDt
-          : inbDt // ignore: cast_nullable_to_non_nullable
-              as String,
-      plant: null == plant
-          ? _value.plant
-          : plant // ignore: cast_nullable_to_non_nullable
-              as String,
-      qrNo: null == qrNo
-          ? _value.qrNo
-          : qrNo // ignore: cast_nullable_to_non_nullable
-              as String,
+      tagNoRowspan: null == tagNoRowspan
+          ? _value.tagNoRowspan
+          : tagNoRowspan // ignore: cast_nullable_to_non_nullable
+              as int,
+      setQty: null == setQty
+          ? _value.setQty
+          : setQty // ignore: cast_nullable_to_non_nullable
+              as int,
       qty: null == qty
           ? _value.qty
           : qty // ignore: cast_nullable_to_non_nullable
-              as double,
-      tagType: null == tagType
-          ? _value.tagType
-          : tagType // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       tagTypeNm: null == tagTypeNm
           ? _value.tagTypeNm
           : tagTypeNm // ignore: cast_nullable_to_non_nullable
@@ -997,120 +900,92 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
           ? _value.qtyUnit
           : qtyUnit // ignore: cast_nullable_to_non_nullable
               as String,
+      vendNm: null == vendNm
+          ? _value.vendNm
+          : vendNm // ignore: cast_nullable_to_non_nullable
+              as String,
+      tagSeq: null == tagSeq
+          ? _value.tagSeq
+          : tagSeq // ignore: cast_nullable_to_non_nullable
+              as int,
       prtDt: null == prtDt
           ? _value.prtDt
           : prtDt // ignore: cast_nullable_to_non_nullable
+              as String,
+      INB_NO: null == INB_NO
+          ? _value.INB_NO
+          : INB_NO // ignore: cast_nullable_to_non_nullable
               as String,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$SubBodyItemImplCopyWith<$Res>
-    implements $SubBodyItemCopyWith<$Res> {
-  factory _$$SubBodyItemImplCopyWith(
-          _$SubBodyItemImpl value, $Res Function(_$SubBodyItemImpl) then) =
-      __$$SubBodyItemImplCopyWithImpl<$Res>;
+abstract class _$$DataItemImplCopyWith<$Res>
+    implements $DataItemCopyWith<$Res> {
+  factory _$$DataItemImplCopyWith(
+          _$DataItemImpl value, $Res Function(_$DataItemImpl) then) =
+      __$$DataItemImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {String wht,
-      int tagId,
-      String locCd,
-      String whCd,
-      String inbNo,
-      String grpKey,
-      String whNm,
-      String expDt,
-      String remark,
+      {String pjtNm,
+      int inbSeq,
+      int tagTypeNmRowspan,
       String tagNo,
       String itemCd,
-      String whtUnit,
-      String lotNo,
-      String zoneNm,
-      String usrNm,
-      String inbDt,
-      String plant,
-      String qrNo,
-      double qty,
-      String tagType,
+      String itemNm,
+      int tagNoRowspan,
+      int setQty,
+      int qty,
       String tagTypeNm,
       String qtyUnit,
-      String prtDt});
+      String vendNm,
+      int tagSeq,
+      String prtDt,
+      String INB_NO});
 }
 
 /// @nodoc
-class __$$SubBodyItemImplCopyWithImpl<$Res>
-    extends _$SubBodyItemCopyWithImpl<$Res, _$SubBodyItemImpl>
-    implements _$$SubBodyItemImplCopyWith<$Res> {
-  __$$SubBodyItemImplCopyWithImpl(
-      _$SubBodyItemImpl _value, $Res Function(_$SubBodyItemImpl) _then)
+class __$$DataItemImplCopyWithImpl<$Res>
+    extends _$DataItemCopyWithImpl<$Res, _$DataItemImpl>
+    implements _$$DataItemImplCopyWith<$Res> {
+  __$$DataItemImplCopyWithImpl(
+      _$DataItemImpl _value, $Res Function(_$DataItemImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? wht = null,
-    Object? tagId = null,
-    Object? locCd = null,
-    Object? whCd = null,
-    Object? inbNo = null,
-    Object? grpKey = null,
-    Object? whNm = null,
-    Object? expDt = null,
-    Object? remark = null,
+    Object? pjtNm = null,
+    Object? inbSeq = null,
+    Object? tagTypeNmRowspan = null,
     Object? tagNo = null,
     Object? itemCd = null,
-    Object? whtUnit = null,
-    Object? lotNo = null,
-    Object? zoneNm = null,
-    Object? usrNm = null,
-    Object? inbDt = null,
-    Object? plant = null,
-    Object? qrNo = null,
+    Object? itemNm = null,
+    Object? tagNoRowspan = null,
+    Object? setQty = null,
     Object? qty = null,
-    Object? tagType = null,
     Object? tagTypeNm = null,
     Object? qtyUnit = null,
+    Object? vendNm = null,
+    Object? tagSeq = null,
     Object? prtDt = null,
+    Object? INB_NO = null,
   }) {
-    return _then(_$SubBodyItemImpl(
-      wht: null == wht
-          ? _value.wht
-          : wht // ignore: cast_nullable_to_non_nullable
+    return _then(_$DataItemImpl(
+      pjtNm: null == pjtNm
+          ? _value.pjtNm
+          : pjtNm // ignore: cast_nullable_to_non_nullable
               as String,
-      tagId: null == tagId
-          ? _value.tagId
-          : tagId // ignore: cast_nullable_to_non_nullable
+      inbSeq: null == inbSeq
+          ? _value.inbSeq
+          : inbSeq // ignore: cast_nullable_to_non_nullable
               as int,
-      locCd: null == locCd
-          ? _value.locCd
-          : locCd // ignore: cast_nullable_to_non_nullable
-              as String,
-      whCd: null == whCd
-          ? _value.whCd
-          : whCd // ignore: cast_nullable_to_non_nullable
-              as String,
-      inbNo: null == inbNo
-          ? _value.inbNo
-          : inbNo // ignore: cast_nullable_to_non_nullable
-              as String,
-      grpKey: null == grpKey
-          ? _value.grpKey
-          : grpKey // ignore: cast_nullable_to_non_nullable
-              as String,
-      whNm: null == whNm
-          ? _value.whNm
-          : whNm // ignore: cast_nullable_to_non_nullable
-              as String,
-      expDt: null == expDt
-          ? _value.expDt
-          : expDt // ignore: cast_nullable_to_non_nullable
-              as String,
-      remark: null == remark
-          ? _value.remark
-          : remark // ignore: cast_nullable_to_non_nullable
-              as String,
+      tagTypeNmRowspan: null == tagTypeNmRowspan
+          ? _value.tagTypeNmRowspan
+          : tagTypeNmRowspan // ignore: cast_nullable_to_non_nullable
+              as int,
       tagNo: null == tagNo
           ? _value.tagNo
           : tagNo // ignore: cast_nullable_to_non_nullable
@@ -1119,42 +994,22 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
           ? _value.itemCd
           : itemCd // ignore: cast_nullable_to_non_nullable
               as String,
-      whtUnit: null == whtUnit
-          ? _value.whtUnit
-          : whtUnit // ignore: cast_nullable_to_non_nullable
+      itemNm: null == itemNm
+          ? _value.itemNm
+          : itemNm // ignore: cast_nullable_to_non_nullable
               as String,
-      lotNo: null == lotNo
-          ? _value.lotNo
-          : lotNo // ignore: cast_nullable_to_non_nullable
-              as String,
-      zoneNm: null == zoneNm
-          ? _value.zoneNm
-          : zoneNm // ignore: cast_nullable_to_non_nullable
-              as String,
-      usrNm: null == usrNm
-          ? _value.usrNm
-          : usrNm // ignore: cast_nullable_to_non_nullable
-              as String,
-      inbDt: null == inbDt
-          ? _value.inbDt
-          : inbDt // ignore: cast_nullable_to_non_nullable
-              as String,
-      plant: null == plant
-          ? _value.plant
-          : plant // ignore: cast_nullable_to_non_nullable
-              as String,
-      qrNo: null == qrNo
-          ? _value.qrNo
-          : qrNo // ignore: cast_nullable_to_non_nullable
-              as String,
+      tagNoRowspan: null == tagNoRowspan
+          ? _value.tagNoRowspan
+          : tagNoRowspan // ignore: cast_nullable_to_non_nullable
+              as int,
+      setQty: null == setQty
+          ? _value.setQty
+          : setQty // ignore: cast_nullable_to_non_nullable
+              as int,
       qty: null == qty
           ? _value.qty
           : qty // ignore: cast_nullable_to_non_nullable
-              as double,
-      tagType: null == tagType
-          ? _value.tagType
-          : tagType // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       tagTypeNm: null == tagTypeNm
           ? _value.tagTypeNm
           : tagTypeNm // ignore: cast_nullable_to_non_nullable
@@ -1163,9 +1018,21 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
           ? _value.qtyUnit
           : qtyUnit // ignore: cast_nullable_to_non_nullable
               as String,
+      vendNm: null == vendNm
+          ? _value.vendNm
+          : vendNm // ignore: cast_nullable_to_non_nullable
+              as String,
+      tagSeq: null == tagSeq
+          ? _value.tagSeq
+          : tagSeq // ignore: cast_nullable_to_non_nullable
+              as int,
       prtDt: null == prtDt
           ? _value.prtDt
           : prtDt // ignore: cast_nullable_to_non_nullable
+              as String,
+      INB_NO: null == INB_NO
+          ? _value.INB_NO
+          : INB_NO // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -1173,62 +1040,36 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$SubBodyItemImpl implements _SubBodyItem {
-  const _$SubBodyItemImpl(
-      {this.wht = '',
-      this.tagId = 0,
-      this.locCd = '',
-      this.whCd = '',
-      this.inbNo = '',
-      this.grpKey = '',
-      this.whNm = '',
-      this.expDt = '',
-      this.remark = '',
+class _$DataItemImpl implements _DataItem {
+  const _$DataItemImpl(
+      {this.pjtNm = '',
+      this.inbSeq = 0,
+      this.tagTypeNmRowspan = 0,
       this.tagNo = '',
       this.itemCd = '',
-      this.whtUnit = '',
-      this.lotNo = '',
-      this.zoneNm = '',
-      this.usrNm = '',
-      this.inbDt = '',
-      this.plant = '',
-      this.qrNo = '',
-      this.qty = 0.0,
-      this.tagType = '',
+      this.itemNm = '',
+      this.tagNoRowspan = 0,
+      this.setQty = 0,
+      this.qty = 0,
       this.tagTypeNm = '',
       this.qtyUnit = '',
-      this.prtDt = ''});
+      this.vendNm = '',
+      this.tagSeq = 0,
+      this.prtDt = '',
+      this.INB_NO = ''});
 
-  factory _$SubBodyItemImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SubBodyItemImplFromJson(json);
+  factory _$DataItemImpl.fromJson(Map<String, dynamic> json) =>
+      _$$DataItemImplFromJson(json);
 
   @override
   @JsonKey()
-  final String wht;
+  final String pjtNm;
   @override
   @JsonKey()
-  final int tagId;
+  final int inbSeq;
   @override
   @JsonKey()
-  final String locCd;
-  @override
-  @JsonKey()
-  final String whCd;
-  @override
-  @JsonKey()
-  final String inbNo;
-  @override
-  @JsonKey()
-  final String grpKey;
-  @override
-  @JsonKey()
-  final String whNm;
-  @override
-  @JsonKey()
-  final String expDt;
-  @override
-  @JsonKey()
-  final String remark;
+  final int tagTypeNmRowspan;
   @override
   @JsonKey()
   final String tagNo;
@@ -1237,31 +1078,16 @@ class _$SubBodyItemImpl implements _SubBodyItem {
   final String itemCd;
   @override
   @JsonKey()
-  final String whtUnit;
+  final String itemNm;
   @override
   @JsonKey()
-  final String lotNo;
+  final int tagNoRowspan;
   @override
   @JsonKey()
-  final String zoneNm;
+  final int setQty;
   @override
   @JsonKey()
-  final String usrNm;
-  @override
-  @JsonKey()
-  final String inbDt;
-  @override
-  @JsonKey()
-  final String plant;
-  @override
-  @JsonKey()
-  final String qrNo;
-  @override
-  @JsonKey()
-  final double qty;
-  @override
-  @JsonKey()
-  final String tagType;
+  final int qty;
   @override
   @JsonKey()
   final String tagTypeNm;
@@ -1270,164 +1096,134 @@ class _$SubBodyItemImpl implements _SubBodyItem {
   final String qtyUnit;
   @override
   @JsonKey()
+  final String vendNm;
+  @override
+  @JsonKey()
+  final int tagSeq;
+  @override
+  @JsonKey()
   final String prtDt;
+  @override
+  @JsonKey()
+  final String INB_NO;
 
   @override
   String toString() {
-    return 'SubBodyItem(wht: $wht, tagId: $tagId, locCd: $locCd, whCd: $whCd, inbNo: $inbNo, grpKey: $grpKey, whNm: $whNm, expDt: $expDt, remark: $remark, tagNo: $tagNo, itemCd: $itemCd, whtUnit: $whtUnit, lotNo: $lotNo, zoneNm: $zoneNm, usrNm: $usrNm, inbDt: $inbDt, plant: $plant, qrNo: $qrNo, qty: $qty, tagType: $tagType, tagTypeNm: $tagTypeNm, qtyUnit: $qtyUnit, prtDt: $prtDt)';
+    return 'DataItem(pjtNm: $pjtNm, inbSeq: $inbSeq, tagTypeNmRowspan: $tagTypeNmRowspan, tagNo: $tagNo, itemCd: $itemCd, itemNm: $itemNm, tagNoRowspan: $tagNoRowspan, setQty: $setQty, qty: $qty, tagTypeNm: $tagTypeNm, qtyUnit: $qtyUnit, vendNm: $vendNm, tagSeq: $tagSeq, prtDt: $prtDt, INB_NO: $INB_NO)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SubBodyItemImpl &&
-            (identical(other.wht, wht) || other.wht == wht) &&
-            (identical(other.tagId, tagId) || other.tagId == tagId) &&
-            (identical(other.locCd, locCd) || other.locCd == locCd) &&
-            (identical(other.whCd, whCd) || other.whCd == whCd) &&
-            (identical(other.inbNo, inbNo) || other.inbNo == inbNo) &&
-            (identical(other.grpKey, grpKey) || other.grpKey == grpKey) &&
-            (identical(other.whNm, whNm) || other.whNm == whNm) &&
-            (identical(other.expDt, expDt) || other.expDt == expDt) &&
-            (identical(other.remark, remark) || other.remark == remark) &&
+            other is _$DataItemImpl &&
+            (identical(other.pjtNm, pjtNm) || other.pjtNm == pjtNm) &&
+            (identical(other.inbSeq, inbSeq) || other.inbSeq == inbSeq) &&
+            (identical(other.tagTypeNmRowspan, tagTypeNmRowspan) ||
+                other.tagTypeNmRowspan == tagTypeNmRowspan) &&
             (identical(other.tagNo, tagNo) || other.tagNo == tagNo) &&
             (identical(other.itemCd, itemCd) || other.itemCd == itemCd) &&
-            (identical(other.whtUnit, whtUnit) || other.whtUnit == whtUnit) &&
-            (identical(other.lotNo, lotNo) || other.lotNo == lotNo) &&
-            (identical(other.zoneNm, zoneNm) || other.zoneNm == zoneNm) &&
-            (identical(other.usrNm, usrNm) || other.usrNm == usrNm) &&
-            (identical(other.inbDt, inbDt) || other.inbDt == inbDt) &&
-            (identical(other.plant, plant) || other.plant == plant) &&
-            (identical(other.qrNo, qrNo) || other.qrNo == qrNo) &&
+            (identical(other.itemNm, itemNm) || other.itemNm == itemNm) &&
+            (identical(other.tagNoRowspan, tagNoRowspan) ||
+                other.tagNoRowspan == tagNoRowspan) &&
+            (identical(other.setQty, setQty) || other.setQty == setQty) &&
             (identical(other.qty, qty) || other.qty == qty) &&
-            (identical(other.tagType, tagType) || other.tagType == tagType) &&
             (identical(other.tagTypeNm, tagTypeNm) ||
                 other.tagTypeNm == tagTypeNm) &&
             (identical(other.qtyUnit, qtyUnit) || other.qtyUnit == qtyUnit) &&
-            (identical(other.prtDt, prtDt) || other.prtDt == prtDt));
+            (identical(other.vendNm, vendNm) || other.vendNm == vendNm) &&
+            (identical(other.tagSeq, tagSeq) || other.tagSeq == tagSeq) &&
+            (identical(other.prtDt, prtDt) || other.prtDt == prtDt) &&
+            (identical(other.INB_NO, INB_NO) || other.INB_NO == INB_NO));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hashAll([
-        runtimeType,
-        wht,
-        tagId,
-        locCd,
-        whCd,
-        inbNo,
-        grpKey,
-        whNm,
-        expDt,
-        remark,
-        tagNo,
-        itemCd,
-        whtUnit,
-        lotNo,
-        zoneNm,
-        usrNm,
-        inbDt,
-        plant,
-        qrNo,
-        qty,
-        tagType,
-        tagTypeNm,
-        qtyUnit,
-        prtDt
-      ]);
+  int get hashCode => Object.hash(
+      runtimeType,
+      pjtNm,
+      inbSeq,
+      tagTypeNmRowspan,
+      tagNo,
+      itemCd,
+      itemNm,
+      tagNoRowspan,
+      setQty,
+      qty,
+      tagTypeNm,
+      qtyUnit,
+      vendNm,
+      tagSeq,
+      prtDt,
+      INB_NO);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$SubBodyItemImplCopyWith<_$SubBodyItemImpl> get copyWith =>
-      __$$SubBodyItemImplCopyWithImpl<_$SubBodyItemImpl>(this, _$identity);
+  _$$DataItemImplCopyWith<_$DataItemImpl> get copyWith =>
+      __$$DataItemImplCopyWithImpl<_$DataItemImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$SubBodyItemImplToJson(
+    return _$$DataItemImplToJson(
       this,
     );
   }
 }
 
-abstract class _SubBodyItem implements SubBodyItem {
-  const factory _SubBodyItem(
-      {final String wht,
-      final int tagId,
-      final String locCd,
-      final String whCd,
-      final String inbNo,
-      final String grpKey,
-      final String whNm,
-      final String expDt,
-      final String remark,
+abstract class _DataItem implements DataItem {
+  const factory _DataItem(
+      {final String pjtNm,
+      final int inbSeq,
+      final int tagTypeNmRowspan,
       final String tagNo,
       final String itemCd,
-      final String whtUnit,
-      final String lotNo,
-      final String zoneNm,
-      final String usrNm,
-      final String inbDt,
-      final String plant,
-      final String qrNo,
-      final double qty,
-      final String tagType,
+      final String itemNm,
+      final int tagNoRowspan,
+      final int setQty,
+      final int qty,
       final String tagTypeNm,
       final String qtyUnit,
-      final String prtDt}) = _$SubBodyItemImpl;
+      final String vendNm,
+      final int tagSeq,
+      final String prtDt,
+      final String INB_NO}) = _$DataItemImpl;
 
-  factory _SubBodyItem.fromJson(Map<String, dynamic> json) =
-      _$SubBodyItemImpl.fromJson;
+  factory _DataItem.fromJson(Map<String, dynamic> json) =
+      _$DataItemImpl.fromJson;
 
   @override
-  String get wht;
+  String get pjtNm;
   @override
-  int get tagId;
+  int get inbSeq;
   @override
-  String get locCd;
-  @override
-  String get whCd;
-  @override
-  String get inbNo;
-  @override
-  String get grpKey;
-  @override
-  String get whNm;
-  @override
-  String get expDt;
-  @override
-  String get remark;
+  int get tagTypeNmRowspan;
   @override
   String get tagNo;
   @override
   String get itemCd;
   @override
-  String get whtUnit;
+  String get itemNm;
   @override
-  String get lotNo;
+  int get tagNoRowspan;
   @override
-  String get zoneNm;
+  int get setQty;
   @override
-  String get usrNm;
-  @override
-  String get inbDt;
-  @override
-  String get plant;
-  @override
-  String get qrNo;
-  @override
-  double get qty;
-  @override
-  String get tagType;
+  int get qty;
   @override
   String get tagTypeNm;
   @override
   String get qtyUnit;
   @override
+  String get vendNm;
+  @override
+  int get tagSeq;
+  @override
   String get prtDt;
   @override
+  String get INB_NO;
+  @override
   @JsonKey(ignore: true)
-  _$$SubBodyItemImplCopyWith<_$SubBodyItemImpl> get copyWith =>
+  _$$DataItemImplCopyWith<_$DataItemImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

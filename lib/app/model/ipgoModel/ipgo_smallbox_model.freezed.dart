@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'etc_ipgo_second_model.dart';
+part of 'ipgo_smallbox_model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,12 +14,12 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-EtcIpgoSecondModel _$EtcIpgoSecondModelFromJson(Map<String, dynamic> json) {
-  return _EtcIpgoSecondModel.fromJson(json);
+IpgoSmallboxModel _$IpgoSmallboxModelFromJson(Map<String, dynamic> json) {
+  return _IpgoSmallboxModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$EtcIpgoSecondModel {
+mixin _$IpgoSmallboxModel {
   Header? get header => throw _privateConstructorUsedError;
   String get resultCode => throw _privateConstructorUsedError;
   String get resultMessage => throw _privateConstructorUsedError;
@@ -28,15 +28,15 @@ mixin _$EtcIpgoSecondModel {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $EtcIpgoSecondModelCopyWith<EtcIpgoSecondModel> get copyWith =>
+  $IpgoSmallboxModelCopyWith<IpgoSmallboxModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $EtcIpgoSecondModelCopyWith<$Res> {
-  factory $EtcIpgoSecondModelCopyWith(
-          EtcIpgoSecondModel value, $Res Function(EtcIpgoSecondModel) then) =
-      _$EtcIpgoSecondModelCopyWithImpl<$Res, EtcIpgoSecondModel>;
+abstract class $IpgoSmallboxModelCopyWith<$Res> {
+  factory $IpgoSmallboxModelCopyWith(
+          IpgoSmallboxModel value, $Res Function(IpgoSmallboxModel) then) =
+      _$IpgoSmallboxModelCopyWithImpl<$Res, IpgoSmallboxModel>;
   @useResult
   $Res call(
       {Header? header,
@@ -49,9 +49,9 @@ abstract class $EtcIpgoSecondModelCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$EtcIpgoSecondModelCopyWithImpl<$Res, $Val extends EtcIpgoSecondModel>
-    implements $EtcIpgoSecondModelCopyWith<$Res> {
-  _$EtcIpgoSecondModelCopyWithImpl(this._value, this._then);
+class _$IpgoSmallboxModelCopyWithImpl<$Res, $Val extends IpgoSmallboxModel>
+    implements $IpgoSmallboxModelCopyWith<$Res> {
+  _$IpgoSmallboxModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -105,11 +105,11 @@ class _$EtcIpgoSecondModelCopyWithImpl<$Res, $Val extends EtcIpgoSecondModel>
 }
 
 /// @nodoc
-abstract class _$$EtcIpgoSecondModelImplCopyWith<$Res>
-    implements $EtcIpgoSecondModelCopyWith<$Res> {
-  factory _$$EtcIpgoSecondModelImplCopyWith(_$EtcIpgoSecondModelImpl value,
-          $Res Function(_$EtcIpgoSecondModelImpl) then) =
-      __$$EtcIpgoSecondModelImplCopyWithImpl<$Res>;
+abstract class _$$IpgoSmallboxModelImplCopyWith<$Res>
+    implements $IpgoSmallboxModelCopyWith<$Res> {
+  factory _$$IpgoSmallboxModelImplCopyWith(_$IpgoSmallboxModelImpl value,
+          $Res Function(_$IpgoSmallboxModelImpl) then) =
+      __$$IpgoSmallboxModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -124,11 +124,11 @@ abstract class _$$EtcIpgoSecondModelImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$EtcIpgoSecondModelImplCopyWithImpl<$Res>
-    extends _$EtcIpgoSecondModelCopyWithImpl<$Res, _$EtcIpgoSecondModelImpl>
-    implements _$$EtcIpgoSecondModelImplCopyWith<$Res> {
-  __$$EtcIpgoSecondModelImplCopyWithImpl(_$EtcIpgoSecondModelImpl _value,
-      $Res Function(_$EtcIpgoSecondModelImpl) _then)
+class __$$IpgoSmallboxModelImplCopyWithImpl<$Res>
+    extends _$IpgoSmallboxModelCopyWithImpl<$Res, _$IpgoSmallboxModelImpl>
+    implements _$$IpgoSmallboxModelImplCopyWith<$Res> {
+  __$$IpgoSmallboxModelImplCopyWithImpl(_$IpgoSmallboxModelImpl _value,
+      $Res Function(_$IpgoSmallboxModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -140,7 +140,7 @@ class __$$EtcIpgoSecondModelImplCopyWithImpl<$Res>
     Object? body = freezed,
     Object? hasError = null,
   }) {
-    return _then(_$EtcIpgoSecondModelImpl(
+    return _then(_$IpgoSmallboxModelImpl(
       header: freezed == header
           ? _value.header
           : header // ignore: cast_nullable_to_non_nullable
@@ -167,8 +167,8 @@ class __$$EtcIpgoSecondModelImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$EtcIpgoSecondModelImpl implements _EtcIpgoSecondModel {
-  const _$EtcIpgoSecondModelImpl(
+class _$IpgoSmallboxModelImpl implements _IpgoSmallboxModel {
+  const _$IpgoSmallboxModelImpl(
       {this.header,
       this.resultCode = '',
       this.resultMessage = '',
@@ -176,8 +176,8 @@ class _$EtcIpgoSecondModelImpl implements _EtcIpgoSecondModel {
       this.hasError = false})
       : _body = body;
 
-  factory _$EtcIpgoSecondModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$EtcIpgoSecondModelImplFromJson(json);
+  factory _$IpgoSmallboxModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$IpgoSmallboxModelImplFromJson(json);
 
   @override
   final Header? header;
@@ -203,14 +203,14 @@ class _$EtcIpgoSecondModelImpl implements _EtcIpgoSecondModel {
 
   @override
   String toString() {
-    return 'EtcIpgoSecondModel(header: $header, resultCode: $resultCode, resultMessage: $resultMessage, body: $body, hasError: $hasError)';
+    return 'IpgoSmallboxModel(header: $header, resultCode: $resultCode, resultMessage: $resultMessage, body: $body, hasError: $hasError)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$EtcIpgoSecondModelImpl &&
+            other is _$IpgoSmallboxModelImpl &&
             (identical(other.header, header) || other.header == header) &&
             (identical(other.resultCode, resultCode) ||
                 other.resultCode == resultCode) &&
@@ -229,28 +229,28 @@ class _$EtcIpgoSecondModelImpl implements _EtcIpgoSecondModel {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$EtcIpgoSecondModelImplCopyWith<_$EtcIpgoSecondModelImpl> get copyWith =>
-      __$$EtcIpgoSecondModelImplCopyWithImpl<_$EtcIpgoSecondModelImpl>(
+  _$$IpgoSmallboxModelImplCopyWith<_$IpgoSmallboxModelImpl> get copyWith =>
+      __$$IpgoSmallboxModelImplCopyWithImpl<_$IpgoSmallboxModelImpl>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$EtcIpgoSecondModelImplToJson(
+    return _$$IpgoSmallboxModelImplToJson(
       this,
     );
   }
 }
 
-abstract class _EtcIpgoSecondModel implements EtcIpgoSecondModel {
-  const factory _EtcIpgoSecondModel(
+abstract class _IpgoSmallboxModel implements IpgoSmallboxModel {
+  const factory _IpgoSmallboxModel(
       {final Header? header,
       final String resultCode,
       final String resultMessage,
       final List<dynamic>? body,
-      final bool hasError}) = _$EtcIpgoSecondModelImpl;
+      final bool hasError}) = _$IpgoSmallboxModelImpl;
 
-  factory _EtcIpgoSecondModel.fromJson(Map<String, dynamic> json) =
-      _$EtcIpgoSecondModelImpl.fromJson;
+  factory _IpgoSmallboxModel.fromJson(Map<String, dynamic> json) =
+      _$IpgoSmallboxModelImpl.fromJson;
 
   @override
   Header? get header;
@@ -264,7 +264,7 @@ abstract class _EtcIpgoSecondModel implements EtcIpgoSecondModel {
   bool get hasError;
   @override
   @JsonKey(ignore: true)
-  _$$EtcIpgoSecondModelImplCopyWith<_$EtcIpgoSecondModelImpl> get copyWith =>
+  _$$IpgoSmallboxModelImplCopyWith<_$IpgoSmallboxModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -506,7 +506,6 @@ mixin _$BodyItem {
   String get errorState => throw _privateConstructorUsedError;
   String get errorProcedure => throw _privateConstructorUsedError;
   String get returnMessage => throw _privateConstructorUsedError;
-  List<SubBodyItem>? get items => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -526,8 +525,7 @@ abstract class $BodyItemCopyWith<$Res> {
       String resultMessage,
       String errorState,
       String errorProcedure,
-      String returnMessage,
-      List<SubBodyItem>? items});
+      String returnMessage});
 }
 
 /// @nodoc
@@ -550,7 +548,6 @@ class _$BodyItemCopyWithImpl<$Res, $Val extends BodyItem>
     Object? errorState = null,
     Object? errorProcedure = null,
     Object? returnMessage = null,
-    Object? items = freezed,
   }) {
     return _then(_value.copyWith(
       resultValue: null == resultValue
@@ -581,10 +578,6 @@ class _$BodyItemCopyWithImpl<$Res, $Val extends BodyItem>
           ? _value.returnMessage
           : returnMessage // ignore: cast_nullable_to_non_nullable
               as String,
-      items: freezed == items
-          ? _value.items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<SubBodyItem>?,
     ) as $Val);
   }
 }
@@ -604,8 +597,7 @@ abstract class _$$BodyItemImplCopyWith<$Res>
       String resultMessage,
       String errorState,
       String errorProcedure,
-      String returnMessage,
-      List<SubBodyItem>? items});
+      String returnMessage});
 }
 
 /// @nodoc
@@ -626,7 +618,6 @@ class __$$BodyItemImplCopyWithImpl<$Res>
     Object? errorState = null,
     Object? errorProcedure = null,
     Object? returnMessage = null,
-    Object? items = freezed,
   }) {
     return _then(_$BodyItemImpl(
       resultValue: null == resultValue
@@ -657,10 +648,6 @@ class __$$BodyItemImplCopyWithImpl<$Res>
           ? _value.returnMessage
           : returnMessage // ignore: cast_nullable_to_non_nullable
               as String,
-      items: freezed == items
-          ? _value._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<SubBodyItem>?,
     ));
   }
 }
@@ -675,9 +662,7 @@ class _$BodyItemImpl implements _BodyItem {
       this.resultMessage = '',
       this.errorState = '',
       this.errorProcedure = '',
-      this.returnMessage = '',
-      final List<SubBodyItem>? items})
-      : _items = items;
+      this.returnMessage = ''});
 
   factory _$BodyItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$BodyItemImplFromJson(json);
@@ -703,19 +688,10 @@ class _$BodyItemImpl implements _BodyItem {
   @override
   @JsonKey()
   final String returnMessage;
-  final List<SubBodyItem>? _items;
-  @override
-  List<SubBodyItem>? get items {
-    final value = _items;
-    if (value == null) return null;
-    if (_items is EqualUnmodifiableListView) return _items;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
 
   @override
   String toString() {
-    return 'BodyItem(resultValue: $resultValue, resultRowCount: $resultRowCount, resultCode: $resultCode, resultMessage: $resultMessage, errorState: $errorState, errorProcedure: $errorProcedure, returnMessage: $returnMessage, items: $items)';
+    return 'BodyItem(resultValue: $resultValue, resultRowCount: $resultRowCount, resultCode: $resultCode, resultMessage: $resultMessage, errorState: $errorState, errorProcedure: $errorProcedure, returnMessage: $returnMessage)';
   }
 
   @override
@@ -736,22 +712,13 @@ class _$BodyItemImpl implements _BodyItem {
             (identical(other.errorProcedure, errorProcedure) ||
                 other.errorProcedure == errorProcedure) &&
             (identical(other.returnMessage, returnMessage) ||
-                other.returnMessage == returnMessage) &&
-            const DeepCollectionEquality().equals(other._items, _items));
+                other.returnMessage == returnMessage));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      resultValue,
-      resultRowCount,
-      resultCode,
-      resultMessage,
-      errorState,
-      errorProcedure,
-      returnMessage,
-      const DeepCollectionEquality().hash(_items));
+  int get hashCode => Object.hash(runtimeType, resultValue, resultRowCount,
+      resultCode, resultMessage, errorState, errorProcedure, returnMessage);
 
   @JsonKey(ignore: true)
   @override
@@ -775,8 +742,7 @@ abstract class _BodyItem implements BodyItem {
       final String resultMessage,
       final String errorState,
       final String errorProcedure,
-      final String returnMessage,
-      final List<SubBodyItem>? items}) = _$BodyItemImpl;
+      final String returnMessage}) = _$BodyItemImpl;
 
   factory _BodyItem.fromJson(Map<String, dynamic> json) =
       _$BodyItemImpl.fromJson;
@@ -796,85 +762,109 @@ abstract class _BodyItem implements BodyItem {
   @override
   String get returnMessage;
   @override
-  List<SubBodyItem>? get items;
-  @override
   @JsonKey(ignore: true)
   _$$BodyItemImplCopyWith<_$BodyItemImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
-SubBodyItem _$SubBodyItemFromJson(Map<String, dynamic> json) {
-  return _SubBodyItem.fromJson(json);
+BodySubItem _$BodySubItemFromJson(Map<String, dynamic> json) {
+  return _BodySubItem.fromJson(json);
 }
 
 /// @nodoc
-mixin _$SubBodyItem {
+mixin _$BodySubItem {
+  int get no => throw _privateConstructorUsedError;
   String get wht => throw _privateConstructorUsedError;
+  String get custCd => throw _privateConstructorUsedError;
   int get tagId => throw _privateConstructorUsedError;
-  String get locCd => throw _privateConstructorUsedError;
-  String get whCd => throw _privateConstructorUsedError;
-  String get inbNo => throw _privateConstructorUsedError;
+  String get pjtNm => throw _privateConstructorUsedError;
   String get grpKey => throw _privateConstructorUsedError;
-  String get whNm => throw _privateConstructorUsedError;
+  String get pjtNo => throw _privateConstructorUsedError;
   String get expDt => throw _privateConstructorUsedError;
   String get remark => throw _privateConstructorUsedError;
-  String get tagNo => throw _privateConstructorUsedError;
-  String get itemCd => throw _privateConstructorUsedError;
-  String get whtUnit => throw _privateConstructorUsedError;
+  int get tagTypeNmRowspan => throw _privateConstructorUsedError;
+  String get prtNo => throw _privateConstructorUsedError;
+  String get itemNm => throw _privateConstructorUsedError;
+  int get selectedRowspan => throw _privateConstructorUsedError;
+  bool get inEdit => throw _privateConstructorUsedError;
   String get lotNo => throw _privateConstructorUsedError;
-  String get zoneNm => throw _privateConstructorUsedError;
-  String get usrNm => throw _privateConstructorUsedError;
-  String get inbDt => throw _privateConstructorUsedError;
-  String get plant => throw _privateConstructorUsedError;
+  int get noRowspan => throw _privateConstructorUsedError;
+  String get tagType => throw _privateConstructorUsedError;
+  String get vendNm => throw _privateConstructorUsedError;
+  String get dQty => throw _privateConstructorUsedError;
+  bool get selected => throw _privateConstructorUsedError;
+  double get wmsQty => throw _privateConstructorUsedError;
+  String get itemCd => throw _privateConstructorUsedError;
+  String get tagNo => throw _privateConstructorUsedError;
+  String get totWht => throw _privateConstructorUsedError;
+  String get whtUnit => throw _privateConstructorUsedError;
+  String get setQty => throw _privateConstructorUsedError;
+  String get boxWht => throw _privateConstructorUsedError;
   String get qrNo => throw _privateConstructorUsedError;
   double get qty => throw _privateConstructorUsedError;
-  String get tagType => throw _privateConstructorUsedError;
-  String get tagTypeNm => throw _privateConstructorUsedError;
+  String get wmsQtyUnit => throw _privateConstructorUsedError;
+  String get vendCd => throw _privateConstructorUsedError;
   String get qtyUnit => throw _privateConstructorUsedError;
+  String get tagTypeNm => throw _privateConstructorUsedError;
+  String get mstKey => throw _privateConstructorUsedError;
+  int get setQtyRowspan => throw _privateConstructorUsedError;
   String get prtDt => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $SubBodyItemCopyWith<SubBodyItem> get copyWith =>
+  $BodySubItemCopyWith<BodySubItem> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $SubBodyItemCopyWith<$Res> {
-  factory $SubBodyItemCopyWith(
-          SubBodyItem value, $Res Function(SubBodyItem) then) =
-      _$SubBodyItemCopyWithImpl<$Res, SubBodyItem>;
+abstract class $BodySubItemCopyWith<$Res> {
+  factory $BodySubItemCopyWith(
+          BodySubItem value, $Res Function(BodySubItem) then) =
+      _$BodySubItemCopyWithImpl<$Res, BodySubItem>;
   @useResult
   $Res call(
-      {String wht,
+      {int no,
+      String wht,
+      String custCd,
       int tagId,
-      String locCd,
-      String whCd,
-      String inbNo,
+      String pjtNm,
       String grpKey,
-      String whNm,
+      String pjtNo,
       String expDt,
       String remark,
-      String tagNo,
-      String itemCd,
-      String whtUnit,
+      int tagTypeNmRowspan,
+      String prtNo,
+      String itemNm,
+      int selectedRowspan,
+      bool inEdit,
       String lotNo,
-      String zoneNm,
-      String usrNm,
-      String inbDt,
-      String plant,
+      int noRowspan,
+      String tagType,
+      String vendNm,
+      String dQty,
+      bool selected,
+      double wmsQty,
+      String itemCd,
+      String tagNo,
+      String totWht,
+      String whtUnit,
+      String setQty,
+      String boxWht,
       String qrNo,
       double qty,
-      String tagType,
-      String tagTypeNm,
+      String wmsQtyUnit,
+      String vendCd,
       String qtyUnit,
+      String tagTypeNm,
+      String mstKey,
+      int setQtyRowspan,
       String prtDt});
 }
 
 /// @nodoc
-class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
-    implements $SubBodyItemCopyWith<$Res> {
-  _$SubBodyItemCopyWithImpl(this._value, this._then);
+class _$BodySubItemCopyWithImpl<$Res, $Val extends BodySubItem>
+    implements $BodySubItemCopyWith<$Res> {
+  _$BodySubItemCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -884,58 +874,71 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? no = null,
     Object? wht = null,
+    Object? custCd = null,
     Object? tagId = null,
-    Object? locCd = null,
-    Object? whCd = null,
-    Object? inbNo = null,
+    Object? pjtNm = null,
     Object? grpKey = null,
-    Object? whNm = null,
+    Object? pjtNo = null,
     Object? expDt = null,
     Object? remark = null,
-    Object? tagNo = null,
-    Object? itemCd = null,
-    Object? whtUnit = null,
+    Object? tagTypeNmRowspan = null,
+    Object? prtNo = null,
+    Object? itemNm = null,
+    Object? selectedRowspan = null,
+    Object? inEdit = null,
     Object? lotNo = null,
-    Object? zoneNm = null,
-    Object? usrNm = null,
-    Object? inbDt = null,
-    Object? plant = null,
+    Object? noRowspan = null,
+    Object? tagType = null,
+    Object? vendNm = null,
+    Object? dQty = null,
+    Object? selected = null,
+    Object? wmsQty = null,
+    Object? itemCd = null,
+    Object? tagNo = null,
+    Object? totWht = null,
+    Object? whtUnit = null,
+    Object? setQty = null,
+    Object? boxWht = null,
     Object? qrNo = null,
     Object? qty = null,
-    Object? tagType = null,
-    Object? tagTypeNm = null,
+    Object? wmsQtyUnit = null,
+    Object? vendCd = null,
     Object? qtyUnit = null,
+    Object? tagTypeNm = null,
+    Object? mstKey = null,
+    Object? setQtyRowspan = null,
     Object? prtDt = null,
   }) {
     return _then(_value.copyWith(
+      no: null == no
+          ? _value.no
+          : no // ignore: cast_nullable_to_non_nullable
+              as int,
       wht: null == wht
           ? _value.wht
           : wht // ignore: cast_nullable_to_non_nullable
+              as String,
+      custCd: null == custCd
+          ? _value.custCd
+          : custCd // ignore: cast_nullable_to_non_nullable
               as String,
       tagId: null == tagId
           ? _value.tagId
           : tagId // ignore: cast_nullable_to_non_nullable
               as int,
-      locCd: null == locCd
-          ? _value.locCd
-          : locCd // ignore: cast_nullable_to_non_nullable
-              as String,
-      whCd: null == whCd
-          ? _value.whCd
-          : whCd // ignore: cast_nullable_to_non_nullable
-              as String,
-      inbNo: null == inbNo
-          ? _value.inbNo
-          : inbNo // ignore: cast_nullable_to_non_nullable
+      pjtNm: null == pjtNm
+          ? _value.pjtNm
+          : pjtNm // ignore: cast_nullable_to_non_nullable
               as String,
       grpKey: null == grpKey
           ? _value.grpKey
           : grpKey // ignore: cast_nullable_to_non_nullable
               as String,
-      whNm: null == whNm
-          ? _value.whNm
-          : whNm // ignore: cast_nullable_to_non_nullable
+      pjtNo: null == pjtNo
+          ? _value.pjtNo
+          : pjtNo // ignore: cast_nullable_to_non_nullable
               as String,
       expDt: null == expDt
           ? _value.expDt
@@ -945,37 +948,77 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
           ? _value.remark
           : remark // ignore: cast_nullable_to_non_nullable
               as String,
+      tagTypeNmRowspan: null == tagTypeNmRowspan
+          ? _value.tagTypeNmRowspan
+          : tagTypeNmRowspan // ignore: cast_nullable_to_non_nullable
+              as int,
+      prtNo: null == prtNo
+          ? _value.prtNo
+          : prtNo // ignore: cast_nullable_to_non_nullable
+              as String,
+      itemNm: null == itemNm
+          ? _value.itemNm
+          : itemNm // ignore: cast_nullable_to_non_nullable
+              as String,
+      selectedRowspan: null == selectedRowspan
+          ? _value.selectedRowspan
+          : selectedRowspan // ignore: cast_nullable_to_non_nullable
+              as int,
+      inEdit: null == inEdit
+          ? _value.inEdit
+          : inEdit // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lotNo: null == lotNo
+          ? _value.lotNo
+          : lotNo // ignore: cast_nullable_to_non_nullable
+              as String,
+      noRowspan: null == noRowspan
+          ? _value.noRowspan
+          : noRowspan // ignore: cast_nullable_to_non_nullable
+              as int,
+      tagType: null == tagType
+          ? _value.tagType
+          : tagType // ignore: cast_nullable_to_non_nullable
+              as String,
+      vendNm: null == vendNm
+          ? _value.vendNm
+          : vendNm // ignore: cast_nullable_to_non_nullable
+              as String,
+      dQty: null == dQty
+          ? _value.dQty
+          : dQty // ignore: cast_nullable_to_non_nullable
+              as String,
+      selected: null == selected
+          ? _value.selected
+          : selected // ignore: cast_nullable_to_non_nullable
+              as bool,
+      wmsQty: null == wmsQty
+          ? _value.wmsQty
+          : wmsQty // ignore: cast_nullable_to_non_nullable
+              as double,
+      itemCd: null == itemCd
+          ? _value.itemCd
+          : itemCd // ignore: cast_nullable_to_non_nullable
+              as String,
       tagNo: null == tagNo
           ? _value.tagNo
           : tagNo // ignore: cast_nullable_to_non_nullable
               as String,
-      itemCd: null == itemCd
-          ? _value.itemCd
-          : itemCd // ignore: cast_nullable_to_non_nullable
+      totWht: null == totWht
+          ? _value.totWht
+          : totWht // ignore: cast_nullable_to_non_nullable
               as String,
       whtUnit: null == whtUnit
           ? _value.whtUnit
           : whtUnit // ignore: cast_nullable_to_non_nullable
               as String,
-      lotNo: null == lotNo
-          ? _value.lotNo
-          : lotNo // ignore: cast_nullable_to_non_nullable
+      setQty: null == setQty
+          ? _value.setQty
+          : setQty // ignore: cast_nullable_to_non_nullable
               as String,
-      zoneNm: null == zoneNm
-          ? _value.zoneNm
-          : zoneNm // ignore: cast_nullable_to_non_nullable
-              as String,
-      usrNm: null == usrNm
-          ? _value.usrNm
-          : usrNm // ignore: cast_nullable_to_non_nullable
-              as String,
-      inbDt: null == inbDt
-          ? _value.inbDt
-          : inbDt // ignore: cast_nullable_to_non_nullable
-              as String,
-      plant: null == plant
-          ? _value.plant
-          : plant // ignore: cast_nullable_to_non_nullable
+      boxWht: null == boxWht
+          ? _value.boxWht
+          : boxWht // ignore: cast_nullable_to_non_nullable
               as String,
       qrNo: null == qrNo
           ? _value.qrNo
@@ -985,18 +1028,30 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
           ? _value.qty
           : qty // ignore: cast_nullable_to_non_nullable
               as double,
-      tagType: null == tagType
-          ? _value.tagType
-          : tagType // ignore: cast_nullable_to_non_nullable
+      wmsQtyUnit: null == wmsQtyUnit
+          ? _value.wmsQtyUnit
+          : wmsQtyUnit // ignore: cast_nullable_to_non_nullable
               as String,
-      tagTypeNm: null == tagTypeNm
-          ? _value.tagTypeNm
-          : tagTypeNm // ignore: cast_nullable_to_non_nullable
+      vendCd: null == vendCd
+          ? _value.vendCd
+          : vendCd // ignore: cast_nullable_to_non_nullable
               as String,
       qtyUnit: null == qtyUnit
           ? _value.qtyUnit
           : qtyUnit // ignore: cast_nullable_to_non_nullable
               as String,
+      tagTypeNm: null == tagTypeNm
+          ? _value.tagTypeNm
+          : tagTypeNm // ignore: cast_nullable_to_non_nullable
+              as String,
+      mstKey: null == mstKey
+          ? _value.mstKey
+          : mstKey // ignore: cast_nullable_to_non_nullable
+              as String,
+      setQtyRowspan: null == setQtyRowspan
+          ? _value.setQtyRowspan
+          : setQtyRowspan // ignore: cast_nullable_to_non_nullable
+              as int,
       prtDt: null == prtDt
           ? _value.prtDt
           : prtDt // ignore: cast_nullable_to_non_nullable
@@ -1006,102 +1061,128 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
 }
 
 /// @nodoc
-abstract class _$$SubBodyItemImplCopyWith<$Res>
-    implements $SubBodyItemCopyWith<$Res> {
-  factory _$$SubBodyItemImplCopyWith(
-          _$SubBodyItemImpl value, $Res Function(_$SubBodyItemImpl) then) =
-      __$$SubBodyItemImplCopyWithImpl<$Res>;
+abstract class _$$BodySubItemImplCopyWith<$Res>
+    implements $BodySubItemCopyWith<$Res> {
+  factory _$$BodySubItemImplCopyWith(
+          _$BodySubItemImpl value, $Res Function(_$BodySubItemImpl) then) =
+      __$$BodySubItemImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {String wht,
+      {int no,
+      String wht,
+      String custCd,
       int tagId,
-      String locCd,
-      String whCd,
-      String inbNo,
+      String pjtNm,
       String grpKey,
-      String whNm,
+      String pjtNo,
       String expDt,
       String remark,
-      String tagNo,
-      String itemCd,
-      String whtUnit,
+      int tagTypeNmRowspan,
+      String prtNo,
+      String itemNm,
+      int selectedRowspan,
+      bool inEdit,
       String lotNo,
-      String zoneNm,
-      String usrNm,
-      String inbDt,
-      String plant,
+      int noRowspan,
+      String tagType,
+      String vendNm,
+      String dQty,
+      bool selected,
+      double wmsQty,
+      String itemCd,
+      String tagNo,
+      String totWht,
+      String whtUnit,
+      String setQty,
+      String boxWht,
       String qrNo,
       double qty,
-      String tagType,
-      String tagTypeNm,
+      String wmsQtyUnit,
+      String vendCd,
       String qtyUnit,
+      String tagTypeNm,
+      String mstKey,
+      int setQtyRowspan,
       String prtDt});
 }
 
 /// @nodoc
-class __$$SubBodyItemImplCopyWithImpl<$Res>
-    extends _$SubBodyItemCopyWithImpl<$Res, _$SubBodyItemImpl>
-    implements _$$SubBodyItemImplCopyWith<$Res> {
-  __$$SubBodyItemImplCopyWithImpl(
-      _$SubBodyItemImpl _value, $Res Function(_$SubBodyItemImpl) _then)
+class __$$BodySubItemImplCopyWithImpl<$Res>
+    extends _$BodySubItemCopyWithImpl<$Res, _$BodySubItemImpl>
+    implements _$$BodySubItemImplCopyWith<$Res> {
+  __$$BodySubItemImplCopyWithImpl(
+      _$BodySubItemImpl _value, $Res Function(_$BodySubItemImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? no = null,
     Object? wht = null,
+    Object? custCd = null,
     Object? tagId = null,
-    Object? locCd = null,
-    Object? whCd = null,
-    Object? inbNo = null,
+    Object? pjtNm = null,
     Object? grpKey = null,
-    Object? whNm = null,
+    Object? pjtNo = null,
     Object? expDt = null,
     Object? remark = null,
-    Object? tagNo = null,
-    Object? itemCd = null,
-    Object? whtUnit = null,
+    Object? tagTypeNmRowspan = null,
+    Object? prtNo = null,
+    Object? itemNm = null,
+    Object? selectedRowspan = null,
+    Object? inEdit = null,
     Object? lotNo = null,
-    Object? zoneNm = null,
-    Object? usrNm = null,
-    Object? inbDt = null,
-    Object? plant = null,
+    Object? noRowspan = null,
+    Object? tagType = null,
+    Object? vendNm = null,
+    Object? dQty = null,
+    Object? selected = null,
+    Object? wmsQty = null,
+    Object? itemCd = null,
+    Object? tagNo = null,
+    Object? totWht = null,
+    Object? whtUnit = null,
+    Object? setQty = null,
+    Object? boxWht = null,
     Object? qrNo = null,
     Object? qty = null,
-    Object? tagType = null,
-    Object? tagTypeNm = null,
+    Object? wmsQtyUnit = null,
+    Object? vendCd = null,
     Object? qtyUnit = null,
+    Object? tagTypeNm = null,
+    Object? mstKey = null,
+    Object? setQtyRowspan = null,
     Object? prtDt = null,
   }) {
-    return _then(_$SubBodyItemImpl(
+    return _then(_$BodySubItemImpl(
+      no: null == no
+          ? _value.no
+          : no // ignore: cast_nullable_to_non_nullable
+              as int,
       wht: null == wht
           ? _value.wht
           : wht // ignore: cast_nullable_to_non_nullable
+              as String,
+      custCd: null == custCd
+          ? _value.custCd
+          : custCd // ignore: cast_nullable_to_non_nullable
               as String,
       tagId: null == tagId
           ? _value.tagId
           : tagId // ignore: cast_nullable_to_non_nullable
               as int,
-      locCd: null == locCd
-          ? _value.locCd
-          : locCd // ignore: cast_nullable_to_non_nullable
-              as String,
-      whCd: null == whCd
-          ? _value.whCd
-          : whCd // ignore: cast_nullable_to_non_nullable
-              as String,
-      inbNo: null == inbNo
-          ? _value.inbNo
-          : inbNo // ignore: cast_nullable_to_non_nullable
+      pjtNm: null == pjtNm
+          ? _value.pjtNm
+          : pjtNm // ignore: cast_nullable_to_non_nullable
               as String,
       grpKey: null == grpKey
           ? _value.grpKey
           : grpKey // ignore: cast_nullable_to_non_nullable
               as String,
-      whNm: null == whNm
-          ? _value.whNm
-          : whNm // ignore: cast_nullable_to_non_nullable
+      pjtNo: null == pjtNo
+          ? _value.pjtNo
+          : pjtNo // ignore: cast_nullable_to_non_nullable
               as String,
       expDt: null == expDt
           ? _value.expDt
@@ -1111,37 +1192,77 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
           ? _value.remark
           : remark // ignore: cast_nullable_to_non_nullable
               as String,
+      tagTypeNmRowspan: null == tagTypeNmRowspan
+          ? _value.tagTypeNmRowspan
+          : tagTypeNmRowspan // ignore: cast_nullable_to_non_nullable
+              as int,
+      prtNo: null == prtNo
+          ? _value.prtNo
+          : prtNo // ignore: cast_nullable_to_non_nullable
+              as String,
+      itemNm: null == itemNm
+          ? _value.itemNm
+          : itemNm // ignore: cast_nullable_to_non_nullable
+              as String,
+      selectedRowspan: null == selectedRowspan
+          ? _value.selectedRowspan
+          : selectedRowspan // ignore: cast_nullable_to_non_nullable
+              as int,
+      inEdit: null == inEdit
+          ? _value.inEdit
+          : inEdit // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lotNo: null == lotNo
+          ? _value.lotNo
+          : lotNo // ignore: cast_nullable_to_non_nullable
+              as String,
+      noRowspan: null == noRowspan
+          ? _value.noRowspan
+          : noRowspan // ignore: cast_nullable_to_non_nullable
+              as int,
+      tagType: null == tagType
+          ? _value.tagType
+          : tagType // ignore: cast_nullable_to_non_nullable
+              as String,
+      vendNm: null == vendNm
+          ? _value.vendNm
+          : vendNm // ignore: cast_nullable_to_non_nullable
+              as String,
+      dQty: null == dQty
+          ? _value.dQty
+          : dQty // ignore: cast_nullable_to_non_nullable
+              as String,
+      selected: null == selected
+          ? _value.selected
+          : selected // ignore: cast_nullable_to_non_nullable
+              as bool,
+      wmsQty: null == wmsQty
+          ? _value.wmsQty
+          : wmsQty // ignore: cast_nullable_to_non_nullable
+              as double,
+      itemCd: null == itemCd
+          ? _value.itemCd
+          : itemCd // ignore: cast_nullable_to_non_nullable
+              as String,
       tagNo: null == tagNo
           ? _value.tagNo
           : tagNo // ignore: cast_nullable_to_non_nullable
               as String,
-      itemCd: null == itemCd
-          ? _value.itemCd
-          : itemCd // ignore: cast_nullable_to_non_nullable
+      totWht: null == totWht
+          ? _value.totWht
+          : totWht // ignore: cast_nullable_to_non_nullable
               as String,
       whtUnit: null == whtUnit
           ? _value.whtUnit
           : whtUnit // ignore: cast_nullable_to_non_nullable
               as String,
-      lotNo: null == lotNo
-          ? _value.lotNo
-          : lotNo // ignore: cast_nullable_to_non_nullable
+      setQty: null == setQty
+          ? _value.setQty
+          : setQty // ignore: cast_nullable_to_non_nullable
               as String,
-      zoneNm: null == zoneNm
-          ? _value.zoneNm
-          : zoneNm // ignore: cast_nullable_to_non_nullable
-              as String,
-      usrNm: null == usrNm
-          ? _value.usrNm
-          : usrNm // ignore: cast_nullable_to_non_nullable
-              as String,
-      inbDt: null == inbDt
-          ? _value.inbDt
-          : inbDt // ignore: cast_nullable_to_non_nullable
-              as String,
-      plant: null == plant
-          ? _value.plant
-          : plant // ignore: cast_nullable_to_non_nullable
+      boxWht: null == boxWht
+          ? _value.boxWht
+          : boxWht // ignore: cast_nullable_to_non_nullable
               as String,
       qrNo: null == qrNo
           ? _value.qrNo
@@ -1151,18 +1272,30 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
           ? _value.qty
           : qty // ignore: cast_nullable_to_non_nullable
               as double,
-      tagType: null == tagType
-          ? _value.tagType
-          : tagType // ignore: cast_nullable_to_non_nullable
+      wmsQtyUnit: null == wmsQtyUnit
+          ? _value.wmsQtyUnit
+          : wmsQtyUnit // ignore: cast_nullable_to_non_nullable
               as String,
-      tagTypeNm: null == tagTypeNm
-          ? _value.tagTypeNm
-          : tagTypeNm // ignore: cast_nullable_to_non_nullable
+      vendCd: null == vendCd
+          ? _value.vendCd
+          : vendCd // ignore: cast_nullable_to_non_nullable
               as String,
       qtyUnit: null == qtyUnit
           ? _value.qtyUnit
           : qtyUnit // ignore: cast_nullable_to_non_nullable
               as String,
+      tagTypeNm: null == tagTypeNm
+          ? _value.tagTypeNm
+          : tagTypeNm // ignore: cast_nullable_to_non_nullable
+              as String,
+      mstKey: null == mstKey
+          ? _value.mstKey
+          : mstKey // ignore: cast_nullable_to_non_nullable
+              as String,
+      setQtyRowspan: null == setQtyRowspan
+          ? _value.setQtyRowspan
+          : setQtyRowspan // ignore: cast_nullable_to_non_nullable
+              as int,
       prtDt: null == prtDt
           ? _value.prtDt
           : prtDt // ignore: cast_nullable_to_non_nullable
@@ -1173,56 +1306,69 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$SubBodyItemImpl implements _SubBodyItem {
-  const _$SubBodyItemImpl(
-      {this.wht = '',
+class _$BodySubItemImpl implements _BodySubItem {
+  const _$BodySubItemImpl(
+      {this.no = 0,
+      this.wht = '',
+      this.custCd = '',
       this.tagId = 0,
-      this.locCd = '',
-      this.whCd = '',
-      this.inbNo = '',
+      this.pjtNm = '',
       this.grpKey = '',
-      this.whNm = '',
+      this.pjtNo = '',
       this.expDt = '',
       this.remark = '',
-      this.tagNo = '',
-      this.itemCd = '',
-      this.whtUnit = '',
+      this.tagTypeNmRowspan = 0,
+      this.prtNo = '',
+      this.itemNm = '',
+      this.selectedRowspan = 0,
+      this.inEdit = false,
       this.lotNo = '',
-      this.zoneNm = '',
-      this.usrNm = '',
-      this.inbDt = '',
-      this.plant = '',
+      this.noRowspan = 0,
+      this.tagType = '',
+      this.vendNm = '',
+      this.dQty = '',
+      this.selected = false,
+      this.wmsQty = 0.0,
+      this.itemCd = '',
+      this.tagNo = '',
+      this.totWht = '',
+      this.whtUnit = '',
+      this.setQty = '',
+      this.boxWht = '',
       this.qrNo = '',
       this.qty = 0.0,
-      this.tagType = '',
-      this.tagTypeNm = '',
+      this.wmsQtyUnit = '',
+      this.vendCd = '',
       this.qtyUnit = '',
+      this.tagTypeNm = '',
+      this.mstKey = '',
+      this.setQtyRowspan = 0,
       this.prtDt = ''});
 
-  factory _$SubBodyItemImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SubBodyItemImplFromJson(json);
+  factory _$BodySubItemImpl.fromJson(Map<String, dynamic> json) =>
+      _$$BodySubItemImplFromJson(json);
 
+  @override
+  @JsonKey()
+  final int no;
   @override
   @JsonKey()
   final String wht;
   @override
   @JsonKey()
+  final String custCd;
+  @override
+  @JsonKey()
   final int tagId;
   @override
   @JsonKey()
-  final String locCd;
-  @override
-  @JsonKey()
-  final String whCd;
-  @override
-  @JsonKey()
-  final String inbNo;
+  final String pjtNm;
   @override
   @JsonKey()
   final String grpKey;
   @override
   @JsonKey()
-  final String whNm;
+  final String pjtNo;
   @override
   @JsonKey()
   final String expDt;
@@ -1231,28 +1377,58 @@ class _$SubBodyItemImpl implements _SubBodyItem {
   final String remark;
   @override
   @JsonKey()
-  final String tagNo;
+  final int tagTypeNmRowspan;
   @override
   @JsonKey()
-  final String itemCd;
+  final String prtNo;
   @override
   @JsonKey()
-  final String whtUnit;
+  final String itemNm;
+  @override
+  @JsonKey()
+  final int selectedRowspan;
+  @override
+  @JsonKey()
+  final bool inEdit;
   @override
   @JsonKey()
   final String lotNo;
   @override
   @JsonKey()
-  final String zoneNm;
+  final int noRowspan;
   @override
   @JsonKey()
-  final String usrNm;
+  final String tagType;
   @override
   @JsonKey()
-  final String inbDt;
+  final String vendNm;
   @override
   @JsonKey()
-  final String plant;
+  final String dQty;
+  @override
+  @JsonKey()
+  final bool selected;
+  @override
+  @JsonKey()
+  final double wmsQty;
+  @override
+  @JsonKey()
+  final String itemCd;
+  @override
+  @JsonKey()
+  final String tagNo;
+  @override
+  @JsonKey()
+  final String totWht;
+  @override
+  @JsonKey()
+  final String whtUnit;
+  @override
+  @JsonKey()
+  final String setQty;
+  @override
+  @JsonKey()
+  final String boxWht;
   @override
   @JsonKey()
   final String qrNo;
@@ -1261,50 +1437,78 @@ class _$SubBodyItemImpl implements _SubBodyItem {
   final double qty;
   @override
   @JsonKey()
-  final String tagType;
+  final String wmsQtyUnit;
+  @override
+  @JsonKey()
+  final String vendCd;
+  @override
+  @JsonKey()
+  final String qtyUnit;
   @override
   @JsonKey()
   final String tagTypeNm;
   @override
   @JsonKey()
-  final String qtyUnit;
+  final String mstKey;
+  @override
+  @JsonKey()
+  final int setQtyRowspan;
   @override
   @JsonKey()
   final String prtDt;
 
   @override
   String toString() {
-    return 'SubBodyItem(wht: $wht, tagId: $tagId, locCd: $locCd, whCd: $whCd, inbNo: $inbNo, grpKey: $grpKey, whNm: $whNm, expDt: $expDt, remark: $remark, tagNo: $tagNo, itemCd: $itemCd, whtUnit: $whtUnit, lotNo: $lotNo, zoneNm: $zoneNm, usrNm: $usrNm, inbDt: $inbDt, plant: $plant, qrNo: $qrNo, qty: $qty, tagType: $tagType, tagTypeNm: $tagTypeNm, qtyUnit: $qtyUnit, prtDt: $prtDt)';
+    return 'BodySubItem(no: $no, wht: $wht, custCd: $custCd, tagId: $tagId, pjtNm: $pjtNm, grpKey: $grpKey, pjtNo: $pjtNo, expDt: $expDt, remark: $remark, tagTypeNmRowspan: $tagTypeNmRowspan, prtNo: $prtNo, itemNm: $itemNm, selectedRowspan: $selectedRowspan, inEdit: $inEdit, lotNo: $lotNo, noRowspan: $noRowspan, tagType: $tagType, vendNm: $vendNm, dQty: $dQty, selected: $selected, wmsQty: $wmsQty, itemCd: $itemCd, tagNo: $tagNo, totWht: $totWht, whtUnit: $whtUnit, setQty: $setQty, boxWht: $boxWht, qrNo: $qrNo, qty: $qty, wmsQtyUnit: $wmsQtyUnit, vendCd: $vendCd, qtyUnit: $qtyUnit, tagTypeNm: $tagTypeNm, mstKey: $mstKey, setQtyRowspan: $setQtyRowspan, prtDt: $prtDt)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SubBodyItemImpl &&
+            other is _$BodySubItemImpl &&
+            (identical(other.no, no) || other.no == no) &&
             (identical(other.wht, wht) || other.wht == wht) &&
+            (identical(other.custCd, custCd) || other.custCd == custCd) &&
             (identical(other.tagId, tagId) || other.tagId == tagId) &&
-            (identical(other.locCd, locCd) || other.locCd == locCd) &&
-            (identical(other.whCd, whCd) || other.whCd == whCd) &&
-            (identical(other.inbNo, inbNo) || other.inbNo == inbNo) &&
+            (identical(other.pjtNm, pjtNm) || other.pjtNm == pjtNm) &&
             (identical(other.grpKey, grpKey) || other.grpKey == grpKey) &&
-            (identical(other.whNm, whNm) || other.whNm == whNm) &&
+            (identical(other.pjtNo, pjtNo) || other.pjtNo == pjtNo) &&
             (identical(other.expDt, expDt) || other.expDt == expDt) &&
             (identical(other.remark, remark) || other.remark == remark) &&
-            (identical(other.tagNo, tagNo) || other.tagNo == tagNo) &&
-            (identical(other.itemCd, itemCd) || other.itemCd == itemCd) &&
-            (identical(other.whtUnit, whtUnit) || other.whtUnit == whtUnit) &&
+            (identical(other.tagTypeNmRowspan, tagTypeNmRowspan) ||
+                other.tagTypeNmRowspan == tagTypeNmRowspan) &&
+            (identical(other.prtNo, prtNo) || other.prtNo == prtNo) &&
+            (identical(other.itemNm, itemNm) || other.itemNm == itemNm) &&
+            (identical(other.selectedRowspan, selectedRowspan) ||
+                other.selectedRowspan == selectedRowspan) &&
+            (identical(other.inEdit, inEdit) || other.inEdit == inEdit) &&
             (identical(other.lotNo, lotNo) || other.lotNo == lotNo) &&
-            (identical(other.zoneNm, zoneNm) || other.zoneNm == zoneNm) &&
-            (identical(other.usrNm, usrNm) || other.usrNm == usrNm) &&
-            (identical(other.inbDt, inbDt) || other.inbDt == inbDt) &&
-            (identical(other.plant, plant) || other.plant == plant) &&
+            (identical(other.noRowspan, noRowspan) ||
+                other.noRowspan == noRowspan) &&
+            (identical(other.tagType, tagType) || other.tagType == tagType) &&
+            (identical(other.vendNm, vendNm) || other.vendNm == vendNm) &&
+            (identical(other.dQty, dQty) || other.dQty == dQty) &&
+            (identical(other.selected, selected) ||
+                other.selected == selected) &&
+            (identical(other.wmsQty, wmsQty) || other.wmsQty == wmsQty) &&
+            (identical(other.itemCd, itemCd) || other.itemCd == itemCd) &&
+            (identical(other.tagNo, tagNo) || other.tagNo == tagNo) &&
+            (identical(other.totWht, totWht) || other.totWht == totWht) &&
+            (identical(other.whtUnit, whtUnit) || other.whtUnit == whtUnit) &&
+            (identical(other.setQty, setQty) || other.setQty == setQty) &&
+            (identical(other.boxWht, boxWht) || other.boxWht == boxWht) &&
             (identical(other.qrNo, qrNo) || other.qrNo == qrNo) &&
             (identical(other.qty, qty) || other.qty == qty) &&
-            (identical(other.tagType, tagType) || other.tagType == tagType) &&
+            (identical(other.wmsQtyUnit, wmsQtyUnit) ||
+                other.wmsQtyUnit == wmsQtyUnit) &&
+            (identical(other.vendCd, vendCd) || other.vendCd == vendCd) &&
+            (identical(other.qtyUnit, qtyUnit) || other.qtyUnit == qtyUnit) &&
             (identical(other.tagTypeNm, tagTypeNm) ||
                 other.tagTypeNm == tagTypeNm) &&
-            (identical(other.qtyUnit, qtyUnit) || other.qtyUnit == qtyUnit) &&
+            (identical(other.mstKey, mstKey) || other.mstKey == mstKey) &&
+            (identical(other.setQtyRowspan, setQtyRowspan) ||
+                other.setQtyRowspan == setQtyRowspan) &&
             (identical(other.prtDt, prtDt) || other.prtDt == prtDt));
   }
 
@@ -1312,122 +1516,174 @@ class _$SubBodyItemImpl implements _SubBodyItem {
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
+        no,
         wht,
+        custCd,
         tagId,
-        locCd,
-        whCd,
-        inbNo,
+        pjtNm,
         grpKey,
-        whNm,
+        pjtNo,
         expDt,
         remark,
-        tagNo,
-        itemCd,
-        whtUnit,
+        tagTypeNmRowspan,
+        prtNo,
+        itemNm,
+        selectedRowspan,
+        inEdit,
         lotNo,
-        zoneNm,
-        usrNm,
-        inbDt,
-        plant,
+        noRowspan,
+        tagType,
+        vendNm,
+        dQty,
+        selected,
+        wmsQty,
+        itemCd,
+        tagNo,
+        totWht,
+        whtUnit,
+        setQty,
+        boxWht,
         qrNo,
         qty,
-        tagType,
-        tagTypeNm,
+        wmsQtyUnit,
+        vendCd,
         qtyUnit,
+        tagTypeNm,
+        mstKey,
+        setQtyRowspan,
         prtDt
       ]);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$SubBodyItemImplCopyWith<_$SubBodyItemImpl> get copyWith =>
-      __$$SubBodyItemImplCopyWithImpl<_$SubBodyItemImpl>(this, _$identity);
+  _$$BodySubItemImplCopyWith<_$BodySubItemImpl> get copyWith =>
+      __$$BodySubItemImplCopyWithImpl<_$BodySubItemImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$SubBodyItemImplToJson(
+    return _$$BodySubItemImplToJson(
       this,
     );
   }
 }
 
-abstract class _SubBodyItem implements SubBodyItem {
-  const factory _SubBodyItem(
-      {final String wht,
+abstract class _BodySubItem implements BodySubItem {
+  const factory _BodySubItem(
+      {final int no,
+      final String wht,
+      final String custCd,
       final int tagId,
-      final String locCd,
-      final String whCd,
-      final String inbNo,
+      final String pjtNm,
       final String grpKey,
-      final String whNm,
+      final String pjtNo,
       final String expDt,
       final String remark,
-      final String tagNo,
-      final String itemCd,
-      final String whtUnit,
+      final int tagTypeNmRowspan,
+      final String prtNo,
+      final String itemNm,
+      final int selectedRowspan,
+      final bool inEdit,
       final String lotNo,
-      final String zoneNm,
-      final String usrNm,
-      final String inbDt,
-      final String plant,
+      final int noRowspan,
+      final String tagType,
+      final String vendNm,
+      final String dQty,
+      final bool selected,
+      final double wmsQty,
+      final String itemCd,
+      final String tagNo,
+      final String totWht,
+      final String whtUnit,
+      final String setQty,
+      final String boxWht,
       final String qrNo,
       final double qty,
-      final String tagType,
-      final String tagTypeNm,
+      final String wmsQtyUnit,
+      final String vendCd,
       final String qtyUnit,
-      final String prtDt}) = _$SubBodyItemImpl;
+      final String tagTypeNm,
+      final String mstKey,
+      final int setQtyRowspan,
+      final String prtDt}) = _$BodySubItemImpl;
 
-  factory _SubBodyItem.fromJson(Map<String, dynamic> json) =
-      _$SubBodyItemImpl.fromJson;
+  factory _BodySubItem.fromJson(Map<String, dynamic> json) =
+      _$BodySubItemImpl.fromJson;
 
+  @override
+  int get no;
   @override
   String get wht;
   @override
+  String get custCd;
+  @override
   int get tagId;
   @override
-  String get locCd;
-  @override
-  String get whCd;
-  @override
-  String get inbNo;
+  String get pjtNm;
   @override
   String get grpKey;
   @override
-  String get whNm;
+  String get pjtNo;
   @override
   String get expDt;
   @override
   String get remark;
   @override
-  String get tagNo;
+  int get tagTypeNmRowspan;
   @override
-  String get itemCd;
+  String get prtNo;
   @override
-  String get whtUnit;
+  String get itemNm;
+  @override
+  int get selectedRowspan;
+  @override
+  bool get inEdit;
   @override
   String get lotNo;
   @override
-  String get zoneNm;
+  int get noRowspan;
   @override
-  String get usrNm;
+  String get tagType;
   @override
-  String get inbDt;
+  String get vendNm;
   @override
-  String get plant;
+  String get dQty;
+  @override
+  bool get selected;
+  @override
+  double get wmsQty;
+  @override
+  String get itemCd;
+  @override
+  String get tagNo;
+  @override
+  String get totWht;
+  @override
+  String get whtUnit;
+  @override
+  String get setQty;
+  @override
+  String get boxWht;
   @override
   String get qrNo;
   @override
   double get qty;
   @override
-  String get tagType;
+  String get wmsQtyUnit;
+  @override
+  String get vendCd;
+  @override
+  String get qtyUnit;
   @override
   String get tagTypeNm;
   @override
-  String get qtyUnit;
+  String get mstKey;
+  @override
+  int get setQtyRowspan;
   @override
   String get prtDt;
   @override
   @JsonKey(ignore: true)
-  _$$SubBodyItemImplCopyWith<_$SubBodyItemImpl> get copyWith =>
+  _$$BodySubItemImplCopyWith<_$BodySubItemImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

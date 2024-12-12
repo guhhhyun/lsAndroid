@@ -673,7 +673,15 @@ class SmallKitPage extends StatelessWidget {
 
 
         }
-
+      /// 여기 끝나면 저장 처리해야한다
+        /// 디테일 저장
+        if(controller.smallBoxSave[0]['extrVal'] == 'D') {
+          await controller.registNewDetailSave();
+        }
+        /// 일반 저장
+        else {
+          await controller.registNewSave();
+        }
 
       }
 
@@ -1694,8 +1702,8 @@ class SmallKitPage extends StatelessWidget {
                  _invnrTextForm2('판매오더', 0),
                  SizedBox(width: 12,),
                  _invnrTextForm2('제품코드', 1),
-                 SizedBox(width: 12,),
-                 _invnrTextForm2('생산오더', 2),
+               /*  SizedBox(width: 12,),
+                 _invnrTextForm2('생산오더', 2),*/
                ],
              ),
            ),
@@ -1972,9 +1980,18 @@ class SmallKitPage extends StatelessWidget {
                    },
                    onChanged: (PlutoGridOnChangedEvent event) {
                      print(event);
+                     if (event.column.field == '') {
+                       print('선택한 값: ${event.value}');
+                       controller.bomList[event.rowIdx].addAll({'': event.value});
+                      // bom리스트에서 사유 입력한 값
+                       // 바로 insert 해준다 output 결과값 얻고
+                      // controller.bomConfirm, Add Location('현재 위치: ') controller.bomConfirm.add(controller.boxNo); 현재 위치에서 out 떄리고
+                       // bom 사유에서 변경됐을 경우 rowInx == 0 ? Get.log('')
+                     }
                    },
                    onSelected: (c) {
                      print(controller.stateManager4.currentRowIdx);
+
                    },
                    configuration: PlutoGridConfiguration(
                      style: PlutoGridStyleConfig(
@@ -2014,7 +2031,7 @@ class SmallKitPage extends StatelessWidget {
        PlutoColumn(
          title: '변경확정',
          field: 'whNm',
-         type: PlutoColumnType.text(),
+         type: PlutoColumnType.select(controller.bomConfirm),
          width: 100,
          enableSorting: false,
          enableEditingMode: false,
@@ -2033,7 +2050,7 @@ class SmallKitPage extends StatelessWidget {
          type: PlutoColumnType.text(),
          width: 200,
          enableSorting: false,
-         enableEditingMode: false,
+         enableEditingMode: true,
          enableContextMenu: false,
          enableRowDrag: false,
          enableDropToResize: false,

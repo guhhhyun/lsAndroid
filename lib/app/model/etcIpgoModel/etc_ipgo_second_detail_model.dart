@@ -2,20 +2,20 @@ import 'dart:ffi';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'etc_ipgo_second_model.freezed.dart';
-part 'etc_ipgo_second_model.g.dart';
+part 'etc_ipgo_second_detail_model.freezed.dart';
+part 'etc_ipgo_second_detail_model.g.dart';
 
 @freezed
-class EtcIpgoSecondModel with _$EtcIpgoSecondModel {
-  const factory EtcIpgoSecondModel({
+class EtcIpgoSecondDetailModel with _$EtcIpgoSecondDetailModel {
+  const factory EtcIpgoSecondDetailModel({
     Header? header,
     @Default('') String resultCode,
     @Default('') String resultMessage,
     List<dynamic>? body,
     @Default(false) bool hasError,
-  }) = _EtcIpgoSecondModel;
+  }) = _EtcIpgoSecondDetailModel;
 
-  factory EtcIpgoSecondModel.fromJson(Map<String, dynamic> json) => _$EtcIpgoSecondModelFromJson(json);
+  factory EtcIpgoSecondDetailModel.fromJson(Map<String, dynamic> json) => _$EtcIpgoSecondDetailModelFromJson(json);
 }
 
 @freezed
@@ -52,27 +52,32 @@ class SubBodyItem with _$SubBodyItem {
   const factory SubBodyItem({
     @Default('') String wht,
     @Default(0) int tagId,
-    @Default('') String locCd,
-    @Default('') String whCd,
-    @Default('') String inbNo,
+    @Default('') String WH_NM,
+    @Default('') String pjtNm,
     @Default('') String grpKey,
-    @Default('') String whNm,
+    @Default('') String LOC_CD,
     @Default('') String expDt,
     @Default('') String remark,
+    @Default('') String itemNm,
+    @Default('') String lotNo,
+    @Default('') String usrNm,
+    @Default('') String tagType,
+    @Default('') String ZONE_NM,
+    @Default('') String vendNm,
+    @Default(0) int tagSeq,
+    @Default('') String whCd,
     @Default('') String tagNo,
     @Default('') String itemCd,
     @Default('') String whtUnit,
-    @Default('') String lotNo,
-    @Default('') String zoneNm,
-    @Default('') String usrNm,
     @Default('') String inbDt,
+    @Default('') String setQty,
     @Default('') String plant,
     @Default('') String qrNo,
-    @Default(0.0) double qty,
-    @Default('') String tagType,
+    @Default('') String qty,
     @Default('') String tagTypeNm,
     @Default('') String qtyUnit,
     @Default('') String prtDt,
+    @Default('') String INB_NO,
 
   }) = _SubBodyItem;
 

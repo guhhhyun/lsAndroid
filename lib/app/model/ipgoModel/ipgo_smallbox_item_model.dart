@@ -1,21 +1,20 @@
-import 'dart:ffi';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'dart:convert';
 
-part 'etc_ipgo_second_model.freezed.dart';
-part 'etc_ipgo_second_model.g.dart';
+part 'ipgo_smallbox_item_model.freezed.dart';
+part 'ipgo_smallbox_item_model.g.dart';
 
 @freezed
-class EtcIpgoSecondModel with _$EtcIpgoSecondModel {
-  const factory EtcIpgoSecondModel({
+class IpgoSmallboxItemModel with _$IpgoSmallboxItemModel {
+  const factory IpgoSmallboxItemModel({
     Header? header,
     @Default('') String resultCode,
     @Default('') String resultMessage,
     List<dynamic>? body,
     @Default(false) bool hasError,
-  }) = _EtcIpgoSecondModel;
+  }) = _IpgoSmallboxItemModel;
 
-  factory EtcIpgoSecondModel.fromJson(Map<String, dynamic> json) => _$EtcIpgoSecondModelFromJson(json);
+  factory IpgoSmallboxItemModel.fromJson(Map<String, dynamic> json) => _$IpgoSmallboxItemModelFromJson(json);
 }
 
 @freezed
@@ -41,40 +40,45 @@ class BodyItem with _$BodyItem {
     @Default('') String errorState,
     @Default('') String errorProcedure,
     @Default('') String returnMessage,
-    List<SubBodyItem>? items,
   }) = _BodyItem;
 
   factory BodyItem.fromJson(Map<String, dynamic> json) => _$BodyItemFromJson(json);
 }
 
 @freezed
-class SubBodyItem with _$SubBodyItem {
-  const factory SubBodyItem({
+class SubItem with _$SubItem {
+  const factory SubItem({
+    @Default(0) int no,
     @Default('') String wht,
+    @Default('') String custCd,
     @Default(0) int tagId,
-    @Default('') String locCd,
-    @Default('') String whCd,
-    @Default('') String inbNo,
+    @Default('') String pjtNm,
     @Default('') String grpKey,
-    @Default('') String whNm,
+    @Default('') String pjtNo,
     @Default('') String expDt,
     @Default('') String remark,
-    @Default('') String tagNo,
-    @Default('') String itemCd,
-    @Default('') String whtUnit,
+    @Default('') String prtNo,
+    @Default('') String itemNm,
     @Default('') String lotNo,
-    @Default('') String zoneNm,
-    @Default('') String usrNm,
-    @Default('') String inbDt,
-    @Default('') String plant,
+    @Default('') String tagType,
+    @Default('') String vendNm,
+    @Default('') String dQty,
+    @Default(0.0) double wmsQty,
+    @Default('') String itemCd,
+    @Default('') String tagNo,
+    @Default('') String totWht,
+    @Default('') String whtUnit,
+    @Default('') String setQty,
+    @Default('') String boxWht,
     @Default('') String qrNo,
     @Default(0.0) double qty,
-    @Default('') String tagType,
-    @Default('') String tagTypeNm,
+    @Default('') String wmsQtyUnit,
+    @Default('') String vendCd,
     @Default('') String qtyUnit,
+    @Default('') String tagTypeNm,
+    @Default('') String mstKey,
     @Default('') String prtDt,
+  }) = _SubItem;
 
-  }) = _SubBodyItem;
-
-  factory SubBodyItem.fromJson(Map<String, dynamic> json) => _$SubBodyItemFromJson(json);
+  factory SubItem.fromJson(Map<String, dynamic> json) => _$SubItemFromJson(json);
 }

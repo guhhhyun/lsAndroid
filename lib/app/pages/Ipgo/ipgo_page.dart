@@ -69,7 +69,7 @@ class IpgoPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    width: 230,
+                    width: 380,
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: TabBar(
@@ -97,6 +97,14 @@ class IpgoPage extends StatelessWidget {
                             alignment: Alignment.center,
                             child: const Text(
                               '입고등록',
+                              style: AppTheme.a20700,
+                            ),
+                          ),
+                          Container(
+                            height: 50,
+                            alignment: Alignment.center,
+                            child: const Text(
+                              '소박스등록',
                               style: AppTheme.a20700,
                             ),
                           ),
@@ -137,6 +145,7 @@ class IpgoPage extends StatelessWidget {
                   controller: controller.tabController,
                   children: [
                     _subBody(context),
+                    _subBody1(context),
                     _subBody2(context),
                  /*   controller.isLoading.value == true ? CommonLoading(bLoading: controller.isLoading.value) :
                     _allBody(),
@@ -461,7 +470,7 @@ class IpgoPage extends StatelessWidget {
                maxLines: null,
                style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
                // maxLines: 5,
-               controller: controller.textInvnrController2 ,
+               controller: controller.textInvnrController,
                textInputAction: TextInputAction.done,
                keyboardType: TextInputType.text,
                decoration: InputDecoration(
@@ -628,7 +637,7 @@ class IpgoPage extends StatelessWidget {
        title: '거래명세서 번호',
        field: 'doc1',
        type: PlutoColumnType.text(),
-       width: 140,
+       width: 180,
        enableSorting: false,
        enableEditingMode: false,
        enableContextMenu: false,
@@ -685,8 +694,8 @@ class IpgoPage extends StatelessWidget {
        backgroundColor: AppTheme.gray_c_gray_200,
      ),
      PlutoColumn(
-       title: 'SAP 수량',
-       field: 'sapQty',
+       title: 'ERP 수량',
+       field: 'erpQty',
        type: PlutoColumnType.text(),
        width: 120,
        enableSorting: false,
@@ -715,7 +724,7 @@ class IpgoPage extends StatelessWidget {
        backgroundColor: AppTheme.gray_c_gray_200,
      ),
      PlutoColumn(
-       title: 'SAP 잔량',
+       title: 'ERP 잔량',
        field: 'rmnQty',
        type: PlutoColumnType.text(),
        width: 120,
@@ -731,7 +740,7 @@ class IpgoPage extends StatelessWidget {
      ),
      PlutoColumn(
        title: '단위',
-       field: 'sapQtyUnit',
+       field: 'erpQtyUnit',
        type: PlutoColumnType.text(),
        width: 90,
        enableSorting: false,
@@ -744,7 +753,7 @@ class IpgoPage extends StatelessWidget {
        textAlign: PlutoColumnTextAlign.center,
        backgroundColor: AppTheme.gray_c_gray_200,
      ),
-     PlutoColumn(
+ /*    PlutoColumn(
        title: '프로젝트명',
        field: 'pjtNm',
        type: PlutoColumnType.text(),
@@ -758,7 +767,7 @@ class IpgoPage extends StatelessWidget {
        titleTextAlign: PlutoColumnTextAlign.center,
        textAlign: PlutoColumnTextAlign.left,
        backgroundColor: AppTheme.gray_c_gray_200,
-     ),
+     ),*/
      PlutoColumn(
        title: '업체명',
        field: 'vendNm',
@@ -931,6 +940,15 @@ class IpgoPage extends StatelessWidget {
          PlutoRow(cells:
          Map.from((controller.ipgoList[index]).map((key, value) =>
              MapEntry(key, PlutoCell(value: key == 'no' ? '${index + 1}' :/*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : */value )),
+         )))
+     );
+   }
+
+   void updateRows2() {
+     controller.rowDatas4.value = List<PlutoRow>.generate(controller.ipgoBoxList.length, (index) =>
+         PlutoRow(cells:
+         Map.from((controller.ipgoBoxList[index]).map((key, value) =>
+             MapEntry(key, PlutoCell(value: /*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : */value )),
          )))
      );
    }
@@ -1402,6 +1420,647 @@ class IpgoPage extends StatelessWidget {
      ];
      return gridCols2;
    }
+
+
+   /// /////////////////////////// 소박스등록 /////////////////////////////////////////////////////////////////
+   Widget _qrCodeTextForm2(BuildContext context) {
+     return Container(
+       padding: EdgeInsets.only(left: 24, top: 6, bottom: 4),
+       child: Row(
+         children: [
+           Text('QR 코드',
+               style: AppTheme.a20700
+                   .copyWith(color: AppTheme.black)),
+           SizedBox(width: 8,),
+           Container(
+
+             width: 250,
+             height: 40,
+             // padding: const EdgeInsets.only(left: 20, right: 12, top: 4),
+             child: Center(
+                 child: Container(
+                   padding: const EdgeInsets.only(left: 8, right: 6),
+                   decoration: BoxDecoration(
+                     border: Border.all(color: AppTheme.ae2e2e2),
+                     borderRadius: BorderRadius.circular(10),
+                     color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
+                   ),
+                   child: TextFormField(
+                     expands :true,
+                     minLines: null,
+                     maxLines: null,
+                     focusNode: controller.focusNode2,
+                     style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+                     // maxLines: 5,
+                     controller: controller.textQrController2,
+                     textAlignVertical: TextAlignVertical.center,
+                     onTap: () {
+                       controller.isQr2.value = true;
+                       if(controller.focusCnt2.value++ > 1) controller.focusCnt2.value = 0;
+                       else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                     },
+                     onTapOutside:(event) => { controller.focusCnt2.value = 0 },
+                     onFieldSubmitted: (value) async {
+                      // controller.isDuplQr.value = false;
+                      /* if(controller.isSelectedInvnr.value) {*/
+                         // 중복처리 일단 주석
+                         /*for(var i = 0; i < controller.ipgoList.length; i++) {
+                           if(controller.ipgoList[i]['qrNo'].contains(controller.textQrController.text)) {
+                             controller.isDuplQr.value = true;
+                           }
+                         }*/
+                         /*if(controller.isDuplQr.value) {
+                           controller.statusText.value = '중복된 QR코드입니다.';
+                           controller.textQrController.text = '';
+                         }else{*/
+                         await controller.checkBoxQR();
+                           if(controller.ipgoQrBoxList.isNotEmpty) {
+                             /* controller.ipgoQrBoxList[0].addAll({'no': '${controller.ipgoBoxList.length + 1}'});*/
+                             //  controller.ipgoBoxList.add(controller.ipgoQrBoxList[0]);
+                               controller.insertRow2 = List<PlutoRow>.generate(controller.ipgoBoxList.length, (index) =>
+                                   PlutoRow(cells:
+                                   Map.from((controller.ipgoBoxList[index]).map((key, value) =>
+                                       MapEntry(key, PlutoCell(value: value ?? '' )),
+                                   )))
+                               );
+                               //  controller.rowDatas2.add(controller.insertRow[0]);
+                               controller.gridStateMgr4.removeAllRows();
+                               controller.gridStateMgr4.insertRows(controller.ipgoBoxList.length, controller.insertRow2);
+
+                               controller.gridStateMgr4.setCurrentCell(controller.gridStateMgr4.firstCell, 0);
+                               Get.log('현재위치: ${controller.gridStateMgr4.currentRowIdx}');
+                               controller.currentRowIndex.value = controller.gridStateMgr4.currentRowIdx!;
+
+                               /// 오른쪽 분할 그리드 시작!!
+                               controller.insertRow3 = List<PlutoRow>.generate(controller.itemTotalList[0].length, (index) =>
+                                   PlutoRow(cells:
+                                   Map.from((controller.itemTotalList[0][index]).map((key, value) =>
+                                       MapEntry(key, PlutoCell(value: value ?? '' )),
+                                   )))
+                               );
+
+                               controller.gridStateMgr5.insertRows(controller.ipgoBoxList.length, controller.insertRow3);
+
+                           }
+                           controller.textQrController2.text = '';
+                           controller.requestFocus2();
+
+                         //}
+                       /*}else {
+                         controller.statusText2.value = '거래명세서를 선택해주세요.';
+                         controller.textQrController2.text = '';
+                         // Get.dialog(_dialog('거래명세서를 선택해주세요'));
+                       }*/
+                       controller.isQr2.value = false;
+                     },
+                     keyboardType: TextInputType.text,
+                     decoration: InputDecoration(
+
+                       contentPadding: const EdgeInsets.all(0),
+                       fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8), // 박효신
+                       filled: true,
+                       // hintText: 'BC 번호를 입력해주세요',
+                       hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+                       border: InputBorder.none,
+                     ),
+                     showCursor: true,
+
+
+                   ),)
+             ),
+           ),
+         ],
+       ),
+     );
+   }
+
+   Widget _statusText2() {
+     return Container(
+       padding: EdgeInsets.only(top: 6, bottom: 4),
+       child: Row(
+         children: [
+           Text('상태',
+               style: AppTheme.a20700
+                   .copyWith(color: AppTheme.black)),
+           SizedBox(width: 8,),
+           Container(
+             padding: EdgeInsets.only(top: 6, left: 8, right: 8),
+             height: 40,
+             width: controller.statusText2.value == '' ? 250 : null,
+             decoration: BoxDecoration(
+                 borderRadius: BorderRadius.circular(10),
+                 border: Border.all(color: AppTheme.ae2e2e2)),
+             child: Text(controller.statusText2.value,
+               style:  AppTheme.a20700.copyWith(color: AppTheme.red_red_900),
+               // maxLines: 5,
+
+             ),
+
+           ),
+         ],
+       ),
+     );
+   }
+
+
+   Widget _subBody1(BuildContext context) {
+     return Container(
+
+       child: Column(
+         mainAxisAlignment: MainAxisAlignment.start,
+         children: [
+           Container(
+             color: AppTheme.black, 
+             height: 1,
+           ),
+           Row(
+             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+             children: [
+               Row(
+                 children: [
+                   _qrCodeTextForm2(context),
+                   SizedBox(width: 16,),
+                   Obx(()=> _statusText2()),
+                 ],
+               ),
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.start,
+                 children: [
+                   Container(
+                     margin: EdgeInsets.only(right: 12),
+                     width: 120,
+                     height: 40,
+                     child: TextButton(
+                       style: ButtonStyle(
+                           shape: MaterialStateProperty.all<
+                               RoundedRectangleBorder>(
+                               const RoundedRectangleBorder(
+                                   borderRadius: BorderRadius.only(
+                                       bottomLeft: Radius.circular(10),
+                                       bottomRight: Radius.circular(10)))),
+                           padding: MaterialStateProperty.all(
+                               const EdgeInsets.all(0))),
+                       onPressed: () {
+                         Get.log('행 삭제 클릭!');
+                         if(controller.gridStateMgr4.currentRowIdx != null) {
+                           controller.ipgoBoxList.removeAt(controller.gridStateMgr4.currentRowIdx!);
+                           controller.gridStateMgr4.removeAllRows();
+                           updateRows2();
+                           controller.gridStateMgr4.appendRows(controller.rowDatas4.value);
+                         }
+
+                       },
+                       child: Container(
+                         decoration: BoxDecoration(
+                             color: AppTheme.navy_navy_800,
+                             borderRadius: BorderRadius.circular(10),
+                             border: Border.all(color: AppTheme.ae2e2e2)
+                         ),
+                         width: 120,
+                         height: 40,
+                         padding: const EdgeInsets.only(
+
+                         ),
+                         child: Center(
+                           child: Text('행 삭제',
+                               style: AppTheme.a18700.copyWith(
+                                 color: AppTheme.white,
+                               )),
+                         ),
+                       ),
+                     ),
+                   ),
+                   SizedBox(width: 12,),
+                   Container(
+                     margin: EdgeInsets.only(right: 12),
+                     width: 120,
+                     height: 40,
+                     child: TextButton(
+                       style: ButtonStyle(
+                           shape: MaterialStateProperty.all<
+                               RoundedRectangleBorder>(
+                               const RoundedRectangleBorder(
+                                   borderRadius: BorderRadius.only(
+                                       bottomLeft: Radius.circular(10),
+                                       bottomRight: Radius.circular(10)))),
+                           padding: MaterialStateProperty.all(
+                               const EdgeInsets.all(0))),
+                       onPressed: () async {
+                         if(controller.isIpgoClick2.value == false) {
+                           controller.isIpgoClick2.value = true;
+                           Get.log('입고등록 클릭!');
+                           await controller.reqCheburnIpgo();
+                           await controller.registIpgoBoxBtn();
+
+                           SchedulerBinding.instance!.addPostFrameCallback((_) {
+                             Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
+                           });
+                           controller.ipgoQrBoxList.clear();
+                           controller.ipgoBoxList.clear();
+                           controller.gridStateMgr4.removeAllRows();
+                         }
+
+
+                       },
+                       child: Container(
+                         decoration: BoxDecoration(
+                             color: AppTheme.navy_navy_800,
+                             borderRadius: BorderRadius.circular(10),
+                             border: Border.all(color: AppTheme.ae2e2e2)
+                         ),
+                         width: 120,
+                         height: 40,
+                         padding: const EdgeInsets.only(
+
+                         ),
+                         child: Center(
+                           child: Text('입고 등록',
+                               style: AppTheme.a18700.copyWith(
+                                 color: AppTheme.white,
+                               )),
+                         ),
+                       ),
+                     ),
+                   ),
+                 ],
+               ),
+             ],
+           ),
+           Container(
+             height: 4,
+           ),
+           Row(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               _rackIpgoList(context),
+               Container(
+                 width: 12,
+               ),
+               _rackIpgoList2(context),
+             ],
+           )
+         ],
+       ),
+     );
+
+   }
+
+
+   Widget _rackIpgoList(BuildContext context) {
+     // final double height = 49*(double.parse((controller.ipgoList.length + 1).toString()));
+     final double height = 200;
+     return Container(
+       // padding: EdgeInsets.only(bottom: 20),
+       width: MediaQuery.of(context).size.width/2  ,
+       height: MediaQuery.of(context).size.height - 250,
+       margin: EdgeInsets.only(left: 12, right: 12),
+       child: SingleChildScrollView(
+         child: Container(
+           child: Column(children: [
+             Container(
+               width: MediaQuery.of(context).size.width-32,
+               height: MediaQuery.of(context).size.height - 250,
+               child: PlutoGrid(
+                 mode: PlutoGridMode.selectWithOneTap, // 탭 한번으로 반응하게?
+                 columns: smallGridCols(context),
+                 rows: controller.rowDatas4.value,
+                 onLoaded: (PlutoGridOnLoadedEvent event) {
+                   controller.gridStateMgr4 = event.stateManager;
+                   controller.gridStateMgr4.setSelectingMode(PlutoGridSelectingMode.none);
+                   // controller.requestFocus();
+                   // Get.log('${controller.gridStateMgr2.currentRowIdx!}');
+                   //gridStateMgr.setShowColumnFilter(true);
+                 },
+                 onChanged: (PlutoGridOnChangedEvent event) {
+                   print(event);
+                 },
+                 onSelected: (c) {
+                   print(controller.gridStateMgr4.currentRowIdx);
+                   controller.currentRowIndex.value = c.rowIdx!;
+                   controller.currentRowIndex.value != controller.gridStateMgr4.currentRowIdx!
+                       ? {/*controller.ipgoQrList.clear(), controller.ipgoList.clear(),*/ controller.gridStateMgr5.removeAllRows()} : null;
+                   controller.currentRowIndex.value = controller.gridStateMgr4.currentRowIdx!;
+
+
+                   /// 오른쪽 분할 그리드 시작!!
+                   controller.insertRow3 = List<PlutoRow>.generate(controller.itemTotalList[controller.currentRowIndex.value].length, (index) =>
+                       PlutoRow(cells:
+                       Map.from((controller.itemTotalList[controller.currentRowIndex.value][index]).map((key, value) =>
+                           MapEntry(key, PlutoCell(value: value ?? '' )),
+                       )))
+                   );
+
+                   controller.gridStateMgr5.removeAllRows();
+                   controller.gridStateMgr5.insertRows(controller.ipgoBoxList.length, controller.insertRow3);
+
+                   controller.isQr2.value = false;
+
+
+                 /*  Map<dynamic, List<Map<String, dynamic>>> groupedMap = {};
+                   // chulSecondList를 순회하면서 no 값을 키로 그룹화
+                   for (var item in controller.chulSecondList) {
+                     var key = item['no'];
+                     if (groupedMap.containsKey(key)) {
+                       groupedMap[key]!.add(item);
+                     } else {
+                       groupedMap[key] = [item];
+                     }
+                   }
+
+                   // 그룹화된 맵의 각 값을 RxList로 변환하여 itemTotalList에 추가
+                   groupedMap.values.forEach((group) {
+                     controller.itemTotalList.add(group.obs);  // 각 그룹을 RxList로 변환 후 itemTotalList에 추가
+                   });
+                   Get.log('itemTotalList::: ${controller.itemTotalList}');
+                   controller.rowDatas3.value = List<PlutoRow>.generate(
+                     controller.itemTotalList[controller.currentRowIndex.value].length,
+                         (index) => PlutoRow(
+                       cells: Map.from(
+                         (controller.itemTotalList[controller.currentRowIndex.value][index]).map((key, value) => MapEntry(
+                           key,
+                           PlutoCell(
+                             value: value == null
+                                 ? ''
+                                 : value,
+                           ),
+                         )),
+                       ),
+                     ),
+                   );
+
+                   controller.gridStateMgr4.removeAllRows();
+                   controller.gridStateMgr4.appendRows(controller.rowDatas3);
+                   controller.isQr2.value = false;
+                   // controller.requestFocus();*/
+                 },
+                 rowColorCallback: (c) {
+
+                     if(controller.gridStateMgr5.currentRowIdx == c.rowIdx) {
+                       return AppTheme.blue_blue_50;
+                   }
+                   return Colors.transparent;
+                 },
+                 configuration: PlutoGridConfiguration(
+                   style: PlutoGridStyleConfig(
+                     columnHeight: 55,
+                     rowHeight: 55,
+                     //gridBorderColor: Colors.transparent,
+                     //   activatedColor: Colors.transparent,
+                     //  cellColorInReadOnlyState: Colors.white,
+                     columnTextStyle: AppTheme.a18400.copyWith(color: AppTheme.black),
+                     cellTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black),
+                   ),
+                 ),
+               ),
+             ),
+           ],),
+         ),
+       ),
+     );
+   }
+   List<PlutoColumn> smallGridCols(BuildContext context) {
+     final List<PlutoColumn> smallGridCols = <PlutoColumn>[
+       PlutoColumn(
+         title: '순서',
+         field: 'no',
+         type: PlutoColumnType.text(),
+         width: 90,
+         enableSorting: false,
+         enableEditingMode: false,
+         enableContextMenu: false,
+         enableRowDrag: false,
+         enableDropToResize: false,
+         enableColumnDrag: false,
+         titleTextAlign: PlutoColumnTextAlign.center,
+         textAlign: PlutoColumnTextAlign.center,
+         backgroundColor: AppTheme.gray_c_gray_200,
+       ),
+       PlutoColumn(
+           title: '라벨타입',
+           field: 'tagTypeNm',
+           type: PlutoColumnType.text(),
+           width: 100,
+           enableSorting: false,
+           enableEditingMode: false,
+           enableContextMenu: false,
+           enableRowDrag: false,
+           enableDropToResize: false,
+           enableColumnDrag: false,
+           titleTextAlign: PlutoColumnTextAlign.center,
+           textAlign: PlutoColumnTextAlign.center,
+           backgroundColor: AppTheme.gray_c_gray_200,
+       ),
+       PlutoColumn(
+         title: 'QR코드',
+         field: 'qrNo',
+         type: PlutoColumnType.text(),
+         width: 210,
+         enableSorting: false,
+         enableEditingMode: false,
+         enableContextMenu: false,
+         enableRowDrag: false,
+         enableDropToResize: false,
+         enableColumnDrag: false,
+         titleTextAlign: PlutoColumnTextAlign.center,
+         textAlign: PlutoColumnTextAlign.center,
+         backgroundColor: AppTheme.gray_c_gray_200,
+       ),
+       PlutoColumn(
+         title: '수량',
+         field: 'wmsQty',
+         type: PlutoColumnType.text(),
+         width: 120,
+         enableSorting: false,
+         enableEditingMode: false,
+         enableContextMenu: false,
+         enableRowDrag: false,
+         enableDropToResize: false,
+         enableColumnDrag: false,
+         titleTextAlign: PlutoColumnTextAlign.center,
+         textAlign: PlutoColumnTextAlign.center,
+         backgroundColor: AppTheme.gray_c_gray_200,
+       ),
+       PlutoColumn(
+         title: '단위',
+         field: 'wmsQtyUnit',
+         type: PlutoColumnType.text(),
+         width: 120,
+         enableSorting: false,
+         enableEditingMode: false,
+         enableContextMenu: false,
+         enableRowDrag: false,
+         enableDropToResize: false,
+         enableColumnDrag: false,
+         titleTextAlign: PlutoColumnTextAlign.center,
+         textAlign: PlutoColumnTextAlign.center,
+         backgroundColor: AppTheme.gray_c_gray_200,
+       ),
+     ];
+     return smallGridCols;
+   }
+
+
+   Widget _rackIpgoList2(BuildContext context) {
+     // final double height = 49*(double.parse((controller.ipgoList.length + 1).toString()));
+     final double height = 200;
+     return Container(
+       width: MediaQuery.of(context).size.width/2 - 60,
+       height: MediaQuery.of(context).size.height - 250,
+       margin: EdgeInsets.only(left: 12, right: 12),
+       child: SingleChildScrollView(
+         child: Container(
+           child: Column(children: [
+             Container(
+               width: MediaQuery.of(context).size.width,
+               height: MediaQuery.of(context).size.height - 250,
+               child: PlutoGrid(
+                 columns: smallGridCols2(context),
+                 rows: controller.rowDatas5.value,
+                 onLoaded: (PlutoGridOnLoadedEvent event) {
+                   controller.gridStateMgr5 = event.stateManager;
+                   controller.gridStateMgr5.setSelectingMode(PlutoGridSelectingMode.none);
+                   // Get.log('${controller.gridStateMgr2.currentRowIdx!}');
+                   //gridStateMgr.setShowColumnFilter(true);
+                 },
+                 onChanged: (PlutoGridOnChangedEvent event) {
+                   print(event);
+                 },
+                 onSelected: (c) {
+                   print(controller.gridStateMgr5.currentRowIdx);
+                 },
+                 configuration: PlutoGridConfiguration(
+                   style: PlutoGridStyleConfig(
+                     columnHeight: 55,
+                     rowHeight: 55,
+                     //gridBorderColor: Colors.transparent,
+                     //   activatedColor: Colors.transparent,
+                     //  cellColorInReadOnlyState: Colors.white,
+                     columnTextStyle: AppTheme.a18400.copyWith(color: AppTheme.black),
+                     cellTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black),
+                   ),
+                 ),
+               ),
+             ),
+           ],),
+         ),
+       ),
+     );
+   }
+   List<PlutoColumn> smallGridCols2(BuildContext context) {
+     final List<PlutoColumn> smallGridCols2 = <PlutoColumn>[
+         PlutoColumn(
+          title: '번호',
+          field: 'no',
+          type: PlutoColumnType.text(),
+          width: 90,
+          enableSorting: false,
+          enableEditingMode: false,
+          enableContextMenu: false,
+          enableRowDrag: false,
+          enableDropToResize: false,
+          enableColumnDrag: false,
+          titleTextAlign: PlutoColumnTextAlign.center,
+          textAlign: PlutoColumnTextAlign.center,
+          backgroundColor: AppTheme.gray_c_gray_200,
+        ),
+       PlutoColumn(
+         title: '라벨타입',
+         field: 'tagTypeNm',
+         type: PlutoColumnType.text(),
+         width: 120,
+         enableSorting: false,
+         enableEditingMode: false,
+         enableContextMenu: false,
+         enableRowDrag: false,
+         enableDropToResize: false,
+         enableColumnDrag: false,
+         titleTextAlign: PlutoColumnTextAlign.center,
+         textAlign: PlutoColumnTextAlign.center,
+         backgroundColor: AppTheme.gray_c_gray_200,
+       ),
+       PlutoColumn(
+         title: '라벨번호',
+         field: 'qrNo',
+         type: PlutoColumnType.text(),
+         width: 210,
+         enableSorting: false,
+         enableEditingMode: false,
+         enableContextMenu: false,
+         enableRowDrag: false,
+         enableDropToResize: false,
+         enableColumnDrag: false,
+         titleTextAlign: PlutoColumnTextAlign.center,
+         textAlign: PlutoColumnTextAlign.center,
+         backgroundColor: AppTheme.gray_c_gray_200,
+       ),
+       PlutoColumn(
+         title: '품목코드',
+         field: 'itemCd',
+         type: PlutoColumnType.text(),
+         width: 120,
+         enableSorting: false,
+         enableEditingMode: false,
+         enableContextMenu: false,
+         enableRowDrag: false,
+         enableDropToResize: false,
+         enableColumnDrag: false,
+         titleTextAlign: PlutoColumnTextAlign.center,
+         textAlign: PlutoColumnTextAlign.center,
+         backgroundColor: AppTheme.gray_c_gray_200,
+       ),
+       PlutoColumn(
+         title: '품목명',
+         field: 'itemNm',
+         type: PlutoColumnType.text(),
+         width: MediaQuery.of(context).size.width/2 - 280,
+         enableSorting: false,
+         enableEditingMode: false,
+         enableContextMenu: false,
+         enableRowDrag: false,
+         enableDropToResize: false,
+         enableColumnDrag: false,
+         titleTextAlign: PlutoColumnTextAlign.center,
+         textAlign: PlutoColumnTextAlign.center,
+         backgroundColor: AppTheme.gray_c_gray_200,
+       ),
+       PlutoColumn(
+         title: '수량',
+         field: 'wmsQty',
+         type: PlutoColumnType.text(),
+         width: 90,
+         enableSorting: false,
+         enableEditingMode: false,
+         enableContextMenu: false,
+         enableRowDrag: false,
+         enableDropToResize: false,
+         enableColumnDrag: false,
+         titleTextAlign: PlutoColumnTextAlign.center,
+         textAlign: PlutoColumnTextAlign.center,
+         backgroundColor: AppTheme.gray_c_gray_200,
+       ),
+       PlutoColumn(
+         title: '단위',
+         field: 'wmsQtyUnit',
+         type: PlutoColumnType.text(),
+         width: 90,
+         enableSorting: false,
+         enableEditingMode: false,
+         enableContextMenu: false,
+         enableRowDrag: false,
+         enableDropToResize: false,
+         enableColumnDrag: false,
+         titleTextAlign: PlutoColumnTextAlign.center,
+         textAlign: PlutoColumnTextAlign.center,
+         backgroundColor: AppTheme.gray_c_gray_200,
+       ),
+     ];
+     return smallGridCols2;
+   }
+
+
+
+
+
 
    /// /////////////////////////////////////////////////////// 입고취소 //////////////////////////////////
 
@@ -2006,7 +2665,7 @@ class IpgoPage extends StatelessWidget {
          title: '입고번호',
          field: 'inbNo',
          type: PlutoColumnType.text(),
-         width: 170,
+         width: 190,
          enableSorting: false,
          enableEditingMode: false,
          enableContextMenu: false,
@@ -2021,7 +2680,7 @@ class IpgoPage extends StatelessWidget {
          title: '입고구분',
          field: 'inbTypeNm',
          type: PlutoColumnType.text(),
-         width: 90,
+         width: 190,
          enableSorting: false,
          enableEditingMode: false,
          enableContextMenu: false,
@@ -2171,7 +2830,7 @@ class IpgoPage extends StatelessWidget {
          title: '업체명',
          field: 'vendNm',
          type: PlutoColumnType.text(),
-         width: 90,
+         width: 120,
          enableSorting: false,
          enableEditingMode: false,
          enableContextMenu: false,

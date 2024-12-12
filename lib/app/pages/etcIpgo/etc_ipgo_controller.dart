@@ -32,17 +32,21 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
   late  PlutoGridStateManager gridStateMgr2;
   late  PlutoGridStateManager gridStateMgr3;
   late  PlutoGridStateManager gridStateMgr4;
+  late  PlutoGridStateManager gridStateMgr5; // qr 디테일부분
 
   /// 리스트
   RxList<dynamic> etcIpgoList = [].obs; //
+  RxList<dynamic> etcIpgoDetailList = [].obs; //
   RxList<dynamic> etcIpgoCheckList = [].obs; // 선택한 체크리스트 모음
   RxList<dynamic> etcIpgoQrList = [].obs; //
+  RxList<dynamic> etcIpgoQrDetailList = [].obs; //QR 디테일리스트
+  RxList<dynamic> etcIpgoQrDetailTotalList = [].obs; //QR 디테일리스트 총합
   RxList<dynamic> etcIpgoQrCheckList = [].obs; // 신규화면 선택한 체크리스트 모음
   RxList<dynamic> etcIpgoSaveQrList = [].obs; //
   RxList<dynamic> chulSecondList = [].obs; //
   RxList<dynamic> uniqueEtcIpgoList = [].obs; //중복 제거된 리스트 두번째 화면에서 쓰임
   RxList<dynamic> itemChulSecondList = [].obs; //중복 제거된 리스트에서 선택된 리스트의 자재들 리스트
-  RxList<RxList<dynamic>> itemTotalList = [[].obs].obs;
+  RxList<dynamic> itemTotalList = [].obs;
 
   RxList<dynamic> chulThirdList = [].obs; //
 
@@ -59,6 +63,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
   var rowDatas2 = <PlutoRow>[].obs;
   var rowDatas3 = <PlutoRow>[].obs;
   var rowDatas4 = <PlutoRow>[].obs;
+  var rowDatas5 = <PlutoRow>[].obs;
 
   var row = <PlutoRow>[].obs;
 
@@ -80,7 +85,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
   RxString locText = ''.obs;
   RxString locCd = ''.obs;
   RxInt currentFirstIndex = 0.obs;
-
+  RxBool isDbConnected = true.obs;
 
   RxBool bLoading = false.obs;
   RxInt focusCnt = 0.obs;
@@ -96,6 +101,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
   RxString scanText = ''.obs;
   RxBool isSuccessThird = false.obs;
   RxInt currentRowIndex = 0.obs;
+  RxInt currentRowIndex2 = 0.obs;
   RxBool isPlutoRow2 = false.obs;
   RxBool isQr = false.obs;
   RxBool isQrFocus = false.obs;
@@ -111,7 +117,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
       if(etcIpgoQrCheckList[e] == true) {
         var params = {
           'programId': 'A1020',
-          'procedure': 'USP_A4020_S01',
+          'procedure': 'USP_A4020_S02',
           'params': [
             {
               'paramName': 'p_work_type',
@@ -140,6 +146,12 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
             {
               'paramName': 'p_INB_LOT_NO',
               'paramValue': etcIpgoQrList[e]['inbLotNo'],
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_STK_MOV_NO', /// 추가됐음 확인
+              'paramValue': '',
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
@@ -282,7 +294,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
       if(etcIpgoCheckList[e] == true) {
         var params = {
           'programId': 'A1020',
-          'procedure': 'USP_A4020_S01',
+          'procedure': 'USP_A4020_S02',
           'params': [
             {
               'paramName': 'p_work_type',
@@ -311,6 +323,12 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
             {
               'paramName': 'p_INB_LOT_NO',
               'paramValue': etcIpgoList[e]['inbLotNo'],
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_STK_MOV_NO', /// 추가됐음 확인
+              'paramValue': '',
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
@@ -501,50 +519,6 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
   }
 
 
-  /// 출고등록 세번째 조회
-  Future<void> reqChulThird() async {
-    Get.log('조회');
-
-    bLoading.value = true;
-    chulThirdList.clear();
-
-    var params = {
-      'programId': 'A1020',
-      'procedure': 'USP_A3020_R03',
-      'params': [
-        { "paramName": "p_work_type", "paramValue": "Q", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
-        { "paramName": "p_PLANT", "paramValue": "1302", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
-        { "paramName": "p_DEL_ORD_NO", "paramValue": etcIpgoList[currentFirstIndex.value]['delOrdNo'], "paramJdbcType": "VARCHAR", "paramMode": "IN"},
-        { "paramName": "p_QR_NO", "paramValue": textQrController.text, "paramJdbcType": "VARCHAR", "paramMode": "IN"}
-      ]
-    };
-
-    try {
-      final retVal = await HomeApi.to.reqChulThird(params);
-
-      if (retVal.resultCode == '0000') {
-        if(retVal.body![0]['resultMessage'] == '') {
-          isSuccessThird.value = true;
-          chulThirdList.addAll(retVal.body![1]);
-          Get.log('조회 성공');
-          statusText.value = '정상 조회되었습니다.';
-        }else{
-          Get.log('${retVal.body![0]['resultMessage']}');
-          statusText.value = retVal.body![0]['resultMessage'];
-          isSuccessThird.value = false;
-        }
-
-      } else {
-        Get.log('조회 실패');
-
-      }
-    } catch (e) {
-      Get.log('checkQR catch !!!!');
-      Get.log(e.toString());
-    } finally {
-      bLoading.value = false;
-    }
-  }
 
 
   /// 기타입고 조회1
@@ -554,11 +528,10 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
     bLoading.value = true;
     etcIpgoList.clear();
     etcIpgoCheckList.clear();
-    uniqueEtcIpgoList.clear();
 
     var params = {
       'programId': 'A1020',
-      'procedure': 'USP_A4020_R03',
+      'procedure': 'USP_A4020_R05', // USP_A4020_R03
       'params': [
         { "paramName": "p_work_type", "paramValue": "Q", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_PLANT", "paramValue": "1302", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
@@ -580,33 +553,97 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
             etcIpgoList[i].addAll({'noV': ''});
             etcIpgoCheckList.add(false);
           }
-          uniqueEtcIpgoList.value = etcIpgoList
+
+          /*uniqueEtcIpgoList.value = etcIpgoList
               .fold<Map<String, dynamic>>({}, (map, item) {
             map[item['inbNo'].toString()] = item; // no 키로 사용하여 중복 제거
             return map;
-          }).values.toList();
+          }).values.toList();*/ // 프로시저 바뀌고 안씀
 
           Get.log('조회 성공');
+          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
+          isDbConnected.value = false;
         }
 
       } else {
         Get.log('조회 실패');
-
+        isDbConnected.value = false;
       }
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
+      isDbConnected.value = false;
     } finally {
       bLoading.value = false;
       isChecked.value = false;
       await plutoRow2();
+      isDbConnected.value == true ?
+      await checkDetailQR() : null;
     }
   }
 
-  /// 출고등록 조회2
+  /// 기타입고 상세조회
+  Future<void> checkDetailQR() async {
+    Get.log('조회');
+
+    bLoading.value = true;
+    itemTotalList.clear();
+   // etcIpgoList.length == 1 ? itemTotalList.clear() : null;
+    Get.log('etcIpgoList:::: ${etcIpgoList}');
+
+    for(var i = 0; i < etcIpgoList.length; i++) {
+     // etcIpgoDetailList.clear();
+      List<dynamic> newEtcIpgoDetailList = [];
+      var params = {
+        'programId': 'A1020',
+        'procedure': 'USP_A4020_R06', // USP_A4020_R03
+        'params': [
+          { "paramName": "p_work_type", "paramValue": "Q", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+          { "paramName": "p_PLANT", "paramValue": "1302", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+          { "paramName": "p_INB_NO", "paramValue": etcIpgoList[i]['inbNo'], "paramJdbcType": "VARCHAR", "paramMode": "IN"}
+        ]
+      };
+
+      try {
+        final retVal = await HomeApi.to.reqEtcIpgoDetail(params);
+
+        if (retVal.resultCode == '0000') {
+          if(retVal.body![0]['resultMessage'] == '') {
+            newEtcIpgoDetailList.addAll(retVal.body![1]);
+            Get.log('etcIpgoDetailList:::: ${etcIpgoDetailList}');
+            itemTotalList.add(newEtcIpgoDetailList);
+
+            /*uniqueEtcIpgoList.value = etcIpgoList
+              .fold<Map<String, dynamic>>({}, (map, item) {
+            map[item['inbNo'].toString()] = item; // no 키로 사용하여 중복 제거
+            return map;
+          }).values.toList();*/ // 프로시저 바뀌고 안씀
+
+            Get.log('조회 성공');
+          }else{
+            Get.log('${retVal.body![0]['resultMessage']}');
+            statusText.value = retVal.body![0]['resultMessage'];
+          }
+
+        } else {
+          Get.log('조회 실패');
+
+        }
+      } catch (e) {
+        Get.log('checkDetailQR catch !!!!');
+        Get.log(e.toString());
+      } finally {
+        bLoading.value = false;
+        isChecked.value = false;
+      }
+    }
+    Get.log('itemTotalList::::!!!!! ${itemTotalList}');
+  }
+
+  /// 기타입고 QR조회
   Future<void> checkQR2() async {
     Get.log('조회');
 
@@ -616,9 +653,9 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
 
     var params = {
       'programId': 'A1020',
-      'procedure': 'USP_A4020_R04',
+      'procedure': 'USP_A4020_R07',
       'params': [
-        { "paramName": "p_work_type", "paramValue": "Q", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_work_type", "paramValue": "Q1", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_PLANT", "paramValue": "1302", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_WH_CD", "paramValue": "WH01", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_QR_NO", "paramValue": textQrController.text, "paramJdbcType": "VARCHAR", "paramMode": "IN"},
@@ -658,6 +695,55 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
 
     }
   }
+  /// 기타입고 QR조회 상세
+  Future<void> checkDetailQR2() async {
+    Get.log('조회');
+
+    bLoading.value = true;
+    etcIpgoQrDetailList.clear();
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A4020_R07',
+      'params': [
+        { "paramName": "p_work_type", "paramValue": "Q2", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_PLANT", "paramValue": "1302", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_WH_CD", "paramValue": "WH01", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_QR_NO", "paramValue": textQrController.text, "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_INB_NO", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_LOC_CD", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_INB_USER_ID", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_REMARK", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"}
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqEtcIpgoQrDetail(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          etcIpgoQrDetailList.addAll(retVal.body![1]);
+          etcIpgoQrDetailTotalList.add(etcIpgoQrDetailList);
+
+          statusText.value = '정상 조회되었습니다.';
+          Get.log('조회 성공');
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+          statusText.value = retVal.body![0]['resultMessage'];
+        }
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('checkDetailQR2 catch !!!!');
+      Get.log(e.toString());
+    } finally {
+      bLoading.value = false;
+
+    }
+  }
   /// QR조회
    Future<void> plutoRow4() async {
     rowDatas4.value = List<PlutoRow>.generate(
@@ -679,10 +765,10 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
     gridStateMgr4.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
   }
 
-  /// 자재들만 조회
+  /*/// 자재들만 조회
   Future<void> plutoRow3() async {
-    itemTotalList.clear();
-    Map<dynamic, List<Map<String, dynamic>>> groupedMap = {};
+
+   *//* Map<dynamic, List<Map<String, dynamic>>> groupedMap = {};
     // chulSecondList를 순회하면서 no 값을 키로 그룹화
     for (var item in etcIpgoList) {
       var key = item['inbNo'];
@@ -696,7 +782,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
     // 그룹화된 맵의 각 값을 RxList로 변환하여 itemTotalList에 추가
     groupedMap.values.forEach((group) {
       itemTotalList.add(group.obs);  // 각 그룹을 RxList로 변환 후 itemTotalList에 추가
-    });
+    });*//*
     Get.log('itemTotalList::: ${itemTotalList}');
     rowDatas3.value = List<PlutoRow>.generate(
       itemTotalList[currentRowIndex.value].length,
@@ -715,17 +801,17 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
     );
 
 
-    /*  gridStateMgr3.removeAllRows();
-    gridStateMgr3.appendRows(rowDatas3.value);*/
-  }
+    *//*  gridStateMgr3.removeAllRows();
+    gridStateMgr3.appendRows(rowDatas3.value);*//*
+  }*/
   /// 중복 제외 조회
   Future<void> plutoRow2() async {
 
     rowDatas2.value = List<PlutoRow>.generate(
-      uniqueEtcIpgoList.length,
+      etcIpgoList.length,
           (index) => PlutoRow(
         cells: Map.from(
-          (uniqueEtcIpgoList[index]).map((key, value) => MapEntry(
+          (etcIpgoList[index]).map((key, value) => MapEntry(
             key,
             PlutoCell(
               value: value == null
@@ -744,33 +830,6 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
     gridStateMgr2.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
   }
 
-  /// 전체 조회
-  /* Future<void> plutoRow() async {
-    rowDatas.value = List<PlutoRow>.generate(
-      chulList.length,
-          (index) => PlutoRow(
-        cells: Map.from(
-          (chulList[index]).map((key, value) => MapEntry(
-            key,
-            PlutoCell(
-              value: value == null
-                  ? ''
-                  : key == 'delOrdType'
-                  ? chulgoList.firstWhere(
-                      (item) => item['CODE'] == value,
-                  orElse: () => {'NAME': ''}
-              )['NAME'] ?? ''
-                  : value,
-            ),
-          )),
-        ),
-      ),
-    );
-    gridStateMgr.removeAllRows();
-    gridStateMgr.appendRows(rowDatas.value);
-
-    gridStateMgr.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
-  }*/
 
   final focusNode = FocusNode();
   void requestFocus() {

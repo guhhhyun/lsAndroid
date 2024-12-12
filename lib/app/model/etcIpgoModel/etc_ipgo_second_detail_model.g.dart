@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'etc_ipgo_second_model.dart';
+part of 'etc_ipgo_second_detail_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$EtcIpgoSecondModelImpl _$$EtcIpgoSecondModelImplFromJson(
+_$EtcIpgoSecondDetailModelImpl _$$EtcIpgoSecondDetailModelImplFromJson(
         Map<String, dynamic> json) =>
-    _$EtcIpgoSecondModelImpl(
+    _$EtcIpgoSecondDetailModelImpl(
       header: json['header'] == null
           ? null
           : Header.fromJson(json['header'] as Map<String, dynamic>),
@@ -18,8 +18,8 @@ _$EtcIpgoSecondModelImpl _$$EtcIpgoSecondModelImplFromJson(
       hasError: json['hasError'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$$EtcIpgoSecondModelImplToJson(
-        _$EtcIpgoSecondModelImpl instance) =>
+Map<String, dynamic> _$$EtcIpgoSecondDetailModelImplToJson(
+        _$EtcIpgoSecondDetailModelImpl instance) =>
     <String, dynamic>{
       'header': instance.header,
       'resultCode': instance.resultCode,
@@ -75,52 +75,62 @@ _$SubBodyItemImpl _$$SubBodyItemImplFromJson(Map<String, dynamic> json) =>
     _$SubBodyItemImpl(
       wht: json['wht'] as String? ?? '',
       tagId: (json['tagId'] as num?)?.toInt() ?? 0,
-      locCd: json['locCd'] as String? ?? '',
-      whCd: json['whCd'] as String? ?? '',
-      inbNo: json['inbNo'] as String? ?? '',
+      WH_NM: json['WH_NM'] as String? ?? '',
+      pjtNm: json['pjtNm'] as String? ?? '',
       grpKey: json['grpKey'] as String? ?? '',
-      whNm: json['whNm'] as String? ?? '',
+      LOC_CD: json['LOC_CD'] as String? ?? '',
       expDt: json['expDt'] as String? ?? '',
       remark: json['remark'] as String? ?? '',
+      itemNm: json['itemNm'] as String? ?? '',
+      lotNo: json['lotNo'] as String? ?? '',
+      usrNm: json['usrNm'] as String? ?? '',
+      tagType: json['tagType'] as String? ?? '',
+      ZONE_NM: json['ZONE_NM'] as String? ?? '',
+      vendNm: json['vendNm'] as String? ?? '',
+      tagSeq: (json['tagSeq'] as num?)?.toInt() ?? 0,
+      whCd: json['whCd'] as String? ?? '',
       tagNo: json['tagNo'] as String? ?? '',
       itemCd: json['itemCd'] as String? ?? '',
       whtUnit: json['whtUnit'] as String? ?? '',
-      lotNo: json['lotNo'] as String? ?? '',
-      zoneNm: json['zoneNm'] as String? ?? '',
-      usrNm: json['usrNm'] as String? ?? '',
       inbDt: json['inbDt'] as String? ?? '',
+      setQty: json['setQty'] as String? ?? '',
       plant: json['plant'] as String? ?? '',
       qrNo: json['qrNo'] as String? ?? '',
-      qty: (json['qty'] as num?)?.toDouble() ?? 0.0,
-      tagType: json['tagType'] as String? ?? '',
+      qty: json['qty'] as String? ?? '',
       tagTypeNm: json['tagTypeNm'] as String? ?? '',
       qtyUnit: json['qtyUnit'] as String? ?? '',
       prtDt: json['prtDt'] as String? ?? '',
+      INB_NO: json['INB_NO'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$SubBodyItemImplToJson(_$SubBodyItemImpl instance) =>
     <String, dynamic>{
       'wht': instance.wht,
       'tagId': instance.tagId,
-      'locCd': instance.locCd,
-      'whCd': instance.whCd,
-      'inbNo': instance.inbNo,
+      'WH_NM': instance.WH_NM,
+      'pjtNm': instance.pjtNm,
       'grpKey': instance.grpKey,
-      'whNm': instance.whNm,
+      'LOC_CD': instance.LOC_CD,
       'expDt': instance.expDt,
       'remark': instance.remark,
+      'itemNm': instance.itemNm,
+      'lotNo': instance.lotNo,
+      'usrNm': instance.usrNm,
+      'tagType': instance.tagType,
+      'ZONE_NM': instance.ZONE_NM,
+      'vendNm': instance.vendNm,
+      'tagSeq': instance.tagSeq,
+      'whCd': instance.whCd,
       'tagNo': instance.tagNo,
       'itemCd': instance.itemCd,
       'whtUnit': instance.whtUnit,
-      'lotNo': instance.lotNo,
-      'zoneNm': instance.zoneNm,
-      'usrNm': instance.usrNm,
       'inbDt': instance.inbDt,
+      'setQty': instance.setQty,
       'plant': instance.plant,
       'qrNo': instance.qrNo,
       'qty': instance.qty,
-      'tagType': instance.tagType,
       'tagTypeNm': instance.tagTypeNm,
       'qtyUnit': instance.qtyUnit,
       'prtDt': instance.prtDt,
+      'INB_NO': instance.INB_NO,
     };
