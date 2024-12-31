@@ -49,8 +49,14 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
   RxList<dynamic> itemTotalList = [].obs;
 
   RxList<dynamic> chulThirdList = [].obs; //
+  RxList<dynamic> cheburnIpgoList = [].obs; //
+  RxList<dynamic> cheburnIpgoLotList = [].obs; //
+
 
   RxBool isText = true.obs;
+
+  RxBool isRowChecked = false.obs;
+  RxBool isFocus = false.obs;
 
 
   RxDouble height = 0.0.obs;
@@ -75,6 +81,8 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
   RxList<dynamic> containerList = [{'CODE':'1', 'NAME': 'KIT 작업장'}].obs;
   RxMap<String, String> selectedContainer = {'CODE':'', 'NAME': 'KIT 작업장'}.obs;
 
+  RxBool isEtcIpgoQrCheckList = false.obs;
+  RxInt isEtcIpgoQrCheckListIdx = 0.obs;
 
   DateTime now = DateTime.now();
   DateTime firstDayOfMonth = DateTime.now();
@@ -107,13 +115,118 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
   RxBool isQrFocus = false.obs;
   RxBool isChecked = false.obs;
 
+
+  /// 채번 프로시저
+  Future<void> reqCheburn() async {
+    bLoading.value = true;
+    cheburnIpgoList.clear();
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_GET_CODE_SEQ',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PREFIX',
+          'paramValue': 'INBE',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqEtcCheburnIpgo(params);
+
+      if (retVal.resultCode == '0000') {
+
+          cheburnIpgoList.value.addAll(retVal.body![1]);
+          Get.log('채번 리스트 조회: ${cheburnIpgoList.toString()}');
+          Get.log('채번 리스트 조회값: ${cheburnIpgoList[0]['']}');
+
+
+          Get.log('조회 성공');
+          isDbConnected.value = true;
+
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('cheburnIpgoList catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+    }
+  }
+
+  /// 채번 프로시저 - lot
+  Future<void> reqCheburn2() async {
+    bLoading.value = true;
+    cheburnIpgoLotList.clear();
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_GET_CODE_SEQ',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PREFIX',
+          'paramValue': 'LINB',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqEtcCheburnIpgo(params);
+
+      if (retVal.resultCode == '0000') {
+          cheburnIpgoLotList.value.addAll(retVal.body![1]);
+          Get.log('채번 리스트 조회: ${cheburnIpgoLotList.toString()}');
+          Get.log('조회 성공');
+          isDbConnected.value = true;
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('cheburnIpgoList catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+    }
+  }
+
+
+
+
   /// 두번째 화면 저장
   Future<void> registSaveIpgoBtn() async {
     Get.log('저장 클릭');
 
     bLoading.value = true;
 
-    for(var e = 0; e < etcIpgoQrCheckList.length; e++) {
+    for(var e = etcIpgoQrCheckList.length - 1; e >= 0; e--) {
+      Get.log('길이는?? ${etcIpgoQrCheckList.length}');
+      Get.log('길이는2?? ${etcIpgoQrList.length}');
+      await reqCheburn();
+      await reqCheburn2();
       if(etcIpgoQrCheckList[e] == true) {
         var params = {
           'programId': 'A1020',
@@ -139,13 +252,19 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
             },
             {
               'paramName': 'p_INB_NO',
-              'paramValue': '',
+              'paramValue': cheburnIpgoList[0][''],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
               'paramName': 'p_INB_LOT_NO',
-              'paramValue': etcIpgoQrList[e]['inbLotNo'],
+              'paramValue': cheburnIpgoLotList[0][''],
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_INB_DATE',
+              'paramValue': DateFormat('yyyyMMdd').format(DateTime.now()),
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
@@ -163,7 +282,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
             },
             {
               'paramName': 'p_INB_USER_ID',
-              'paramValue': textMgrController.text,
+              'paramValue': gs.loginId.value,
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
@@ -175,79 +294,79 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
             },
             {
               'paramName': 'p_TAG_TYPE',
-              'paramValue': etcIpgoQrList[e]['tagType'],
+              'paramValue': etcIpgoSaveQrList[e]['tagType'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
               'paramName': 'p_ITEM_CD',
-              'paramValue': etcIpgoQrList[e]['itemCd'],
+              'paramValue': etcIpgoSaveQrList[e]['itemCd'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
               'paramName': 'p_LOT_NO',
-              'paramValue': etcIpgoQrList[e]['lotNo'],
+              'paramValue': etcIpgoSaveQrList[e]['lotNo'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
               'paramName': 'p_QTY',
-              'paramValue': etcIpgoQrList[e]['qty'],
+              'paramValue': etcIpgoSaveQrList[e]['qty'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
               'paramName': 'p_QTY_UNIT',
-              'paramValue': etcIpgoQrList[e]['qtyUnit'],
+              'paramValue': etcIpgoSaveQrList[e]['qtyUnit'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
               'paramName': 'p_WHT',
-              'paramValue': etcIpgoQrList[e]['wht'],
+              'paramValue': etcIpgoSaveQrList[e]['wht'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
               'paramName': 'p_WHT_UNIT',
-              'paramValue': etcIpgoQrList[e]['whtUnit'],
+              'paramValue': etcIpgoSaveQrList[e]['whtUnit'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
               'paramName': 'p_PRT_DT',
-              'paramValue': etcIpgoQrList[e]['prtDt'],
+              'paramValue': etcIpgoSaveQrList[e]['prtDt'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
               'paramName': 'p_EXP_DT',
-              'paramValue': etcIpgoQrList[e]['expDt'],
+              'paramValue': etcIpgoSaveQrList[e]['expDt'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
               'paramName': 'p_TAG_NO',
-              'paramValue': etcIpgoQrList[e]['tagNo'],
+              'paramValue': etcIpgoSaveQrList[e]['tagNo'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
               'paramName': 'p_REMARK',
-              'paramValue': etcIpgoQrList[e]['remark'],
+              'paramValue': etcIpgoSaveQrList[e]['remark'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
               'paramName': 'p_QR_NO',
-              'paramValue': etcIpgoQrList[e]['qrNo'],
+              'paramValue': etcIpgoSaveQrList[e]['qrNo'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
               'paramName': 'p_FST_ROW_YN',
-              'paramValue': etcIpgoQrList[e]['fstRowYn'],
+              'paramValue': etcIpgoSaveQrList[e]['fstRowYn'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
@@ -271,6 +390,9 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
 
           if (retVal == '0000') {
             Get.log('기타입고 저장되었습니다');
+            etcIpgoSaveQrList.removeAt(e); // 좌측리스트 삭제
+            etcIpgoQrDetailTotalList.removeAt(e); // 우측 디테일 삭제
+            etcIpgoQrCheckList.removeAt(e);
           } else {
             Get.log('저장 실패');
           }
@@ -649,7 +771,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
 
     bLoading.value = true;
     etcIpgoQrList.clear();
-    etcIpgoQrCheckList.clear();
+   // etcIpgoQrCheckList.clear();
 
     var params = {
       'programId': 'A1020',
@@ -674,8 +796,8 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
           etcIpgoQrList.addAll(retVal.body![1]);
           for(var i = 0; i < etcIpgoQrList.length; i++) {
             etcIpgoQrList[i].addAll({'noV': ''});
-            etcIpgoQrCheckList.add(false);
           }
+          etcIpgoQrCheckList.add(false);
           statusText.value = '정상 조회되었습니다.';
           Get.log('조회 성공');
         }else{
@@ -701,7 +823,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
 
     bLoading.value = true;
     etcIpgoQrDetailList.clear();
-
+    var etcIpgoQrDetailListNew = [];
     var params = {
       'programId': 'A1020',
       'procedure': 'USP_A4020_R07',
@@ -722,8 +844,8 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
 
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
-          etcIpgoQrDetailList.addAll(retVal.body![1]);
-          etcIpgoQrDetailTotalList.add(etcIpgoQrDetailList);
+          etcIpgoQrDetailListNew.addAll(retVal.body![1]);
+          etcIpgoQrDetailTotalList.add(etcIpgoQrDetailListNew);
 
           statusText.value = '정상 조회되었습니다.';
           Get.log('조회 성공');
@@ -832,10 +954,12 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
 
 
   final focusNode = FocusNode();
+  final focusNode2 = FocusNode();
   void requestFocus() {
     Future.microtask(() => focusNode.requestFocus());
     if(focusCnt.value++ > 1) focusCnt.value = 0;
     else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+    isFocus.value = true;
   }
 
 

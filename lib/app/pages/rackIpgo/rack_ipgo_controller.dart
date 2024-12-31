@@ -63,6 +63,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
 
   RxBool bLoading = false.obs;
   RxInt focusCnt = 0.obs;
+  RxInt focusCnt2 = 0.obs;
   RxBool isSelectedInvnr = false.obs; // 거래명세서 선택된 값이 있는지 여부
   RxBool isDuplQr = false.obs; // 중복qr 선택된 값이 있는지 여부
   RxInt selectedInvnrIndex = 0.obs; // 선택된 거래명세서의 index
@@ -71,8 +72,9 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
 
 
   final FocusNode focusNode = FocusNode();
+  final FocusNode focusNodeForm = FocusNode();
   void requestFocus() {
-    Future.microtask(() => focusNode.requestFocus());
+    Future.microtask(() => focusNodeForm.requestFocus());
     if(focusCnt.value++ > 1) focusCnt.value = 0;
     else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
   }
@@ -316,7 +318,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_QR_CODE',
-            'paramValue': '${rackIpgoList[currentFirstIndex.value]['QR_NO']}',
+            'paramValue': '${rackIpgoList[currentFirstIndex.value]['TAG_NO']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -358,13 +360,13 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_ITEM_CD',
-            'paramValue': '${rackIpgoList[currentFirstIndex.value]['ITEM_CD']}',
+            'paramValue': '${rackIpgoList[0]['ITEM_CD']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
           {
             'paramName': 'p_INB_NO',
-            'paramValue': '${rackIpgoList[currentFirstIndex.value]['INB_NO']}',
+            'paramValue': '${rackIpgoList[0]['INB_NO']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -453,17 +455,19 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
 
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
-          rackIpgoList.value.addAll(retVal.body![1]);
-          rackIpgoDupList.value.addAll(retVal.body![1]);
-          for(var i = 0; i < rackIpgoList.length; i++){
-            rackIpgoList[i].addAll({'no': '${i+1}'});
+          if(retVal.body![1][0]['ITEM_CD'] != null && retVal.body![1][0]['ITEM_NM'] != null) {
+            rackIpgoList.value.addAll(retVal.body![1]);
+            rackIpgoDupList.value.addAll(retVal.body![1]);
+            for(var i = 0; i < rackIpgoList.length; i++){
+              rackIpgoList[i].addAll({'no': '${i+1}'});
+            }
+            for(var i = 0; i < rackIpgoDupList.length; i++) {
+              isSelect.add(false);
+            }
+            Get.log(rackIpgoList.toString());
+            Get.log('조회 성공');
+            isDbConnected.value = true;
           }
-          for(var i = 0; i < rackIpgoDupList.length; i++) {
-            isSelect.add(false);
-          }
-          Get.log(rackIpgoList.toString());
-          Get.log('조회 성공');
-          isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];

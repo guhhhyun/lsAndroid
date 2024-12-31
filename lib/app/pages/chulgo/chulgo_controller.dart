@@ -24,11 +24,20 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
   var textWrkNoController = TextEditingController(); // 제조번호
   var textOrderController = TextEditingController();
 
+  /// bom
+  var textSaleOrdController = TextEditingController();
+  var textItemCdController2 = TextEditingController(); // 제조번호
+  var textPrdOrdController = TextEditingController();
+
 
   late  PlutoGridStateManager gridStateMgr;
   late  PlutoGridStateManager gridStateMgr2;
   late  PlutoGridStateManager gridStateMgr3;
   late  PlutoGridStateManager gridStateMgr4;
+
+  /// bom
+  late  PlutoGridStateManager stateManager3;
+  late  PlutoGridStateManager stateManager4;
 
   /// 리스트
  // RxList<dynamic> pickingFirstList = [].obs; // 피킹 첫번째 조회된 리스트
@@ -43,6 +52,17 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
   RxList<dynamic> uniqueChulSecondList = [].obs; //중복 제거된 리스트 두번째 화면에서 쓰임
   RxList<dynamic> itemChulSecondList = [].obs; //중복 제거된 리스트에서 선택된 리스트의 자재들 리스트
   RxList<RxList<dynamic>> itemTotalList = [[].obs].obs;
+
+
+  /// bom
+  RxList<dynamic> bomList = [].obs; //bom 마스터
+  RxList<dynamic> bomDetailList = [].obs; //bom 마스터
+  RxList<dynamic> bomConfirm = [{'CODE':'N', 'NAME':'미확인'}, {'CODE':'Y', 'NAME':'변경 확정'}, {'CODE':'N', 'NAME':'변경 제외'},].obs;
+  RxList<dynamic> bomGubun = [{'CODE':'', 'NAME':'전체'}, {'CODE':'10', 'NAME':'작업표준'}, {'CODE':'30', 'NAME':'설계BOM'}, {'CODE':'40', 'NAME':'생산BOM'},].obs;
+  RxMap<String, String> selectedGubun = {'CODE':'', 'NAME':'전체'}.obs;
+  RxBool isBomSave = false.obs;
+  RxString isBomSaveText = ''.obs;
+  RxInt bomCurrentIdx = 0.obs;
 
   RxList<dynamic> chulThirdList = [].obs; //
 
@@ -66,7 +86,12 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
   var rowDatas2 = <PlutoRow>[].obs;
   var rowDatas3 = <PlutoRow>[].obs;
   var rowDatas4 = <PlutoRow>[].obs;
+
   List<PlutoRow> insertRow = [];
+
+  /// bom
+  var rows3 = <PlutoRow>[].obs;
+  var rows4 = <PlutoRow>[].obs;
 
 
 
@@ -501,6 +526,293 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
       bLoading.value = false;
     }
   }
+
+  /// BOM 저장
+  Future<void> registBomSave() async {
+    for(var i = 0; i < bomDetailList.length; i++) {
+      var params = {
+        'programId': 'A1020',
+        'procedure': 'USP_CHK_BOM_S01',
+        'params': [
+          {
+            'paramName': 'p_work_type',
+            'paramValue': 'U',
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_PLANT',
+            'paramValue': '1302',
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_BC_ID',
+            'paramValue': bomDetailList[i]['bcId'],
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_BC_SEQ',
+            'paramValue': bomDetailList[i]['bcSeq'],
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_CHG_CF_FLAG',
+            'paramValue': bomDetailList[i]['chgCfFlag'],
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_CHG_CF_RMK',
+            'paramValue': bomDetailList[i]['chgCfRmk'],
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_USR_ID',
+            'paramValue': gs.loginId.value,
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_USR_IP',
+            'paramValue': 'MOBILE',
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          }
+
+
+        ]
+      };
+
+      try {
+
+        final retVal = await HomeApi.to.registSmallKitSave(params);
+
+        if (retVal == '0000') {
+          Get.log('등록되었습니다');
+          isBomSave.value = true;
+          isBomSaveText.value = '저장되었습니다.';
+          isDbConnected.value = true;
+        } else {
+          Get.log('등록 실패');
+          isBomSave.value = false;
+          isBomSaveText.value = '저장에 실패하였습니다.';
+        }
+
+      } catch (e) {
+        Get.log('registMemoSmallKitSave catch !!!!');
+        Get.log(e.toString());
+        isBomSaveText.value = '저장에 실패하였습니다.';
+        isDbConnected.value = false;
+      } finally {
+        bLoading.value = false;
+      }
+    }
+
+  }
+
+
+
+
+  /// BOM 조회
+  Future<void> reqBom() async {
+    Get.log('BOM 조회');
+
+    bLoading.value = true;
+    bomList.clear();
+
+
+    var params = {
+      'programId': 'A2065',
+      'procedure': 'USP_CHK_BOM_R02',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_BC_ID',
+          'paramValue': chulSecondList[0]['tagNo'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_SO_NO',
+          'paramValue': chulSecondList[0]['delOrdNo'], // 판매오더
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PITM_CD',
+          'paramValue': chulSecondList[0]['pitmCd'], //제품코드
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_SET_QTY',
+          'paramValue': chulSecondList[0]['setQty'] ?? '', //
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_GUBUN',
+          'paramValue': '10',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqBom(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          bomList.addAll(retVal.body![1]);
+
+
+          Get.log('조회 성공');
+          isDbConnected.value = true;
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+        }
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('BOM catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+      plutoRowNew3();
+    }
+  }
+
+  /// BOM 디테일 조회
+  Future<void> reqBomDetail() async {
+    Get.log('BOM 조회');
+
+    bLoading.value = true;
+    bomDetailList.clear();
+
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_CHK_BOM_R02',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q1',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_BC_ID',
+          'paramValue': bomList[bomCurrentIdx.value]['bcId'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_SO_NO',
+          'paramValue': '', // 판매오더
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PITM_CD',
+          'paramValue': '', //제품코드
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_SET_QTY',
+          'paramValue': chulOneList[0]['setQty'], //제품코드
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_GUBUN',
+          'paramValue': '',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqBom(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          bomDetailList.addAll(retVal.body![1]);
+
+          Get.log('조회 성공');
+          isDbConnected.value = true;
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+        }
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('BOM catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+      plutoRowNew4(); // 4로 바꾸기
+    }
+  }
+
+  /// bom 마스터 리스트
+  Future<void> plutoRowNew3() async {
+    rows3.value = List<PlutoRow>.generate(
+        bomList.length,
+            (index) => PlutoRow(
+            cells: Map.from((bomList[index]).map(
+                  (key, value) => MapEntry(key, PlutoCell(value: value == null ? '' : value)),
+            ))));
+    stateManager3.removeAllRows();
+    stateManager3.appendRows(rows3.value);
+    //stateManager.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
+  }
+
+  /// bom 마스터 리스트
+  Future<void> plutoRowNew4() async {
+    rows4.value = List<PlutoRow>.generate(
+        bomDetailList.length,
+            (index) => PlutoRow(
+            cells: Map.from((bomDetailList[index]).map(
+                  (key, value) => MapEntry(key, PlutoCell(value: value == null ? '' : value)),
+            ))));
+    stateManager4.removeAllRows();
+    stateManager4.appendRows(rows4.value);
+    //stateManager.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
+  }
+
+
 
   Future<void> plutoRow4() async {
     rowDatas4.value = List<PlutoRow>.generate(

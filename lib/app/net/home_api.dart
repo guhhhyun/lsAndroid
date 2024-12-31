@@ -7,18 +7,25 @@ import 'package:lsandroid/app/common/global_service.dart';
 import 'package:lsandroid/app/common/utils.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:lsandroid/app/model/bomModel/bom_model.dart';
 import 'package:lsandroid/app/model/chulModel/chul_model.dart';
 import 'package:lsandroid/app/model/chulModel/chul_second_model.dart';
 import 'package:lsandroid/app/model/chulModel/chul_third_model.dart';
 import 'package:lsandroid/app/model/chulgoModel/other_kit_model.dart';
+import 'package:lsandroid/app/model/chulgoModel/other_kit_new2_model.dart';
+import 'package:lsandroid/app/model/chulgoModel/other_kit_new3_model.dart';
+import 'package:lsandroid/app/model/chulgoModel/other_kit_new_model.dart';
 import 'package:lsandroid/app/model/commonModel/common_model.dart';
 import 'package:lsandroid/app/model/commonModel/zone_model.dart';
 import 'package:lsandroid/app/model/etcChulgoModel/etc_chulgo_model.dart';
+import 'package:lsandroid/app/model/etcChulgoModel/etc_chulgo_second_detail_model.dart';
 import 'package:lsandroid/app/model/etcChulgoModel/etc_chulgo_second_model.dart';
+import 'package:lsandroid/app/model/etcIpgoModel/etc_cheburn_model.dart';
 import 'package:lsandroid/app/model/etcIpgoModel/etc_ipgo_detail_model.dart';
 import 'package:lsandroid/app/model/etcIpgoModel/etc_ipgo_model.dart';
 import 'package:lsandroid/app/model/etcIpgoModel/etc_ipgo_second_detail_model.dart';
 import 'package:lsandroid/app/model/etcIpgoModel/etc_ipgo_second_model.dart';
+import 'package:lsandroid/app/model/inventoryCntModel/inventory_cnt_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_cancel_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_cheburn_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_model.dart';
@@ -27,12 +34,19 @@ import 'package:lsandroid/app/model/ipgoModel/ipgo_smallbox_item_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_smallbox_model.dart';
 import 'package:lsandroid/app/model/loginModel/login_model.dart';
 import 'package:lsandroid/app/model/mainKitModel/main_kit_model.dart';
+import 'package:lsandroid/app/model/mainKitModel/main_kit_new2_model.dart';
+import 'package:lsandroid/app/model/mainKitModel/main_kit_new3_model.dart';
+import 'package:lsandroid/app/model/mainKitModel/main_kit_new_model.dart';
 import 'package:lsandroid/app/model/pickingModel/picking_first_model.dart';
 import 'package:lsandroid/app/model/pickingModel/picking_second_model.dart';
 import 'package:lsandroid/app/model/pickingModel/picking_third_model.dart';
 import 'package:lsandroid/app/model/rackIpgoModel/rack_ipgo_model.dart';
+import 'package:lsandroid/app/model/rackIpgoModel/rack_ipgo_today_model.dart';
 import 'package:lsandroid/app/model/smallKitModel/small_kit_item_model.dart';
 import 'package:lsandroid/app/model/smallKitModel/small_kit_model.dart';
+import 'package:lsandroid/app/model/smallKitModel/small_kit_new2_model.dart';
+import 'package:lsandroid/app/model/smallKitModel/small_kit_new3_model.dart';
+import 'package:lsandroid/app/model/smallKitModel/small_kit_new_model.dart';
 import 'package:lsandroid/app/model/smallKitModel/small_kit_save_model.dart';
 import 'package:lsandroid/app/pages/Ipgo/ipgo_controller.dart';
 import 'package:lsandroid/app/pages/chulgo/chulgo_controller.dart';
@@ -49,6 +63,48 @@ class HomeApi extends NetworkManager{
   static HomeApi get to => Get.find();
 
 
+
+  /// 재고실사 마스터 조회
+  Future<InventoryCntModel> reqInventoryCnt(var params) async {
+    var inventoryCntModel = InventoryCntModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        inventoryCntModel = InventoryCntModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          inventoryCntModel = InventoryCntModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqInventoryCnt - error');
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqInventoryCnt = ${err.toString()}');
+    }
+    return inventoryCntModel;
+  }
 
   /// 소박스 BOM 저장
   Future<String> registSmallKitBomSave(var params) async {
@@ -93,8 +149,8 @@ class HomeApi extends NetworkManager{
   }
 
   /// BOM 조회 -- model 바꿔야함
-  Future<EtcChulgoSecondModel> reqBom(var params) async {
-    var bomModel = EtcChulgoSecondModel();
+  Future<BomModel> reqBom(var params) async {
+    var bomModel = BomModel();
 
     try {
       if (APP_CONST.LOCAL_JSON_MODE) {
@@ -114,7 +170,7 @@ class HomeApi extends NetworkManager{
           var rtoken = response.headers['mng-bo-rtoken'];
           var jsonData = response.data;
 
-          bomModel = EtcChulgoSecondModel.fromJson(jsonData);
+          bomModel = BomModel.fromJson(jsonData);
 
           await Utils.getStorage.write('token', token);
           await Utils.getStorage.write('rtoken', rtoken);
@@ -129,6 +185,92 @@ class HomeApi extends NetworkManager{
       Get.log('reqBom = ${err.toString()}');
     }
     return bomModel;
+  }
+
+  /// 기타입고 채번 조회
+  Future<EtcCheburnModel> reqEtcCheburnIpgo(var params) async {
+    var etcCheburnModel = EtcCheburnModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/ipgo_cheburn.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        etcCheburnModel = EtcCheburnModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          etcCheburnModel = EtcCheburnModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqEtcCheburnIpgo - error');
+      IpgoController controller = Get.find();
+      controller.isDbConnected.value = false;
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqEtcCheburnIpgo = ${err.toString()}');
+    }
+    return etcCheburnModel;
+  }
+
+  /// 기타입고 QR 조회 디테일
+  Future<EtcChulgoSecondDetailModel> reqEtcChulgoQrDetail(var params) async {
+    var etcChulgoSecondDetailModel = EtcChulgoSecondDetailModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        etcChulgoSecondDetailModel = EtcChulgoSecondDetailModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          etcChulgoSecondDetailModel = EtcChulgoSecondDetailModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqEtcChulgoQrDetail - error');
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqEtcChulgoQrDetail = ${err.toString()}');
+    }
+    return etcChulgoSecondDetailModel;
   }
 
   /// 기타입고 QR 조회
@@ -518,6 +660,270 @@ class HomeApi extends NetworkManager{
     return a;
   }
 
+  /// 메인박스 KIT 확정 -류
+  Future<MainKitNew3Model> registMainKitConfirm(var params) async {
+    var mainKitNew3Model = MainKitNew3Model();
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        mainKitNew3Model = MainKitNew3Model.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          mainKitNew3Model = MainKitNew3Model.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqMainKitNew3 - error');
+      // commonError(e);
+      MainKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('reqMainKitNew3 = ${err.toString()}');
+    }
+    return mainKitNew3Model;
+  }
+
+  /// 메인박스 KIT 동기화 저장 -류
+  Future<MainKitNew3Model> registMainKitDonggihwa(var params) async {
+    var mainKitNew3Model = MainKitNew3Model();
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        mainKitNew3Model = MainKitNew3Model.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          mainKitNew3Model = MainKitNew3Model.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqMainKitNew3 - error');
+      // commonError(e);
+      MainKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('reqMainKitNew3 = ${err.toString()}');
+    }
+    return mainKitNew3Model;
+  }
+
+  /// 메인박스 KIT 자재 스캔 저장 -류
+  Future<MainKitNew3Model> registMainKitQr(var params) async {
+    var mainKitNew3Model = MainKitNew3Model();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        mainKitNew3Model = MainKitNew3Model.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          mainKitNew3Model = MainKitNew3Model.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('registMainKitQr - error');
+      // commonError(e);
+      MainKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('registMainKitQr = ${err.toString()}');
+    }
+    return mainKitNew3Model;
+  }
+
+  /// 메인박스 KIT 자재 저장 조회 -류
+  Future<MainKitNew3Model> reqMainKitNew3(var params) async {
+    var mainKitNew3Model = MainKitNew3Model();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        mainKitNew3Model = MainKitNew3Model.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          mainKitNew3Model = MainKitNew3Model.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqMainKitNew3 - error');
+      // commonError(e);
+      MainKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('reqMainKitNew3 = ${err.toString()}');
+    }
+    return mainKitNew3Model;
+  }
+
+
+  /// 메인박스 KIT 자재 조회 -류
+  Future<MainKitNew2Model> reqMainKitNew2(var params) async {
+    var mainKitNew2Model = MainKitNew2Model();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        mainKitNew2Model = MainKitNew2Model.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          mainKitNew2Model = MainKitNew2Model.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqMainKitNew2 - error');
+      // commonError(e);
+      MainKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('reqMainKitNew2 = ${err.toString()}');
+    }
+    return mainKitNew2Model;
+  }
+
+
+  /// 메인박스 KIT 박스 조회 - 류
+  Future<MainKitNewModel> reqMainKitNew(var params) async {
+    var mainKitNewModel = MainKitNewModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        mainKitNewModel = MainKitNewModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          mainKitNewModel = MainKitNewModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqMainKitNew - error');
+      // commonError(e);
+      MainKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('reqMainKitNew = ${err.toString()}');
+    }
+    return mainKitNewModel;
+  }
+
 
   /// 메인박스 KIT 첫번째 조회
   Future<MainKitModel> reqMainKit(var params) async {
@@ -736,6 +1142,181 @@ class HomeApi extends NetworkManager{
     }
     return chulModel;
   }
+
+ /// 동기화 저장 -
+  Future<MainKitNew3Model> registOtherKitDonggihwa(var params) async {
+    var mainKitNew3Model = MainKitNew3Model();
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        mainKitNew3Model = MainKitNew3Model.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          mainKitNew3Model = MainKitNew3Model.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqMainKitNew3 - error');
+      // commonError(e);
+
+    } catch (err) {
+      Get.log('reqMainKitNew3 = ${err.toString()}');
+    }
+    return mainKitNew3Model;
+  }
+
+  /// 별도박스 KIT 자재 조회 (정합성)- 신
+  Future<OtherKitNewModel> reqOtherKitNew(var params) async {
+    var otherKitNewModel = OtherKitNewModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        otherKitNewModel = OtherKitNewModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          otherKitNewModel = OtherKitNewModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqOtherKitNew - error');
+      // commonError(e);
+      OtherKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('reqOtherKitNew = ${err.toString()}');
+    }
+    return otherKitNewModel;
+  }
+
+  /// 별도박스 KIT 구성자재 조회 - 신 -> Q3
+  Future<OtherKitNew2Model> reqOtherKitNew2(var params) async {
+    var otherKitNew2Model = OtherKitNew2Model();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        otherKitNew2Model = OtherKitNew2Model.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          otherKitNew2Model = OtherKitNew2Model.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqOtherKitNew2 - error');
+      // commonError(e);
+      OtherKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('reqOtherKitNew2 = ${err.toString()}');
+    }
+    return otherKitNew2Model;
+  }
+
+  /// 별도박스 KIT 자재 저장 조회 -류
+  Future<OtherKitNew3Model> reqOtherKitNew3(var params) async {
+    var otherKitNew3Model = OtherKitNew3Model();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        otherKitNew3Model = OtherKitNew3Model.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          otherKitNew3Model = OtherKitNew3Model.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqMainKitNew3 - error');
+      // commonError(e);
+      OtherKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('reqMainKitNew3 = ${err.toString()}');
+    }
+    return otherKitNew3Model;
+  }
+
 
 
   /// 별도박스 조회
@@ -961,6 +1542,50 @@ class HomeApi extends NetworkManager{
     return pickingFirstModel;
   }
 
+  /// 별도박스 확정
+  Future<SmallKitNew3Model> reqOtherKitConfirm(var params) async {
+    var smallKitNew3Model = SmallKitNew3Model();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        smallKitNew3Model = SmallKitNew3Model.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          smallKitNew3Model = SmallKitNew3Model.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqOtherKitConfirm - error');
+      // commonError(e);
+     OtherKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('reqOtherKitConfirm = ${err.toString()}');
+    }
+    return smallKitNew3Model;
+  }
+
   /// 별도박스 저장
   Future<String> registOtherKitSave(var params) async {
     String a = '0000';
@@ -994,17 +1619,19 @@ class HomeApi extends NetworkManager{
       }
 
     } on DioError catch (e) {
-      Get.log('registSmallKitSave - error');
+      Get.log('registOtherKitSave - error');
       a = '1111';
       // commonError(e);
       OtherKitController controller = Get.find();
       controller.isDbConnected.value = false;
     } catch (err) {
-      Get.log('registSmallKitSave = ${err.toString()}');
+      Get.log('registOtherKitSave = ${err.toString()}');
       a = '1111';
     }
     return a;
   }
+
+
 
   /// 소박스 저장
   Future<String> registSmallKitSave(var params) async {
@@ -1185,6 +1812,137 @@ class HomeApi extends NetworkManager{
     return smallKitModel;
   }
 
+  /// 소박스 KIT 자재 조회 (정합성)- 신
+  Future<SmallKitNewModel> reqSmallKitNew(var params) async {
+    var smallKitNewModel = SmallKitNewModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        smallKitNewModel = SmallKitNewModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          smallKitNewModel = SmallKitNewModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqSmallKitNew - error');
+      // commonError(e);
+      SmallKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('reqSmallKitNew = ${err.toString()}');
+    }
+    return smallKitNewModel;
+  }
+
+  /// 소박스 KIT 구성자재 조회 - 신 -> Q3
+  Future<SmallKitNew2Model> reqSmallKitNew2(var params) async {
+    var smallKitNew2Model = SmallKitNew2Model();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        smallKitNew2Model = SmallKitNew2Model.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          smallKitNew2Model = SmallKitNew2Model.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqSmallKitNew2 - error');
+      // commonError(e);
+      SmallKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('reqSmallKitNew2 = ${err.toString()}');
+    }
+    return smallKitNew2Model;
+  }
+  /// 메인박스 KIT 자재 저장 조회 -류
+  Future<SmallKitNew3Model> reqSmallKitNew3(var params) async {
+    var smallKitNew3Model = SmallKitNew3Model();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        smallKitNew3Model = SmallKitNew3Model.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          smallKitNew3Model = SmallKitNew3Model.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqMainKitNew3 - error');
+      // commonError(e);
+      MainKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('reqMainKitNew3 = ${err.toString()}');
+    }
+    return smallKitNew3Model;
+  }
+
   /// 랙입고 등록
   Future<String> registRackIpgo(var params) async {
     String a = '0000';
@@ -1228,6 +1986,50 @@ class HomeApi extends NetworkManager{
       a = '1111';
     }
     return a;
+  }
+
+  /// 랙입고 오늘자 전체 조회
+  Future<RackIpgoTodayModel> reqRackIpgoToday(var params) async {
+    var rackIpgoTodayModel = RackIpgoTodayModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/rack_ipgo.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        rackIpgoTodayModel = RackIpgoTodayModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          rackIpgoTodayModel = RackIpgoTodayModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqRackIpgoToday - error');
+      RackIpgoController controller = Get.find();
+      controller.isDbConnected.value = false;
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqRackIpgoToday = ${err.toString()}');
+    }
+    return rackIpgoTodayModel;
   }
 
   /// 랙입고 조회

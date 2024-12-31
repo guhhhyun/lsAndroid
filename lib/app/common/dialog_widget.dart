@@ -21,7 +21,7 @@ class CommonDialogWidget extends StatelessWidget {
 
   Widget _contentText(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 12, bottom: 12),
+      padding: EdgeInsets.only(top: 12, bottom: 12, left: 12, right: 12),
       child: Center(
         child: Text(
           contentText ?? '',

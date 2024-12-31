@@ -11,6 +11,7 @@ import 'package:lsandroid/app/common/common_appbar_widget.dart';
 import 'package:lsandroid/app/common/dialog_widget.dart';
 import 'package:lsandroid/app/pages/home/home_page.dart';
 import 'package:lsandroid/app/pages/rackIpgo/rack_ipgo_controller.dart';
+import 'package:lsandroid/app/routes/app_route.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
 
@@ -21,6 +22,7 @@ class RackIpgoPage extends StatelessWidget {
   final focusNode2 = FocusNode();
   final focusNode3 = FocusNode();
   final focusNode4 = FocusNode();
+  final focusNode4Form = FocusNode();
   late double test;
   late double ipgoDateWidth;
 
@@ -159,7 +161,7 @@ class RackIpgoPage extends StatelessWidget {
         title: '자재코드',
         field: 'ITEM_CD',
         type: PlutoColumnType.text(),
-        width: 90,
+        width: 120,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -328,7 +330,7 @@ class RackIpgoPage extends StatelessWidget {
                         const EdgeInsets.all(0))),
                 onPressed: () async {
                   if(controller.rackIpgoList.isNotEmpty) {
-                    if(controller.textLocController.text == '') {
+                    if(controller.locTextS.value == '') {
                       Get.dialog(CommonDialogWidget(contentText: '입고위치를 입력해주세요', pageFlag: 0));
                     }else{
                       await controller.registRackIpgoBtn();
@@ -553,82 +555,140 @@ class RackIpgoPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                 ),
-                child: TextFormField(
-                  expands :true,
-                  minLines: null,
-                  maxLines: null,
+                child: KeyboardListener(
                   focusNode: controller.focusNode,
-                  style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
-                  // maxLines: 5,
-                  controller: controller.textQrController,
-                  textAlignVertical: TextAlignVertical.center,
-                  onTap: () {
-                    controller.isQrFocus.value = true;
-                    if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
-                    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                  },
-                  onTapOutside:(event) => { controller.focusCnt.value = 0 },
-                  onFieldSubmitted: (value) async{
-                    controller.isDuplQr.value = false;
-                      for(var i = 0; i < controller.registRackIpgoList.length; i++) {
-                        if(controller.registRackIpgoList[i]['QR_NO'].contains(controller.textQrController.text)) {
-                          controller.isDuplQr.value = true;
+                  onKeyEvent: (event) async {
+                    if (event is KeyDownEvent) {
+                      if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
+                        // 엔터 키 감지
+
+                        final scannedData = controller.textQrController.text;
+                        controller.isDuplQr.value = false;
+                        for(var i = 0; i < controller.registRackIpgoList.length; i++) {
+                          if(controller.registRackIpgoList[i]['QR_NO'].contains(scannedData)) {
+                            controller.isDuplQr.value = true;
+                          }
                         }
-                      }
-                      if(controller.isDuplQr.value) {
-                        controller.statusText.value = '중복된 QR코드입니다.';
-                        controller.textQrController.text = '';
-                      }else{
-                        await controller.checkQR(); // 조회
-                        if(controller.rackIpgoList.length > 1) {
-                          // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
-                          showDialog(
-                            barrierDismissible: false,
-                            context: context, //context
-                            builder: (BuildContext context) {
-                              return _alertDialog(context);
-                            },
-                          ); // context가 왜?
-                        }else {
-                          controller.zoneText.value = controller.rackIpgoList[0]['LAST_ZONE_NM']?? '';
-                          controller.locText.value = controller.rackIpgoList[0]['LAST_LOC']?? '';
-                          controller.zoneCd.value = controller.rackIpgoList[0]['ZONE_CD']?? '';
-                          controller.locCd.value = controller.rackIpgoList[0]['LOC_CD'] ?? '';
+                        if(controller.isDuplQr.value) {
+                          controller.statusText.value = '중복된 QR코드입니다.';
                           controller.textQrController.text = '';
+                        }else{
+                          await controller.checkQR(); // 조회
+                          if(controller.rackIpgoList.length > 1) {
+                            // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context, //context
+                              builder: (BuildContext context) {
+                                return _alertDialog(context);
+                              },
+                            ); // context가 왜?
+                          }else {
+                            controller.rowDatas.value = List<PlutoRow>.generate(controller.rackIpgoList.length, (index) =>
+                                PlutoRow(cells:
+                                Map.from((controller.rackIpgoList[index]).map((key, value) =>
+                                    MapEntry(key, PlutoCell(value: value == null ? '' : /*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : */value )),
+                                )))
+                            );
+                            controller.gridStateMgr.removeAllRows();
+                            controller.gridStateMgr.appendRows(controller.rowDatas.value);
+                            controller.gridStateMgr.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
+                            if(controller.rackIpgoList.isNotEmpty) {
+                              controller.zoneText.value = controller.rackIpgoList[0]['LAST_ZONE_NM']?? '';
+                              controller.locText.value = controller.rackIpgoList[0]['LAST_LOC']?? '';
+                              controller.zoneCd.value = controller.rackIpgoList[0]['ZONE_CD']?? '';
+                              controller.locCd.value = controller.rackIpgoList[0]['LOC_CD'] ?? '';
+                              focusNode4Form.requestFocus();
+                            }
+                            controller.textQrController.text = '';
+
+                          }
+                          controller.textQrController.text = '';
+
                         }
-                        controller.textQrController.text = '';
 
+                        controller.isQrFocus.value = false;
                       }
-
-                    controller.isQrFocus.value = false;
-
+                    }
                   },
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    /*suffixIcon: InkWell(
-                        onTap: () {
-                          Get.log('조회 돋보기 클릭!');
+                  child: TextFormField(
+                    expands :true,
+                    minLines: null,
+                    maxLines: null,
+                    focusNode: controller.focusNodeForm,
+                    style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
+                    // maxLines: 5,
+                    controller: controller.textQrController,
+                    textAlignVertical: TextAlignVertical.center,
+                    onTap: () {
+                      controller.isQrFocus.value = true;
+                     /* if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
+                      else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
+                    },
+                    onTapOutside:(event) => { controller.focusCnt.value = 0 },
+                    onFieldSubmitted: (value) async{
+                      /*controller.isDuplQr.value = false;
+                        for(var i = 0; i < controller.registRackIpgoList.length; i++) {
+                          if(controller.registRackIpgoList[i]['QR_NO'].contains(controller.textQrController.text)) {
+                            controller.isDuplQr.value = true;
+                          }
+                        }
+                        if(controller.isDuplQr.value) {
+                          controller.statusText.value = '중복된 QR코드입니다.';
+                          controller.textQrController.text = '';
+                        }else{
+                          await controller.checkQR(); // 조회
+                          if(controller.rackIpgoList.length > 1) {
+                            // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context, //context
+                              builder: (BuildContext context) {
+                                return _alertDialog(context);
+                              },
+                            ); // context가 왜?
+                          }else {
+                            controller.zoneText.value = controller.rackIpgoList[0]['LAST_ZONE_NM']?? '';
+                            controller.locText.value = controller.rackIpgoList[0]['LAST_LOC']?? '';
+                            controller.zoneCd.value = controller.rackIpgoList[0]['ZONE_CD']?? '';
+                            controller.locCd.value = controller.rackIpgoList[0]['LOC_CD'] ?? '';
+                            controller.textQrController.text = '';
+                            focusNode4.requestFocus();
+                          }
+                          controller.textQrController.text = '';
 
-                          focusNode2.requestFocus();
-                          Future.delayed(const Duration(), (){
+                        }
+
+                      controller.isQrFocus.value = false;*/
+
+                    },
+                    keyboardType: TextInputType.none,
+                    decoration: InputDecoration(
+                      /*suffixIcon: InkWell(
+                          onTap: () {
+                            Get.log('조회 돋보기 클릭!');
+
                             focusNode2.requestFocus();
-                            //  FocusScope.of(context).requestFocus(focusNode);
-                            Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                          });
-                        },
-                        child: Image.asset('assets/app/search.png', color: AppTheme.a6c6c6c, width: 25, height: 25,)
+                            Future.delayed(const Duration(), (){
+                              focusNode2.requestFocus();
+                              //  FocusScope.of(context).requestFocus(focusNode);
+                              Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                            });
+                          },
+                          child: Image.asset('assets/app/search.png', color: AppTheme.a6c6c6c, width: 25, height: 25,)
+                      ),
+                  */
+                      contentPadding: const EdgeInsets.all(0),
+                      fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
+                      filled: true,
+                      hintText: '',
+                      hintStyle: AppTheme.a20400.copyWith(color: AppTheme.aBCBCBC),
+                      border: InputBorder.none,
                     ),
-*/
-                    contentPadding: const EdgeInsets.all(0),
-                    fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
-                    filled: true,
-                    hintText: '',
-                    hintStyle: AppTheme.a20400.copyWith(color: AppTheme.aBCBCBC),
-                    border: InputBorder.none,
+                    showCursor: true,
+
+
                   ),
-                  showCursor: true,
-
-
                 ),)
           ),
         ),
@@ -715,6 +775,7 @@ class RackIpgoPage extends StatelessWidget {
                         controller.locText.value = controller.rackIpgoList[0]['LAST_LOC']?? '';
                         controller.zoneCd.value = controller.rackIpgoList[0]['ZONE_CD']?? '';
                         controller.locCd.value = controller.rackIpgoList[0]['LOC_CD'] ?? '';
+                        focusNode4.requestFocus();
                         controller.textQrController.text = '';
 
                         controller.insertRow = List<PlutoRow>.generate(controller.rackIpgoList.length, (index) =>
@@ -1149,6 +1210,8 @@ class RackIpgoPage extends StatelessWidget {
                 .copyWith(color: AppTheme.black), textAlign: TextAlign.end,),
         ),
         SizedBox(width: 8,),
+
+
         Container(
           padding: EdgeInsets.only(top: 4, left: 8),
           height: 40,
@@ -1160,37 +1223,66 @@ class RackIpgoPage extends StatelessWidget {
           ),
 
           child: Center(
-              child: TextFormField(
-                expands :true,
-                minLines: null,
-                maxLines: null,
+
+              child: KeyboardListener(
                 focusNode: focusNode4,
-                style:  AppTheme.a18700.copyWith(color: AppTheme.a6c6c6c),
-                // maxLines: 5,
-                controller: controller.textLocController,
-                textAlignVertical: TextAlignVertical.center,
-                onTap: () {
-                  controller.isQrFocus.value = true;
-                  if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
-                  else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                onKeyEvent: (event) {
+                  if (event is KeyDownEvent) {
+                  //  final inputChar = event.character ?? '';
+                  //  controller.textLocController.text += inputChar;
+                    // 키보드 입력값 수신 처리
+                    if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
+                      // 엔터 키 감지
+                      final inputChar = event.character ?? '';
+                      if(controller.textLocController.text.length == 10) {
+                        final scannedData = controller.textLocController.text;
+                        // 데이터 처리
+                        controller.locTextS.value = scannedData;
+                        controller.textLocController.clear(); // 텍스트 필드 초기화
+                        controller.focusNodeForm.requestFocus();
+                        Get.log('Scanned Data: $scannedData');
+                      }else {
+                        controller.textLocController.clear(); // 텍스트 필드 초기화
+                        Get.dialog(CommonDialogWidget(contentText: '바코드를 다시 입력해주세요', pageFlag: 3,));
+                      }
+                    }
+                  }
                 },
-                onTapOutside:(event) => { controller.focusCnt.value = 0 },
-                onFieldSubmitted: (value) async{
-                  controller.locTextS.value = controller.textLocController.text;
-                  controller.textLocController.text = '';
+                child:  TextFormField(
+                  textInputAction:TextInputAction.done,
+                  expands :true,
+                  minLines: null,
+                  maxLines: null,
+                  focusNode: focusNode4Form, // 주석 풀어야할수있음
+                  style:  AppTheme.a18700.copyWith(color: AppTheme.a6c6c6c),
+                  // maxLines: 5,
+                  controller: controller.textLocController, // 주석 풀어야할수있음
+                  textAlignVertical: TextAlignVertical.center,
+                  onTap: () {
+                    controller.isQrFocus.value = true;
+                 /*   if(controller.focusCnt2.value++ > 1) controller.focusCnt2.value = 0;
+                    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
+                  },
+                  onTapOutside:(event) => { controller.focusCnt2.value = 0 },
+                  onFieldSubmitted: (value) async{
+                  //  controller.focusNodeForm.requestFocus();
+                  //  controller.textLocController.clear(); // 텍스트 필드 초기화
+                /*    controller.locTextS.value = controller.textLocController.text;
+                    controller.textLocController.text = '';
+                    controller.focusNode.requestFocus();
+                    Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
+                  },
+                  keyboardType: TextInputType.none,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(0),
+                    fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
+                    filled: true,
+                    hintStyle: AppTheme.a18700.copyWith(color: AppTheme.aBCBCBC),
+                    border: InputBorder.none,
+                  ),
+                  showCursor: true,
 
-                },
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(0),
-                  fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
-                  filled: true,
-                  hintStyle: AppTheme.a18700.copyWith(color: AppTheme.aBCBCBC),
-                  border: InputBorder.none,
                 ),
-                showCursor: true,
-
-
               )
           ),
 
@@ -1198,5 +1290,17 @@ class RackIpgoPage extends StatelessWidget {
       ],
     );
   }
-
+  Widget _bottomButton(BuildContext context) {
+    return Container(
+      color: AppTheme.navy_navy_800,
+      child: TextButton(
+          onPressed: () async{
+            Get.log('일괄 랙입고 이동 클릭!');
+            controller.isQrFocus.value = true;
+            Get.toNamed(Routes.RACK_IPGO_MULTI);
+          },
+          child: Text('일괄 랙입고 이동', style: AppTheme.a20700.copyWith(color: AppTheme.white),),
+      )
+    );
+  }
 }

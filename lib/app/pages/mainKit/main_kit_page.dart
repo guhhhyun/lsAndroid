@@ -14,15 +14,16 @@ import 'package:lsandroid/app/pages/home/home_page.dart';
 import 'package:lsandroid/app/pages/mainKit/main_kit_controller.dart';
 import 'package:pluto_grid/pluto_grid.dart';
 
-
 class MainKitPage extends StatelessWidget {
   MainKitPage({super.key});
+
   MainKitController controller = Get.find();
   final focusNode2 = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     controller.isFocus.value == false ? controller.requestFocus() : null;
-    final double height = 60*(double.parse((controller.rows.isEmpty ? 1 : controller.rows.length).toString()));
+    final double height = 60 * (double.parse((controller.rows.isEmpty ? 1 : controller.rows.length).toString()));
 
     return WillPopScope(
       onWillPop: () {
@@ -35,12 +36,7 @@ class MainKitPage extends StatelessWidget {
           child: Stack(
             children: [
               CustomScrollView(
-                slivers: [
-                  CommonAppbarWidget(title: '메인 박스 KIT 작업', isLogo: false, isFirstPage: true ),
-                  _main(context),
-                  Obx(() => _grid(context))
-
-                ],
+                slivers: [CommonAppbarWidget(title: '메인 박스 KIT 작업', isLogo: false, isFirstPage: true), _main(context), Obx(() => _grid(context))],
               ),
               //  Obx(() => CommonLoading(bLoading: controller.isLoading.value))
             ],
@@ -52,14 +48,13 @@ class MainKitPage extends StatelessWidget {
   }
 
   Widget _grid(BuildContext context) {
-
     return SliverToBoxAdapter(
       child: Row(
         children: [
           Container(
             color: Colors.white,
             height: MediaQuery.of(context).size.height - 300, //controller.gridHeight.value,
-            width: MediaQuery.of(context).size.width/2 - 20,
+            width: MediaQuery.of(context).size.width / 2 - 20,
             child: PlutoGrid(
               columns: gridCols(context),
               rows: controller.rows.value,
@@ -69,21 +64,21 @@ class MainKitPage extends StatelessWidget {
                 controller.stateManager.rowColorCallback;
               },
               rowColorCallback: (c) {
-              //  row.cells['no']
+                //  row.cells['no']
 
                 // 특정 조건에 해당하는 row의 색을 바꾸기
                 Get.log('no::::: ${controller.no.value}');
-                if(controller.isSaveColor.value) {
-                  for(var i = 0; i < controller.noList2.length; i++) {
-                   // controller.changedRows.value.add(controller.noList[i]);
+                if (controller.isSaveColor.value) {
+                  for (var i = 0; i < controller.noList2.length; i++) {
+                    // controller.changedRows.value.add(controller.noList[i]);
                     controller.changedRows2.value.add(controller.noList2[i]);
                   }
                   if (controller.changedRows2.contains(c.row.cells['itemCd']?.value.toString())) {
                     return Colors.white; // 이미 변경된 색상 유지
-                  }else {
+                  } else {
                     return AppTheme.red_red_200;
                   }
-                }else {
+                } else {
                   /*for(var i = 0; i < controller.smallBoxList.length; i++) {
                     if(controller.smallBoxList[i]['no'].toString() == (controller.no.value + 1).toString() && controller.isColor.value) {
                       controller.changedRows.value.add(c.rowIdx); // 색상이 변경된 행을 RxSet에 추가
@@ -91,16 +86,16 @@ class MainKitPage extends StatelessWidget {
                     }
                   }*/
                   if (controller.isColor.value) {
-                    for(var i = 0; i < controller.noList3.length; i++) {
+                    for (var i = 0; i < controller.noList3.length; i++) {
                       // controller.changedRows.value.add(controller.noList[i]);
                       controller.changedRows.value.add(controller.noList3[i]);
-                   /*   if (controller.changedRows.contains(controller.uniqueSmallBoxList[0]['itemCd'])) {
+                      /*   if (controller.changedRows.contains(controller.uniqueSmallBoxList[0]['itemCd'])) {
                         return Colors.white; // 이미 변경된 색상 유지
                       }*/
                     }
-                    if(controller.changedRows.contains(c.row.cells['itemCd']?.value.toString())) {
+                    if (controller.changedRows.contains(c.row.cells['itemCd']?.value.toString())) {
                       return Colors.white; // 이미 변경된 색상 유지
-                    }else {
+                    } else {
                       return AppTheme.red_red_200;
                     }
                   }
@@ -114,7 +109,6 @@ class MainKitPage extends StatelessWidget {
                 print('event::: $event');
                 if (event.column.field == 'itemNmNonKit') {
                   print('선택한 값: ${event.value}');
-
                 }
               },
               configuration: PlutoGridConfiguration(
@@ -127,14 +121,15 @@ class MainKitPage extends StatelessWidget {
                   //  rowColor: AppTheme.red_red_300 //조회해서 같은 값이 들어가있으면 회색 아니면 빨강
                 ),
               ),
-
             ),
           ),
-          SizedBox(width: 24,),
+          SizedBox(
+            width: 24,
+          ),
           Container(
             color: Colors.white,
             height: MediaQuery.of(context).size.height - 300, //controller.gridHeight.value,
-            width: MediaQuery.of(context).size.width/2 - 20,
+            width: MediaQuery.of(context).size.width / 2 - 20,
             child: PlutoGrid(
               //  mode: PlutoGridMode.select, // 탭 한번으로 반응하게?
               columns: gridCols2(context),
@@ -151,8 +146,7 @@ class MainKitPage extends StatelessWidget {
                 if (event.column.field == 'ncbxRmkName') {
                   print('선택한 값: ${event.value}');
                   // NAME 값이 event.value와 같은 항목의 CODE를 가져옴
-                  final code = controller.reasonDropdownList
-                      .firstWhere((item) => item['NAME'] == event.value, orElse: () => {'CODE': ''})['CODE'];
+                  final code = controller.reasonDropdownList.firstWhere((item) => item['NAME'] == event.value, orElse: () => {'CODE': ''})['CODE'];
                   controller.smallBoxSaveList[event.rowIdx]['ncbxRmk'] = code.toString();
                   Get.log('controller.smallBoxSaveList[event.rowIdx]: ${controller.smallBoxSaveList[event.rowIdx]}');
                 }
@@ -174,7 +168,6 @@ class MainKitPage extends StatelessWidget {
   }
 
   Widget _main(BuildContext context) {
-
     var orientation = MediaQuery.of(context).orientation;
 
     double containerWidth = orientation == Orientation.portrait ? 350.0 : 730.0;
@@ -183,9 +176,7 @@ class MainKitPage extends StatelessWidget {
         children: [
           Container(
             padding: EdgeInsets.all(12),
-            decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: AppTheme.black))
-            ),
+            decoration: BoxDecoration(border: Border(top: BorderSide(color: AppTheme.black))),
             width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -199,74 +190,80 @@ class MainKitPage extends StatelessWidget {
                         Row(
                           children: [
                             Container(
-                              child: Text('QR 코드', style: AppTheme.a24700.copyWith(color: AppTheme.black), ),
+                              child: Text(
+                                'QR 코드',
+                                style: AppTheme.a24700.copyWith(color: AppTheme.black),
+                              ),
                             ),
-                            SizedBox(width: 12,),
+                            SizedBox(
+                              width: 12,
+                            ),
                             Container(
                               width: 130,
                               height: 50,
                               child: Container(
                                 padding: const EdgeInsets.only(left: 16, right: 6),
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: AppTheme.ae2e2e2),
-                                    borderRadius: BorderRadius.circular(10),
-                                    color:  Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
+                                  border: Border.all(color: AppTheme.ae2e2e2),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                                 ),
                                 child: TextFormField(
                                   minLines: null,
                                   expands: true,
                                   maxLines: null,
                                   focusNode: controller.focusNode,
-                                  style:  AppTheme.a16400.copyWith(color: AppTheme.a6c6c6c),
+                                  style: AppTheme.a16400.copyWith(color: AppTheme.a6c6c6c),
                                   controller: controller.textQrController,
                                   textAlignVertical: TextAlignVertical.center,
                                   textInputAction: TextInputAction.done,
                                   onTap: () {
-
-                                    if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
-                                    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                                    if (controller.focusCnt.value++ > 1)
+                                      controller.focusCnt.value = 0;
+                                    else
+                                      Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
                                   },
-                                  onTapOutside:(event) => { controller.focusCnt.value = 0 },
-
+                                  onTapOutside: (event) => {controller.focusCnt.value = 0},
                                   onFieldSubmitted: (value) async {
                                     controller.isFocus.value = false;
-                                    if(controller.smallBoxList.isEmpty)
-                                    {
+                                    if (controller.smallBoxList.isEmpty) {
                                       await controller.checkQR();
-                                      if(controller.smallBoxList.isNotEmpty) {
+                                      if (controller.smallBoxList.isNotEmpty) {
+                                        for (var i = 0; i < controller.smallBoxList.length; i++) {
+                                          controller.smallBoxList[i].addAll({'no': '${i + 1}'});
 
-                                        for(var i = 0; i < controller.smallBoxList.length; i++) {
-                                          controller.smallBoxList[i].addAll({'no': '${i+1}'});
-                                          Get.log('controller.smallBoxList[i][wrkQty]: ${controller.smallBoxList[i]['wrkQty']}');
-                                          Get.log('controller.smallBoxList[i][cbxQty]: ${controller.smallBoxList[i]['cbxQty']}');
-                                          Get.log('controller.isColor.value: ${controller.isColor.value}');
                                         }
-                                        for(var i = 0; i < controller.smallBoxList.length; i++) {
-                                          if(controller.smallBoxList[i]['syncYn'] == 'Y') { //동기화가 O인 것만 드롭다운 버튼 활성화
+                                        for (var i = 0; i < controller.smallBoxList.length; i++) {
+                                          if (controller.smallBoxList[i]['syncYn'] == 'Y') {
+                                            //동기화가 O인 것만 드롭다운 버튼 활성화
                                             controller.isDropdownEnabled.value = true; // 드롭다운 활성화 상태 토글
                                             controller.stateManager2.columns[4]!.enableEditingMode = controller.isDropdownEnabled.value; //enableEditingMode
                                             break;
                                           }
                                         }
+
                                         /// 중복된 itemCd를 제거한 리스트 생성
                                         controller.uniqueSmallBoxList.value = controller.smallBoxList
                                             .fold<Map<String, dynamic>>({}, (map, item) {
-                                          if (map.containsKey(item['itemCd'])) {
-                                            // 기존 cbxQty 값이 있다면 추가하고, 없으면 새로 초기화하여 누적
-                                            map[item['itemCd']]['cbxQty'] = (map[item['itemCd']]['cbxQty'] ?? 1) + 1;
-                                          } else {
-                                            // 새로 추가하는 경우 기존 cbxQty를 유지하며 item 추가
-                                            map[item['itemCd']] = {
-                                              ...item,
-                                              'cbxQty': item['cbxQty'] ?? 1, // 기존 cbxQty가 없을 때 기본값 1
-                                            };
-                                          }
-                                          return map;
-                                          map[item['itemCd']] = item; // itemCd를 키로 사용하여 중복 제거
-                                          return map;
-                                        }).values.toList();
+                                              if (map.containsKey(item['itemCd'])) {
+                                                // 기존 cbxQty 값이 있다면 추가하고, 없으면 새로 초기화하여 누적
+                                                map[item['itemCd']]['cbxQty'] = (map[item['itemCd']]['cbxQty'] ?? 1) + 1;
+                                              } else {
+                                                // 새로 추가하는 경우 기존 cbxQty를 유지하며 item 추가
+                                                map[item['itemCd']] = {
+                                                  ...item,
+                                                  'cbxQty': item['cbxQty'] ?? 1, // 기존 cbxQty가 없을 때 기본값 1
+                                                };
+                                              }
+                                              return map;
+                                              map[item['itemCd']] = item; // itemCd를 키로 사용하여 중복 제거
+                                              return map;
+                                            })
+                                            .values
+                                            .toList();
                                         Get.log('uniqueSmallBoxList: ${controller.uniqueSmallBoxList.value.length}');
                                         Get.log('smallBoxList: ${controller.smallBoxList.length}');
+
                                         /// 자재 리스트 새로고침
                                         controller.rows.value = List<PlutoRow>.generate(controller.uniqueSmallBoxList.value.length, (index) {
                                           return PlutoRow(
@@ -291,54 +288,50 @@ class MainKitPage extends StatelessWidget {
                                               }
                                               // PlutoCell로 값 래핑
                                               return MapEntry(key, PlutoCell(value: key == 'cbxSuNm' ? controller.cellValue.value : originalValue));
-
-
                                             })),
                                           );
                                         });
-                                        for(var i = 0; i < controller.rows.length; i++) {
+                                        for (var i = 0; i < controller.rows.length; i++) {
                                           controller.rows[i].cells['itemNm']?.value = controller.rows[i].cells['itemNm']?.value.toString().trim();
                                           controller.rows[i].cells['setQty']?.value = (controller.rows[i].cells['setQty']?.value * controller.rows[i].cells['setCbxQty']?.value).toInt();
                                           // controller.rows[i].cells['setQty']?.value = controller.rows[i].cells['setQty']?.value.toInt(),
-                                          Get.log('구구: ${ controller.rows[i].cells['setQty']?.value}');
-                                        };
+                                          Get.log('구구: ${controller.rows[i].cells['setQty']?.value}');
+                                        }
+                                        ;
                                         //  controller.rowDatas2.add(controller.insertRow[0]);
                                         controller.stateManager.removeAllRows();
                                         controller.stateManager.appendRows(controller.rows.value);
                                         controller.textQrController.text = '';
 
-
-
-                                        for(var i = 0; i < controller.smallBoxList.length; i++) {
+                                        for (var i = 0; i < controller.smallBoxList.length; i++) {
                                           /// 저장된 값이 있다면 / detail일 결우도 추가해야할 듯 소박스랑 별도로
-                                          if(controller.smallBoxList[i]['wrkQty'] != null) {
-                                            if(controller.smallBoxList[i]['wrkQty'] > 0) {
-
+                                          if (controller.smallBoxList[i]['wrkQty'] != null) {
+                                            if (controller.smallBoxList[i]['wrkQty'] > 0) {
                                               /// 목박스나 별도박스의 경우 (저장된 값이 있을 때)
-                                              if(controller.smallBoxList[i]['mboxExcluded'] != null) {
-                                                  controller.smallBoxList[i]['ncbxRmk'] = controller.smallBoxList[i]['mboxExcluded'];
-                                                  controller.smallBoxSave.clear();
-                                                  controller.smallBoxSave.add(controller.smallBoxList[i]);
-                                                  controller.smallBoxSave[0].addAll({'no': controller.smallBoxList[i]['no']});
-                                                  controller.smallBoxSave[0].addAll({'boxNo': controller.smallBoxList[i]['cbxSuNo']});
-                                                  controller.smallBoxSave[0].addAll({'qty': '${controller.smallBoxList[i]['wrkQty']}'});
-                                                  final name = controller.reasonDropdownList
-                                                      .firstWhere((item) => item['CODE'] == controller.smallBoxList[i]['ncbxRmk'], orElse: () => {'NAME': ''})['NAME'];
-                                                  controller.smallBoxSave[0].addAll({'ncbxRmkName': name.toString()});
-                                                  controller.smallBoxSave[0].addAll({'prtNo': 'X'});
-                                                  controller.smallBoxSave[0].addAll({'scanYn': 'N'});
-                                                  controller.smallBoxSave[0].addAll({'syncYn': 'N'});
-                                                  controller.smallBoxSaveList.add(controller.smallBoxSave[0]);
-                                                  controller.isColor.value = true;
-                                                  controller.noList.add(i);
-                                                  controller.noList3.add(controller.smallBoxList[i]['itemCd'].toString());
-                                                  controller.noList2.add(controller.smallBoxList[i]['itemCd'].toString());
-                                                  await controller.test();
+                                              if (controller.smallBoxList[i]['mboxExcluded'] != null) {
+                                                controller.smallBoxList[i]['ncbxRmk'] = controller.smallBoxList[i]['mboxExcluded'];
+                                                controller.smallBoxSave.clear();
+                                                controller.smallBoxSave.add(controller.smallBoxList[i]);
+                                                controller.smallBoxSave[0].addAll({'no': controller.smallBoxList[i]['no']});
+                                                controller.smallBoxSave[0].addAll({'boxNo': controller.smallBoxList[i]['cbxSuNo']});
+                                                controller.smallBoxSave[0].addAll({'qty': '${controller.smallBoxList[i]['wrkQty']}'});
+                                                final name =
+                                                    controller.reasonDropdownList.firstWhere((item) => item['CODE'] == controller.smallBoxList[i]['ncbxRmk'], orElse: () => {'NAME': ''})['NAME'];
+                                                controller.smallBoxSave[0].addAll({'ncbxRmkName': name.toString()});
+                                                controller.smallBoxSave[0].addAll({'prtNo': 'X'});
+                                                controller.smallBoxSave[0].addAll({'scanYn': 'N'});
+                                                controller.smallBoxSave[0].addAll({'syncYn': 'N'});
+                                                controller.smallBoxSaveList.add(controller.smallBoxSave[0]);
+                                                controller.isColor.value = true;
+                                                controller.noList.add(i);
+                                                controller.noList3.add(controller.smallBoxList[i]['itemCd'].toString());
+                                                controller.noList2.add(controller.smallBoxList[i]['itemCd'].toString());
+                                                await controller.test();
                                               } else {
                                                 /// dScanNo가 null이면 detail이 아니다
-                                                if(controller.smallBoxList[i]['dScanNo'] == null) {
-                                                  final name = controller.reasonDropdownList
-                                                      .firstWhere((item) => item['CODE'] == controller.smallBoxList[i]['ncbxRmk'], orElse: () => {'NAME': ''})['NAME'];
+                                                if (controller.smallBoxList[i]['dScanNo'] == null) {
+                                                  final name =
+                                                      controller.reasonDropdownList.firstWhere((item) => item['CODE'] == controller.smallBoxList[i]['ncbxRmk'], orElse: () => {'NAME': ''})['NAME'];
                                                   Get.log('controller.smallBoxList[i][wrkQty] ${controller.smallBoxList[i]['wrkQty']}');
                                                   controller.smallBoxSave.clear();
                                                   controller.smallBoxSave.add(controller.smallBoxList[i]);
@@ -376,9 +369,9 @@ class MainKitPage extends StatelessWidget {
                                                   controller.noList3.add(controller.smallBoxList[i]['itemCd'].toString());
                                                   controller.noList2.add(controller.smallBoxList[i]['itemCd'].toString());
                                                   await controller.test();
-                                                }else {
-                                                  final name = controller.reasonDropdownList
-                                                      .firstWhere((item) => item['CODE'] == controller.smallBoxList[i]['ncbxRmk'], orElse: () => {'NAME': ''})['NAME'];
+                                                } else {
+                                                  final name =
+                                                      controller.reasonDropdownList.firstWhere((item) => item['CODE'] == controller.smallBoxList[i]['ncbxRmk'], orElse: () => {'NAME': ''})['NAME'];
                                                   Get.log('controller.smallBoxList[i][wrkQty] ${controller.smallBoxList[i]['wrkQty']}');
                                                   controller.smallBoxSave.clear();
                                                   controller.smallBoxSave.add(controller.smallBoxList[i]);
@@ -408,38 +401,38 @@ class MainKitPage extends StatelessWidget {
                                                   controller.smallBoxSaveList.add(controller.smallBoxSave[0]);
                                                   controller.smallBoxDetailList.add(controller.smallBoxSave[0]);
                                                   Get.log('controller.smallBoxDetailList: ${controller.smallBoxDetailList}');
-                                                /*  controller.noList.add(i);
+                                                  /*  controller.noList.add(i);
                                                   controller.noList3.add(controller.smallBoxList[i]['itemCd'].toString());
                                                   await controller.test();*/
                                                   // 주석풀어!
-                                                 for(var aa = 0; aa < controller.uniqueSmallBoxList.length; aa++) {
-                                                   if(controller.uniqueSmallBoxList[aa]['itemCd'] == controller.smallBoxSave[0]['itemCd']) {
-                                                     if(controller.smallBoxSave[0]['qty'].toString() == controller.uniqueSmallBoxList[aa]['cbxQty'].toString()) {
-                                                       controller.noList.add(i);
-                                                       controller.noList3.add(controller.uniqueSmallBoxList[aa]['itemCd'].toString());
-                                                       controller.noList2.add(controller.smallBoxList[i]['itemCd'].toString());
-                                                       await controller.test();
-                                                     }
-                                                   }
-                                                 }
+                                                  for (var aa = 0; aa < controller.uniqueSmallBoxList.length; aa++) {
+                                                    if (controller.uniqueSmallBoxList[aa]['itemCd'] == controller.smallBoxSave[0]['itemCd']) {
+                                                      if (controller.smallBoxSave[0]['qty'].toString() == controller.uniqueSmallBoxList[aa]['cbxQty'].toString()) {
+                                                        controller.noList.add(i);
+                                                        controller.noList3.add(controller.uniqueSmallBoxList[aa]['itemCd'].toString());
+                                                        controller.noList2.add(controller.smallBoxList[i]['itemCd'].toString());
+                                                        await controller.test();
+                                                      }
+                                                    }
+                                                  }
                                                 }
                                               }
-                                              if(controller.smallBoxList[i]['syncYn'] == 'Y'){
+                                              if (controller.smallBoxList[i]['syncYn'] == 'Y') {
                                                 controller.isDropdownEnabled.value = true;
                                                 controller.stateManager2.columns[4]!.enableEditingMode = controller.isDropdownEnabled.value; //enableEditingMode
                                               }
                                             }
-                                          }else {
+                                          } else {
                                             /// 목박스나 별도박스의 경우 (저장된 값이 없을 때)
-                                            if(controller.smallBoxList[i]['mboxExcluded'] != null) {
+                                            if (controller.smallBoxList[i]['mboxExcluded'] != null) {
                                               controller.smallBoxList[i]['ncbxRmk'] = controller.smallBoxList[i]['mboxExcluded'];
                                               controller.smallBoxSave.clear();
                                               controller.smallBoxSave.add(controller.smallBoxList[i]);
                                               controller.smallBoxSave[0].addAll({'no': controller.smallBoxList[i]['no']});
                                               controller.smallBoxSave[0].addAll({'boxNo': controller.smallBoxList[i]['cbxSuNo']});
                                               controller.smallBoxSave[0].addAll({'qty': controller.smallBoxList[i]['cbxQty'].toString()});
-                                              final name = controller.reasonDropdownList
-                                                  .firstWhere((item) => item['CODE'] == controller.smallBoxList[i]['ncbxRmk'], orElse: () => {'NAME': ''})['NAME'];
+                                              final name =
+                                                  controller.reasonDropdownList.firstWhere((item) => item['CODE'] == controller.smallBoxList[i]['ncbxRmk'], orElse: () => {'NAME': ''})['NAME'];
                                               controller.smallBoxSave[0].addAll({'ncbxRmkName': name.toString()});
                                               controller.smallBoxSave[0].addAll({'prtNo': 'X'});
                                               controller.smallBoxSave[0].addAll({'scanYn': 'N'});
@@ -450,50 +443,42 @@ class MainKitPage extends StatelessWidget {
                                               controller.noList3.add(controller.smallBoxList[i]['itemCd'].toString());
                                               controller.noList2.add(controller.smallBoxList[i]['itemCd'].toString());
                                               await controller.test();
-
                                             }
                                           }
-
                                         }
                                         await controller.test();
                                       }
 
-                                      if(controller.addRowSaveList.isNotEmpty) {
-                                        for(var i = 0; i < controller.addRowSaveList.length; i++) {
-                                          final name = controller.reasonDropdownList
-                                              .firstWhere((item) => item['CODE'] == controller.addRowSaveList[i]['ncbxRmk'], orElse: () => {'NAME': ''})['NAME'];
+                                      if (controller.addRowSaveList.isNotEmpty) {
+                                        for (var i = 0; i < controller.addRowSaveList.length; i++) {
+                                          final name = controller.reasonDropdownList.firstWhere((item) => item['CODE'] == controller.addRowSaveList[i]['ncbxRmk'], orElse: () => {'NAME': ''})['NAME'];
                                           controller.addRowSaveList[i].addAll({'no': '0${i + 1}'});
                                           controller.addRowSaveList[i].addAll({'prtNo': controller.addRowSaveList[i]['syncYn'] == 'Y' ? 'O' : 'X'});
                                           //  controller.addRowSaveList[i].addAll({'itemNmNonKit': ''});
                                           controller.addRowSaveList[i].addAll({'qty': '${controller.addRowSaveList[i]['wrkQty'].toString()}'});
                                           controller.addRowSaveList[i].addAll({'boxNo': '${controller.addRowSaveList[i]['cbxSuNo']}'});
                                           controller.addRowSaveList[i].addAll({'ncbxRmkName': name.toString()});
-                                          for(var a = 0; a < controller.smallBoxSaveList.length; a++) {
-                                            if(controller.smallBoxSaveList[a]['itemCd'] == controller.addRowSaveList[i]['itemCd']) {
+                                          for (var a = 0; a < controller.smallBoxSaveList.length; a++) {
+                                            if (controller.smallBoxSaveList[a]['itemCd'] == controller.addRowSaveList[i]['itemCd']) {
                                               controller.isOther.value = true;
                                               break;
-                                            }else {
+                                            } else {
                                               controller.isOther.value = false;
                                             }
                                           }
-                                          controller.isOther.value == false ?
-                                          controller.smallBoxSaveList.add(controller.addRowSaveList[i]) : null;
-
-
+                                          controller.isOther.value == false ? controller.smallBoxSaveList.add(controller.addRowSaveList[i]) : null;
                                         }
                                       }
-                                      controller.rows2.value = List<PlutoRow>.generate(controller.smallBoxSaveList.length, (index) =>
-                                          PlutoRow(cells:
-                                          Map.from((controller.smallBoxSaveList[index]).map((key, value) =>
-                                              MapEntry(key, PlutoCell(value: value == null ? '' : value )),
-                                          )))
-                                      );
+                                      controller.rows2.value = List<PlutoRow>.generate(
+                                          controller.smallBoxSaveList.length,
+                                          (index) => PlutoRow(
+                                                  cells: Map.from((controller.smallBoxSaveList[index]).map(
+                                                (key, value) => MapEntry(key, PlutoCell(value: value == null ? '' : value)),
+                                              ))));
                                       controller.stateManager2.removeAllRows();
                                       controller.stateManager2.appendRows(controller.rows2);
                                       await controller.test();
-                                    }
-                                    else
-                                    {
+                                    } else {
                                       /// 자재 스캔 시작!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                                       await controller.checkItemQr('');
                                       await controller.test();
@@ -502,14 +487,14 @@ class MainKitPage extends StatelessWidget {
 
                                     await controller.test();
                                     controller.focusNode.requestFocus();
-                                    Future.delayed(const Duration(), (){
+                                    Future.delayed(const Duration(), () {
                                       controller.focusNode.requestFocus();
                                       Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
                                     });
                                   },
                                   keyboardType: TextInputType.text,
                                   decoration: InputDecoration(
-                                      labelStyle: AppTheme.a16400.copyWith(color: AppTheme.black),
+                                    labelStyle: AppTheme.a16400.copyWith(color: AppTheme.black),
                                     contentPadding: const EdgeInsets.all(0),
                                     fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                                     filled: true,
@@ -523,8 +508,12 @@ class MainKitPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(width: 32,),
-                        Obx(() => _subData('상태'),),
+                        SizedBox(
+                          width: 32,
+                        ),
+                        Obx(
+                          () => _subData('상태'),
+                        ),
                         Container(
                           alignment: Alignment.centerRight,
                           width: containerWidth,
@@ -549,36 +538,52 @@ class MainKitPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 4,),
+                SizedBox(
+                  height: 4,
+                ),
                 Container(
                   color: AppTheme.dark_text_secondary,
                   height: 1,
                 ),
-                SizedBox(height: 8,),
-                Obx(() => Container(
-                  width: MediaQuery.of(context).size.width - 10,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _subData2('프로젝트명', controller.projectNm.value == null ? controller.projectNm.value : controller.projectNm.value, true),
-                        SizedBox(width: 32,),
-                        _subData2('자재코드/자재명', controller.itemCdNm.value.trim(), true),
-                        SizedBox(width: 32,),
-                        _subData2('박스번호', controller.boxNo.value, false),
-                        SizedBox(width: 32,),
-                        _subData2('확정일', controller.wrkCfmDt.value == 'null' ? '' : controller.wrkCfmDt.value, false)
-                      ],
+                SizedBox(
+                  height: 8,
+                ),
+                Obx(
+                  () => Container(
+                    width: MediaQuery.of(context).size.width - 10,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          _subData2('프로젝트명', controller.projectNm.value == null ? controller.projectNm.value : controller.projectNm.value, true),
+                          SizedBox(
+                            width: 32,
+                          ),
+                          _subData2('자재코드/자재명', controller.itemCdNm.value.trim(), true),
+                          SizedBox(
+                            width: 32,
+                          ),
+                          _subData2('박스번호', controller.boxNo.value, false),
+                          SizedBox(
+                            width: 32,
+                          ),
+                          _subData2('확정일', controller.wrkCfmDt.value == 'null' ? '' : controller.wrkCfmDt.value, false)
+                        ],
+                      ),
                     ),
                   ),
-                ),),
-                SizedBox(height: 4,),
+                ),
+                SizedBox(
+                  height: 4,
+                ),
                 Container(
                   color: AppTheme.dark_text_secondary,
                   height: 1,
                 ),
-                SizedBox(height: 8,),
+                SizedBox(
+                  height: 8,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -591,28 +596,17 @@ class MainKitPage extends StatelessWidget {
                           height: 56,
                           child: TextButton(
                             style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                    const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(10),
-                                            bottomRight: Radius.circular(10)))),
-                                padding: MaterialStateProperty.all(
-                                    const EdgeInsets.all(0))),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)))),
+                                padding: MaterialStateProperty.all(const EdgeInsets.all(0))),
                             onPressed: () async {
                               Get.log('조회 클릭!');
                             },
                             child: Container(
-                              decoration: BoxDecoration(
-                                  color: AppTheme.navy_navy_800,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: AppTheme.ae2e2e2)
-                              ),
+                              decoration: BoxDecoration(color: AppTheme.navy_navy_800, borderRadius: BorderRadius.circular(10), border: Border.all(color: AppTheme.ae2e2e2)),
                               width: 120,
                               height: 56,
-                              padding: const EdgeInsets.only(
-
-                              ),
+                              padding: const EdgeInsets.only(),
                               child: Center(
                                 child: Text('BOM변경적용', //입고취소 조회
                                     style: AppTheme.a15700.copyWith(
@@ -622,35 +616,23 @@ class MainKitPage extends StatelessWidget {
                             ),
                           ),
                         ),
-
                         Container(
                           margin: EdgeInsets.only(right: 12),
                           width: 120,
                           height: 56,
                           child: TextButton(
                             style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                    const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(10),
-                                            bottomRight: Radius.circular(10)))),
-                                padding: MaterialStateProperty.all(
-                                    const EdgeInsets.all(0))),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)))),
+                                padding: MaterialStateProperty.all(const EdgeInsets.all(0))),
                             onPressed: () async {
                               Get.log('조회 클릭!');
                             },
                             child: Container(
-                              decoration: BoxDecoration(
-                                  color: AppTheme.navy_navy_800,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: AppTheme.ae2e2e2)
-                              ),
+                              decoration: BoxDecoration(color: AppTheme.navy_navy_800, borderRadius: BorderRadius.circular(10), border: Border.all(color: AppTheme.ae2e2e2)),
                               width: 120,
                               height: 56,
-                              padding: const EdgeInsets.only(
-
-                              ),
+                              padding: const EdgeInsets.only(),
                               child: Center(
                                 child: Text('BOM변경확인', //입고취소 조회
                                     style: AppTheme.a15700.copyWith(
@@ -660,15 +642,15 @@ class MainKitPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Obx(() => Container(
-                          margin: EdgeInsets.only(right: 14),
-                          decoration: BoxDecoration(
-                              color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(8)
+                        Obx(
+                          () => Container(
+                            margin: EdgeInsets.only(right: 14),
+                            decoration:
+                                BoxDecoration(color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6), borderRadius: BorderRadius.circular(8)),
+                            width: 55,
+                            height: 55,
                           ),
-                          width: 55,
-                          height: 55,
-                        ),),
+                        ),
                       ],
                     )
                   ],
@@ -676,24 +658,22 @@ class MainKitPage extends StatelessWidget {
               ],
             ),
           ),
-
         ],
       ),
     );
   }
 
-  Future<void> aa1() async{
-    if(controller.duplicationQr.value == false){
-
-      if(controller.smallBoxSave.isNotEmpty) {
-        for(var i = 0; i < controller.uniqueSmallBoxList.length; i++) {
-          if(controller.uniqueSmallBoxList[i]['itemCd'] == controller.smallBoxSave[0]['itemCd']) {
+  Future<void> aa1() async {
+    if (controller.duplicationQr.value == false) {
+      if (controller.smallBoxSave.isNotEmpty) {
+        for (var i = 0; i < controller.uniqueSmallBoxList.length; i++) {
+          if (controller.uniqueSmallBoxList[i]['itemCd'] == controller.smallBoxSave[0]['itemCd']) {
             controller.no.value = i;
           }
         }
         // 우측리스트에 들어가있는 자재를 또 스캔했고 왼쪽 수량보다 작을 시
-        if(controller.duplicationQr2.value && int.parse(controller.uniqueSmallBoxList[controller.no.value]['cbxQty'].toString())
-            > int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'].toString())) {
+        if (controller.duplicationQr2.value &&
+            int.parse(controller.uniqueSmallBoxList[controller.no.value]['cbxQty'].toString()) > int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'].toString())) {
           controller.isColor.value = false;
           controller.smallBoxSave[0].addAll({'scanYn': 'Y'});
           controller.smallBoxSave[0].addAll({'scanNo': controller.textQrController.text});
@@ -712,38 +692,33 @@ class MainKitPage extends StatelessWidget {
           controller.smallBoxSave[0].addAll({'wrkQtySync': null});
           controller.smallBoxSave[0]['extrVal'] = 'D';
           controller.smallBoxDetailList.add(controller.smallBoxSave[0]);
-          if(int.parse(controller.uniqueSmallBoxList[controller.no.value]['cbxQty'].toString()) <= int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'].toString())
-              + controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']) {
+          if (int.parse(controller.uniqueSmallBoxList[controller.no.value]['cbxQty'].toString()) <=
+              int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'].toString()) + controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']) {
             controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] = controller.rows[controller.no.value].cells['cbxQty']?.value;
             controller.isSaveColor.value = true;
             controller.noList2.add(controller.uniqueSmallBoxList[controller.no.value]['itemCd'].toString());
             controller.test();
-          }else {
+          } else {
             controller.isSaveColor.value = false;
-            controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] = (controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty']
-                + controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']).toInt();
+            controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] =
+                (controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] + controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']).toInt();
           }
 
-          controller.rows2.value = List<PlutoRow>.generate(controller.smallBoxSaveList.length, (index) =>
-              PlutoRow(cells:
-              Map.from((controller.smallBoxSaveList[index]).map((key, value) =>
-                  MapEntry(key, PlutoCell(value: value == null ? '' : value )),
-              )))
-          );
+          controller.rows2.value = List<PlutoRow>.generate(
+              controller.smallBoxSaveList.length,
+              (index) => PlutoRow(
+                      cells: Map.from((controller.smallBoxSaveList[index]).map(
+                    (key, value) => MapEntry(key, PlutoCell(value: value == null ? '' : value)),
+                  ))));
           controller.textQrController.text = '';
           controller.stateManager2.removeAllRows();
           controller.stateManager2.appendRows(controller.rows2);
-          controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] == controller.rows[controller.no.value].cells['cbxQty']?.value
-              ? controller.isColor.value = true : null;
-
-        }else if(controller.duplicationQr2.value && controller.rows[controller.no.value].cells['cbxQty']?.value == controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty']) {
+          controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] == controller.rows[controller.no.value].cells['cbxQty']?.value ? controller.isColor.value = true : null;
+        } else if (controller.duplicationQr2.value && controller.rows[controller.no.value].cells['cbxQty']?.value == controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty']) {
           Get.log('아무것도 하지마');
-
-        }
-        else {
-
-          for(var i = 0; i < controller.uniqueSmallBoxList.length; i++) {
-            if(controller.uniqueSmallBoxList[i]['itemCd'] == controller.smallBoxSave[0]['itemCd']) {
+        } else {
+          for (var i = 0; i < controller.uniqueSmallBoxList.length; i++) {
+            if (controller.uniqueSmallBoxList[i]['itemCd'] == controller.smallBoxSave[0]['itemCd']) {
               controller.no.value = i;
               controller.smallBoxSave[0].addAll({'no': '${controller.uniqueSmallBoxList[i]['no']}'});
               controller.smallBoxSave[0].addAll({'scanYn': 'Y'});
@@ -763,13 +738,15 @@ class MainKitPage extends StatelessWidget {
           }
           // 왼쪽 리스트의 수량보다 클 경우에는 왼쪽수량만큼 입력
           // 그보다 작을 경우에는 qty 값만큼 입력
-          if(controller.rows[controller.no.value].cells['cbxQty']?.value <= (controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']).toInt()) {
+          if (controller.rows[controller.no.value].cells['cbxQty']?.value <= (controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']).toInt()) {
             controller.smallBoxSave[0]['qty'] = controller.rows[controller.no.value].cells['cbxQty']?.value;
             controller.isColor.value = true;
             await controller.test();
-          }else {
+          } else {
             controller.smallBoxSave[0]['qty'] = (controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']).toInt();
-            controller.smallBoxSave[0]['extrVal'] = 'D'; /// 저장 시에 DETAIL에 넘겨줘야할 오브젝트 구분
+            controller.smallBoxSave[0]['extrVal'] = 'D';
+
+            /// 저장 시에 DETAIL에 넘겨줘야할 오브젝트 구분
             controller.smallBoxDetailList.add(controller.smallBoxSave[0]);
           }
           controller.smallBoxSave[0]['setQty'] = controller.rows[controller.no.value].cells['setQty']?.value;
@@ -778,20 +755,18 @@ class MainKitPage extends StatelessWidget {
           controller.smallBoxSaveList[controller.smallBoxSaveList.length - 1]['prtNo'] = 'X';
           Get.log('ㅁㄴㅇㅁㄴㅇㄴ: ${controller.smallBoxSave.length}');
 
-          controller.insertRow.value = List<PlutoRow>.generate(controller.smallBoxSave.length, (index) =>
-              PlutoRow(cells:
-              Map.from((controller.smallBoxSave[index]).map((key, value) {
-                {
-                  return MapEntry(key, PlutoCell(value: value ?? '')); // 일반 셀은 기존 로직대로
-                }
-
-              }
-              )))
-          );
-          for(var i = 0; i < controller.insertRow.length; i++) {
+          controller.insertRow.value = List<PlutoRow>.generate(
+              controller.smallBoxSave.length,
+              (index) => PlutoRow(
+                      cells: Map.from((controller.smallBoxSave[index]).map((key, value) {
+                    {
+                      return MapEntry(key, PlutoCell(value: value ?? '')); // 일반 셀은 기존 로직대로
+                    }
+                  }))));
+          for (var i = 0; i < controller.insertRow.length; i++) {
             controller.insertRow[i].cells['itemNm']?.value = controller.insertRow[i].cells['itemNm']?.value.toString().trim();
             controller.insertRow[i].cells['qty']?.value = controller.insertRow[i].cells['qty']?.value.toInt();
-            Get.log('구구: ${ controller.insertRow[i].cells['setQty']?.value}');
+            Get.log('구구: ${controller.insertRow[i].cells['setQty']?.value}');
           }
           await controller.test();
           Get.log('이거이거 ${controller.smallBoxSaveList}');
@@ -810,96 +785,52 @@ class MainKitPage extends StatelessWidget {
 
           // 3. 정렬된 리스트로 다시 로드
           controller.stateManager2.appendRows(sortedRows);
-
-
         }
-
-
       }
-
     }
   }
 
   Future<void> aa2() async {
     /// 메인은 자재코드를 소박스로 찍으니까 다르게 만들어줘야할듯? 그래서 aa2를 만들었다
-    if (controller.duplicationQr.value == false &&
-        controller.duplicationQr3.value == false) {
+    if (controller.duplicationQr.value == false && controller.duplicationQr3.value == false) {
       controller.isSaveColor.value = false;
       if (controller.smallBoxSave.isNotEmpty) {
         for (var i = 0; i < controller.uniqueSmallBoxList.length; i++) {
-            for (var ii = 0; ii < controller.smallBoxSave.length; ii++) {
-              if (controller.uniqueSmallBoxList[i]['itemCd'].toString().trim() == controller.smallBoxSave[ii]['itemCd'].toString().trim()) {
-                final name = controller.reasonDropdownList
-                    .firstWhere((item) =>
-                item['CODE'] == controller.uniqueSmallBoxList[i]['ncbxRmk'],
-                    orElse: () => {'NAME': ''})['NAME'];
-                controller.no.value = i;
-                if (controller.smallBoxSave[ii]['qtyRes'] == null) {
-                  controller.smallBoxSave[ii].addAll({'qtyRes': 0});
-                }
-                // controller.smallBoxSave[ii]['qtyRes'] ?? 0;
-                /// ************************** 로직 시작 ************************************************************************************
-                ///
-                // 우측리스트에 들어가있는 자재를 또 스캔했고 왼쪽 수량보다 작을 시 --디테일 부분
-                if (controller.duplicationQr2.value && int.parse(
-                    controller.uniqueSmallBoxList[controller.no.value]['cbxQty']
-                        .toString())
-                    > int.parse(
-                        controller.smallBoxSaveList[controller.dupSaveListIndex
-                            .value]['qty'].toString())) {
-                  controller.isNewItem.value = false;
-                  controller.isColor.value = false;
-                  controller.smallBoxSave[ii].addAll({'scanYn': 'Y'});
-                  controller.smallBoxSave[ii].addAll(
-                      {'scanNo': controller.textQrController.text});
-                  controller.smallBoxSave[ii].addAll({'syncYn': 'N'});
-                  controller.smallBoxSave[ii].addAll({'ncbxRmk': ''});
-                  controller.smallBoxSave[ii].addAll({'syncYn': 'N'});
-                  controller.smallBoxSave[ii].addAll({
-                    'cbxMaNo': '${controller.uniqueSmallBoxList[controller
-                        .no
-                        .value]['cbxMaNo']}'
-                  });
-                  controller.smallBoxSave[ii].addAll({
-                    'cbxMaSeq': ''
-                  });
-                  controller.smallBoxSave[ii].addAll({
-                    'cbxSuNo': ''
-                  });
-                  controller.smallBoxSave[ii].addAll({
-                    'scanSeq': '${controller.uniqueSmallBoxList[controller
-                        .no.value]['scanSeq']}'
-                  });
-                  controller.smallBoxSave[ii].addAll({
-                    'itemCd': '${controller.uniqueSmallBoxList[controller.no
-                        .value]['itemCd']}'
-                  });
-                  controller.smallBoxSave[ii].addAll({
-                    'setCbxQty': '${controller.uniqueSmallBoxList[controller
-                        .no.value]['setCbxQty']}'
-                  });
-                  controller.smallBoxSave[ii].addAll({
-                    'cbxQty': '${controller.uniqueSmallBoxList[controller.no
-                        .value]['cbxQty']}'
-                  });
-                  controller.smallBoxSave[ii].addAll({
-                    'setQty': '${controller.uniqueSmallBoxList[controller.no
-                        .value]['setQty']}'
-                  });
-                  controller.smallBoxSave[ii].addAll({
-                    'qtyUnit': '${controller.uniqueSmallBoxList[controller
-                        .no.value]['qtyUnit']}'
-                  });
-                  controller.smallBoxSave[ii].addAll({
-                    'boxNo': '${controller.uniqueSmallBoxList[controller.no
-                        .value]['boxNo']}'
-                  });
-                  controller.smallBoxSave[ii].addAll({'prtNo': 'X'});
-                  controller.smallBoxSave[ii].addAll(
-                      {'ncbxRmkName': name.toString()});
-                  controller.smallBoxSave[ii].addAll({'wrkQtySync': null});
-                  controller.smallBoxSave[ii].addAll({'extrVal': 'D'});
-                 /* for (var a = 0; a < controller.smallBoxList.length; a++) {
+          for (var ii = 0; ii < controller.smallBoxSave.length; ii++) {
+            if (controller.uniqueSmallBoxList[i]['itemCd'].toString().trim() == controller.smallBoxSave[ii]['itemCd'].toString().trim()) {
+              final name = controller.reasonDropdownList.firstWhere((item) => item['CODE'] == controller.uniqueSmallBoxList[i]['ncbxRmk'], orElse: () => {'NAME': ''})['NAME'];
+              controller.no.value = i;
+              if (controller.smallBoxSave[ii]['qtyRes'] == null) {
+                controller.smallBoxSave[ii].addAll({'qtyRes': 0});
+              }
+              // controller.smallBoxSave[ii]['qtyRes'] ?? 0;
+              /// ************************** 로직 시작 ************************************************************************************
+              ///
+              // 우측리스트에 들어가있는 자재를 또 스캔했고 왼쪽 수량보다 작을 시 --디테일 부분
+              if (controller.duplicationQr2.value &&
+                  int.parse(controller.uniqueSmallBoxList[controller.no.value]['cbxQty'].toString()) > int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'].toString())) {
+                controller.isNewItem.value = false;
+                controller.isColor.value = false;
+                controller.smallBoxSave[ii].addAll({'scanYn': 'Y'});
+                controller.smallBoxSave[ii].addAll({'scanNo': controller.textQrController.text});
+                controller.smallBoxSave[ii].addAll({'syncYn': 'N'});
+                controller.smallBoxSave[ii].addAll({'ncbxRmk': ''});
+                controller.smallBoxSave[ii].addAll({'syncYn': 'N'});
+                controller.smallBoxSave[ii].addAll({'cbxMaNo': '${controller.uniqueSmallBoxList[controller.no.value]['cbxMaNo']}'});
+                controller.smallBoxSave[ii].addAll({'cbxMaSeq': ''});
+                controller.smallBoxSave[ii].addAll({'cbxSuNo': ''});
+                controller.smallBoxSave[ii].addAll({'scanSeq': '${controller.uniqueSmallBoxList[controller.no.value]['scanSeq']}'});
+                controller.smallBoxSave[ii].addAll({'itemCd': '${controller.uniqueSmallBoxList[controller.no.value]['itemCd']}'});
+                controller.smallBoxSave[ii].addAll({'setCbxQty': '${controller.uniqueSmallBoxList[controller.no.value]['setCbxQty']}'});
+                controller.smallBoxSave[ii].addAll({'cbxQty': '${controller.uniqueSmallBoxList[controller.no.value]['cbxQty']}'});
+                controller.smallBoxSave[ii].addAll({'setQty': '${controller.uniqueSmallBoxList[controller.no.value]['setQty']}'});
+                controller.smallBoxSave[ii].addAll({'qtyUnit': '${controller.uniqueSmallBoxList[controller.no.value]['qtyUnit']}'});
+                controller.smallBoxSave[ii].addAll({'boxNo': '${controller.uniqueSmallBoxList[controller.no.value]['boxNo']}'});
+                controller.smallBoxSave[ii].addAll({'prtNo': 'X'});
+                controller.smallBoxSave[ii].addAll({'ncbxRmkName': name.toString()});
+                controller.smallBoxSave[ii].addAll({'wrkQtySync': null});
+                controller.smallBoxSave[ii].addAll({'extrVal': 'D'});
+                /* for (var a = 0; a < controller.smallBoxList.length; a++) {
                     if (controller.smallBoxSave[ii]['qrNo'].toString() ==
                         controller.smallBoxList[a]['testQr'].toString()
                         && controller.smallBoxSave[ii]['itemCd'].toString() ==
@@ -908,154 +839,111 @@ class MainKitPage extends StatelessWidget {
                     }
                   }*/
 
-                  controller.smallBoxDetailList.add(
-                      controller.smallBoxSave[ii]);
-                  if (int.parse(controller.uniqueSmallBoxList[controller.no
-                      .value]['cbxQty'].toString()) <= int.parse(
-                      controller.smallBoxSaveList[controller.dupSaveListIndex
-                          .value]['qty'].toString())
-                      + controller.smallBoxSave[ii]['qty'] +
-                      controller.smallBoxSave[ii]['qtyRes']) {
-                    controller.smallBoxSaveList[controller.dupSaveListIndex
-                        .value]['qty'] =
-                        controller.rows[controller.no.value].cells['cbxQty']
-                            ?.value;
-                    controller.isSaveColor.value = false;
-                    controller.isColor.value = true;
-                    controller.noList3.add(
-                        controller.uniqueSmallBoxList[i]['itemCd']);
-                    controller.test();
-                  } else {
-                    controller.isSaveColor.value = false;
-                    controller.isColor.value = false;
-                    controller.smallBoxSaveList[controller.dupSaveListIndex
-                        .value]['qty'] = (int.parse(
-                        controller.smallBoxSaveList[controller.dupSaveListIndex
-                            .value]['qty'].toString())
-                        + controller.smallBoxSave[ii]['qty'] +
-                        controller.smallBoxSave[ii]['qtyRes']).toInt();
-                  }
+                controller.smallBoxDetailList.add(controller.smallBoxSave[ii]);
+                if (int.parse(controller.uniqueSmallBoxList[controller.no.value]['cbxQty'].toString()) <=
+                    int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'].toString()) + controller.smallBoxSave[ii]['qty'] + controller.smallBoxSave[ii]['qtyRes']) {
+                  controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] = controller.rows[controller.no.value].cells['cbxQty']?.value;
+                  controller.smallBoxSave[0].addAll({'newQty': controller.rows[controller.no.value].cells['cbxQty']?.value});
+                  controller.isSaveColor.value = false;
+                  controller.isColor.value = true;
+                  controller.noList3.add(controller.uniqueSmallBoxList[i]['itemCd']);
+                  controller.test();
+                } else {
+                  controller.isSaveColor.value = false;
+                  controller.isColor.value = false;
+                  controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] =
+                      (int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'].toString()) + controller.smallBoxSave[ii]['qty'] + controller.smallBoxSave[ii]['qtyRes'])
+                          .toInt();
+                  controller.smallBoxSave[0].addAll({'newQty':  (int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'].toString()) + controller.smallBoxSave[ii]['qty'] + controller.smallBoxSave[ii]['qtyRes'])
+                      .toInt()});
+                }
 
-                  controller.rows2.value = List<PlutoRow>.generate(
-                      controller.smallBoxSaveList.length, (index) =>
-                      PlutoRow(cells:
-                      Map.from((controller.smallBoxSaveList[index]).map((key,
-                          value) =>
-                          MapEntry(key, PlutoCell(
-                              value: value == null ? '' : value)),
-                      )))
-                  );
-                  controller.textQrController.text = '';
-                  controller.stateManager2.removeAllRows();
-                  controller.stateManager2.appendRows(controller.rows2);
-                  controller.smallBoxSaveList[controller.dupSaveListIndex
-                      .value]['qty'] ==
-                      controller.rows[controller.no.value].cells['cbxQty']
-                          ?.value
-                      ? controller.isColor.value = true : null;
-                  /*    }
+                controller.rows2.value = List<PlutoRow>.generate(
+                    controller.smallBoxSaveList.length,
+                    (index) => PlutoRow(
+                            cells: Map.from((controller.smallBoxSaveList[index]).map(
+                          (key, value) => MapEntry(key, PlutoCell(value: value == null ? '' : value)),
+                        ))));
+                controller.textQrController.text = '';
+                controller.stateManager2.removeAllRows();
+                controller.stateManager2.appendRows(controller.rows2);
+                controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] == controller.rows[controller.no.value].cells['cbxQty']?.value ? controller.isColor.value = true : null;
+                /*    }
                 }*/
-
-
-                } else if (controller.duplicationQr2.value &&
-                    controller.rows[controller.no.value].cells['cbxQty']
-                        ?.value ==
-                        controller.smallBoxSaveList[controller.dupSaveListIndex
-                            .value]['qty']) {
-                  Get.log('아무것도 하지마');
-                }
-                // 새로 스캔하는 자재
-                else {
-                  controller.isNewItem.value = true;
-                  for (var i = 0; i <
-                      controller.uniqueSmallBoxList.length; i++) {
-                    if (controller.uniqueSmallBoxList[i]['itemCd'] ==
-                        controller.smallBoxSave[ii]['itemCd']) {
-
-                      controller.no.value = i;
-                      controller.smallBoxSave[ii].addAll({'no': '${controller.uniqueSmallBoxList[i]['no']}'});
-                      controller.smallBoxSave[ii].addAll({'scanYn': 'Y'});
-                      controller.smallBoxSave[ii].addAll({'scanNo': controller.textQrController.text});
-                      controller.smallBoxSave[ii].addAll({'syncYn': 'N'});
-                      controller.smallBoxSave[ii].addAll({'cbxMaNo': '${controller.uniqueSmallBoxList[i]['cbxMaNo']}'});
-                      controller.smallBoxSave[ii].addAll({'cbxMaSeq': '${controller.uniqueSmallBoxList[i]['cbxMaSeq']}'});
-                      controller.smallBoxSave[ii].addAll({'cbxSuNo': '${controller.uniqueSmallBoxList[i]['cbxSuNo']}'});
-                      controller.smallBoxSave[ii].addAll({'scanSeq': '${controller.uniqueSmallBoxList[i]['scanSeq']}'});
-                      controller.smallBoxSave[ii].addAll({'itemCd': '${controller.uniqueSmallBoxList[i]['itemCd']}'});
-                      controller.smallBoxSave[ii].addAll({'setCbxQty': '${controller.uniqueSmallBoxList[i]['setCbxQty']}'});
-                      controller.smallBoxSave[ii].addAll({'cbxQty': '${controller.uniqueSmallBoxList[i]['cbxQty']}'});
-                      controller.smallBoxSave[ii].addAll({'setQty': '${controller.uniqueSmallBoxList[i]['setQty']}'});
-                      controller.smallBoxSave[ii].addAll({'qtyUnit': '${controller.uniqueSmallBoxList[i]['qtyUnit']}'});
-                      controller.smallBoxSave[ii].addAll({'boxNo': '${controller.uniqueSmallBoxList[controller.no.value]['cbxSuNo']}'});
-                      controller.smallBoxSave[ii].addAll({'ncbxRmkName': name.toString()});
-                      controller.smallBoxSave[ii].addAll({'wrkQtySync': null});
-                      controller.smallBoxSave[ii].addAll({'prtNo': 'X'});
-                    }
+              } else if (controller.duplicationQr2.value && controller.rows[controller.no.value].cells['cbxQty']?.value == controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty']) {
+                Get.log('아무것도 하지마');
+              }
+              // 새로 스캔하는 자재
+              else {
+                controller.isNewItem.value = true;
+                for (var i = 0; i < controller.uniqueSmallBoxList.length; i++) {
+                  if (controller.uniqueSmallBoxList[i]['itemCd'] == controller.smallBoxSave[ii]['itemCd']) {
+                    controller.no.value = i;
+                    controller.smallBoxSave[ii].addAll({'no': '${controller.uniqueSmallBoxList[i]['no']}'});
+                    controller.smallBoxSave[ii].addAll({'scanYn': 'Y'});
+                    controller.smallBoxSave[ii].addAll({'scanNo': controller.textQrController.text});
+                    controller.smallBoxSave[ii].addAll({'syncYn': 'N'});
+                    controller.smallBoxSave[ii].addAll({'cbxMaNo': '${controller.uniqueSmallBoxList[i]['cbxMaNo']}'});
+                    controller.smallBoxSave[ii].addAll({'cbxMaSeq': '${controller.uniqueSmallBoxList[i]['cbxMaSeq']}'});
+                    controller.smallBoxSave[ii].addAll({'cbxSuNo': '${controller.uniqueSmallBoxList[i]['cbxSuNo']}'});
+                    controller.smallBoxSave[ii].addAll({'scanSeq': '${controller.uniqueSmallBoxList[i]['scanSeq']}'});
+                    controller.smallBoxSave[ii].addAll({'itemCd': '${controller.uniqueSmallBoxList[i]['itemCd']}'});
+                    controller.smallBoxSave[ii].addAll({'setCbxQty': '${controller.uniqueSmallBoxList[i]['setCbxQty']}'});
+                    controller.smallBoxSave[ii].addAll({'cbxQty': '${controller.uniqueSmallBoxList[i]['cbxQty']}'});
+                    controller.smallBoxSave[ii].addAll({'setQty': '${controller.uniqueSmallBoxList[i]['setQty']}'});
+                    controller.smallBoxSave[ii].addAll({'qtyUnit': '${controller.uniqueSmallBoxList[i]['qtyUnit']}'});
+                    controller.smallBoxSave[ii].addAll({'boxNo': '${controller.uniqueSmallBoxList[controller.no.value]['cbxSuNo']}'});
+                    controller.smallBoxSave[ii].addAll({'ncbxRmkName': name.toString()});
+                    controller.smallBoxSave[ii].addAll({'wrkQtySync': null});
+                    controller.smallBoxSave[ii].addAll({'prtNo': 'X'});
                   }
-                  // 왼쪽 리스트의 수량보다 클 경우에는 왼쪽수량만큼 입력
-                  // 그보다 작을 경우에는 qty 값만큼 입력
-                  if (controller.rows[controller.no.value].cells['cbxQty']
-                      ?.value <= (controller.smallBoxSave[ii]['qty'] +
-                      controller.smallBoxSave[ii]['qtyRes']).toInt()) {
-                    controller.smallBoxSave[ii]['qty'] =
-                        controller.rows[controller.no.value].cells['cbxQty']
-                            ?.value;
-                    controller.isSaveColor.value = false;
-                    controller.isColor.value = true;
-                    controller.noList3.add(
-                        controller.uniqueSmallBoxList[i]['itemCd']);
-                    controller.test();
-                  } else {
-                    controller.smallBoxSave[ii]['qty'] =
-                        (controller.smallBoxSave[ii]['qty'] +
-                            controller.smallBoxSave[ii]['qtyRes']).toInt();
-                    controller.smallBoxSave[ii].addAll({'extrVal': 'D'});
-
-                    /// 저장 시에 DETAIL에 넘겨줘야할 오브젝트 구분
-                    //controller.smallBoxSave[ii]['ncbxRmkName'] = '';
-                    controller.smallBoxDetailList.add(
-                        controller.smallBoxSave[ii]);
-                  }
-                  //  controller.smallBoxSave[ii]['setQty'] = controller.rows[controller.no.value].cells['setQty']?.value;
-                  // controller.smallBoxSave[ii]['ncbxRmkName'] = '';
-                  controller.smallBoxSaveList.add(controller.smallBoxSave[ii]);
-                  controller.smallBoxSaveList[controller.smallBoxSaveList
-                      .length - 1]['prtNo'] = 'X';
-                  Get.log('ㅁㄴㅇㅁㄴㅇㄴ: ${controller.smallBoxSave.length}');
-
                 }
+                // 왼쪽 리스트의 수량보다 클 경우에는 왼쪽수량만큼 입력
+                // 그보다 작을 경우에는 qty 값만큼 입력
+                if (controller.rows[controller.no.value].cells['cbxQty']?.value <= (controller.smallBoxSave[ii]['qty'] + controller.smallBoxSave[ii]['qtyRes']).toInt()) {
+                  controller.smallBoxSave[ii]['qty'] = controller.rows[controller.no.value].cells['cbxQty']?.value;
+                  controller.isSaveColor.value = false;
+                  controller.isColor.value = true;
+                  controller.noList3.add(controller.uniqueSmallBoxList[i]['itemCd']);
+                  controller.test();
+                } else {
+                  controller.smallBoxSave[ii]['qty'] = (controller.smallBoxSave[ii]['qty'] + controller.smallBoxSave[ii]['qtyRes']).toInt();
+                  controller.smallBoxSave[ii].addAll({'extrVal': 'D'});
+
+                  /// 저장 시에 DETAIL에 넘겨줘야할 오브젝트 구분
+                  //controller.smallBoxSave[ii]['ncbxRmkName'] = '';
+                  controller.smallBoxDetailList.add(controller.smallBoxSave[ii]);
+                }
+                //  controller.smallBoxSave[ii]['setQty'] = controller.rows[controller.no.value].cells['setQty']?.value;
+                // controller.smallBoxSave[ii]['ncbxRmkName'] = '';
+                controller.smallBoxSaveList.add(controller.smallBoxSave[ii]);
+                controller.smallBoxSaveList[controller.smallBoxSaveList.length - 1]['prtNo'] = 'X';
+                Get.log('ㅁㄴㅇㅁㄴㅇㄴ: ${controller.smallBoxSave.length}');
               }
             }
-
+          }
         }
       }
       if (controller.isNewItem.value) {
-        controller.insertRow.value =
-        List<PlutoRow>.generate(controller.smallBoxSave.length, (index) =>
-            PlutoRow(cells:
-            Map.from((controller.smallBoxSave[index]).map((key, value) {
-              {
-                return MapEntry(
-                    key, PlutoCell(value: value ?? '')); // 일반 셀은 기존 로직대로
-              }
-            }
-            )))
-        );
+        controller.insertRow.value = List<PlutoRow>.generate(
+            controller.smallBoxSave.length,
+            (index) => PlutoRow(
+                    cells: Map.from((controller.smallBoxSave[index]).map((key, value) {
+                  {
+                    return MapEntry(key, PlutoCell(value: value ?? '')); // 일반 셀은 기존 로직대로
+                  }
+                }))));
         for (var i = 0; i < controller.insertRow.length; i++) {
-          controller.insertRow[i].cells['itemNm']?.value =
-              controller.insertRow[i].cells['itemNm']?.value.toString().trim();
-          controller.insertRow[i].cells['qty']?.value =
-              controller.insertRow[i].cells['qty']?.value.toInt();
-          Get.log('구구: ${ controller.insertRow[i].cells['setQty']?.value}');
+          controller.insertRow[i].cells['itemNm']?.value = controller.insertRow[i].cells['itemNm']?.value.toString().trim();
+          controller.insertRow[i].cells['qty']?.value = controller.insertRow[i].cells['qty']?.value.toInt();
+          Get.log('구구: ${controller.insertRow[i].cells['setQty']?.value}');
         }
-        controller.stateManager2.insertRows(
-            controller.no.value, controller.insertRow.value);
+        controller.stateManager2.insertRows(controller.no.value, controller.insertRow.value);
       }
 
       await controller.test();
       Get.log('이거이거 ${controller.smallBoxSaveList}');
       controller.textQrController.text = '';
-
 
       List<PlutoRow> sortedRows = List.from(controller.stateManager2.rows);
       controller.no.value = 990;
@@ -1069,7 +957,18 @@ class MainKitPage extends StatelessWidget {
 
       // 3. 정렬된 리스트로 다시 로드
       controller.stateManager2.appendRows(sortedRows);
-    }else {
+
+      /// 여기 끝나면 저장 처리해야한다
+      /// 디테일 저장
+      if (controller.smallBoxSave[0]['extrVal'] == 'D') {
+        await controller.registNewDetailSave();
+      }
+
+      /// 일반 저장
+      else {
+        await controller.registNewSave();
+      }
+    } else {
       controller.textQrController.text = '';
     }
   }
@@ -1079,9 +978,14 @@ class MainKitPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          child: Text(title, style: AppTheme.a24700.copyWith(color: AppTheme.black),),
+          child: Text(
+            title,
+            style: AppTheme.a24700.copyWith(color: AppTheme.black),
+          ),
         ),
-        SizedBox(width: 12,),
+        SizedBox(
+          width: 12,
+        ),
         Container(
             constraints: BoxConstraints(
               minWidth: 200.0, // 최소 너비 설정
@@ -1089,12 +993,11 @@ class MainKitPage extends StatelessWidget {
             height: 50,
             width: title == '메모' ? 400 : null,
             padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-                border: Border.all(color: AppTheme.ae2e2e2),
-                borderRadius: BorderRadius.circular(10)
-            ),
-            child: Text(title == '메모' ? controller.textMemoController.text : controller.statusText.value, style: AppTheme.a20700.copyWith(color: AppTheme.dk_red),)
-        ),
+            decoration: BoxDecoration(border: Border.all(color: AppTheme.ae2e2e2), borderRadius: BorderRadius.circular(10)),
+            child: Text(
+              title == '메모' ? controller.textMemoController.text : controller.statusText.value,
+              style: AppTheme.a20700.copyWith(color: AppTheme.dk_red),
+            )),
       ],
     );
   }
@@ -1104,23 +1007,25 @@ class MainKitPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          child: Text(title, style: AppTheme.a24700.copyWith(color: AppTheme.black),),
+          child: Text(
+            title,
+            style: AppTheme.a24700.copyWith(color: AppTheme.black),
+          ),
         ),
-        SizedBox(width: 12,),
+        SizedBox(
+          width: 12,
+        ),
         Container(
           width: 400,
           height: 50,
           padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-              border: Border.all(color: AppTheme.ae2e2e2),
-              borderRadius: BorderRadius.circular(10)
-          ),
+          decoration: BoxDecoration(border: Border.all(color: AppTheme.ae2e2e2), borderRadius: BorderRadius.circular(10)),
           child: TextFormField(
             //  focusNode: controller.focusNode,
-            expands :true,
+            expands: true,
             minLines: null,
             maxLines: null,
-            style:  AppTheme.a24400.copyWith(color: AppTheme.a6c6c6c),
+            style: AppTheme.a24400.copyWith(color: AppTheme.a6c6c6c),
             // maxLines: 5,
             controller: controller.textMemoController,
             textInputAction: TextInputAction.done,
@@ -1149,18 +1054,23 @@ class MainKitPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          child: Text(title, style: AppTheme.a24700.copyWith(color: AppTheme.black),),
+          child: Text(
+            title,
+            style: AppTheme.a24700.copyWith(color: AppTheme.black),
+          ),
         ),
-        SizedBox(width: 12,),
+        SizedBox(
+          width: 12,
+        ),
         Container(
             padding: const EdgeInsets.all(4),
-            child: Text(content, style: AppTheme.a24400.copyWith(color: AppTheme.light_ui_08),)
-        ),
+            child: Text(
+              content,
+              style: AppTheme.a24400.copyWith(color: AppTheme.light_ui_08),
+            )),
       ],
     );
   }
-
-
 
   Widget _button(String text, BuildContext context) {
     return Container(
@@ -1168,43 +1078,39 @@ class MainKitPage extends StatelessWidget {
       padding: EdgeInsets.only(left: 12),
       child: TextButton(
           style: ButtonStyle(
-              shape: MaterialStateProperty.all<OutlinedBorder>(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10))),
+              shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
               // backgroundColor: MaterialStateProperty.all<Color>(AppTheme.a1f1f1f) ,
-              backgroundColor: MaterialStateProperty.all<Color>(AppTheme.dongkuk_blue) ,
-              padding: MaterialStateProperty.all<EdgeInsets>(
-                  const EdgeInsets.all(0))),
+              backgroundColor: MaterialStateProperty.all<Color>(AppTheme.dongkuk_blue),
+              padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(0))),
           onPressed: () async {
-            if(text == '행 추가') {
+            if (text == '행 추가') {
               controller.isFocus.value = true;
-              controller.smallBoxList.isNotEmpty ?
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return _alertDialog(context);
-                },
-              ) :  Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요', pageFlag: 0));
-            }else if(text == '동기화') {
-              controller.smallBoxList[0]['wrkCfmYn'] != 'Y' ?
-              syncProcess() : Get.dialog(CommonDialogWidget(contentText: '확정 처리된 상태입니다.', pageFlag: 0));
-            }else if(text == '저장') {
-              if(controller.isSaveClick.value == false) {
+              controller.smallBoxList.isNotEmpty
+                  ? showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return _alertDialog(context);
+                      },
+                    )
+                  : Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요', pageFlag: 0));
+            } else if (text == '동기화') {
+              controller.smallBoxList[0]['wrkCfmYn'] != 'Y' ? syncProcess() : Get.dialog(CommonDialogWidget(contentText: '확정 처리된 상태입니다.', pageFlag: 0));
+            } else if (text == '저장') {
+              if (controller.isSaveClick.value == false) {
                 controller.isSaveClick.value = true;
                 Get.log('저장할 리스트!: ${controller.smallBoxSaveList.length}');
                 await controller.registSmallKitSave();
                 await controller.registSmallKitDetailSave();
                 await controller.registMemoSmallKitSave();
-                controller.isSave.value ?
-                Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0)) :
-                Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
+                controller.isSave.value
+                    ? Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0))
+                    : Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
               }
-
-            }else if(text == '동기화 취소') {
+            } else if (text == '동기화 취소') {
               Get.log('동기화 취소');
               Get.log('동기화 취소1: ${controller.smallBoxSaveList.length}');
               // smallBoxSaveList의 리스트에 changedRows에 {1,2} 가 있는데 smallBoxSaveList[1]이 존재하지않으면 ch
-              if(controller.smallBoxList[0]['wrkCfmYn'] != 'Y') {
+              if (controller.smallBoxList[0]['wrkCfmYn'] != 'Y') {
                 controller.isColor.value = false;
                 controller.isSaveColor.value = true;
                 controller.changedRows2.clear();
@@ -1214,7 +1120,7 @@ class MainKitPage extends StatelessWidget {
                   bool shouldRemove = false;
 
                   if (item['ncbxRmk'] == '' && item['prtNo'] == 'O') {
-                    if(item['wrkQtySync'].toString() == '0') {
+                    if (item['wrkQtySync'].toString() == '0') {
                       int index = controller.uniqueSmallBoxList.indexWhere((element) => element['no'] == item['no']);
 
                       controller.noList2.remove(item['itemCd']);
@@ -1222,7 +1128,7 @@ class MainKitPage extends StatelessWidget {
                       controller.stateManager.rowColorCallback!;
                       shouldRemove = true;
                       controller.test();
-                    }else {
+                    } else {
                       int index = controller.uniqueSmallBoxList.indexWhere((element) => element['no'] == item['no']);
                       controller.smallBoxSaveList[index].addAll({'qty': '${controller.smallBoxSaveList[index]['wrkQtySync']}'});
                       controller.smallBoxSaveList[index].addAll({'prtNo': 'X'});
@@ -1232,27 +1138,26 @@ class MainKitPage extends StatelessWidget {
                       shouldRemove = false;
                       controller.test();
                     }
-                  }else if(item['ncbxRmk'] != '' && item['prtNo'] == 'O') {
+                  } else if (item['ncbxRmk'] != '' && item['prtNo'] == 'O') {
                     Get.log('동기화 안돼!');
                   }
                   controller.test();
                   return shouldRemove;
                 });
                 await controller.test();
-                controller.rows2.value = List<PlutoRow>.generate(controller.smallBoxSaveList.length, (index) =>
-                    PlutoRow(cells:
-                    Map.from((controller.smallBoxSaveList[index]).map((key, value) =>
-                        MapEntry(key, PlutoCell(value: value == null ? '' : value )),
-                    )))
-                );
+                controller.rows2.value = List<PlutoRow>.generate(
+                    controller.smallBoxSaveList.length,
+                    (index) => PlutoRow(
+                            cells: Map.from((controller.smallBoxSaveList[index]).map(
+                          (key, value) => MapEntry(key, PlutoCell(value: value == null ? '' : value)),
+                        ))));
                 controller.stateManager2.removeAllRows();
                 controller.stateManager2.appendRows(controller.rows2.value);
-
-              }else {
+              } else {
                 Get.dialog(CommonDialogWidget(contentText: '확정 처리된 상태입니다.', pageFlag: 0));
               }
 
-             /*
+              /*
              if(controller.smallBoxList[0]['wrkCfmYn'] != 'Y') {
                controller.smallBoxSaveList.removeWhere((item) {
                  bool shouldRemove = false;
@@ -1285,39 +1190,33 @@ class MainKitPage extends StatelessWidget {
              }else {
                Get.dialog(CommonDialogWidget(contentText: '확정 처리된 상태입니다.', pageFlag: 0));
              }*/
-
-
-            }else if(text == '확정') {
-              if(controller.isConfirmClick.value == false) {
+            } else if (text == '확정') {
+              if (controller.isConfirmClick.value == false) {
                 controller.isConfirmClick.value = true;
                 Get.dialog(
                   Center(child: CircularProgressIndicator()),
                   barrierDismissible: false, // 사용자가 다이얼로그를 닫을 수 없도록 설정
                 );
-                try{
+                try {
                   await controller.registSmallKitSave();
                   await controller.registSmallKitDetailSave();
-                  await controller.registSmallKitConfirm('Y') ;
+                  await controller.registSmallKitConfirm('Y');
                   Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
-                }catch(e) {
+                } catch (e) {
                   Get.log('$e');
-                }finally {
-                  controller.isConfirm.value ?
-                  Get.dialog(CommonDialogWidget(contentText: '확정되었습니다.', pageFlag: 0)) :
-                  Get.dialog(CommonDialogWidget(contentText: '${controller.isConfirmText.value}', pageFlag: 0));
+                } finally {
+                  controller.isConfirm.value
+                      ? Get.dialog(CommonDialogWidget(contentText: '확정되었습니다.', pageFlag: 0))
+                      : Get.dialog(CommonDialogWidget(contentText: '${controller.isConfirmText.value}', pageFlag: 0));
                   controller.focusNode.unfocus();
                 }
               }
-
-
-            }else if(text == '확정 취소') {
+            } else if (text == '확정 취소') {
               await controller.registSmallKitConfirm('N');
-              controller.isConfirm.value ?
-              Get.dialog(CommonDialogWidget(contentText: '확정 취소되었습니다.', pageFlag: 0)) :
-              Get.dialog(CommonDialogWidget(contentText: '취소되지않았습니다.', pageFlag: 0));
+              controller.isConfirm.value ? Get.dialog(CommonDialogWidget(contentText: '확정 취소되었습니다.', pageFlag: 0)) : Get.dialog(CommonDialogWidget(contentText: '취소되지않았습니다.', pageFlag: 0));
               controller.focusNode.unfocus();
             }
-           /* text == '행 추가' ?
+            /* text == '행 추가' ?
             {
               controller.isFocus.value = true,
               controller.smallBoxList.isNotEmpty ?
@@ -1327,14 +1226,14 @@ class MainKitPage extends StatelessWidget {
                   return _alertDialog(context);
                 },
               ) :  Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요', pageFlag: 0))
-              *//*controller.insertRow.value = List<PlutoRow>.generate(controller.ipgoQrList.length, (index) =>
+              */ /*controller.insertRow.value = List<PlutoRow>.generate(controller.ipgoQrList.length, (index) =>
             PlutoRow(cells:
             Map.from((controller.ipgoQrList[index]).map((key, value) =>
             MapEntry(key, PlutoCell(value: value ?? '' )),
             )))
             ),
             //  controller.rowDatas2.add(controller.insertRow[0]);
-            controller.stateManager2.insertRows(controller.ipgoList.length, controller.insertRow)*//*
+            controller.stateManager2.insertRows(controller.ipgoList.length, controller.insertRow)*/ /*
             }
                 :
             text == '동기화' ?
@@ -1355,9 +1254,9 @@ class MainKitPage extends StatelessWidget {
             {
               Get.log('동기화 취소'),
               Get.log('동기화 취소1: ${controller.smallBoxSaveList.length}'),
-              *//*controller.smallBoxSaveList.value = controller.smallBoxSaveList
+              */ /*controller.smallBoxSaveList.value = controller.smallBoxSaveList
                   .where((item) => !(item['remark'] == '' && item['prtNo'] == 'O'))
-                  .toList(),*//*
+                  .toList(),*/ /*
               // smallBoxSaveList의 리스트에 changedRows에 {1,2} 가 있는데 smallBoxSaveList[1]이 존재하지않으면 ch
 
 
@@ -1408,19 +1307,18 @@ class MainKitPage extends StatelessWidget {
               controller.focusNode.unfocus()
             }
                 : null;*/
-          } ,
+          },
           child: Container(
             height: 56,
             child: Center(
                 child: Text(
-                  text,
-                  style: AppTheme.a15700.copyWith(
-                    color: AppTheme.white,
-                  ),
-                )),
+              text,
+              style: AppTheme.a15700.copyWith(
+                color: AppTheme.white,
+              ),
+            )),
           )),
     );
-
   }
 
   void syncProcess() async {
@@ -1429,85 +1327,66 @@ class MainKitPage extends StatelessWidget {
       barrierDismissible: false, // 사용자가 다이얼로그를 닫을 수 없도록 설정
     );
 
-    try{
-      if(controller.isDonggi.value == false) {
+    try {
+      if (controller.isDonggi.value == false) {
         controller.isColor.value = false;
         controller.isSaveColor.value = true;
-        for(var dong = 0; dong < controller.uniqueSmallBoxList.length; dong++) {
+        for (var dong = 0; dong < controller.uniqueSmallBoxList.length; dong++) {
           Get.log('smallBoxSaveList: ${controller.uniqueSmallBoxList}');
           controller.noList2.add(controller.uniqueSmallBoxList[dong]['itemCd']);
-          if(controller.smallBoxSaveList.isEmpty){
+          if (controller.smallBoxSaveList.isEmpty) {
             controller.noSync.value = true;
           }
           // 동기화 시에 수량이 왼쪽 수량보다 적을 시 수량 맞춰주는 동기화(수량, 동기화(prt_no) 값 바꾸기)
           for (var dong2 = 0; dong2 < controller.smallBoxSaveList.length; dong2++) {
             // 이미 오른쪽에 스캔된 자재가 있는데 수량이 작다면? -> 동기화 대상
-            if(controller.uniqueSmallBoxList[dong]['itemCd'] == controller.smallBoxSaveList[dong2]['itemCd']) {
+            if (controller.uniqueSmallBoxList[dong]['itemCd'] == controller.smallBoxSaveList[dong2]['itemCd']) {
               controller.noSync.value = false;
-              if (int.parse(controller.uniqueSmallBoxList[dong]['cbxQty'].toString()) >
-                  int.parse(controller.smallBoxSaveList[dong2]['qty'].toString())) {
-                controller.smallBoxSaveList[dong2].addAll({
-                  'wrkQtySync': controller
-                      .smallBoxSaveList[dong2]['qty']
-                });
-                controller.smallBoxSaveList[dong2].addAll(
-                    {'ncbxRmk': ''});
-                controller.smallBoxSaveList[dong2].addAll(
-                    {'syncYn': 'Y'});
-                controller.smallBoxSaveList[dong2].addAll(
-                    {'prtNo': 'O'});
+              if (int.parse(controller.uniqueSmallBoxList[dong]['cbxQty'].toString()) > int.parse(controller.smallBoxSaveList[dong2]['qty'].toString())) {
+                controller.smallBoxSaveList[dong2].addAll({'wrkQtySync': controller.smallBoxSaveList[dong2]['qty']});
+                controller.smallBoxSaveList[dong2].addAll({'ncbxRmk': ''});
+                controller.smallBoxSaveList[dong2].addAll({'syncYn': 'Y'});
+                controller.smallBoxSaveList[dong2].addAll({'prtNo': 'O'});
                 controller.smallBoxSaveList[dong2]['ncbxRmkName'] = '';
-                controller.smallBoxSaveList[dong2].addAll(
-                    {'qty': controller.uniqueSmallBoxList[dong]['cbxQty']});
-                controller.smallBoxSaveList[dong2].addAll(
-                    {'boxNo': controller.uniqueSmallBoxList[dong]['cbxSuNo']});
+                controller.smallBoxSaveList[dong2].addAll({'qty': controller.uniqueSmallBoxList[dong]['cbxQty']});
+                controller.smallBoxSaveList[dong2].addAll({'boxNo': controller.uniqueSmallBoxList[dong]['cbxSuNo']});
                 controller.noSync.value = false;
                 break;
-              }else {
+              } else {
                 controller.noSync.value = false;
                 break;
               }
-            }else {
+            } else {
               controller.noSync.value = true;
             }
           }
-          if(controller.noSync.value) {
-            controller.uniqueSmallBoxList[dong].addAll({
-              'wrkQtySync': 0
-            });
-            controller.uniqueSmallBoxList[dong].addAll(
-                {'ncbxRmk': ''});
-            controller.uniqueSmallBoxList[dong].addAll(
-                {'syncYn': 'Y'});
-            controller.uniqueSmallBoxList[dong].addAll(
-                {'prtNo': 'O'});
-            controller.uniqueSmallBoxList[dong].addAll(
-                {'ncbxRmkName': ''});
-            controller.uniqueSmallBoxList[dong].addAll(
-                {'qty': controller.uniqueSmallBoxList[dong]['cbxQty']});
-            controller.uniqueSmallBoxList[dong].addAll(
-                {'boxNo': controller.uniqueSmallBoxList[dong]['cbxSuNo']});
+          if (controller.noSync.value) {
+            controller.uniqueSmallBoxList[dong].addAll({'wrkQtySync': 0});
+            controller.uniqueSmallBoxList[dong].addAll({'ncbxRmk': ''});
+            controller.uniqueSmallBoxList[dong].addAll({'syncYn': 'Y'});
+            controller.uniqueSmallBoxList[dong].addAll({'prtNo': 'O'});
+            controller.uniqueSmallBoxList[dong].addAll({'ncbxRmkName': ''});
+            controller.uniqueSmallBoxList[dong].addAll({'qty': controller.uniqueSmallBoxList[dong]['cbxQty']});
+            controller.uniqueSmallBoxList[dong].addAll({'boxNo': controller.uniqueSmallBoxList[dong]['cbxSuNo']});
             controller.smallBoxSaveList.add(controller.uniqueSmallBoxList[dong]);
           }
-
         }
-        for(var dong2 = 0; dong2 < controller.smallBoxSaveList.length; dong2++) {
-          if(controller.smallBoxSaveList[dong2]['prtNo'] == 'O') { //동기화가 O인 것만 드롭다운 버튼 활성화
+        for (var dong2 = 0; dong2 < controller.smallBoxSaveList.length; dong2++) {
+          if (controller.smallBoxSaveList[dong2]['prtNo'] == 'O') {
+            //동기화가 O인 것만 드롭다운 버튼 활성화
             controller.isDropdownEnabled.value = true; // 드롭다운 활성화 상태 토글
             controller.stateManager2.columns[4]!.enableEditingMode = controller.isDropdownEnabled.value; //enableEditingMode
           }
         }
         controller.no.value = 990;
-        controller.rows2.value = List<PlutoRow>.generate(controller.smallBoxSaveList.length, (index) =>
-            PlutoRow(cells:
-            Map.from((controller.smallBoxSaveList[index]).map((key, value) {
-              {
-                return MapEntry(key, PlutoCell(value: value ?? '')); // 일반 셀은 기존 로직대로
-              }
-
-            }
-            )))
-        );
+        controller.rows2.value = List<PlutoRow>.generate(
+            controller.smallBoxSaveList.length,
+            (index) => PlutoRow(
+                    cells: Map.from((controller.smallBoxSaveList[index]).map((key, value) {
+                  {
+                    return MapEntry(key, PlutoCell(value: value ?? '')); // 일반 셀은 기존 로직대로
+                  }
+                }))));
         // 원하는 기준으로 정렬 (예: 'no' 컬럼 기준 오름차순)
         controller.rows2.value.sort((a, b) {
           int noA = int.parse(a.cells['no']?.value.toString() ?? '0');
@@ -1522,9 +1401,9 @@ class MainKitPage extends StatelessWidget {
         Get.log('동기화 is: ${controller.isDropdownEnabled.value}');
         controller.isDonggi.value = true;
       }
-    }catch(e) {
+    } catch (e) {
       Get.log('$e');
-    }finally{
+    } finally {
       // 로딩 다이얼로그 종료
       Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
     }
@@ -1613,13 +1492,13 @@ class MainKitPage extends StatelessWidget {
             }
             controller.isDropdownEnabled.value = true;
             controller.stateManager2.columns[4]!.enableEditingMode = controller.isDropdownEnabled.value; //enableEditingMode
-            *//*for(var ii = 0; ii < controller.smallBoxSaveList.length; ii++) {
+            */ /*for(var ii = 0; ii < controller.smallBoxSaveList.length; ii++) {
                       if(controller.smallBoxSaveList[ii]['prtNo'] == 'O') { //동기화가 O인 것만 드롭다운 버튼 활성화
                         controller.isDropdownEnabled.value = true, // 드롭다운 활성화 상태 토글
                         // controller.stateManager2.rows[dong].cells['remark']?.
                         controller.stateManager2.columns[4]!.enableEditingMode = controller.isDropdownEnabled.value, //enableEditingMode
                       },
-                    }*//*
+                    }*/ /*
             // 나머지 중첩된 반복문들을 처리하는 로직
             // ...
           }
@@ -1676,15 +1555,10 @@ class MainKitPage extends StatelessWidget {
               width: 60,
               // color: textColor,
               child: Center(
-                child: Text(
-                    rendererContext.cell.value.toString(),
-                    style: AppTheme.a14500.copyWith(color: Colors.black)
-                ),
+                child: Text(rendererContext.cell.value.toString(), style: AppTheme.a14500.copyWith(color: Colors.black)),
               ),
             );
-          }
-
-      ),
+          }),
       PlutoColumn(
           enableSorting: false,
           enableEditingMode: false,
@@ -1705,14 +1579,10 @@ class MainKitPage extends StatelessWidget {
               width: 60,
               // color: textColor,
               child: Center(
-                child: Text(
-                    rendererContext.cell.value.toString(),
-                    style: AppTheme.a14500.copyWith(color: Colors.black)
-                ),
+                child: Text(rendererContext.cell.value.toString(), style: AppTheme.a14500.copyWith(color: Colors.black)),
               ),
             );
-          }
-      ),
+          }),
       PlutoColumn(
           enableSorting: false,
           enableEditingMode: false,
@@ -1732,13 +1602,9 @@ class MainKitPage extends StatelessWidget {
               padding: EdgeInsets.all(0),
               width: 60,
               // color: textColor,
-              child: Text(
-                    rendererContext.cell.value.toString(),
-                    style: AppTheme.a14500.copyWith(color: Colors.black)
-                ),
+              child: Text(rendererContext.cell.value.toString(), style: AppTheme.a14500.copyWith(color: Colors.black)),
             );
-          }
-      ),
+          }),
       PlutoColumn(
           enableSorting: false,
           enableEditingMode: false,
@@ -1759,14 +1625,10 @@ class MainKitPage extends StatelessWidget {
               width: 60,
               // color: textColor,
               child: Center(
-                child: Text(
-                    rendererContext.cell.value.toString(),
-                    style: AppTheme.a14500.copyWith(color: Colors.black)
-                ),
+                child: Text(rendererContext.cell.value.toString(), style: AppTheme.a14500.copyWith(color: Colors.black)),
               ),
             );
-          }
-      ),
+          }),
       PlutoColumn(
           enableSorting: false,
           enableEditingMode: false,
@@ -1787,14 +1649,10 @@ class MainKitPage extends StatelessWidget {
               width: 60,
               // color: textColor,
               child: Center(
-                child: Text(
-                    rendererContext.cell.value.toString(),
-                    style: AppTheme.a14500.copyWith(color: Colors.black)
-                ),
+                child: Text(rendererContext.cell.value.toString(), style: AppTheme.a14500.copyWith(color: Colors.black)),
               ),
             );
-          }
-      ),
+          }),
       PlutoColumn(
           enableSorting: false,
           enableEditingMode: false,
@@ -1815,14 +1673,10 @@ class MainKitPage extends StatelessWidget {
               width: 60,
               // color: textColor,
               child: Center(
-                child: Text(
-                    rendererContext.cell.value.toString(),
-                    style: AppTheme.a14500.copyWith(color: Colors.black)
-                ),
+                child: Text(rendererContext.cell.value.toString(), style: AppTheme.a14500.copyWith(color: Colors.black)),
               ),
             );
-          }
-      ),
+          }),
       PlutoColumn(
           enableSorting: false,
           enableEditingMode: false,
@@ -1843,21 +1697,15 @@ class MainKitPage extends StatelessWidget {
               width: 60,
               // color: textColor,
               child: Center(
-                child: Text(
-                    rendererContext.cell.value.toString(),
-                    style: AppTheme.a14500.copyWith(color: Colors.black)
-                ),
+                child: Text(rendererContext.cell.value.toString(), style: AppTheme.a14500.copyWith(color: Colors.black)),
               ),
             );
-          }
-      ),
-
+          }),
     ];
     return gridCols;
   }
 
   List<PlutoColumn> gridCols2(BuildContext context) {
-
     final List<PlutoColumn> gridCols2 = <PlutoColumn>[
       PlutoColumn(
           enableSorting: true,
@@ -1879,15 +1727,10 @@ class MainKitPage extends StatelessWidget {
               width: 60,
               // color: textColor,
               child: Center(
-                child: Text(
-                    rendererContext.cell.value.toString(),
-                    style: AppTheme.a14500.copyWith(color: Colors.black)
-                ),
+                child: Text(rendererContext.cell.value.toString(), style: AppTheme.a14500.copyWith(color: Colors.black)),
               ),
             );
-          }
-
-      ),
+          }),
       PlutoColumn(
           enableSorting: false,
           enableEditingMode: false,
@@ -1908,14 +1751,10 @@ class MainKitPage extends StatelessWidget {
               width: 60,
               // color: textColor,
               child: Center(
-                child: Text(
-                    rendererContext.cell.value.toString(),
-                    style: AppTheme.a14500.copyWith(color: Colors.black)
-                ),
+                child: Text(rendererContext.cell.value.toString(), style: AppTheme.a14500.copyWith(color: Colors.black)),
               ),
             );
-          }
-      ),
+          }),
       PlutoColumn(
           enableSorting: false,
           enableEditingMode: false,
@@ -1931,17 +1770,12 @@ class MainKitPage extends StatelessWidget {
           type: PlutoColumnType.text(),
           renderer: (rendererContext) {
             return Container(
-              margin: EdgeInsets.all(0),
-              padding: EdgeInsets.all(0),
-              width: 60,
-              // color: textColor,
-              child: Text(
-                    rendererContext.cell.value.toString(),
-                    style: AppTheme.a14500.copyWith(color: Colors.black)
-              )
-            );
-          }
-      ),
+                margin: EdgeInsets.all(0),
+                padding: EdgeInsets.all(0),
+                width: 60,
+                // color: textColor,
+                child: Text(rendererContext.cell.value.toString(), style: AppTheme.a14500.copyWith(color: Colors.black)));
+          }),
       PlutoColumn(
           enableSorting: false,
           enableEditingMode: false,
@@ -1962,14 +1796,10 @@ class MainKitPage extends StatelessWidget {
               width: 60,
               // color: textColor,
               child: Center(
-                child: Text(
-                    rendererContext.cell.value.toString(),
-                    style: AppTheme.a14500.copyWith(color: Colors.black)
-                ),
+                child: Text(rendererContext.cell.value.toString(), style: AppTheme.a14500.copyWith(color: Colors.black)),
               ),
             );
-          }
-      ),
+          }),
       PlutoColumn(
         enableSorting: false,
         enableEditingMode: controller.isDropdownEnabled.value,
@@ -1982,8 +1812,7 @@ class MainKitPage extends StatelessWidget {
         width: 160,
         title: '사유',
         field: 'ncbxRmkName',
-        type: PlutoColumnType.select(controller.reasonNames
-        ),
+        type: PlutoColumnType.select(controller.reasonNames),
 
         /*renderer: (rendererContext) {
             return Container(
@@ -2024,14 +1853,10 @@ class MainKitPage extends StatelessWidget {
               width: 60,
               // color: textColor,
               child: Center(
-                child: Text(
-                    rendererContext.cell.value.toString(),
-                    style: AppTheme.a14500.copyWith(color: Colors.black)
-                ),
+                child: Text(rendererContext.cell.value.toString(), style: AppTheme.a14500.copyWith(color: Colors.black)),
               ),
             );
-          }
-      ),
+          }),
       PlutoColumn(
           enableSorting: false,
           enableEditingMode: false,
@@ -2043,7 +1868,8 @@ class MainKitPage extends StatelessWidget {
           textAlign: PlutoColumnTextAlign.center,
           width: 110,
           title: '소박스 번호',
-          field: 'boxNo', //tagNo?
+          field: 'boxNo',
+          //tagNo?
           type: PlutoColumnType.text(),
           renderer: (rendererContext) {
             return Container(
@@ -2052,26 +1878,19 @@ class MainKitPage extends StatelessWidget {
               width: 60,
               // color: textColor,
               child: Center(
-                child: Text(
-                    rendererContext.cell.value.toString(),
-                    style: AppTheme.a14500.copyWith(color: Colors.black)
-                ),
+                child: Text(rendererContext.cell.value.toString(), style: AppTheme.a14500.copyWith(color: Colors.black)),
               ),
             );
-          }
-      ),
+          }),
     ];
-
 
     return gridCols2;
   }
 
   Widget _alertDialog(BuildContext context) {
-
     return AlertDialog(
         backgroundColor: AppTheme.white,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         title: Column(
           children: [
             const SizedBox(
@@ -2083,8 +1902,7 @@ class MainKitPage extends StatelessWidget {
                   margin: EdgeInsets.only(left: 24, right: 12),
                   child: Text(
                     '행 추가',
-                    style: AppTheme.a22700
-                        .copyWith(color: AppTheme.black),
+                    style: AppTheme.a22700.copyWith(color: AppTheme.black),
                   ),
                 ),
               ],
@@ -2097,11 +1915,11 @@ class MainKitPage extends StatelessWidget {
               height: 1,
               color: Colors.black,
             ),
-
           ],
         ),
+        content: _alertBody(context),
 
-        content: _alertBody(context), /// 내부 메인body
+        /// 내부 메인body
 
         buttonPadding: const EdgeInsets.all(0),
         // insetPadding 이게 전체크기 조정
@@ -2124,14 +1942,9 @@ class MainKitPage extends StatelessWidget {
                   Expanded(
                     child: TextButton(
                       style: ButtonStyle(
-                          shape: MaterialStateProperty.all<
-                              RoundedRectangleBorder>(
-                              const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(15),
-                                      bottomRight: Radius.circular(15)))),
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.all(0))),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)))),
+                          padding: MaterialStateProperty.all(const EdgeInsets.all(0))),
                       onPressed: () async {
                         controller.addRowList.clear();
                         controller.addRowList.add({
@@ -2147,7 +1960,7 @@ class MainKitPage extends StatelessWidget {
                           'ncbxRmk': '60',
                           'ncbxRmkName': 'KIT 외 구성품',
                           'cbxMaNo': '${controller.smallBoxList[0]['cbxMaNo']}-E',
-                          'cbxMaSeq': controller.smallBoxSaveList.length+1,
+                          'cbxMaSeq': controller.smallBoxSaveList.length + 1,
                           'setCbxQty': '0',
                           'cbxQty': controller.textQtyController.text,
                           'boxNo': '',
@@ -2156,19 +1969,21 @@ class MainKitPage extends StatelessWidget {
                         controller.smallBoxSaveList.add(controller.addRowList[0]);
                         List<dynamic> withLeadingZero = controller.smallBoxSaveList.where((item) => item['no'].toString().startsWith('0')).toList();
                         controller.addRowList[0].addAll({'no': '0${withLeadingZero.length + 1}'});
-                        controller.insertRow.value = List<PlutoRow>.generate(controller.addRowList.length, (index) =>
-                            PlutoRow(cells:
-                            Map.from((controller.addRowList[index]).map((key, value) {
-                              {
-                                return MapEntry(key, PlutoCell(value: value ?? '')); // 일반 셀은 기존 로직대로
-                              }
-                            }
-                            )))
-                        );
+                        controller.insertRow.value = List<PlutoRow>.generate(
+                            controller.addRowList.length,
+                            (index) => PlutoRow(
+                                    cells: Map.from((controller.addRowList[index]).map((key, value) {
+                                  {
+                                    return MapEntry(key, PlutoCell(value: value ?? '')); // 일반 셀은 기존 로직대로
+                                  }
+                                }))));
                         controller.stateManager2.insertRows(controller.smallBoxSaveList.length, controller.insertRow);
                         //  controller.addRowList[0].addAll({'cbxSuSeq': '${controller.smallBoxList[i]['cbxSuSeq']}'});
                         //  controller.addRowList[0].addAll({'scanSeq': '${controller.smallBoxList[i]['scanSeq']}'});
-                        Get.dialog(CommonDialogWidget(contentText: '추가되었습니다', pageFlag: 10,));
+                        Get.dialog(CommonDialogWidget(
+                          contentText: '추가되었습니다',
+                          pageFlag: 10,
+                        ));
                         controller.textItemCdController.text = '';
                         controller.textItemNmController.text = '';
                         controller.textQtyController.text = '';
@@ -2178,37 +1993,31 @@ class MainKitPage extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                             border: Border(
-                                right: BorderSide(color: const Color(0x5c3c3c43),)
-                            ),
+                                right: BorderSide(
+                              color: const Color(0x5c3c3c43),
+                            )),
                             borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15)),
-                            color: AppTheme.navy_navy_900
-                        ),
+                            color: AppTheme.navy_navy_900),
                         width: MediaQuery.of(context).size.width,
                         padding: const EdgeInsets.only(
                           top: AppTheme.spacing_s_12,
                           bottom: AppTheme.spacing_s_12,
                         ),
                         child: Center(
-                          child: Text('저장',
-                              style: AppTheme.titleHeadline.copyWith(
-                                  color: AppTheme.white,
-                                  fontSize: 17)),
+                          child: Text('저장', style: AppTheme.titleHeadline.copyWith(color: AppTheme.white, fontSize: 17)),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 12,),
+                  SizedBox(
+                    width: 12,
+                  ),
                   Expanded(
                     child: TextButton(
                       style: ButtonStyle(
-                          shape: MaterialStateProperty.all<
-                              RoundedRectangleBorder>(
-                              const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(15),
-                                      bottomRight: Radius.circular(15)))),
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.all(0))),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)))),
+                          padding: MaterialStateProperty.all(const EdgeInsets.all(0))),
                       onPressed: () {
                         Get.log('닫기 클릭!');
                         controller.isFocus.value = false;
@@ -2221,10 +2030,7 @@ class MainKitPage extends StatelessWidget {
                           bottom: AppTheme.spacing_s_12,
                         ),
                         child: Center(
-                          child: Text('닫기',
-                              style: AppTheme.titleHeadline.copyWith(
-                                  color: AppTheme.black,
-                                  fontSize: 17)),
+                          child: Text('닫기', style: AppTheme.titleHeadline.copyWith(color: AppTheme.black, fontSize: 17)),
                         ),
                       ),
                     ),
@@ -2248,7 +2054,9 @@ class MainKitPage extends StatelessWidget {
               color: AppTheme.dark_text_secondary,
               height: 1,
             ),
-            SizedBox(height: 8,),
+            SizedBox(
+              height: 8,
+            ),
             Container(
               width: MediaQuery.of(context).size.width - 10,
               child: SingleChildScrollView(
@@ -2257,7 +2065,9 @@ class MainKitPage extends StatelessWidget {
                   // mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     _subData2('프로젝트명', controller.projectNm.value, true),
-                    SizedBox(width: 32,),
+                    SizedBox(
+                      width: 32,
+                    ),
                     _subData2('자재코드/자재명', controller.itemCdNm.value.trim(), true),
                   ],
                 ),
@@ -2266,26 +2076,41 @@ class MainKitPage extends StatelessWidget {
             Row(
               children: [
                 _subData2('박스번호', controller.boxNo.value, false),
-                SizedBox(width: 32,),
+                SizedBox(
+                  width: 32,
+                ),
                 _subData2('확정일', controller.wrkCfmDt.value ?? '', false),
               ],
             ),
-            SizedBox(width: 32,),
-
-            SizedBox(height: 4,),
+            SizedBox(
+              width: 32,
+            ),
+            SizedBox(
+              height: 4,
+            ),
             Container(
               color: AppTheme.dark_text_secondary,
               height: 1,
             ),
-            SizedBox(height: 12,),
+            SizedBox(
+              height: 12,
+            ),
             _alertInput('자재코드'),
-            SizedBox(height: 4,),
+            SizedBox(
+              height: 4,
+            ),
             _alertInput('자재명'),
-            SizedBox(height: 4,),
+            SizedBox(
+              height: 4,
+            ),
             _alertInput('수량'),
-            SizedBox(height: 4,),
+            SizedBox(
+              height: 4,
+            ),
             _alertInput('세트'),
-            SizedBox(height: 4,),
+            SizedBox(
+              height: 4,
+            ),
             _alertInput('단위'),
           ],
         ),
@@ -2298,29 +2123,38 @@ class MainKitPage extends StatelessWidget {
       children: [
         Container(
           width: 100,
-          child: Text(title, style: AppTheme.a24700.copyWith(color: AppTheme.black), textAlign: TextAlign.right, ),
+          child: Text(
+            title,
+            style: AppTheme.a24700.copyWith(color: AppTheme.black),
+            textAlign: TextAlign.right,
+          ),
         ),
-        SizedBox(width: 12,),
+        SizedBox(
+          width: 12,
+        ),
         Expanded(
           child: Container(
             width: 200,
             child: Container(
               padding: const EdgeInsets.only(left: 16, right: 6),
-              decoration: BoxDecoration(
-                  border: Border.all(color: AppTheme.ae2e2e2),
-                  borderRadius: BorderRadius.circular(10),
-                  color: AppTheme.white
-              ),
+              decoration: BoxDecoration(border: Border.all(color: AppTheme.ae2e2e2), borderRadius: BorderRadius.circular(10), color: AppTheme.white),
               child: TextFormField(
-
-                style:  AppTheme.a16400.copyWith(color: AppTheme.a6c6c6c),
-                controller: title == '자재코드' ? controller.textItemCdController : title == '자재명' ? controller.textItemNmController : title == '수량' ? controller.textQtyController
-                    : title == '세트' ? controller.textSetController : title == '단위' ? controller.textUnitController : controller.textItemCdController,
+                style: AppTheme.a16400.copyWith(color: AppTheme.a6c6c6c),
+                controller: title == '자재코드'
+                    ? controller.textItemCdController
+                    : title == '자재명'
+                        ? controller.textItemNmController
+                        : title == '수량'
+                            ? controller.textQtyController
+                            : title == '세트'
+                                ? controller.textSetController
+                                : title == '단위'
+                                    ? controller.textUnitController
+                                    : controller.textItemCdController,
                 textAlignVertical: TextAlignVertical.center,
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-
                   contentPadding: const EdgeInsets.all(0),
                   fillColor: AppTheme.white,
                   filled: true,
@@ -2344,234 +2178,7 @@ class MainKitPage extends StatelessWidget {
 
 
 
-/*
-
-  Future<void> aa3() async{                                   /// 메인은 자재코드를 소박스로 찍으니까 다르게 만들어줘야할듯? 그래서 aa2를 만들었다
-    if(controller.duplicationQr.value == false && controller.duplicationQr3.value == false){
-      controller.isSaveColor.value = false;
-      if(controller.smallBoxSave.isNotEmpty) {
-        for(var i = 0; i < controller.smallBoxList.length; i++) {
-            /// 소박스 안에 여러 자재가 있는 경우때문에
-            for (var ii = 0; ii < controller.smallBoxSave.length; ii++) {
-              if (controller.smallBoxList[i]['itemCd'] == controller.smallBoxSave[ii]['itemCd']) {
-                controller.no.value = i;
-                */
-/*controller.bunhalList.clear();
-                for(var iii = 0; iii < controller.smallBoxList.length; iii++) {
-                  if(controller.smallBoxList[i]['itemCd'] == controller.smallBoxList[iii]['itemCd']) {
-                    controller.bunhalList.add(controller.smallBoxList[i]['itemCd']);
-                  }
-                }
-                /// 분할자재일 경우
-                if( controller.bunhalList[0] == controller.smallBoxSave[ii]['itemCd'] && controller.bunhalList.length > 1) {
-                  for(var su = 0; su < controller.smallBoxSaveList.length; su++) {
-                    /// 우측 리스트안에 들어간 cbxSuNo이 있을 때
-                    if(controller.smallBoxSaveList[su]['cbxSuNo'] == controller.smallBoxList[i]['cbxSuNo']) {
-                       break outerLoop;
-                    }else {
-
-                    }
-                  }
-
-                }*//*
-
-
-                final name = controller.reasonDropdownList
-                    .firstWhere((item) =>
-                item['CODE'] == controller.smallBoxList[i]['ncbxRmk'],
-                    orElse: () => {'NAME': ''})['NAME'];
-
-                if (controller.smallBoxSave[ii]['qtyRes'] == null) {
-                  controller.smallBoxSave[ii].addAll({'qtyRes': 0});
-                }
-                // controller.smallBoxSave[ii]['qtyRes'] ?? 0;
-                /// ************************** 로직 시작 ************************************************************************************
-                ///
-                // 우측리스트에 들어가있는 자재를 또 스캔했고 왼쪽 수량보다 작을 시 --디테일 부분
-                if (controller.duplicationQr2.value && int.parse(controller.smallBoxList[controller.no.value]['cbxQty'].toString())
-                    > int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'].toString())) {
-
-                  controller.isNewItem.value = false;
-                  controller.isColor.value = false;
-                  controller.smallBoxSave[ii].addAll({'scanYn': 'Y'});
-                  controller.smallBoxSave[ii].addAll({'scanNo': controller.textQrController.text});
-                  controller.smallBoxSave[ii].addAll({'syncYn': 'N'});
-                  controller.smallBoxSave[ii].addAll({'ncbxRmk': ''});
-                  controller.smallBoxSave[ii].addAll({'syncYn': 'N'});
-                  controller.smallBoxSave[ii].addAll({'cbxMaNo': '${controller.smallBoxList[controller.no.value]['cbxMaNo']}'});
-                  controller.smallBoxSave[ii].addAll({'cbxMaSeq': '${controller.smallBoxList[controller.no.value]['cbxMaSeq']}'});
-                  controller.smallBoxSave[ii].addAll({'cbxSuNo': '${controller.smallBoxList[controller.no.value]['cbxSuNo']}'});
-                  controller.smallBoxSave[ii].addAll({'scanSeq': '${controller.uniqueSmallBoxList[controller.no.value]['scanSeq']}'});
-                  controller.smallBoxSave[ii].addAll({'itemCd': '${controller.uniqueSmallBoxList[controller.no.value]['itemCd']}'});
-                  controller.smallBoxSave[ii].addAll({'setCbxQty': '${controller.uniqueSmallBoxList[controller.no.value]['setCbxQty']}'});
-                  controller.smallBoxSave[ii].addAll({'cbxQty': '${controller.uniqueSmallBoxList[controller.no.value]['cbxQty']}'});
-                  controller.smallBoxSave[ii].addAll({'setQty': '${controller.uniqueSmallBoxList[controller.no.value]['setQty']}'});
-                  controller.smallBoxSave[ii].addAll({'qtyUnit': '${controller.uniqueSmallBoxList[controller.no.value]['qtyUnit']}'});
-                  controller.smallBoxSave[ii].addAll({'boxNo': '${controller.uniqueSmallBoxList[controller.no.value]['boxNo']}'});
-                  controller.smallBoxSave[ii].addAll({'prtNo': 'X'});
-                  controller.smallBoxSave[ii].addAll({'ncbxRmkName': name.toString()});
-                  controller.smallBoxSave[ii].addAll({'wrkQtySync': null});
-                  controller.smallBoxSave[ii]['extrVal'] = 'D';
-                  controller.smallBoxDetailList.add(
-                      controller.smallBoxSave[ii]);
-                  if (int.parse(controller.uniqueSmallBoxList[controller.no.value]['cbxQty'].toString()) <= int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'].toString())
-                      + controller.smallBoxSave[ii]['qty'] + controller.smallBoxSave[ii]['qtyRes']) {
-                    controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] = controller.rows[controller.no.value].cells['cbxQty']?.value;
-                    controller.isSaveColor.value = false;
-                    controller.isColor.value = true;
-                    controller.noList3.add(controller.uniqueSmallBoxList[i]['itemCd']);
-                    controller.test();
-                  } else {
-                    controller.isSaveColor.value = false;
-                    controller.isColor.value = false;
-                    controller.smallBoxSaveList[controller.dupSaveListIndex
-                        .value]['qty'] = (int.parse(
-                        controller.smallBoxSaveList[controller.dupSaveListIndex
-                            .value]['qty'].toString())
-                        + controller.smallBoxSave[ii]['qty'] +
-                        controller.smallBoxSave[ii]['qtyRes']).toInt();
-                  }
-
-                  controller.rows2.value = List<PlutoRow>.generate(
-                      controller.smallBoxSaveList.length, (index) =>
-                      PlutoRow(cells:
-                      Map.from((controller.smallBoxSaveList[index]).map((key,
-                          value) =>
-                          MapEntry(key, PlutoCell(
-                              value: value == null ? '' : value)),
-                      )))
-                  );
-                  controller.textQrController.text = '';
-                  controller.stateManager2.removeAllRows();
-                  controller.stateManager2.appendRows(controller.rows2);
-                  controller.smallBoxSaveList[controller.dupSaveListIndex
-                      .value]['qty'] ==
-                      controller.rows[controller.no.value].cells['cbxQty']
-                          ?.value
-                      ? controller.isColor.value = true : null;
-                  */
-/*    }
-                }*//*
-
-
-
-                } else if (controller.duplicationQr2.value && controller.rows[controller.no.value].cells['cbxQty']?.value == controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty']) {
-                  Get.log('아무것도 하지마');
-                }
-                // 새로 스캔하는 자재
-                else {
-                  controller.isNewItem.value = true;
-                  for (var i = 0; i < controller.uniqueSmallBoxList.length; i++) {
-                    if (controller.uniqueSmallBoxList[i]['itemCd'] == controller.smallBoxSave[ii]['itemCd']) {
-                      controller.no.value = i;
-                      controller.smallBoxSave[ii].addAll({'no': '${controller.uniqueSmallBoxList[i]['no']}'});
-                      controller.smallBoxSave[ii].addAll({'scanYn': 'Y'});
-                      controller.smallBoxSave[ii].addAll({'scanNo': controller.textQrController.text});
-                      controller.smallBoxSave[ii].addAll({'syncYn': 'N'});
-                      controller.smallBoxSave[ii].addAll({'cbxMaNo': '${controller.uniqueSmallBoxList[i]['cbxMaNo']}'});
-                      controller.smallBoxSave[ii].addAll({'cbxMaSeq': '${controller.uniqueSmallBoxList[i]['cbxMaSeq']}'});
-                      controller.smallBoxSave[ii].addAll({'cbxSuNo': '${controller.uniqueSmallBoxList[i]['cbxSuNo']}'});
-                      controller.smallBoxSave[ii].addAll({'scanSeq': '${controller.uniqueSmallBoxList[i]['scanSeq']}'});
-                      controller.smallBoxSave[ii].addAll({'itemCd': '${controller.uniqueSmallBoxList[i]['itemCd']}'});
-                      controller.smallBoxSave[ii].addAll({'setCbxQty': '${controller.uniqueSmallBoxList[i]['setCbxQty']}'});
-                      controller.smallBoxSave[ii].addAll({'cbxQty': '${controller.uniqueSmallBoxList[i]['cbxQty']}'});
-                      controller.smallBoxSave[ii].addAll({'setQty': '${controller.uniqueSmallBoxList[i]['setQty']}'});
-                      controller.smallBoxSave[ii].addAll({'qtyUnit': '${controller.uniqueSmallBoxList[i]['qtyUnit']}'});
-                      controller.smallBoxSave[ii].addAll({'boxNo': '${controller.uniqueSmallBoxList[controller.no.value]['boxNo']}'});
-                      controller.smallBoxSave[ii].addAll({'ncbxRmkName': name.toString()});
-                      controller.smallBoxSave[ii].addAll({'wrkQtySync': null});
-                      controller.smallBoxSave[ii].addAll({'prtNo': 'X'});
-                    }
-                  }
-                  // 왼쪽 리스트의 수량보다 클 경우에는 왼쪽수량만큼 입력
-                  // 그보다 작을 경우에는 qty 값만큼 입력
-                  if (controller.rows[controller.no.value].cells['cbxQty']?.value <= (controller.smallBoxSave[ii]['qty'] +
-                      controller.smallBoxSave[ii]['qtyRes']).toInt()) {
-                    controller.smallBoxSave[ii]['qty'] = controller.rows[controller.no.value].cells['cbxQty']?.value;
-                    controller.isSaveColor.value = false;
-                    controller.isColor.value = true;
-                    controller.noList3.add(controller.uniqueSmallBoxList[i]['itemCd']);
-                    controller.test();
-                  } else { // 아직 다 수량을 스캔 못했을 때
-                    controller.smallBoxSave[ii]['qty'] = (controller.smallBoxSave[ii]['qty'] + controller.smallBoxSave[ii]['qtyRes']).toInt();
-                    controller.smallBoxSave[ii]['extrVal'] = 'D';
-
-                    /// 저장 시에 DETAIL에 넘겨줘야할 오브젝트 구분
-                    controller.smallBoxDetailList.add(controller.smallBoxSave[ii]);
-                  }
-                  controller.smallBoxSaveList.add(controller.smallBoxSave[ii]);
-                  controller.smallBoxSaveList[controller.smallBoxSaveList.length - 1]['prtNo'] = 'X';
-                  Get.log('ㅁㄴㅇㅁㄴㅇㄴ: ${controller.smallBoxSave.length}');
-
-
-                  */
-/*controller.rows2.value = List<PlutoRow>.generate(controller.smallBoxSaveList.length, (index) =>
-                    PlutoRow(cells:
-                    Map.from((controller.smallBoxSaveList[index]).map((key, value) =>
-                        MapEntry(key, PlutoCell(value: value == null ? '' : value )),
-                    )))
-                );*//*
-
-
-
-                }
-              }
-            }
-
-
-        }
-
-
-      }
-    }
-    if(controller.isNewItem.value) {
-      controller.insertRow.value = List<PlutoRow>.generate(controller.smallBoxSave.length, (index) =>
-          PlutoRow(cells:
-          Map.from((controller.smallBoxSave[index]).map((key, value) {
-            {
-              return MapEntry(key, PlutoCell(value: value ?? '')); // 일반 셀은 기존 로직대로
-            }
-
-          }
-          )))
-      );
-      for(var i = 0; i < controller.insertRow.length; i++) {
-        controller.insertRow[i].cells['itemNm']?.value = controller.insertRow[i].cells['itemNm']?.value.toString().trim();
-        controller.insertRow[i].cells['qty']?.value = controller.insertRow[i].cells['qty']?.value.toInt();
-        Get.log('구구: ${ controller.insertRow[i].cells['setQty']?.value}');
-      }
-      controller.stateManager2.insertRows(controller.no.value, controller.insertRow.value);
-    }
-
-    await controller.test();
-    Get.log('이거이거 ${controller.smallBoxSaveList}');
-    controller.textQrController.text = '';
-
-
-    List<PlutoRow> sortedRows = List.from(controller.stateManager2.rows);
-    controller.no.value = 990;
-    // 원하는 기준으로 정렬 (예: 'no' 컬럼 기준 오름차순)
-    sortedRows.sort((a, b) {
-      int noA = int.parse(a.cells['no']?.value.toString() ?? '0');
-      int noB = int.parse(b.cells['no']?.value.toString() ?? '0');
-      return noA.compareTo(noB); // 오름차순 정렬
-    });
-    controller.stateManager2.removeAllRows();
-
-    // 3. 정렬된 리스트로 다시 로드
-    controller.stateManager2.appendRows(sortedRows);
-  }
-
-*/
-
-
-
-
-
-
 
 
 
 }
-
-

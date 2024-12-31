@@ -173,6 +173,12 @@ class AppTheme {
       fontFamily: 'SUIT',
       fontStyle: FontStyle.normal,
       fontSize: 24.0);
+  static const a22400 = TextStyle(
+      letterSpacing: -0.6,
+      fontWeight: FontWeight.w400,
+      fontFamily: 'SUIT',
+      fontStyle: FontStyle.normal,
+      fontSize: 22.0);
   static const a20700 = TextStyle(
       letterSpacing: -0.6,
       fontWeight: FontWeight.w700,

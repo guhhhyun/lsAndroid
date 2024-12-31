@@ -106,9 +106,7 @@ class CommonBackDialogWidget extends StatelessWidget {
                     padding: MaterialStateProperty.all(const EdgeInsets.all(0))),
                 // 성공
                 onPressed: () {
-                  pageFlag == 1 ?
-                  Get.toNamed(Routes.FACILITY_FIRST)
-                      :  Get.offAllNamed(Routes.FACILITY);
+
                   //  Get.back();
                   //  Get.back();
                 },

@@ -42,7 +42,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
 
   @override
   Widget build(BuildContext context) {
-
+    controller.isFocus.value == false ? controller.requestFocus() : null;
     return WillPopScope(
       onWillPop: () {
         Get.offAll(HomePage());
@@ -419,9 +419,22 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                         const EdgeInsets.all(0))),
                 onPressed: () async {
                   Get.log('삭제 클릭!');
-                  await controller.registCancelIpgoBtn('D');
-                  await controller.checkQR();
-                  Get.dialog(CommonDialogWidget(contentText: '삭제되었습니다.', pageFlag: 0));
+                  for(var i = 0; i < controller.etcIpgoQrCheckList.length; i++) {
+                    if(controller.etcIpgoQrCheckList[i] == true) {
+                      controller.isRowChecked.value = true;
+                      break;
+                    }else {
+                      controller.isRowChecked.value = false;
+                    }
+
+                  }
+                  if(controller.isRowChecked.value) {
+                    await controller.registCancelIpgoBtn('D');
+                    await controller.checkQR();
+                    Get.dialog(CommonDialogWidget(contentText: '삭제되었습니다.', pageFlag: 0));
+                  }else {
+                    Get.dialog(CommonDialogWidget(contentText: '선택된 항목이 없습니다.', pageFlag: 0));
+                  }
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -466,6 +479,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
               border: Border.all(color: AppTheme.ae2e2e2)),
           child: Center(
             child: TextFormField(
+              focusNode: title == '자재코드' ? controller.focusNode2 : null,
               readOnly: false,
               expands :true,
               minLines: null,
@@ -484,7 +498,11 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                 border: InputBorder.none,
               ),
               showCursor: true,
-
+              onTap: () {
+                controller.isFocus.value = true;
+                if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
+                else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+              },
               // onChanged: ((value) => controller.submitSearch(value)),
             ),
           ),
@@ -622,7 +640,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
           title: '창고',
           field: 'whNm',
           type: PlutoColumnType.text(),
-          width: 100,
+          width: 140,
           enableSorting: false,
           enableEditingMode: true,
           enableContextMenu: false,
@@ -904,7 +922,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         title: '프로젝트명',
         field: 'pjtNm',
         type: PlutoColumnType.text(),
-        width: 130,
+        width: 260,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -1135,6 +1153,12 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
 
                         controller.gridStateMgr5.removeAllRows();
                         controller.gridStateMgr5.appendRows(controller.rowDatas5);
+
+                        print('이거 ${controller.currentRowIndex2.value}');
+                        print('이거 ${controller.etcIpgoQrDetailTotalList[controller.currentRowIndex2.value]}');
+                        print('이거 ${controller.etcIpgoQrDetailTotalList}');
+                        print('이거 ${controller.etcIpgoQrDetailTotalList.length}');
+
 
                       },
                       configuration: PlutoGridConfiguration(
@@ -1819,8 +1843,48 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                             const EdgeInsets.all(0))),
                     onPressed: () async {
                       Get.log('저장 클릭!');
-                      await controller.registSaveIpgoBtn();
-                      Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
+                   //   await controller.reqCheburn();
+                    //  await controller.reqCheburn2();
+                      for(var i = 0; i < controller.etcIpgoQrCheckList.length; i++) {
+                        if(controller.etcIpgoQrCheckList[i] == true) {
+                          controller.isEtcIpgoQrCheckList.value = true;
+                          controller.isEtcIpgoQrCheckListIdx.value = i;
+                          break;
+                        }else {
+                          controller.isEtcIpgoQrCheckList.value = false;
+                        }
+                      }
+                      if(controller.isEtcIpgoQrCheckList.value) {
+                        await controller.registSaveIpgoBtn();
+             /*           controller.etcIpgoSaveQrList.removeAt(controller.isEtcIpgoQrCheckListIdx.value); // 좌측리스트 삭제
+                        controller.etcIpgoQrDetailTotalList.removeAt(controller.isEtcIpgoQrCheckListIdx.value); // 우측 디테일 삭제
+                        controller.etcIpgoQrCheckList.removeAt(controller.isEtcIpgoQrCheckListIdx.value);*/
+                        /// 좌측 리스트 삭제
+                        controller.gridStateMgr4.removeAllRows();
+                        controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcIpgoSaveQrList.length, (index) =>
+                            PlutoRow(cells:
+                            Map.from((controller.etcIpgoSaveQrList[index]).map((key, value) =>
+                                MapEntry(key, PlutoCell(value: value == null ? '' : value )),
+                            )))
+                        );
+                        controller.gridStateMgr4.appendRows(controller.rowDatas4.value);
+
+                        /// 우측 리스트 삭제
+                        controller.gridStateMgr5.removeAllRows();
+                        controller.rowDatas5.value = List<PlutoRow>.generate(controller.etcIpgoQrDetailTotalList.length, (index) =>
+                            PlutoRow(cells:
+                            Map.from((controller.etcIpgoQrDetailTotalList[index]).map((key, value) =>
+                                MapEntry(key, PlutoCell(value: value == null ? '' : value )),
+                            )))
+                        );
+                        controller.gridStateMgr5.appendRows(controller.rowDatas5.value);
+                        controller.statusText.value = '';
+                        Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
+
+                      }else {
+                        Get.dialog(CommonDialogWidget(contentText: '선택된 리스트가 없습니다.', pageFlag: 3,));
+                      }
+
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -1858,12 +1922,14 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                             const EdgeInsets.all(0))),
                     onPressed: () async {
                       Get.log('행 삭제 클릭!');
-                      for(var e = 0; e < controller.etcIpgoQrCheckList.length; e++) {
+                      for(var e = controller.etcIpgoQrCheckList.length - 1; e >= 0; e--) {
                         if(controller.etcIpgoQrCheckList[e] == true) {
-                          controller.etcIpgoSaveQrList.removeAt(e);
+                          controller.etcIpgoSaveQrList.removeAt(e); // 좌측리스트 삭제
+                          controller.etcIpgoQrDetailTotalList.removeAt(e); // 우측 디테일 삭제
                           controller.etcIpgoQrCheckList.removeAt(e);
                         }
                       }
+                      /// 좌측 리스트 삭제
                       controller.gridStateMgr4.removeAllRows();
                       controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcIpgoSaveQrList.length, (index) =>
                           PlutoRow(cells:
@@ -1872,6 +1938,16 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                           )))
                       );
                       controller.gridStateMgr4.appendRows(controller.rowDatas4.value);
+
+                      /// 우측 리스트 삭제
+                      controller.gridStateMgr5.removeAllRows();
+                      controller.rowDatas5.value = List<PlutoRow>.generate(controller.etcIpgoQrDetailTotalList.length, (index) =>
+                          PlutoRow(cells:
+                          Map.from((controller.etcIpgoQrDetailTotalList[index]).map((key, value) =>
+                              MapEntry(key, PlutoCell(value: value == null ? '' : value )),
+                          )))
+                      );
+                      controller.gridStateMgr5.appendRows(controller.rowDatas5.value);
                       // inbe창고 창고// 가속도의 힘으로
                     },
                     child: Container(
@@ -1995,8 +2071,10 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                       controller.textQrController.text = '';
                     }else{
                       await controller.checkQR2(); // 조회
-                      await controller.checkDetailQR2(); // 디테일 조회
-                      controller.etcIpgoSaveQrList.add(controller.etcIpgoQrList[0]);
+                      if(controller.etcIpgoQrList.isNotEmpty) {
+                        await controller.checkDetailQR2(); // 디테일 조회
+                        controller.etcIpgoSaveQrList.add(controller.etcIpgoQrList[0]);
+                      }
                       controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcIpgoSaveQrList.length, (index) =>
                           PlutoRow(cells:
                           Map.from((controller.etcIpgoSaveQrList[index]).map((key, value) =>

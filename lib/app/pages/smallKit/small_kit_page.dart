@@ -355,7 +355,7 @@ class SmallKitPage extends StatelessWidget {
                                     else
                                     {
                                       /// 자재 스캔 시작!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                                      await controller.checkItemQr('');
+                                      await controller.checkItemQr();
                                       await controller.test();
                                       await aa1();
                                       await controller.test();
@@ -441,6 +441,10 @@ class SmallKitPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _subDataMemo('메모'),
+                    SizedBox(width: 12,),
+                    _subDataWeight(),
+                    SizedBox(width: 12,),
+                    _subDataWeight2(),
                     Row(
                       children: [
                         Container(
@@ -556,6 +560,14 @@ class SmallKitPage extends StatelessWidget {
             controller.no.value = i;
           }
         }
+        /// 새로 qty 단위를 계산해서 써야할 때 적용
+        /* if(controller.smallBoxSave[0]['qtyUnit'] == '') {
+
+          }else {
+            // 여기에 기존 로직
+          }*/
+
+
         // 우측리스트에 들어가있는 자재를 또 스캔했고 왼쪽 수량보다 작을 시
         if(controller.duplicationQr2.value && int.parse(controller.smallBoxList[controller.no.value]['cbxQty']) > int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'])) {
           controller.isColor.value = false;
@@ -574,13 +586,22 @@ class SmallKitPage extends StatelessWidget {
           controller.smallBoxSave[0].addAll({'qtyUnit': '${controller.smallBoxList[controller.no.value]['qtyUnit']}'});
           controller.smallBoxSave[0].addAll({'wrkQtySync': null});
           controller.smallBoxSave[0]['extrVal'] = 'D';
-          controller.smallBoxDetailList.add(controller.smallBoxSave[0]); 
+          controller.smallBoxDetailList.add(controller.smallBoxSave[0]);
+
+
+
           if(int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty']) <= int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'])
               + controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']) {
             controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] = controller.rows[controller.no.value].cells['cbxQty']?.value;
+
+            controller.smallBoxSave[0].addAll({'newQty': controller.rows[controller.no.value].cells['cbxQty']?.value}); // 새로 추가한 부분 지울수도
+
           }else {
             controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] = (controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty']
                 + controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']).toInt();
+
+            controller.smallBoxSave[0].addAll({'newQty': (controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty']
+                + controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']).toInt()}); // 새로 추가한 부분 지울수도
           }
 
           controller.rows2.value = List<PlutoRow>.generate(controller.smallBoxSaveList.length, (index) =>
@@ -760,6 +781,100 @@ class SmallKitPage extends StatelessWidget {
      );
    }
 
+   Widget _subDataWeight() {
+     return Row(
+       crossAxisAlignment: CrossAxisAlignment.center,
+       children: [
+         Container(
+           child: Text(
+             '무게(Net)',
+             style: AppTheme.a24700.copyWith(color: AppTheme.black),
+           ),
+         ),
+         SizedBox(
+           width: 12,
+         ),
+         Container(
+           width: 90,
+           height: 50,
+           padding: const EdgeInsets.all(6),
+           decoration: BoxDecoration(border: Border.all(color: AppTheme.ae2e2e2), borderRadius: BorderRadius.circular(10)),
+           child: TextFormField(
+             //  focusNode: controller.focusNode,
+             expands: true,
+             minLines: null,
+             maxLines: null,
+             style: AppTheme.a24400.copyWith(color: AppTheme.a6c6c6c),
+             // maxLines: 5,
+             controller: controller.textWeightController,
+             textInputAction: TextInputAction.done,
+             keyboardType: TextInputType.text,
+             decoration: InputDecoration(
+               contentPadding: EdgeInsets.all(0),
+               fillColor: Colors.white,
+               // filled: true,
+               hintText: '',
+               hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+               border: InputBorder.none,
+             ),
+             showCursor: true,
+             onTap: () {
+               controller.isQrFocus.value = true;
+             },
+             // onChanged: ((value) => controller.submitSearch(value)),
+           ),
+         ),
+       ],
+     );
+   }
+
+   Widget _subDataWeight2() {
+     return Row(
+       crossAxisAlignment: CrossAxisAlignment.center,
+       children: [
+         Container(
+           child: Text(
+             '무게(Gross)',
+             style: AppTheme.a24700.copyWith(color: AppTheme.black),
+           ),
+         ),
+         SizedBox(
+           width: 12,
+         ),
+         Container(
+           width: 90,
+           height: 50,
+           padding: const EdgeInsets.all(6),
+           decoration: BoxDecoration(border: Border.all(color: AppTheme.ae2e2e2), borderRadius: BorderRadius.circular(10)),
+           child: TextFormField(
+             //  focusNode: controller.focusNode,
+             expands: true,
+             minLines: null,
+             maxLines: null,
+             style: AppTheme.a24400.copyWith(color: AppTheme.a6c6c6c),
+             // maxLines: 5,
+             controller: controller.textWeightController2,
+             textInputAction: TextInputAction.done,
+             keyboardType: TextInputType.text,
+             decoration: InputDecoration(
+               contentPadding: EdgeInsets.all(0),
+               fillColor: Colors.white,
+               // filled: true,
+               hintText: '',
+               hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+               border: InputBorder.none,
+             ),
+             showCursor: true,
+             onTap: () {
+               controller.isQrFocus.value = true;
+             },
+             // onChanged: ((value) => controller.submitSearch(value)),
+           ),
+         ),
+       ],
+     );
+   }
+
   Widget _subData2(String title, String content, bool isLong) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -894,9 +1009,9 @@ class SmallKitPage extends StatelessWidget {
                   if(controller.isSaveClick.value == false) {
                     controller.isSaveClick.value = true;
                     Get.log('저장할 리스트!: ${controller.smallBoxSaveList.length}');
-                    await controller.registSmallKitSave();
-                    await controller.registSmallKitDetailSave();
-                    await controller.registMemoSmallKitSave(); // 메모저장
+                  //  await controller.registSmallKitSave();
+                  //  await controller.registSmallKitDetailSave(); // 스캔 시 저장까지 되게끔 바꿀꺼라 일단 주석처리
+                    await controller.registMemoSmallKitSave(); // 메모 저장
                     controller.isSave.value ?
                     Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0)) :
                     Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
@@ -2032,7 +2147,7 @@ class SmallKitPage extends StatelessWidget {
          title: '변경확정',
          field: 'whNm',
          type: PlutoColumnType.select(controller.bomConfirm),
-         width: 100,
+         width: 160,
          enableSorting: false,
          enableEditingMode: false,
          enableContextMenu: false,

@@ -173,8 +173,6 @@ class CommonAppbarWidget extends StatelessWidget {
                                 padding: MaterialStateProperty.all(
                                     const EdgeInsets.all(0))),
                             onPressed: () {
-                              pageFlag == 1 ?
-                              Get.offAllNamed(Routes.FACILITY_FIRST) : Get.offAllNamed(Routes.FACILITY);
                             },
                             child: Container(
                               width: MediaQuery.of(context).size.width,

@@ -20,6 +20,9 @@ class IpgoPage extends StatelessWidget {
   IpgoController controller = Get.find();
 
   final focusNode2 = FocusNode();
+   final focusNode2Key = FocusNode();
+   final focusNode3 = FocusNode();
+   final focusNode3Key = FocusNode();
   late double test;
    late double test2;
 
@@ -209,7 +212,9 @@ class IpgoPage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 4,),
-           _SearchCondition2(context),
+           SingleChildScrollView(
+               scrollDirection: Axis.horizontal,
+               child: _SearchCondition2(context)),
           SizedBox(height: 12,),
           _ipgoList(context),
 
@@ -483,7 +488,7 @@ class IpgoPage extends StatelessWidget {
                ),
                showCursor: true,
                onTap: () {
-                 controller.isQr.value = false;
+                 controller.isQr.value = true;
                  if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
                  else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
                },
@@ -497,13 +502,13 @@ class IpgoPage extends StatelessWidget {
                  Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
                  controller.selectedInvnrIndex.value = controller.gridStateMgr.currentRowIdx!;
                  controller.isSelectedInvnr.value = true;
-
-                 controller.focusNode.requestFocus();
+                 controller.isQr.value = false;
+                 /*controller.focusNode.requestFocus();
                  Future.delayed(const Duration(), (){
                    controller.focusNode.requestFocus();
                    //  FocusScope.of(context).requestFocus(focusNode);
                    Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                 });
+                 });*/
                },
                // onChanged: ((value) => controller.submitSearch(value)),
              ),
@@ -787,126 +792,124 @@ class IpgoPage extends StatelessWidget {
 
 
    Widget _SearchCondition2(BuildContext context) {
-     return Row(
-       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-       children: [
-         Container(
-         //  width:  MediaQuery.of(context).size.width - 200 ,
-           padding: EdgeInsets.only(left: 24),
-           child: SingleChildScrollView(
-             scrollDirection: Axis.horizontal,
-             child: Row(
-               children: [
-                 _qrCodeTextForm(context),
-                // _invnrTextForm('QR 코드', 3),
-                 SizedBox(width: 16,),
-                 Obx(()=> _statusText()),
-               ],
-             ),
+     return Container(
+       width: MediaQuery.of(context).size.width-30,
+       padding: EdgeInsets.only(left: 12),
+       child: Row(
+         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+         children: [
+           Row(
+                 children: [
+                   _qrCodeTextForm(context),
+                  // _invnrTextForm('QR 코드', 3),
+                   SizedBox(width: 16,),
+                   Obx(()=> _statusText()),
+                 ],
+
            ),
-         ),
-         Row(
-           mainAxisAlignment: MainAxisAlignment.start,
-           children: [
-             Container(
-               margin: EdgeInsets.only(right: 12),
-               width: 120,
-               height: 40,
-               child: TextButton(
-                 style: ButtonStyle(
-                     shape: MaterialStateProperty.all<
-                         RoundedRectangleBorder>(
-                         const RoundedRectangleBorder(
-                             borderRadius: BorderRadius.only(
-                                 bottomLeft: Radius.circular(10),
-                                 bottomRight: Radius.circular(10)))),
-                     padding: MaterialStateProperty.all(
-                         const EdgeInsets.all(0))),
-                 onPressed: () {
-                   Get.log('행 삭제 클릭!');
-                   if(controller.gridStateMgr2.currentRowIdx != null) {
-                     controller.ipgoList.removeAt(controller.gridStateMgr2.currentRowIdx!);
-                     controller.gridStateMgr2.removeAllRows();
-                     updateRows();
-                     controller.gridStateMgr2.appendRows(controller.rowDatas2.value);
-                   }
+           Row(
 
-                 },
-                 child: Container(
-                   decoration: BoxDecoration(
-                       color: AppTheme.navy_navy_800,
-                       borderRadius: BorderRadius.circular(10),
-                       border: Border.all(color: AppTheme.ae2e2e2)
-                   ),
-                   width: 120,
-                   height: 40,
-                   padding: const EdgeInsets.only(
+             children: [
+               Container(
+                 margin: EdgeInsets.only(right: 12),
+                 width: 120,
+                 height: 40,
+                 child: TextButton(
+                   style: ButtonStyle(
+                       shape: MaterialStateProperty.all<
+                           RoundedRectangleBorder>(
+                           const RoundedRectangleBorder(
+                               borderRadius: BorderRadius.only(
+                                   bottomLeft: Radius.circular(10),
+                                   bottomRight: Radius.circular(10)))),
+                       padding: MaterialStateProperty.all(
+                           const EdgeInsets.all(0))),
+                   onPressed: () {
+                     Get.log('행 삭제 클릭!');
+                     if(controller.gridStateMgr2.currentRowIdx != null) {
+                       controller.ipgoList.removeAt(controller.gridStateMgr2.currentRowIdx!);
+                       controller.gridStateMgr2.removeAllRows();
+                       updateRows();
+                       controller.gridStateMgr2.appendRows(controller.rowDatas2.value);
+                     }
 
-                   ),
-                   child: Center(
-                     child: Text('행 삭제',
-                         style: AppTheme.a18700.copyWith(
-                           color: AppTheme.white,
-                         )),
-                   ),
-                 ),
-               ),
-             ),
-             SizedBox(width: 12,),
-             Container(
-               margin: EdgeInsets.only(right: 12),
-               width: 120,
-               height: 40,
-               child: TextButton(
-                 style: ButtonStyle(
-                     shape: MaterialStateProperty.all<
-                         RoundedRectangleBorder>(
-                         const RoundedRectangleBorder(
-                             borderRadius: BorderRadius.only(
-                                 bottomLeft: Radius.circular(10),
-                                 bottomRight: Radius.circular(10)))),
-                     padding: MaterialStateProperty.all(
-                         const EdgeInsets.all(0))),
-                 onPressed: () async {
-                   if(controller.isIpgoClick.value == false) {
-                     controller.isIpgoClick.value = true;
-                     Get.log('입고등록 클릭!');
-                     await controller.reqCheburnIpgo();
-                     await controller.registIpgoBtn();
+                   },
+                   child: Container(
+                     decoration: BoxDecoration(
+                         color: AppTheme.navy_navy_800,
+                         borderRadius: BorderRadius.circular(10),
+                         border: Border.all(color: AppTheme.ae2e2e2)
+                     ),
+                     width: 120,
+                     height: 40,
+                     padding: const EdgeInsets.only(
 
-                     SchedulerBinding.instance!.addPostFrameCallback((_) {
-                       Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
-                     });
-                     controller.ipgoQrList.clear();
-                     controller.ipgoList.clear();
-                     controller.gridStateMgr2.removeAllRows();
-                   }
-
-
-                 },
-                 child: Container(
-                   decoration: BoxDecoration(
-                       color: AppTheme.navy_navy_800,
-                       borderRadius: BorderRadius.circular(10),
-                       border: Border.all(color: AppTheme.ae2e2e2)
-                   ),
-                   width: 120,
-                   height: 40,
-                   padding: const EdgeInsets.only(
-
-                   ),
-                   child: Center(
-                     child: Text('입고 등록',
-                         style: AppTheme.a18700.copyWith(
-                           color: AppTheme.white,
-                         )),
+                     ),
+                     child: Center(
+                       child: Text('행 삭제',
+                           style: AppTheme.a18700.copyWith(
+                             color: AppTheme.white,
+                           )),
+                     ),
                    ),
                  ),
                ),
-             ),
-           ],
-         ),
-       ],
+               SizedBox(width: 12,),
+               Container(
+                 margin: EdgeInsets.only(right: 12),
+                 width: 120,
+                 height: 40,
+                 child: TextButton(
+                   style: ButtonStyle(
+                       shape: MaterialStateProperty.all<
+                           RoundedRectangleBorder>(
+                           const RoundedRectangleBorder(
+                               borderRadius: BorderRadius.only(
+                                   bottomLeft: Radius.circular(10),
+                                   bottomRight: Radius.circular(10)))),
+                       padding: MaterialStateProperty.all(
+                           const EdgeInsets.all(0))),
+                   onPressed: () async {
+                     if(controller.isIpgoClick.value == false) {
+                       controller.isIpgoClick.value = true;
+                       Get.log('입고등록 클릭!');
+                       await controller.reqCheburnIpgo();
+                       await controller.registIpgoBtn();
+                       controller.successIpgo.value == true ?
+                       SchedulerBinding.instance!.addPostFrameCallback((_) {
+                         Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
+                       }) : Get.dialog(CommonDialogWidget(contentText: '등록에 실패하였습니다', pageFlag: 3,));
+                       controller.ipgoQrList.clear();
+                       controller.ipgoList.clear();
+                       controller.gridStateMgr2.removeAllRows();
+                     }
+
+
+                   },
+                   child: Container(
+                     decoration: BoxDecoration(
+                         color: AppTheme.navy_navy_800,
+                         borderRadius: BorderRadius.circular(10),
+                         border: Border.all(color: AppTheme.ae2e2e2)
+                     ),
+                     width: 120,
+                     height: 40,
+                     padding: const EdgeInsets.only(
+
+                     ),
+                     child: Center(
+                       child: Text('입고 등록',
+                           style: AppTheme.a18700.copyWith(
+                             color: AppTheme.white,
+                           )),
+                     ),
+                   ),
+                 ),
+               ),
+             ],
+           ),
+         ],
+       ),
      );
    }
 
@@ -974,84 +977,85 @@ class IpgoPage extends StatelessWidget {
                    color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                  ),
                  child: TextFormField(
-                   expands :true,
-                   minLines: null,
-                   maxLines: null,
-                   focusNode: focusNode2,
-                   style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
-                   // maxLines: 5,
-                   controller: controller.textQrController,
-                   textAlignVertical: TextAlignVertical.center,
-                   onTap: () {
-                     controller.isQr.value = true;
-                     if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
-                     else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                   },
-                   onTapOutside:(event) => { controller.focusCnt.value = 0 },
-                   onFieldSubmitted: (value) async {
-                     controller.isDuplQr.value = false;
-                     if(controller.isSelectedInvnr.value) {
-                       for(var i = 0; i < controller.ipgoList.length; i++) {
-                         if(controller.ipgoList[i]['qrNo'].contains(controller.textQrController.text)) {
-                           controller.isDuplQr.value = true;
-                         }
-                       }
-                       if(controller.isDuplQr.value) {
-                         controller.statusText.value = '중복된 QR코드입니다.';
-                         controller.textQrController.text = '';
-                       }else{
-                         await controller.checkQR();
-                         if(controller.ipgoQrList.isNotEmpty) {
-                           if(controller.ipgoQrList.length > 1) {
-                             // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
-                             showDialog(
-                               barrierDismissible: false,
-                               context: context, //context
-                               builder: (BuildContext context) {
-                                 return _alertDialog(context);
-                               },
-                             ); // context가 왜?
-                           }else {
-                             controller.ipgoQrList[0].addAll({'no': '${controller.ipgoList.length + 1}'});
-                             controller.ipgoList.add(controller.ipgoQrList[0]);
-                             controller.insertRow = List<PlutoRow>.generate(controller.ipgoQrList.length, (index) =>
-                                 PlutoRow(cells:
-                                 Map.from((controller.ipgoQrList[index]).map((key, value) =>
-                                     MapEntry(key, PlutoCell(value: value ?? '' )),
-                                 )))
-                             );
-                             //  controller.rowDatas2.add(controller.insertRow[0]);
-                             controller.gridStateMgr2.insertRows(controller.ipgoList.length, controller.insertRow);
+                     expands :true,
+                     minLines: null,
+                     maxLines: null,
+                     focusNode: focusNode2,
+                     style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+                     // maxLines: 5,
+                     controller: controller.textQrController,
+                     textAlignVertical: TextAlignVertical.center,
+                     onTap: () {
+                       controller.isQr.value = true;
+                     /*  if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
+                       else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
+                     },
+                     onTapOutside:(event) => { controller.focusCnt.value = 0 },
+                     onFieldSubmitted: (value) async {
+                       controller.isDuplQr.value = false;
+                       if(controller.isSelectedInvnr.value) {
+                         for(var i = 0; i < controller.ipgoList.length; i++) {
+                           if(controller.ipgoList[i]['qrNo'].contains(controller.textQrController.text)) {
+                             controller.isDuplQr.value = true;
                            }
+                         }
+                         if(controller.isDuplQr.value) {
+                           controller.statusText.value = '중복된 QR코드입니다.';
+                           controller.textQrController.text = '';
+                         }else{
+                           await controller.checkQR();
+                           if(controller.ipgoQrList.isNotEmpty) {
+                             if(controller.ipgoQrList.length > 1) {
+                               // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
+                               showDialog(
+                                 barrierDismissible: false,
+                                 context: context, //context
+                                 builder: (BuildContext context) {
+                                   return _alertDialog(context);
+                                 },
+                               ); // context가 왜?
+                             }else {
+                               controller.ipgoQrList[0].addAll({'no': '${controller.ipgoList.length + 1}'});
+                               controller.ipgoList.add(controller.ipgoQrList[0]);
+                               controller.insertRow = List<PlutoRow>.generate(controller.ipgoQrList.length, (index) =>
+                                   PlutoRow(cells:
+                                   Map.from((controller.ipgoQrList[index]).map((key, value) =>
+                                       MapEntry(key, PlutoCell(value: value ?? '' )),
+                                   )))
+                               );
+                               //  controller.rowDatas2.add(controller.insertRow[0]);
+                               controller.gridStateMgr2.insertRows(controller.ipgoList.length, controller.insertRow);
+                             }
+
+                           }
+                           controller.textQrController.text = '';
+                           focusNode2.requestFocus();
 
                          }
+                       }else {
+                         controller.statusText.value = '거래명세서를 선택해주세요.';
                          controller.textQrController.text = '';
-                         focusNode2.requestFocus();
-
+                        // Get.dialog(_dialog('거래명세서를 선택해주세요'));
                        }
-                     }else {
-                       controller.statusText.value = '거래명세서를 선택해주세요.';
-                       controller.textQrController.text = '';
-                      // Get.dialog(_dialog('거래명세서를 선택해주세요'));
-                     }
-                     controller.isQr.value = false;
-                   },
-                   keyboardType: TextInputType.text,
-                   decoration: InputDecoration(
+                       controller.isQr.value = false;
+                     },
+                     keyboardType: TextInputType.text,
+                     decoration: InputDecoration(
 
-                     contentPadding: const EdgeInsets.all(0),
-                     fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
-                     filled: true,
-                    // hintText: 'BC 번호를 입력해주세요',
-                     hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
-                     border: InputBorder.none,
+                       contentPadding: const EdgeInsets.all(0),
+                       fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
+                       filled: true,
+                      // hintText: 'BC 번호를 입력해주세요',
+                       hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+                       border: InputBorder.none,
+                     ),
+                     showCursor: true,
+
+
                    ),
-                   showCursor: true,
-
-
                  ),)
            ),
-         ),
+
        ],
      );
 
@@ -1445,87 +1449,137 @@ class IpgoPage extends StatelessWidget {
                      borderRadius: BorderRadius.circular(10),
                      color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                    ),
-                   child: TextFormField(
-                     expands :true,
-                     minLines: null,
-                     maxLines: null,
-                     focusNode: controller.focusNode2,
-                     style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
-                     // maxLines: 5,
-                     controller: controller.textQrController2,
-                     textAlignVertical: TextAlignVertical.center,
-                     onTap: () {
-                       controller.isQr2.value = true;
-                       if(controller.focusCnt2.value++ > 1) controller.focusCnt2.value = 0;
-                       else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                     },
-                     onTapOutside:(event) => { controller.focusCnt2.value = 0 },
-                     onFieldSubmitted: (value) async {
-                      // controller.isDuplQr.value = false;
-                      /* if(controller.isSelectedInvnr.value) {*/
-                         // 중복처리 일단 주석
-                         /*for(var i = 0; i < controller.ipgoList.length; i++) {
-                           if(controller.ipgoList[i]['qrNo'].contains(controller.textQrController.text)) {
-                             controller.isDuplQr.value = true;
-                           }
-                         }*/
-                         /*if(controller.isDuplQr.value) {
-                           controller.statusText.value = '중복된 QR코드입니다.';
-                           controller.textQrController.text = '';
-                         }else{*/
-                         await controller.checkBoxQR();
+                   child:  KeyboardListener(
+                     focusNode: focusNode3Key,
+                     onKeyEvent: (event) async {
+                       if (event is KeyDownEvent) {
+                         if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
+                           // 엔터 키 감지
+                           await controller.checkBoxQR();
                            if(controller.ipgoQrBoxList.isNotEmpty) {
                              /* controller.ipgoQrBoxList[0].addAll({'no': '${controller.ipgoBoxList.length + 1}'});*/
                              //  controller.ipgoBoxList.add(controller.ipgoQrBoxList[0]);
-                               controller.insertRow2 = List<PlutoRow>.generate(controller.ipgoBoxList.length, (index) =>
-                                   PlutoRow(cells:
-                                   Map.from((controller.ipgoBoxList[index]).map((key, value) =>
-                                       MapEntry(key, PlutoCell(value: value ?? '' )),
-                                   )))
-                               );
-                               //  controller.rowDatas2.add(controller.insertRow[0]);
-                               controller.gridStateMgr4.removeAllRows();
-                               controller.gridStateMgr4.insertRows(controller.ipgoBoxList.length, controller.insertRow2);
+                             controller.insertRow2 = List<PlutoRow>.generate(controller.ipgoBoxList.length, (index) =>
+                                 PlutoRow(cells:
+                                 Map.from((controller.ipgoBoxList[index]).map((key, value) =>
+                                     MapEntry(key, PlutoCell(value: value ?? '' )),
+                                 )))
+                             );
+                             //  controller.rowDatas2.add(controller.insertRow[0]);
+                             controller.gridStateMgr4.removeAllRows();
+                             controller.gridStateMgr4.insertRows(controller.ipgoBoxList.length, controller.insertRow2);
 
-                               controller.gridStateMgr4.setCurrentCell(controller.gridStateMgr4.firstCell, 0);
-                               Get.log('현재위치: ${controller.gridStateMgr4.currentRowIdx}');
-                               controller.currentRowIndex.value = controller.gridStateMgr4.currentRowIdx!;
+                             controller.gridStateMgr4.setCurrentCell(controller.gridStateMgr4.firstCell, 0);
+                             Get.log('현재위치: ${controller.gridStateMgr4.currentRowIdx}');
+                             controller.currentRowIndex.value = controller.gridStateMgr4.currentRowIdx!;
 
-                               /// 오른쪽 분할 그리드 시작!!
-                               controller.insertRow3 = List<PlutoRow>.generate(controller.itemTotalList[0].length, (index) =>
-                                   PlutoRow(cells:
-                                   Map.from((controller.itemTotalList[0][index]).map((key, value) =>
-                                       MapEntry(key, PlutoCell(value: value ?? '' )),
-                                   )))
-                               );
-
-                               controller.gridStateMgr5.insertRows(controller.ipgoBoxList.length, controller.insertRow3);
+                             /// 오른쪽 분할 그리드 시작!!
+                             controller.insertRow3 = List<PlutoRow>.generate(controller.itemTotalList[0].length, (index) =>
+                                 PlutoRow(cells:
+                                 Map.from((controller.itemTotalList[0][index]).map((key, value) =>
+                                     MapEntry(key, PlutoCell(value: value ?? '' )),
+                                 )))
+                             );
+                             controller.gridStateMgr5.removeAllRows();
+                             controller.gridStateMgr5.insertRows(controller.ipgoBoxList.length, controller.insertRow3);
 
                            }
                            controller.textQrController2.text = '';
                            controller.requestFocus2();
 
-                         //}
-                       /*}else {
-                         controller.statusText2.value = '거래명세서를 선택해주세요.';
-                         controller.textQrController2.text = '';
-                         // Get.dialog(_dialog('거래명세서를 선택해주세요'));
-                       }*/
-                       controller.isQr2.value = false;
+                           //}
+                           /*}else {
+                           controller.statusText2.value = '거래명세서를 선택해주세요.';
+                           controller.textQrController2.text = '';
+                           // Get.dialog(_dialog('거래명세서를 선택해주세요'));
+                         }*/
+                           controller.isQr2.value = false;
+
+                         }
+                       }
                      },
-                     keyboardType: TextInputType.text,
-                     decoration: InputDecoration(
+                     child: TextFormField(
+                       expands :true,
+                       minLines: null,
+                       maxLines: null,
+                       focusNode: controller.focusNode2,
+                       style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+                       // maxLines: 5,
+                       controller: controller.textQrController2,
+                       textAlignVertical: TextAlignVertical.center,
+                       onTap: () {
+                         controller.isQr2.value = true;
+                        /* if(controller.focusCnt2.value++ > 1) controller.focusCnt2.value = 0;
+                         else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
+                       },
+                       onTapOutside:(event) => { controller.focusCnt2.value = 0 },
+                       onFieldSubmitted: (value) async {
+                        // controller.isDuplQr.value = false;
+                        /* if(controller.isSelectedInvnr.value) {*/
+                           // 중복처리 일단 주석
+                           /*for(var i = 0; i < controller.ipgoList.length; i++) {
+                             if(controller.ipgoList[i]['qrNo'].contains(controller.textQrController.text)) {
+                               controller.isDuplQr.value = true;
+                             }
+                           }*/
+                           /*if(controller.isDuplQr.value) {
+                             controller.statusText.value = '중복된 QR코드입니다.';
+                             controller.textQrController.text = '';
+                           }else{*/
+                           await controller.checkBoxQR();
+                             if(controller.ipgoQrBoxList.isNotEmpty) {
+                               /* controller.ipgoQrBoxList[0].addAll({'no': '${controller.ipgoBoxList.length + 1}'});*/
+                               //  controller.ipgoBoxList.add(controller.ipgoQrBoxList[0]);
+                                 controller.insertRow2 = List<PlutoRow>.generate(controller.ipgoBoxList.length, (index) =>
+                                     PlutoRow(cells:
+                                     Map.from((controller.ipgoBoxList[index]).map((key, value) =>
+                                         MapEntry(key, PlutoCell(value: value ?? '' )),
+                                     )))
+                                 );
+                                 //  controller.rowDatas2.add(controller.insertRow[0]);
+                                 controller.gridStateMgr4.removeAllRows();
+                                 controller.gridStateMgr4.insertRows(controller.ipgoBoxList.length, controller.insertRow2);
 
-                       contentPadding: const EdgeInsets.all(0),
-                       fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8), // 박효신
-                       filled: true,
-                       // hintText: 'BC 번호를 입력해주세요',
-                       hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
-                       border: InputBorder.none,
+                                 controller.gridStateMgr4.setCurrentCell(controller.gridStateMgr4.firstCell, 0);
+                                 Get.log('현재위치: ${controller.gridStateMgr4.currentRowIdx}');
+                                 controller.currentRowIndex.value = controller.gridStateMgr4.currentRowIdx!;
+
+                                 /// 오른쪽 분할 그리드 시작!!
+                                 controller.insertRow3 = List<PlutoRow>.generate(controller.itemTotalList[0].length, (index) =>
+                                     PlutoRow(cells:
+                                     Map.from((controller.itemTotalList[0][index]).map((key, value) =>
+                                         MapEntry(key, PlutoCell(value: value ?? '' )),
+                                     )))
+                                 );
+                                 controller.gridStateMgr5.removeAllRows();
+                                 controller.gridStateMgr5.insertRows(controller.ipgoBoxList.length, controller.insertRow3);
+
+                             }
+                             controller.textQrController2.text = '';
+                             controller.requestFocus2();
+
+                           //}
+                         /*}else {
+                           controller.statusText2.value = '거래명세서를 선택해주세요.';
+                           controller.textQrController2.text = '';
+                           // Get.dialog(_dialog('거래명세서를 선택해주세요'));
+                         }*/
+                         controller.isQr2.value = false;
+                       },
+                       keyboardType: TextInputType.none,
+                       decoration: InputDecoration(
+
+                         contentPadding: const EdgeInsets.all(0),
+                         fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8), // 박효신
+                         filled: true,
+                         // hintText: 'BC 번호를 입력해주세요',
+                         hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+                         border: InputBorder.none,
+                       ),
+                       showCursor: true,
+
+
                      ),
-                     showCursor: true,
-
-
                    ),)
              ),
            ),
@@ -1605,8 +1659,10 @@ class IpgoPage extends StatelessWidget {
                          if(controller.gridStateMgr4.currentRowIdx != null) {
                            controller.ipgoBoxList.removeAt(controller.gridStateMgr4.currentRowIdx!);
                            controller.gridStateMgr4.removeAllRows();
+                           controller.gridStateMgr5.removeAllRows();
                            updateRows2();
                            controller.gridStateMgr4.appendRows(controller.rowDatas4.value);
+                           controller.statusText.value = '';
                          }
 
                        },
@@ -1658,6 +1714,7 @@ class IpgoPage extends StatelessWidget {
                            controller.ipgoQrBoxList.clear();
                            controller.ipgoBoxList.clear();
                            controller.gridStateMgr4.removeAllRows();
+                           controller.gridStateMgr5.removeAllRows();
                          }
 
 
@@ -1751,7 +1808,8 @@ class IpgoPage extends StatelessWidget {
                    );
 
                    controller.gridStateMgr5.removeAllRows();
-                   controller.gridStateMgr5.insertRows(controller.ipgoBoxList.length, controller.insertRow3);
+                   controller.gridStateMgr5.appendRows(controller.insertRow3);
+                //   controller.gridStateMgr5.insertRows(controller.ipgoBoxList.length, controller.insertRow3);
 
                    controller.isQr2.value = false;
 

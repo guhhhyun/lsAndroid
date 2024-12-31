@@ -70,6 +70,8 @@ class _LoginPageState extends State<LoginPage> {
             hintText: '아이디를 입력하세요',
             hintStyle: AppTheme.a15500.copyWith(color: AppTheme.light_ui_05),
           ),
+          keyboardType: TextInputType.text,
+
           /*validator: (value) {
             if (value!.isEmpty) {
               return '아이디를 입력해주세요';
@@ -108,6 +110,7 @@ class _LoginPageState extends State<LoginPage> {
             hintText: '비밀번호를 입력하세요',
             hintStyle: AppTheme.a15500.copyWith(color: AppTheme.light_ui_05),
           ),
+          keyboardType: TextInputType.text,
         ),
       ],
     );

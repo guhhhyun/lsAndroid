@@ -341,6 +341,53 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
               Row(
                 children: [
                   Container(
+                    margin: EdgeInsets.only(right: 12),
+                    width: 140,
+                    height: 40,
+                    child: TextButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(10),
+                                      bottomRight: Radius.circular(10)))),
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(0))),
+                      onPressed: () async {
+                        Get.log('BOM변경확인 클릭!');
+                        await controller.reqBom();
+                        if(controller.bomList.isNotEmpty) {
+                          await controller.reqBomDetail();
+                        }
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return _alertDialog2(context);
+                          },
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: AppTheme.navy_navy_800,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppTheme.ae2e2e2)
+                        ),
+                        width: 140,
+                        height: 40,
+                        padding: const EdgeInsets.only(
+
+                        ),
+                        child: Center(
+                          child: Text('BOM변경확인', //입고취소 조회
+                              style: AppTheme.a20700.copyWith(
+                                color: AppTheme.white,
+                              )),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
                     // margin: EdgeInsets.only(right: 12),
                     width: 120,
                     height: 40,
@@ -1037,7 +1084,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         title: '출고유형',
         field: 'delOrdType',
         type: PlutoColumnType.text(),
-        width: 90,
+        width: 120,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -1172,7 +1219,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         title: 'BOM 변경',
         field: 'bcStatusNm',
         type: PlutoColumnType.text(),
-        width: 90,
+        width: 110,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -1202,7 +1249,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         title: '출고가능여부',
         field: 'opStatusNm',
         type: PlutoColumnType.text(),
-        width: 100,
+        width: 140,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -1258,6 +1305,736 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
   }
 
 
+  /// bom 팝업
+  ///
+  Widget _alertDialog2(BuildContext context) {
+
+    return AlertDialog(
+        backgroundColor: AppTheme.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0)),
+        title: Column(
+          children: [
+            const SizedBox(
+              height: AppTheme.spacing_l_20,
+            ),
+            Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 24, right: 12),
+                  child: Text(
+                    'BOM/오더 변경 점검 이력',
+                    style: AppTheme.a18700
+                        .copyWith(color: AppTheme.black),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            Container(
+              width: double.infinity,
+              height: 1,
+              color: Colors.black,
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+          ],
+        ),
+
+        content: Container(
+          //padding: EdgeInsets.only(bottom: 20),
+          width: 550,
+          height: 650,
+          margin: EdgeInsets.only(left: 12, right: 12),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _rackIpgoList4(context),
+                _rackIpgoList5(context)
+              ],
+            ),
+          ),
+        ), /// 내부 메인body
+
+        buttonPadding: const EdgeInsets.all(0),
+        // insetPadding 이게 전체크기 조정
+        insetPadding: const EdgeInsets.only(left: 45, right: 45),
+        contentPadding: const EdgeInsets.all(0),
+        actionsPadding: const EdgeInsets.all(0),
+        titlePadding: const EdgeInsets.all(0),
+        //
+        actions: [
+          Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 1,
+                color: const Color(0x5c3c3c43),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15)))),
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(0))),
+                      onPressed: () {
+                        Get.log('취소 클릭!');
+                        Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                right: BorderSide(color: const Color(0x5c3c3c43),)
+                            ),
+                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
+                            color: AppTheme.navy_navy_900
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.only(
+                          top: AppTheme.spacing_s_12,
+                          bottom: AppTheme.spacing_s_12,
+                        ),
+                        child: Center(
+                          child: Text('닫기',
+                              style: AppTheme.titleHeadline.copyWith(
+                                  color: AppTheme.white,
+                                  fontSize: 17)),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          )
+        ]);
+  }
+
+  Widget _rackIpgoList4(BuildContext context) {
+    return Column(
+      children: [
+        _SearchCondition2(context),
+        SizedBox(height: 12,),
+        Column(children: [
+          Container(
+            width: MediaQuery.of(context).size.width-110,
+            height: 280,
+            child: PlutoGrid(
+              mode: PlutoGridMode.selectWithOneTap, // 탭 한번으로 반응하게?
+              columns: gridCols4(context),
+              rows: controller.rows3.value,
+              onLoaded: (PlutoGridOnLoadedEvent event) {
+
+                controller.stateManager3 = event.stateManager;
+                controller.stateManager3.setSelectingMode(PlutoGridSelectingMode.none);
+              },
+              onChanged: (PlutoGridOnChangedEvent event) {
+                print(event);
+              },
+              onSelected: (c) async {
+                print(controller.stateManager3.currentRowIdx);
+                controller.bomCurrentIdx.value = c.rowIdx!;
+                await controller.reqBomDetail();
+
+              },
+              configuration: PlutoGridConfiguration(
+                style: PlutoGridStyleConfig(
+                    columnHeight: 40,
+                    rowHeight: 55,
+                    //gridBorderColor: Colors.transparent,
+                    //   activatedColor: Colors.transparent,
+                    //  cellColorInReadOnlyState: Colors.white,
+                    columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black)
+                ),
+              ),
+            ),
+          ),
+        ],),
+      ],
+    );
+  }
+
+  Widget _invnrTextForm3(String title, int plag) {
+    return Row(
+      children: [
+        Text(title,
+            style: AppTheme.a16700
+                .copyWith(color: AppTheme.black)),
+        SizedBox(width: 8,),
+        Container(
+          padding: EdgeInsets.only(left: 8, top: 8),
+          height: 40,
+          width: 150,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppTheme.ae2e2e2)),
+          child: TextFormField(
+            onTap: () {
+              controller.isFocus.value = true;
+            },
+            expands : true,
+            minLines: null,
+            maxLines: null,
+            style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+            // maxLines: 5,
+            controller: plag == 0 ? controller.textSaleOrdController : plag == 1 ? controller.textItemCdController2
+                : controller.textPrdOrdController,
+            textInputAction: TextInputAction.done,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(0),
+              fillColor: Colors.white,
+              // filled: true,
+              hintText: '',
+              hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+              border: InputBorder.none,
+            ),
+            showCursor: true,
+          ),
+
+
+          /* Text(subTitle, style: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),)*/
+
+        ),
+      ],
+    );
+  }
+
+  Widget _SearchCondition2(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          //  width:  MediaQuery.of(context).size.width - 200 ,
+          padding: EdgeInsets.only(left: 24),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _invnrTextForm3('판매오더', 0),
+                SizedBox(width: 12,),
+                _invnrTextForm3('제품코드', 1),
+                /*  SizedBox(width: 12,),
+                 _invnrTextForm2('생산오더', 2),*/
+              ],
+            ),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              // margin: EdgeInsets.only(right: 12),
+              width: 120,
+              height: 40,
+              child: TextButton(
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all<
+                        RoundedRectangleBorder>(
+                        const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10)))),
+                    padding: MaterialStateProperty.all(
+                        const EdgeInsets.all(0))),
+                onPressed: () async{
+                  Get.log('BOM변경확인 조회');
+                  await controller.reqBom();
+                  if(controller.bomList.isNotEmpty) {
+                    await controller.reqBomDetail();
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: AppTheme.navy_navy_800,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppTheme.ae2e2e2)
+                  ),
+                  width: 120,
+                  height: 40,
+                  padding: const EdgeInsets.only(
+
+                  ),
+                  child: Center(
+                    child: Text('조회',
+                        style: AppTheme.a16700.copyWith(
+                          color: AppTheme.white,
+                        )),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 4,),
+            Container(
+              width: 140,
+              height: 40,
+              child: TextButton(
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all<
+                        RoundedRectangleBorder>(
+                        const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10)))),
+                    padding: MaterialStateProperty.all(
+                        const EdgeInsets.all(0))),
+                onPressed: () async{
+                  await controller.registBomSave();
+                  if(controller.isBomSave.value) {
+                    Get.dialog(CommonDialogWidget(contentText: controller.isBomSaveText.value, pageFlag: 0));
+                  }else {
+                    Get.dialog(CommonDialogWidget(contentText: controller.isBomSaveText.value, pageFlag: 0));
+                  }
+
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: AppTheme.navy_navy_800,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppTheme.ae2e2e2)
+                  ),
+                  width: 120,
+                  height: 40,
+                  child: Center(
+                    child: Text('저장',
+                        style: AppTheme.a16700.copyWith(
+                          color: AppTheme.white,
+                        )),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+  List<PlutoColumn> gridCols4(BuildContext context) {
+    final List<PlutoColumn> gridCols3 = <PlutoColumn>[
+      PlutoColumn(
+        title: '점검번호',
+        field: 'bcId',
+        type: PlutoColumnType.text(),
+        width: 80,
+        enableRowChecked: false,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '점검일시',
+        field: 'bxDtm',
+        type: PlutoColumnType.text(),
+        width: 100,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+
+      ),
+      PlutoColumn(
+        title: '점검구분',
+        field: 'bcType',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '점검상태',
+        field: 'bcStatus',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '점검내용',
+        field: 'bcRmk',
+        type: PlutoColumnType.text(),
+        width: 200,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '조치결과',
+        field: 'bcAfRst',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '조치일시',
+        field: 'bcAfDtm',
+        type: PlutoColumnType.text(),
+        width: 130,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '조치 담당자',
+        field: 'bcAfUserId',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '판매오더',
+        field: 'soNo',
+        type: PlutoColumnType.text(),
+        width: 200,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '제품번호',
+        field: 'pitmCd',
+        type: PlutoColumnType.text(),
+        width: 90,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: 'SET수',
+        field: 'setQty',
+        type: PlutoColumnType.text(),
+        width: 100,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+    ];
+    return gridCols3;
+  }
+
+
+  Widget _rackIpgoList5(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 12,),
+        Column(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width-110,
+              height: 300,
+              child: PlutoGrid(
+                // mode: PlutoGridMode.selectWithOneTap, // 탭 한번으로 반응하게?
+                columns: gridCols5(context),
+                rows: controller.rows4.value,
+                onLoaded: (PlutoGridOnLoadedEvent event) {
+                  controller.stateManager4 = event.stateManager;
+                  controller.stateManager4.setSelectingMode(PlutoGridSelectingMode.none);
+                },
+                onChanged: (PlutoGridOnChangedEvent event) {
+                  print(event);
+                  if (event.column.field == 'chgCfRmk') {
+                    print('선택한 값: ${event.value}');
+                    controller.bomDetailList[event.rowIdx].addAll({'chgCfRmk': event.value});
+                    // bom리스트에서 사유 입력한 값
+                    // 바로 insert 해준다 output 결과값 얻고
+                    // controller.bomConfirm, Add Location('현재 위치: ') controller.bomConfirm.add(controller.boxNo); 현재 위치에서 out 떄리고
+                    // bom 사유에서 변경됐을 경우 rowInx == 0 ? Get.log('')
+                  }
+                  if (event.column.field == 'chgCfFlag') {
+                    print('선택한 값: ${event.value}');
+                    controller.bomDetailList[event.rowIdx].addAll({'chgCfFlag': event.value});
+                  }
+                },
+                onSelected: (c) {
+                  print(controller.stateManager4.currentRowIdx);
+
+                },
+                configuration: PlutoGridConfiguration(
+                  style: PlutoGridStyleConfig(
+                      columnHeight: 40,
+                      rowHeight: 55,
+                      //gridBorderColor: Colors.transparent,
+                      //   activatedColor: Colors.transparent,
+                      //  cellColorInReadOnlyState: Colors.white,
+                      columnTextStyle: AppTheme.a16500.copyWith(color: AppTheme.black)
+                  ),
+                ),
+              ),
+            ),
+          ],),
+      ],
+    );
+  }
+
+  List<PlutoColumn> gridCols5(BuildContext context) {
+    final List<PlutoColumn> gridCols4 = <PlutoColumn>[
+      PlutoColumn(
+        title: '번호',
+        field: 'bcSeq',
+        type: PlutoColumnType.text(),
+        width: 80,
+        enableRowChecked: false,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '변경확정',
+        field: 'chgCfFlag',
+        type: PlutoColumnType.select(controller.bomConfirm),
+        width: 100,
+        enableSorting: false,
+        enableEditingMode: true,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+
+      ),
+      PlutoColumn(
+        title: '확정사유',
+        field: 'chgCfRmk',
+        type: PlutoColumnType.text(),
+        width: 200,
+        enableSorting: false,
+        enableEditingMode: true,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '확정 처리자',
+        field: 'chgCfUid',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '확정 처리일시',
+        field: 'chgCfDtm',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '제품/자재코드',
+        field: 'itemCd',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '품명',
+        field: 'itemNm',
+        type: PlutoColumnType.text(),
+        width: 210,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '수량',
+        field: 'qty',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '변경상태',
+        field: 'chkRst',
+        type: PlutoColumnType.text(),
+        width: 200,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '조치결과',
+        field: 'bcAfRst',
+        type: PlutoColumnType.text(),
+        width: 90,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '조치일시',
+        field: 'bcAfDtm',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '조치 담당자',
+        field: 'bcAfUserId',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+    ];
+    return gridCols4;
+  }
 }
 
 

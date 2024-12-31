@@ -109,6 +109,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxBool isIpgoClick = false.obs;
   RxBool isIpgoClick2 = false.obs; // 소박스용
   RxBool isDbConnected = true.obs;
+  RxBool successIpgo = false.obs;
   RxInt alertIndex = 3.obs;
   RxInt currentRowIndex = 0.obs; // 소박스 등록에서 왼쪽 선택된 리스트의 자재들이 우측 리스트에 보여주기 위함
 
@@ -503,7 +504,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     bLoading.value = true;
     ipgoQrBoxItemList.clear();
     ipgoBoxList.length == 1 ? itemTotalList.clear() : null;
-
+    List<dynamic> newEtcChulgoDetailList = [];
     statusText2.value = '';
     var params = {
       'programId': 'A1020',
@@ -530,9 +531,9 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
 
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
-          ipgoQrBoxItemList.value.addAll(retVal.body![1]);
+          newEtcChulgoDetailList.addAll(retVal.body![1]);
 
-          itemTotalList.add(ipgoQrBoxItemList.value);
+          itemTotalList.add(newEtcChulgoDetailList);
 
 
           // ipgoDupQrList.value.addAll(retVal.body![1]);
@@ -871,14 +872,16 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
         if (retVal == '0000') {
           Get.log('등록되었습니다');
           isDbConnected.value = true;
+          successIpgo.value = true;
         } else {
           Get.log('등록 실패');
-
+          successIpgo.value = false;
         }
       } catch (e) {
         Get.log('registIpgoBtn catch !!!!');
         Get.log(e.toString());
         isDbConnected.value = false;
+        successIpgo.value = false;
       } finally {
         bLoading.value = false;
         isIpgoClick.value = false;

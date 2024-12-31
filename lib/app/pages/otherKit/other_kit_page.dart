@@ -1,3 +1,4 @@
+/*
 import 'dart:async';
 import 'dart:ffi';
 
@@ -86,9 +87,11 @@ class OtherKitPage extends StatelessWidget {
                     for(var i = 0; i < controller.noList2.length; i++) {
                       // controller.changedRows.value.add(controller.noList[i]);
                       controller.changedRows2.value.add(controller.noList2[i]);
-                      /*   if (controller.changedRows.contains(controller.uniqueSmallBoxList[0]['itemCd'])) {
+                      */
+/*   if (controller.changedRows.contains(controller.uniqueSmallBoxList[0]['itemCd'])) {
                         return Colors.white; // 이미 변경된 색상 유지
-                      }*/
+                      }*//*
+
                     }
                     if (controller.changedRows2.contains(c.row.cells['itemCd']?.value.toString())) {
                       return Colors.white; // 이미 변경된 색상 유지
@@ -98,12 +101,14 @@ class OtherKitPage extends StatelessWidget {
 
                   }
                 }
-               /* if (controller.changedRows.contains(c.row.cells['itemCd']?.value.toString())) {
+               */
+/* if (controller.changedRows.contains(c.row.cells['itemCd']?.value.toString())) {
                   return Colors.white; // 이미 변경된 색상 유지
                 }
                 if (controller.changedRows2.contains(c.row.cells['itemCd']?.value.toString())) {
                   return Colors.white; // 이미 변경된 색상 유지
-                }*/
+                }*//*
+
 
                 Get.log('색깔: ${controller.changedRows}');
                 Get.log('색깔 여부: ${controller.isColor.value}');
@@ -446,7 +451,7 @@ class OtherKitPage extends StatelessWidget {
                                     else
                                     {
                                       /// 자재 스캔 시작!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                                      await controller.checkItemQr('');
+                                      await controller.checkItemQr();
                                       await controller.test();
                                       await aa1();
 
@@ -669,6 +674,7 @@ class OtherKitPage extends StatelessWidget {
         //  if(int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty']) <= int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'])
               + controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']) {
             controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] = controller.rows[controller.no.value].cells['cbxQty']?.value;
+            controller.smallBoxSave[0].addAll({'newQty': controller.rows[controller.no.value].cells['cbxQty']?.value}); // 새로 추가한 부분 지울수도
             controller.isSaveColor.value = false;
             controller.isColor.value = true;
             controller.noList2.add(controller.smallBoxListZero[controller.no.value]['itemCd']);
@@ -676,6 +682,9 @@ class OtherKitPage extends StatelessWidget {
           }else {
             controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] = (controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty']
                 + controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']).toInt();
+
+            controller.smallBoxSave[0].addAll({'newQty': (controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty']
+                + controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']).toInt()}); // 새로 추가한 부분 지울수도
           }
 
           controller.rows2.value = List<PlutoRow>.generate(controller.smallBoxSaveList.length, (index) =>
@@ -769,6 +778,15 @@ class OtherKitPage extends StatelessWidget {
 
         }
 
+        /// 여기 끝나면 저장 처리해야한다
+        /// 디테일 저장
+        if(controller.smallBoxSave[0]['extrVal'] == 'D') {
+          await controller.registNewDetailSave();
+        }
+        /// 일반 저장
+        else {
+          await controller.registNewSave();
+        }
 
       }
 
@@ -890,21 +908,24 @@ class OtherKitPage extends StatelessWidget {
                   return _alertDialog(context);
                 },
               ) :  Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요', pageFlag: 0));
-            /*controller.insertRow.value = List<PlutoRow>.generate(controller.ipgoQrList.length, (index) =>
+            */
+/*controller.insertRow.value = List<PlutoRow>.generate(controller.ipgoQrList.length, (index) =>
             PlutoRow(cells:
             Map.from((controller.ipgoQrList[index]).map((key, value) =>
             MapEntry(key, PlutoCell(value: value ?? '' )),
             )))
             ),
             //  controller.rowDatas2.add(controller.insertRow[0]);
-            controller.stateManager2.insertRows(controller.ipgoList.length, controller.insertRow)*/
+            controller.stateManager2.insertRows(controller.ipgoList.length, controller.insertRow)*//*
+
             }
 
             else if(text == '동기화')
             {
               controller.smallBoxList[0]['wrkCfmYn'] != 'Y' ?
               syncProcess() : Get.dialog(CommonDialogWidget(contentText: '확정 처리된 상태입니다.', pageFlag: 0));
-              /*if(controller.isDonggi.value == false) {
+              */
+/*if(controller.isDonggi.value == false) {
                 controller.isSaveColor.value = true;
                 for(var dong = 0; dong < controller.smallBoxList.length; dong++) {
                   Get.log('smallBoxSaveList: ${controller.smallBoxSaveList}');
@@ -988,9 +1009,11 @@ class OtherKitPage extends StatelessWidget {
 
                 Get.log('동기화 is: ${controller.isDropdownEnabled.value}');
                 controller.isDonggi.value = true;
-              }*/
+              }*//*
 
-              /*controller.isColor.value = true;
+
+              */
+/*controller.isColor.value = true;
               for(var dong = 0; dong < controller.smallBoxList.length; dong++) {
                 // 동기화 시에 수량이 왼쪽 수량보다 적을 시 수량 맞춰주는 동기화(수량, 동기화(prt_no) 값 바꾸기)
                 await controller.checkItemQr(controller.smallBoxList[dong]['itemCd']);
@@ -1102,7 +1125,8 @@ class OtherKitPage extends StatelessWidget {
               await controller.test();
               Get.log('이거이거 ${controller.smallBoxSaveList}');
 
-              Get.log('동기화 is: ${controller.isDropdownEnabled.value}');*/
+              Get.log('동기화 is: ${controller.isDropdownEnabled.value}');*//*
+
             }
             else if(text == '저장')
             {
@@ -1619,7 +1643,8 @@ class OtherKitPage extends StatelessWidget {
         type: PlutoColumnType.select(controller.reasonNames
         ),
 
-        /*renderer: (rendererContext) {
+        */
+/*renderer: (rendererContext) {
             return Container(
               margin: EdgeInsets.all(0),
               padding: EdgeInsets.all(2),
@@ -1636,7 +1661,8 @@ class OtherKitPage extends StatelessWidget {
                   ],
               ),
             );
-          }*/
+          }*//*
+
       ),
       PlutoColumn(
           enableSorting: false,
@@ -1666,6 +1692,7 @@ class OtherKitPage extends StatelessWidget {
             );
           }
       ),
+*/
 /*      PlutoColumn(
           enableSorting: false,
           enableEditingMode: false,
@@ -1749,8 +1776,10 @@ class OtherKitPage extends StatelessWidget {
               ),
             );
           }
-      ),*/
-      /*  PlutoColumn(
+      ),*//*
+
+      */
+/*  PlutoColumn(
           enableSorting: false,
           enableEditingMode: false,
           enableContextMenu: false,
@@ -1805,7 +1834,8 @@ class OtherKitPage extends StatelessWidget {
               ),
             );
           }
-      ),*/
+      ),*//*
+
     ];
 
 
@@ -2081,7 +2111,8 @@ class OtherKitPage extends StatelessWidget {
     );
   }
 
-  /*void donggihwaBackUp() {
+  */
+/*void donggihwaBackUp() {
     text == '동기화' ?
     {
       controller.isColor.value = true,
@@ -2198,7 +2229,9 @@ class OtherKitPage extends StatelessWidget {
 
       Get.log('동기화 is: ${controller.isDropdownEnabled.value}'),
     }
-  }*/
+  }*//*
+
 }
 
 
+*/
