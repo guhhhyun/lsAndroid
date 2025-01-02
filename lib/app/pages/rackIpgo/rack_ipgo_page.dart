@@ -251,7 +251,7 @@ class RackIpgoPage extends StatelessWidget {
         title: '존',
         field: 'ZONE_NM',
         type: PlutoColumnType.text(),
-        width: 90,
+        width: 150,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -284,57 +284,128 @@ class RackIpgoPage extends StatelessWidget {
 
 
   Widget _SearchCondition2(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          //  width:  MediaQuery.of(context).size.width - 200 ,
-          padding: EdgeInsets.only(left: 24),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                _qrCodeTextForm(context),
-                // _invnrTextForm('QR 코드', 3),
-                SizedBox(width: 16,),
-                _statusText(),
-              ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+
+            padding: EdgeInsets.only(left: 24),
+            child: Container(
+              child: Row(
+                children: [
+                  _qrCodeTextForm(context),
+                  // _invnrTextForm('QR 코드', 3),
+                  SizedBox(width: 16,),
+                  _statusText(),
+                  SizedBox(width: 8,),
+                ],
+              ),
             ),
           ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Obx(() => Container(
-              margin: EdgeInsets.only(right: 14),
-              decoration: BoxDecoration(
-                  color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(8)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Obx(() => Container(
+                margin: EdgeInsets.only(right: 14),
+                decoration: BoxDecoration(
+                    color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(8)
+                ),
+                width: 40,
+                height: 40,
+              ),),
+              Container(
+               // margin: EdgeInsets.only(right: 12),
+                width: 120,
+                height: 40,
+                child: TextButton(
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all<
+                          RoundedRectangleBorder>(
+                          const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10)))),
+                      padding: MaterialStateProperty.all(
+                          const EdgeInsets.all(0))),
+                  onPressed: () async {
+                    if(controller.rackIpgoList.isNotEmpty) {
+                      if(controller.locTextS.value == '') {
+                        Get.dialog(CommonDialogWidget(contentText: '입고위치를 입력해주세요', pageFlag: 0));
+                      }else{
+                        await controller.registRackIpgoBtn();
+                        if(controller.isRackIpgo.value) {
+                          Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0));
+                          controller.textQrController.text = '';
+                          controller.zoneText.value = '';
+                          controller.zoneCd.value = '';
+                          controller.locText.value = '';
+                          controller.locCd.value = '';
+                          controller.textLocController.text = '';
+                          controller.textZoneController.text = '';
+                          controller.textStatusController.text = '';
+                          controller.registRackIpgoList.clear();
+                          controller.rackIpgoList.clear();
+                          controller.gridStateMgr.removeAllRows();
+                        }
+
+                      }
+                    }else {
+                      Get.dialog(CommonDialogWidget(contentText: '자재를 선택해주세요', pageFlag: 0));
+
+                    }
+                    /*Get.log('행 삭제 클릭!');
+                    if(controller.gridStateMgr2.currentRowIdx != null) {
+                      controller.ipgoList.removeAt(controller.gridStateMgr2.currentRowIdx!);
+                      controller.gridStateMgr2.removeAllRows();
+                      updateRows();
+                      controller.gridStateMgr2.appendRows(controller.rowDatas2.value);
+                    }*/
+
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: AppTheme.navy_navy_800,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppTheme.ae2e2e2)
+                    ),
+                    width: 120,
+                    height: 40,
+                    padding: const EdgeInsets.only(
+
+                    ),
+                    child: Center(
+                      child: Text('랙 입고',
+                          style: AppTheme.a20700.copyWith(
+                            color: AppTheme.white,
+                          )),
+                    ),
+                  ),
+                ),
               ),
-              width: 40,
-              height: 40,
-            ),),
-            Container(
-             // margin: EdgeInsets.only(right: 12),
-              width: 120,
-              height: 40,
-              child: TextButton(
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all<
-                        RoundedRectangleBorder>(
-                        const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10)))),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.all(0))),
-                onPressed: () async {
-                  if(controller.rackIpgoList.isNotEmpty) {
-                    if(controller.locTextS.value == '') {
-                      Get.dialog(CommonDialogWidget(contentText: '입고위치를 입력해주세요', pageFlag: 0));
-                    }else{
-                      await controller.registRackIpgoBtn();
-                      Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0));
+              SizedBox(width: 4,),
+              Container(
+               // margin: EdgeInsets.only(right: 12),
+                width: 130,
+                height: 40,
+                child: TextButton(
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all<
+                          RoundedRectangleBorder>(
+                          const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10)))),
+                      padding: MaterialStateProperty.all(
+                          const EdgeInsets.all(0))),
+                  onPressed: () async{
+                    Get.log('입고 보류 클릭!');
+                    if(controller.rackIpgoList.isNotEmpty) {
+                      await controller.yetRackIpgoBtn();
+                      Get.log('입고 보류 클릭!');
+                      Get.dialog(CommonDialogWidget(contentText: '입고 보류되었습니다', pageFlag: 3,));
                       controller.textQrController.text = '';
                       controller.zoneText.value = '';
                       controller.zoneCd.value = '';
@@ -346,158 +417,92 @@ class RackIpgoPage extends StatelessWidget {
                       controller.registRackIpgoList.clear();
                       controller.rackIpgoList.clear();
                       controller.gridStateMgr.removeAllRows();
+                    }else {
+                      Get.log('사용재고 보류 클릭!');
+                      Get.dialog(CommonDialogWidget(contentText: '자재를 선택해주세요', pageFlag: 0));
+                    }
+
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: AppTheme.navy_navy_800,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppTheme.ae2e2e2)
+                    ),
+                    width: 130,
+                    height: 40,
+                    padding: const EdgeInsets.only(
+
+                    ),
+                    child: Center(
+                      child: Text('사용재고 보류',
+                          style: AppTheme.a20700.copyWith(
+                            color: AppTheme.white,
+                          )),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 4,),
+              Container(
+                margin: EdgeInsets.only(right: 12),
+                width: 160,
+                height: 40,
+                child: TextButton(
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all<
+                          RoundedRectangleBorder>(
+                          const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10)))),
+                      padding: MaterialStateProperty.all(
+                          const EdgeInsets.all(0))),
+                  onPressed: () async{
+                    if(controller.rackIpgoList.isNotEmpty) {
+                      await controller.yetRackReIpgoBtn();
+                      Get.log('사용재고 보류 취소 클릭!');
+                      Get.dialog(CommonDialogWidget(contentText: '보류 취소되었습니다', pageFlag: 3,));
+                      controller.textQrController.text = '';
+                      controller.zoneText.value = '';
+                      controller.zoneCd.value = '';
+                      controller.locText.value = '';
+                      controller.locCd.value = '';
+                      controller.textLocController.text = '';
+                      controller.textZoneController.text = '';
+                      controller.textStatusController.text = '';
+                      controller.registRackIpgoList.clear();
+                      controller.rackIpgoList.clear();
+                      controller.gridStateMgr.removeAllRows();
+                    }else {
+                      Get.dialog(CommonDialogWidget(contentText: '자재를 선택해주세요', pageFlag: 0));
 
                     }
-                  }else {
-                    Get.dialog(CommonDialogWidget(contentText: '자재를 선택해주세요', pageFlag: 0));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: AppTheme.navy_navy_800,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppTheme.ae2e2e2)
+                    ),
+                    width: 160,
+                    height: 40,
+                    padding: const EdgeInsets.only(
 
-                  }
-                  /*Get.log('행 삭제 클릭!');
-                  if(controller.gridStateMgr2.currentRowIdx != null) {
-                    controller.ipgoList.removeAt(controller.gridStateMgr2.currentRowIdx!);
-                    controller.gridStateMgr2.removeAllRows();
-                    updateRows();
-                    controller.gridStateMgr2.appendRows(controller.rowDatas2.value);
-                  }*/
-
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: AppTheme.navy_navy_800,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppTheme.ae2e2e2)
-                  ),
-                  width: 120,
-                  height: 40,
-                  padding: const EdgeInsets.only(
-
-                  ),
-                  child: Center(
-                    child: Text('랙 입고',
-                        style: AppTheme.a20700.copyWith(
-                          color: AppTheme.white,
-                        )),
+                    ),
+                    child: Center(
+                      child: Text('사용재고 보류 취소',
+                          style: AppTheme.a20700.copyWith(
+                            color: AppTheme.white,
+                          )),
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(width: 4,),
-            Container(
-             // margin: EdgeInsets.only(right: 12),
-              width: 130,
-              height: 40,
-              child: TextButton(
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all<
-                        RoundedRectangleBorder>(
-                        const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10)))),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.all(0))),
-                onPressed: () async{
-                  Get.log('입고 보류 클릭!');
-                  if(controller.rackIpgoList.isNotEmpty) {
-                    await controller.yetRackIpgoBtn();
-                    Get.log('입고 보류 클릭!');
-                    Get.dialog(CommonDialogWidget(contentText: '입고 보류되었습니다', pageFlag: 3,));
-                    controller.textQrController.text = '';
-                    controller.zoneText.value = '';
-                    controller.zoneCd.value = '';
-                    controller.locText.value = '';
-                    controller.locCd.value = '';
-                    controller.textLocController.text = '';
-                    controller.textZoneController.text = '';
-                    controller.textStatusController.text = '';
-                    controller.registRackIpgoList.clear();
-                    controller.rackIpgoList.clear();
-                    controller.gridStateMgr.removeAllRows();
-                  }else {
-                    Get.log('사용재고 보류 클릭!');
-                    Get.dialog(CommonDialogWidget(contentText: '자재를 선택해주세요', pageFlag: 0));
-                  }
-
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: AppTheme.navy_navy_800,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppTheme.ae2e2e2)
-                  ),
-                  width: 130,
-                  height: 40,
-                  padding: const EdgeInsets.only(
-
-                  ),
-                  child: Center(
-                    child: Text('사용재고 보류',
-                        style: AppTheme.a20700.copyWith(
-                          color: AppTheme.white,
-                        )),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 4,),
-            Container(
-              margin: EdgeInsets.only(right: 12),
-              width: 160,
-              height: 40,
-              child: TextButton(
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all<
-                        RoundedRectangleBorder>(
-                        const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10)))),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.all(0))),
-                onPressed: () async{
-                  if(controller.rackIpgoList.isNotEmpty) {
-                    await controller.yetRackReIpgoBtn();
-                    Get.log('사용재고 보류 취소 클릭!');
-                    Get.dialog(CommonDialogWidget(contentText: '보류 취소되었습니다', pageFlag: 3,));
-                    controller.textQrController.text = '';
-                    controller.zoneText.value = '';
-                    controller.zoneCd.value = '';
-                    controller.locText.value = '';
-                    controller.locCd.value = '';
-                    controller.textLocController.text = '';
-                    controller.textZoneController.text = '';
-                    controller.textStatusController.text = '';
-                    controller.registRackIpgoList.clear();
-                    controller.rackIpgoList.clear();
-                    controller.gridStateMgr.removeAllRows();
-                  }else {
-                    Get.dialog(CommonDialogWidget(contentText: '자재를 선택해주세요', pageFlag: 0));
-
-                  }
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: AppTheme.navy_navy_800,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppTheme.ae2e2e2)
-                  ),
-                  width: 160,
-                  height: 40,
-                  padding: const EdgeInsets.only(
-
-                  ),
-                  child: Center(
-                    child: Text('사용재고 보류 취소',
-                        style: AppTheme.a20700.copyWith(
-                          color: AppTheme.white,
-                        )),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -1234,17 +1239,17 @@ class RackIpgoPage extends StatelessWidget {
                     if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
                       // 엔터 키 감지
                       final inputChar = event.character ?? '';
-                      if(controller.textLocController.text.length == 10) {
+                     /* if(controller.textLocController.text.length == 10) {*/
                         final scannedData = controller.textLocController.text;
                         // 데이터 처리
                         controller.locTextS.value = scannedData;
                         controller.textLocController.clear(); // 텍스트 필드 초기화
                         controller.focusNodeForm.requestFocus();
                         Get.log('Scanned Data: $scannedData');
-                      }else {
+                     /* }else {
                         controller.textLocController.clear(); // 텍스트 필드 초기화
                         Get.dialog(CommonDialogWidget(contentText: '바코드를 다시 입력해주세요', pageFlag: 3,));
-                      }
+                      }*/
                     }
                   }
                 },

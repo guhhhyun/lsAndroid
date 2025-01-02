@@ -150,6 +150,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
   RxBool isCancelIpgo = false.obs;
 
   final FocusNode focusNode = FocusNode();
+  final FocusNode focusNodeKey = FocusNode();
 
   void requestFocus() {
     Future.microtask(() => focusNode.requestFocus());

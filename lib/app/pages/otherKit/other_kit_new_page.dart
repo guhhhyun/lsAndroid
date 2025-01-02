@@ -222,89 +222,157 @@ class OtherKitNewPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10),
                                   color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                                 ),
-                                child: TextFormField(
-                                  minLines: null,
-                                  expands: true,
-                                  maxLines: null,
-                                  focusNode: controller.focusNode,
-                                  style:  AppTheme.a16400.copyWith(color: AppTheme.black),
-                                  controller: controller.textQrController,
-                                  textAlignVertical: TextAlignVertical.center,
-                                  textInputAction: TextInputAction.done,
-                                  onTap: () {
-                                    if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
-                                    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                                  },
-                                  onTapOutside:(event) => { controller.focusCnt.value = 0 },
+                                child: KeyboardListener(
+                                  focusNode: controller.focusNodeKey,
+                                  onKeyEvent: (event) async {
+                                    if (event is KeyDownEvent) {
+                                      //  final inputChar = event.character ?? '';
+                                      //  controller.textLocController.text += inputChar;
+                                      // 키보드 입력값 수신 처리
+                                      if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
+                                        // 엔터 키 감지
+                                        controller.isFocus.value = false;
+                                        if(controller.smallBoxItemDataList.isNotEmpty) {
 
-                                  onFieldSubmitted: (value) async {
-                                    controller.isFocus.value = false;
-                                    if(controller.smallBoxItemDataList.isNotEmpty) {
-
-                                      if(controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') {
-                                        await controller.checkItemQr();
-                                        if(controller.isSmallBoxDataList.value) {
-                                          /// 자재 읽기
-                                          if(controller.isSmallBoxDataList.value) {
-                                            // 자재 저장 프로시저 돌리기
-                                            if(controller.smallBoxDataList.length > 1) {
-                                              // 중복 qr이니 alert 띄우기
-                                              showDialog(
-                                                barrierDismissible: false,
-                                                context: context, //context
-                                                builder: (BuildContext context) {
-                                                  return _dupAlertDialog(context);
-                                                },
-                                              ); // context가 왜?
-                                            }else {
-                                              // 중복 X
-                                              if(controller.smallBoxDataList[0]['cancleFlag'] > 0) {
-                                                // 이미 스캔된 자재일 경우 취소 여부 물어볼 메세지처리
-                                                await Get.dialog(CommonDialogOtherWidget(contentText: '이미 스캔된 자재입니다. 스캔 취소하시겠습니까?', pageFlag: 1));
-                                                if(controller.isCancelIpgo.value) {
-                                                  await controller.registSmallKitCancel();
-                                                  await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxExNo'].toString());
-                                                  await controller.test();
+                                          if(controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') {
+                                            await controller.checkItemQr();
+                                            if(controller.isSmallBoxDataList.value) {
+                                              /// 자재 읽기
+                                              if(controller.isSmallBoxDataList.value) {
+                                                // 자재 저장 프로시저 돌리기
+                                                if(controller.smallBoxDataList.length > 1) {
+                                                  // 중복 qr이니 alert 띄우기
+                                                  showDialog(
+                                                    barrierDismissible: false,
+                                                    context: context, //context
+                                                    builder: (BuildContext context) {
+                                                      return _dupAlertDialog(context);
+                                                    },
+                                                  ); // context가 왜?
+                                                }else {
+                                                  // 중복 X
+                                                  if(controller.smallBoxDataList[0]['cancleFlag'] > 0) {
+                                                    // 이미 스캔된 자재일 경우 취소 여부 물어볼 메세지처리
+                                                    await Get.dialog(CommonDialogOtherWidget(contentText: '이미 스캔된 자재입니다. 스캔 취소하시겠습니까?', pageFlag: 1));
+                                                    if(controller.isCancelIpgo.value) {
+                                                      await controller.registSmallKitCancel();
+                                                      await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxExNo'].toString());
+                                                      await controller.test();
+                                                    }
+                                                  }else {
+                                                    await controller.registSmallKitItemSave();
+                                                  }
                                                 }
+                                              }
+                                            }
+
+                                          }else {
+                                            Get.dialog(CommonDialogWidget(contentText: '확정된 별도박스입니다.', pageFlag: 3,));
+                                          }
+
+
+                                        }else {
+                                          /// 별도박스 읽기
+                                          await controller.checkBoxItemData();
+                                          for (var i = 0; i < controller.smallBoxItemDataList.length; i++) {
+                                            controller.smallBoxItemDataList[i].addAll({'no': '${i + 1}'});
+                                          }
+                                        }
+                                        controller.textQrController.text = '';
+
+                                        await controller.test();
+                                        controller.focusNode.requestFocus();
+                                        Future.delayed(const Duration(), () {
+                                          controller.focusNode.requestFocus();
+                                          Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                                        });
+                                      }
+                                    }
+                                  },
+                                  child: TextFormField(
+                                    minLines: null,
+                                    expands: true,
+                                    maxLines: null,
+                                    focusNode: controller.focusNode,
+                                    style:  AppTheme.a16400.copyWith(color: AppTheme.black),
+                                    controller: controller.textQrController,
+                                    textAlignVertical: TextAlignVertical.center,
+                                    textInputAction: TextInputAction.done,
+                                    onTap: () {
+                                     /* if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
+                                      else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
+                                    },
+                                    onTapOutside:(event) => { controller.focusCnt.value = 0 },
+
+                                    onFieldSubmitted: (value) async {
+                                      /*controller.isFocus.value = false;
+                                      if(controller.smallBoxItemDataList.isNotEmpty) {
+
+                                        if(controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') {
+                                          await controller.checkItemQr();
+                                          if(controller.isSmallBoxDataList.value) {
+                                            /// 자재 읽기
+                                            if(controller.isSmallBoxDataList.value) {
+                                              // 자재 저장 프로시저 돌리기
+                                              if(controller.smallBoxDataList.length > 1) {
+                                                // 중복 qr이니 alert 띄우기
+                                                showDialog(
+                                                  barrierDismissible: false,
+                                                  context: context, //context
+                                                  builder: (BuildContext context) {
+                                                    return _dupAlertDialog(context);
+                                                  },
+                                                ); // context가 왜?
                                               }else {
-                                                await controller.registSmallKitItemSave();
+                                                // 중복 X
+                                                if(controller.smallBoxDataList[0]['cancleFlag'] > 0) {
+                                                  // 이미 스캔된 자재일 경우 취소 여부 물어볼 메세지처리
+                                                  await Get.dialog(CommonDialogOtherWidget(contentText: '이미 스캔된 자재입니다. 스캔 취소하시겠습니까?', pageFlag: 1));
+                                                  if(controller.isCancelIpgo.value) {
+                                                    await controller.registSmallKitCancel();
+                                                    await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxExNo'].toString());
+                                                    await controller.test();
+                                                  }
+                                                }else {
+                                                  await controller.registSmallKitItemSave();
+                                                }
                                               }
                                             }
                                           }
+
+                                          }else {
+                                            Get.dialog(CommonDialogWidget(contentText: '확정된 별도박스입니다.', pageFlag: 3,));
+                                          }
+
+
+                                      }else {
+                                        /// 별도박스 읽기
+                                        await controller.checkBoxItemData();
+                                        for (var i = 0; i < controller.smallBoxItemDataList.length; i++) {
+                                          controller.smallBoxItemDataList[i].addAll({'no': '${i + 1}'});
                                         }
-
-                                        }else {
-                                          Get.dialog(CommonDialogWidget(contentText: '확정된 별도박스입니다.', pageFlag: 3,));
-                                        }
-
-
-                                    }else {
-                                      /// 별도박스 읽기
-                                      await controller.checkBoxItemData();
-                                      for (var i = 0; i < controller.smallBoxItemDataList.length; i++) {
-                                        controller.smallBoxItemDataList[i].addAll({'no': '${i + 1}'});
                                       }
-                                    }
-                                    controller.textQrController.text = '';
+                                      controller.textQrController.text = '';
 
-                                    await controller.test();
-                                    controller.focusNode.requestFocus();
-                                    Future.delayed(const Duration(), () {
+                                      await controller.test();
                                       controller.focusNode.requestFocus();
-                                      Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                                    });
-                                  },
-                                  keyboardType: TextInputType.text,
-                                  decoration: InputDecoration(
-                                    labelStyle: AppTheme.a16400.copyWith(color: AppTheme.black),
-                                    contentPadding: const EdgeInsets.all(0),
-                                    fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
-                                    filled: true,
-                                    // hintText: 'BC 번호를 입력해주세요',
-                                    hintStyle: AppTheme.a16400.copyWith(color: AppTheme.aBCBCBC),
-                                    border: InputBorder.none,
+                                      Future.delayed(const Duration(), () {
+                                        controller.focusNode.requestFocus();
+                                        Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                                      });*/
+                                    },
+                                    keyboardType: TextInputType.none,
+                                    decoration: InputDecoration(
+                                      labelStyle: AppTheme.a16400.copyWith(color: AppTheme.black),
+                                      contentPadding: const EdgeInsets.all(0),
+                                      fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
+                                      filled: true,
+                                      // hintText: 'BC 번호를 입력해주세요',
+                                      hintStyle: AppTheme.a16400.copyWith(color: AppTheme.aBCBCBC),
+                                      border: InputBorder.none,
+                                    ),
+                                    showCursor: true,
                                   ),
-                                  showCursor: true,
                                 ),
                               ),
                             ),

@@ -110,6 +110,9 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
   RxString wrkCfmDt = ''.obs;
   RxString cbxMaNo = ''.obs;
   RxString setQty = ''.obs;
+  RxString tagType = ''.obs;
+  RxString bcSts = ''.obs;
+
 
 
   RxInt no = 990.obs;
@@ -168,6 +171,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
 
   final FocusNode focusNode = FocusNode();
+  final FocusNode focusNodeKey = FocusNode();
 
   void requestFocus() {
     Future.microtask(() => focusNode.requestFocus());
@@ -1591,8 +1595,9 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
             wrkCfmDt.value = smallBoxDataList[0]['wrkCfmDttm'].toString();
             cbxMaNo.value = smallBoxDataList[0]['cbxMaNo'].toString();
             setQty.value = smallBoxDataList[0]['setQty'].toString();
+            bcSts.value = smallBoxDataList[0]['bcSts'].toString();
           }
-
+          tagType.value = smallBoxDataList[0]['tagType'].toString();
           Get.log(smallBoxDataList.toString());
           Get.log('조회 성공');
           statusText.value = '정상 조회 되었습니다.';
@@ -1605,11 +1610,13 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
       } else {
         Get.log('조회 실패');
+        statusText.value = '조회 실패했습니다.';
         textQrController.text = '';
       }
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
+      statusText.value = '조회 실패했습니다.';
       isDbConnected.value = false;
       textQrController.text = '';
     } finally {
@@ -1677,11 +1684,13 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
       } else {
         Get.log('조회 실패');
+        statusText.value = '조회 실패했습니다.';
         textQrController.text = '';
       }
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
+      statusText.value = '조회 실패했습니다.';
       isDbConnected.value = false;
       textQrController.text = '';
     } finally {
@@ -1743,7 +1752,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
                   /// 색 변경 로직 시작
                   isSaveColor.value = false;
                   isColor.value = true;
-                  noList3.add(smallBoxItemSaveDataList[i]['itemCd']);
+                  noList3.add(smallBoxItemSaveDataList[i]['sboxNo']);
                 }
                 smallBoxItemSaveDataList[i].addAll({'no': '${smallBoxItemDataList[ii]['no']}'});
                 break outerLoop;
@@ -1797,10 +1806,12 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
       } else {
         Get.log('조회 실패');
         textQrController.text = '';
+        statusText.value = '조회 실패했습니다.';
       }
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
+      statusText.value = '조회 실패했습니다.';
       isDbConnected.value = false;
       textQrController.text = '';
     } finally {
@@ -1888,6 +1899,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
       } catch (e) {
         Get.log('registMainKitQr catch !!!!');
         Get.log(e.toString());
+        statusText.value = '등록 실패했습니다.';
         isDbConnected.value = false;
 
       } finally {
@@ -2102,11 +2114,11 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
       final retVal = await HomeApi.to.registMainKitDonggihwa(params);
 
       if (retVal.body![0]['resultMessage'] == '') {
-        Get.log('확정되었습니다');
+        Get.log('목박스 자동저장');
         isDbConnected.value = true;
 
       } else {
-        Get.log('확정 실패');
+        Get.log('목박스 자동저장 실패');
       }
     } catch (e) {
       Get.log('registMainKitConfirmNew catch !!!!');

@@ -52,6 +52,8 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
   RxList<dynamic> uniqueChulSecondList = [].obs; //중복 제거된 리스트 두번째 화면에서 쓰임
   RxList<dynamic> itemChulSecondList = [].obs; //중복 제거된 리스트에서 선택된 리스트의 자재들 리스트
   RxList<RxList<dynamic>> itemTotalList = [[].obs].obs;
+  RxList<dynamic> noList = [].obs;
+  RxSet<String> changedRows = <String>{}.obs;
 
 
   /// bom
@@ -67,6 +69,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
   RxList<dynamic> chulThirdList = [].obs; //
 
   RxList<dynamic> scanOxList = [].obs; //
+  RxList<dynamic> scanOxList2 = [].obs; //
 
   RxInt numbering = 1.obs;
   RxBool isText = true.obs;
@@ -341,6 +344,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
           isSuccessThird.value = false;
+
         }
 
       } else {
@@ -363,6 +367,8 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     bLoading.value = true;
     chulSecondList.clear();
     scanOxList.clear();
+    noList.clear();
+    changedRows.clear();
 
     var params = {
       'programId': 'A1020',
@@ -383,6 +389,13 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
           for(var i = 0; i < chulSecondList.length; i++) {
             chulSecondList[i].addAll({'scanNm': chulSecondList[i]['scan'] == false ? 'X' : 'O'});
             chulSecondList[i]['scan'] == false ? scanOxList.add('X') : scanOxList.add('O');
+            if(chulSecondList[i]['scan'] == true) {
+              if(chulSecondList[i]['boxNo'] != null) {
+                noList.add(chulSecondList[i]['boxNo']);
+              }else {
+                noList.add(chulSecondList[i]['tagNo']);
+              }
+            }
 
             chulSecondList[i].addAll({'chulgoType': ''});
           }
@@ -962,6 +975,9 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
   }
   final focusNode = FocusNode();
   final focusNode2 = FocusNode();
+  final focusNode2Key = FocusNode();
+
+
   void requestFocus() {
     Future.microtask(() => focusNode2.requestFocus());
     if(focusCnt.value++ > 1) focusCnt.value = 0;
@@ -976,7 +992,11 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     isQr.value = true;
   }
 
-
+  Future<void> test() async{
+    gridStateMgr2.rowColorCallback!;
+    // 그리드 재렌더링
+    gridStateMgr2.notifyListeners();
+  }
 
   @override
   void onClose() {

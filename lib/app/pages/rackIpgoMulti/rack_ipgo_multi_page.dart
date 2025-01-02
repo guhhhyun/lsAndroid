@@ -22,6 +22,7 @@ class RackIpgoMultiPage extends StatelessWidget {
   final focusNode2 = FocusNode();
   final focusNode3 = FocusNode();
   final focusNode4 = FocusNode();
+  final focusNode4Key = FocusNode();
   late double test;
   late double ipgoDateWidth;
 
@@ -729,94 +730,155 @@ class RackIpgoMultiPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                 ),
-                child: TextFormField(
-                  expands :true,
-                  minLines: null,
-                  maxLines: null,
-                  focusNode: controller.focusNode,
-                  style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
-                  // maxLines: 5,
-                  controller: controller.textQrMultiController,
-                  textAlignVertical: TextAlignVertical.center,
-                  onTap: () {
-                    controller.isQrFocus.value = true;
-                    if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
-                    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                  },
-                  onTapOutside:(event) => { controller.focusCnt.value = 0 },
-                  onFieldSubmitted: (value) async{
-                    controller.isDuplQr.value = false;
-                      for(var i = 0; i < controller.registRackIpgoList.length; i++) {
-                        if(controller.registRackIpgoList[i]['QR_NO'].contains(controller.textQrMultiController.text)) {
-                          controller.isDuplQr.value = true;
+                child:
+
+
+                KeyboardListener(
+                  focusNode: controller.focusNodeKey,
+                  onKeyEvent: (event) async {
+                    if (event is KeyDownEvent) {
+                      //  final inputChar = event.character ?? '';
+                      //  controller.textLocController.text += inputChar;
+                      // 키보드 입력값 수신 처리
+                      if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
+                        // 엔터 키 감지
+                        controller.isDuplQr.value = false;
+                        for(var i = 0; i < controller.registRackIpgoList.length; i++) {
+                          if(controller.registRackIpgoList[i]['QR_NO'].contains(controller.textQrMultiController.text)) {
+                            controller.isDuplQr.value = true;
+                          }
                         }
-                      }
-                      if(controller.isDuplQr.value) {
-                        controller.statusText.value = '중복된 QR코드입니다.';
-                        controller.textQrMultiController.text = '';
-                      }else{
-                        await controller.checkQR(); // 조회
-                        if(controller.rackIpgoList.length > 1) {
-                          // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
-                          showDialog(
-                            barrierDismissible: false,
-                            context: context, //context
-                            builder: (BuildContext context) {
-                              return _alertDialog(context);
-                            },
-                          ); // context가 왜?
-                        }else {
-                          controller.rowDatas.value = List<PlutoRow>.generate(controller.registRackIpgoList.length, (index) =>
-                              PlutoRow(cells:
-                              Map.from((controller.registRackIpgoList[index]).map((key, value) =>
-                                  MapEntry(key, PlutoCell(value: value == null ? '' : /*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : */value )),
-                              )))
-                          );
-                          controller.gridStateMgr.removeAllRows();
-                          controller.gridStateMgr.appendRows(controller.rowDatas.value);
-                          controller.gridStateMgr.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
-                          controller.zoneText.value = controller.rackIpgoList[0]['LAST_ZONE_NM']?? '';
-                          controller.locText.value = controller.rackIpgoList[0]['LAST_LOC']?? '';
-                          controller.zoneCd.value = controller.rackIpgoList[0]['ZONE_CD']?? '';
-                          controller.locCd.value = controller.rackIpgoList[0]['LOC_CD'] ?? '';
+                        if(controller.isDuplQr.value) {
+                          controller.statusText.value = '중복된 QR코드입니다.';
                           controller.textQrMultiController.text = '';
-                          // 랙 입고 controller.textQrMultoController.text = '';
-                          // controller.zoneCd.value = controller.tackIpgoList[0] controller.value.
+                        }else{
+                          await controller.checkQR(); // 조회
+                          if(controller.rackIpgoList.length > 1) {
+                            // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context, //context
+                              builder: (BuildContext context) {
+                                return _alertDialog(context);
+                              },
+                            ); // context가 왜?
+                          }else {
+                            controller.rowDatas.value = List<PlutoRow>.generate(controller.registRackIpgoList.length, (index) =>
+                                PlutoRow(cells:
+                                Map.from((controller.registRackIpgoList[index]).map((key, value) =>
+                                    MapEntry(key, PlutoCell(value: value == null ? '' : /*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : */value )),
+                                )))
+                            );
+                            controller.gridStateMgr.removeAllRows();
+                            controller.gridStateMgr.appendRows(controller.rowDatas.value);
+                            controller.gridStateMgr.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
+                            controller.zoneText.value = controller.rackIpgoList[0]['LAST_ZONE_NM']?? '';
+                            controller.locText.value = controller.rackIpgoList[0]['LAST_LOC']?? '';
+                            controller.zoneCd.value = controller.rackIpgoList[0]['ZONE_CD']?? '';
+                            controller.locCd.value = controller.rackIpgoList[0]['LOC_CD'] ?? '';
+                            controller.textQrMultiController.text = '';
+                            // 랙 입고 controller.textQrMultoController.text = '';
+                            // controller.zoneCd.value = controller.tackIpgoList[0] controller.value.
+                          }
+                          controller.textQrMultiController.text = '';
+                          /*        controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, controller.gridStateMgr.rows.length - 1);
+                          controller.currentFirstIndex.value = controller.gridStateMgr.currentRowIdx!;*/
                         }
-                        controller.textQrMultiController.text = '';
-                /*        controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, controller.gridStateMgr.rows.length - 1);
-                        controller.currentFirstIndex.value = controller.gridStateMgr.currentRowIdx!;*/
+                        controller.focusNode.requestFocus();
+                        controller.isQrFocus.value = false;
                       }
-
-                    controller.isQrFocus.value = false;
-
+                    }
                   },
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    /*suffixIcon: InkWell(
-                        onTap: () {
-                          Get.log('조회 돋보기 클릭!');
 
-                          focusNode2.requestFocus();
-                          Future.delayed(const Duration(), (){
+                  child: TextFormField(
+                    expands :true,
+                    minLines: null,
+                    maxLines: null,
+                    focusNode: controller.focusNode,
+                    style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
+                    // maxLines: 5,
+                    controller: controller.textQrMultiController,
+                    textAlignVertical: TextAlignVertical.center,
+                    onTap: () {
+                    /*  controller.isQrFocus.value = true;
+                      if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
+                      else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
+                    },
+                    onTapOutside:(event) => { controller.focusCnt.value = 0 },
+                    onFieldSubmitted: (value) async{
+                      /*controller.isDuplQr.value = false;
+                        for(var i = 0; i < controller.registRackIpgoList.length; i++) {
+                          if(controller.registRackIpgoList[i]['QR_NO'].contains(controller.textQrMultiController.text)) {
+                            controller.isDuplQr.value = true;
+                          }
+                        }
+                        if(controller.isDuplQr.value) {
+                          controller.statusText.value = '중복된 QR코드입니다.';
+                          controller.textQrMultiController.text = '';
+                        }else{
+                          await controller.checkQR(); // 조회
+                          if(controller.rackIpgoList.length > 1) {
+                            // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context, //context
+                              builder: (BuildContext context) {
+                                return _alertDialog(context);
+                              },
+                            ); // context가 왜?
+                          }else {
+                            controller.rowDatas.value = List<PlutoRow>.generate(controller.registRackIpgoList.length, (index) =>
+                                PlutoRow(cells:
+                                Map.from((controller.registRackIpgoList[index]).map((key, value) =>
+                                    MapEntry(key, PlutoCell(value: value == null ? '' : *//*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : *//*value )),
+                                )))
+                            );
+                            controller.gridStateMgr.removeAllRows();
+                            controller.gridStateMgr.appendRows(controller.rowDatas.value);
+                            controller.gridStateMgr.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
+                            controller.zoneText.value = controller.rackIpgoList[0]['LAST_ZONE_NM']?? '';
+                            controller.locText.value = controller.rackIpgoList[0]['LAST_LOC']?? '';
+                            controller.zoneCd.value = controller.rackIpgoList[0]['ZONE_CD']?? '';
+                            controller.locCd.value = controller.rackIpgoList[0]['LOC_CD'] ?? '';
+                            controller.textQrMultiController.text = '';
+                            // 랙 입고 controller.textQrMultoController.text = '';
+                            // controller.zoneCd.value = controller.tackIpgoList[0] controller.value.
+                          }
+                          controller.textQrMultiController.text = '';
+                  *//*        controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, controller.gridStateMgr.rows.length - 1);
+                          controller.currentFirstIndex.value = controller.gridStateMgr.currentRowIdx!;*//*
+                        }
+
+                      controller.isQrFocus.value = false;*/
+
+                    },
+                    keyboardType: TextInputType.none,
+                    decoration: InputDecoration(
+                      /*suffixIcon: InkWell(
+                          onTap: () {
+                            Get.log('조회 돋보기 클릭!');
+
                             focusNode2.requestFocus();
-                            //  FocusScope.of(context).requestFocus(focusNode);
-                            Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                          });
-                        },
-                        child: Image.asset('assets/app/search.png', color: AppTheme.a6c6c6c, width: 25, height: 25,)
+                            Future.delayed(const Duration(), (){
+                              focusNode2.requestFocus();
+                              //  FocusScope.of(context).requestFocus(focusNode);
+                              Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                            });
+                          },
+                          child: Image.asset('assets/app/search.png', color: AppTheme.a6c6c6c, width: 25, height: 25,)
+                      ),
+                  */
+                      contentPadding: const EdgeInsets.all(0),
+                      fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
+                      filled: true,
+                      hintText: '',
+                      hintStyle: AppTheme.a20400.copyWith(color: AppTheme.aBCBCBC),
+                      border: InputBorder.none,
                     ),
-*/
-                    contentPadding: const EdgeInsets.all(0),
-                    fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
-                    filled: true,
-                    hintText: '',
-                    hintStyle: AppTheme.a20400.copyWith(color: AppTheme.aBCBCBC),
-                    border: InputBorder.none,
+                    showCursor: true,
+
+
                   ),
-                  showCursor: true,
-
-
                 ),)
           ),
         ),
@@ -1136,54 +1198,85 @@ class RackIpgoMultiPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                 ),
-                child: TextFormField(
-                  expands :true,
-                  minLines: null,
-                  maxLines: null,
-                  focusNode: focusNode4,
-                  style:  AppTheme.a18700.copyWith(color: AppTheme.a6c6c6c),
-                  // maxLines: 5,
-                  controller: controller.textLocMultiController,
-                  textAlignVertical: TextAlignVertical.center,
-                  onTap: () {
-                    controller.isQrFocus.value = true;
-                    if(controller.focusCnt2.value++ > 1) controller.focusCnt2.value = 0;
-                    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                  },
-                  onTapOutside:(event) => { controller.focusCnt.value = 0 },
-                  onFieldSubmitted: (value) async{
-                    for(var i = 0; i < controller.registRackIpgoList.length; i++) {
-                      controller.registRackIpgoList[i].addAll({'LOC_CD_TO':controller.textLocMultiController.text});
+                child: KeyboardListener(
+                  focusNode: focusNode4Key,
+                  onKeyEvent: (event) {
+                    if (event is KeyDownEvent) {
+                      //  final inputChar = event.character ?? '';
+                      //  controller.textLocController.text += inputChar;
+                      // 키보드 입력값 수신 처리
+                      if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
+                        // 엔터 키 감지
+                        for(var i = 0; i < controller.registRackIpgoList.length; i++) {
+                          controller.registRackIpgoList[i].addAll({'LOC_CD_TO': controller.textLocMultiController.text});
+                        }
+
+                        // controller.registRackIpgoList[controller.currentFirstIndex.value].addAll({'LOC_CD_TO':controller.textLocController.text}); // 건 마다 다르게 위치 등록
+
+                        controller.rowDatas.value = List<PlutoRow>.generate(controller.registRackIpgoList.length, (index) =>
+                            PlutoRow(cells:
+                            Map.from((controller.registRackIpgoList[index]).map((key, value) =>
+                                MapEntry(key, PlutoCell(value: value == null ? '' : /*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : */value )),
+                            )))
+                        );
+                        controller.gridStateMgr.removeAllRows();
+                        controller.gridStateMgr.appendRows(controller.rowDatas.value);
+
+                        // controller.locTextS.value = controller.textLocController.text;
+
+                        controller.textLocMultiController.text = '';
+                      }
                     }
-
-                    // controller.registRackIpgoList[controller.currentFirstIndex.value].addAll({'LOC_CD_TO':controller.textLocController.text}); // 건 마다 다르게 위치 등록
-
-                    controller.rowDatas.value = List<PlutoRow>.generate(controller.registRackIpgoList.length, (index) =>
-                        PlutoRow(cells:
-                        Map.from((controller.registRackIpgoList[index]).map((key, value) =>
-                            MapEntry(key, PlutoCell(value: value == null ? '' : /*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : */value )),
-                        )))
-                    );
-                    controller.gridStateMgr.removeAllRows();
-                    controller.gridStateMgr.appendRows(controller.rowDatas.value);
-
-                   // controller.locTextS.value = controller.textLocController.text;
-
-                    controller.textLocMultiController.text = '';
-
-
                   },
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(0),
-                    fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
-                    filled: true,
-                    hintStyle: AppTheme.a18700.copyWith(color: AppTheme.aBCBCBC),
-                    border: InputBorder.none,
+                  child: TextFormField(
+                    expands :true,
+                    minLines: null,
+                    maxLines: null,
+                    focusNode: focusNode4,
+                    style:  AppTheme.a18700.copyWith(color: AppTheme.a6c6c6c),
+                    // maxLines: 5,
+                    controller: controller.textLocMultiController,
+                    textAlignVertical: TextAlignVertical.center,
+                    onTap: () {
+                     /* controller.isQrFocus.value = true;
+                      if(controller.focusCnt2.value++ > 1) controller.focusCnt2.value = 0;
+                      else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
+                    },
+                    onTapOutside:(event) => { controller.focusCnt.value = 0 },
+                    onFieldSubmitted: (value) async{
+                     /* for(var i = 0; i < controller.registRackIpgoList.length; i++) {
+                        controller.registRackIpgoList[i].addAll({'LOC_CD_TO':controller.textLocMultiController.text});
+                      }
+
+                      // controller.registRackIpgoList[controller.currentFirstIndex.value].addAll({'LOC_CD_TO':controller.textLocController.text}); // 건 마다 다르게 위치 등록
+
+                      controller.rowDatas.value = List<PlutoRow>.generate(controller.registRackIpgoList.length, (index) =>
+                          PlutoRow(cells:
+                          Map.from((controller.registRackIpgoList[index]).map((key, value) =>
+                              MapEntry(key, PlutoCell(value: value == null ? '' : *//*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : *//*value )),
+                          )))
+                      );
+                      controller.gridStateMgr.removeAllRows();
+                      controller.gridStateMgr.appendRows(controller.rowDatas.value);
+
+                     // controller.locTextS.value = controller.textLocController.text;
+
+                      controller.textLocMultiController.text = '';*/
+
+
+                    },
+                    keyboardType: TextInputType.none,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(0),
+                      fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
+                      filled: true,
+                      hintStyle: AppTheme.a18700.copyWith(color: AppTheme.aBCBCBC),
+                      border: InputBorder.none,
+                    ),
+                    showCursor: true,
+
+
                   ),
-                  showCursor: true,
-
-
                 ),
               )
           ),

@@ -560,6 +560,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
 
 
   final FocusNode focusNode = FocusNode();
+  final FocusNode focusNodeKey = FocusNode();
 
   void requestFocus() {
     Future.microtask(() => focusNode.requestFocus());
@@ -2069,7 +2070,7 @@ Future<void> registSmallKitItemSave() async {
     }
   }
 
-  /// 메인박스 KIT 구성 자재정보 조회
+  /// 소박스 KIT 구성 자재정보 조회
   Future<void> checkBoxItemData() async {
     Get.log('QR 조회');
 
@@ -2416,7 +2417,7 @@ Future<void> registSmallKitItemSave() async {
 
     var params = {
       'programId': 'A1020',
-      'procedure': 'USP_A2025_R01',
+      'procedure': 'USP_A2025_R02',
       'params': [
         {
           'paramName': 'p_work_type',

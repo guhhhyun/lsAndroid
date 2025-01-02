@@ -869,13 +869,14 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
       try {
         final retVal = await HomeApi.to.registIpgo(params);
 
-        if (retVal == '0000') {
+        if (retVal.body![0]['resultMessage'] == '') {
           Get.log('등록되었습니다');
           isDbConnected.value = true;
           successIpgo.value = true;
         } else {
           Get.log('등록 실패');
           successIpgo.value = false;
+          statusText.value = retVal.body![0]['resultMessage'];
         }
       } catch (e) {
         Get.log('registIpgoBtn catch !!!!');

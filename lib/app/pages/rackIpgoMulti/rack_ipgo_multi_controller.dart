@@ -74,9 +74,10 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
   RxInt selectedInvnrIndex = 0.obs; // 선택된 거래명세서의 index
   RxString statusText = ''.obs;
   RxBool isDbConnected = true.obs;
-
+  RxBool isRackIpgo = false.obs;
 
   final FocusNode focusNode = FocusNode();
+  final FocusNode focusNodeKey = FocusNode();
   void requestFocus() {
     Future.microtask(() => focusNode.requestFocus());
     if(focusCnt.value++ > 1) focusCnt.value = 0;
@@ -284,7 +285,7 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
       try {
         final retVal = await HomeApi.to.registRackIpgo(params);
 
-        if (retVal == '0000') {
+        if (retVal.body![0]['resultMessage'] == '') {
           Get.log('보류되었습니다');
           isDbConnected.value = true;
         } else {
@@ -394,9 +395,14 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
       try {
         final retVal = await HomeApi.to.registRackIpgo(params);
 
-        if (retVal == '0000') {
-          Get.log('등록되었습니다');
-          isDbConnected.value = true;
+        if (retVal.body![0]['resultMessage'] == '') {
+          if(retVal.body![0]['returnMessage'] != '') {
+            statusText.value = retVal.body![0]['returnMessage'].toString(); // 일단 return 메세지?
+            isRackIpgo.value = false;
+          }else {
+            Get.log('등록되었습니다');
+            isDbConnected.value = true;
+          }
         } else {
           Get.log('등록 실패');
 
@@ -548,6 +554,8 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
+          textQrMultiController.clear();
+          focusNode.requestFocus();
         }
 
       } else {

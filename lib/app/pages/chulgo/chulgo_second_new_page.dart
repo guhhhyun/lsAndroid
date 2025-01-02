@@ -523,75 +523,103 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
           // padding: const EdgeInsets.only(left: 20, right: 12, top: 4),
           child: Center(
               child: Container(
-                padding: const EdgeInsets.only(left: 8, right: 6),
+                padding: const EdgeInsets.only(left: 16, right: 6),
                 decoration: BoxDecoration(
-                    border: Border.all(color: AppTheme.ae2e2e2),
-                    borderRadius: BorderRadius.circular(10)
+                  border: Border.all(color: AppTheme.ae2e2e2),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                 ),
-                child: TextFormField(
-                  expands :true,
-                  minLines: null,
-                  maxLines: null,
-                  focusNode: controller.focusNode2,
-                  style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
-                  // maxLines: 5,
-                  controller: controller.textQrController,
-                  textAlignVertical: TextAlignVertical.center,
-                  onTap: () {
-                    if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
-                    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                    controller.tete.value = true;
-                 /*   controller.gridStateMgr2.removeAllRows();
-                    controller.gridStateMgr2.appendRows(controller.rowDatas2);*/
-                  },
-                  onTapOutside:(event) => { controller.focusCnt.value = 0 },
-                  onFieldSubmitted: (value) async{
-                    await controller.reqChulThird();
-                    if(controller.isSuccessThird.value == true) {
-                      for(var i = 0; i < controller.chulSecondList.length; i++) {
-                        if(controller.chulSecondList[i]['tagNoRowspan'] != 0) {
-                          if(controller.chulSecondList[i]['tagNo'] == controller.textQrController.text) {
-                            controller.scanOxList[i] = 'O';
-                            controller.chulSecondList[i]['scan'] = true;
+                child: KeyboardListener(
+                  focusNode: controller.focusNode2Key,
+                  onKeyEvent: (event) async {
+                    if (event is KeyDownEvent) {
+                      //  final inputChar = event.character ?? '';
+                      //  controller.textLocController.text += inputChar;
+                      // 키보드 입력값 수신 처리
+                      if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
+                        // 엔터 키 감지
+                        await controller.reqChulThird();
+                        if(controller.isSuccessThird.value == true) {
+                          for(var i = 0; i < controller.chulSecondList.length; i++) {
+                            if(controller.chulSecondList[i]['tagNoRowspan'] != 0) {
+                              if(controller.chulSecondList[i]['tagNo'] == controller.textQrController.text) {
+                                controller.scanOxList[i] = 'O';
+                                if(controller.chulSecondList[i]['boxNo'] != null) {
+                                  controller.noList.add(controller.chulSecondList[i]['boxNo']);
+                                }else {
+                                  controller.noList.add(controller.chulSecondList[i]['tagNo']);
+                                }
+                                controller.chulSecondList[i].addAll({'scan': true});
+                              }
+                            }
+
                           }
+                          await controller.test();
+                          /*focusNode2.requestFocus();
+                        Future.delayed(const Duration(), (){
+                          focusNode2.requestFocus();
+                          //  FocusScope.of(context).requestFocus(focusNode);
+                          Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                        });*/
                         }
+
+                        controller.textQrController.text = '';
+                        controller.focusNode2.requestFocus();
                       }
-                      await test22(); // 조회
-                      controller.textQrController.text = '';
-                      /*focusNode2.requestFocus();
-                      Future.delayed(const Duration(), (){
-                        focusNode2.requestFocus();
-                        //  FocusScope.of(context).requestFocus(focusNode);
-                        Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                      });*/
                     }
                   },
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    /*suffixIcon: InkWell(
-                        onTap: () {
-                          Get.log('조회 돋보기 클릭!');
-
+                  child: TextFormField(
+                    expands :true,
+                    minLines: null,
+                    maxLines: null,
+                    focusNode: controller.focusNode2,
+                    style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
+                    // maxLines: 5,
+                    controller: controller.textQrController,
+                    textAlignVertical: TextAlignVertical.center,
+                    onTap: () {
+                     /* if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
+                      else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                      controller.tete.value = true;*/
+                   /*   controller.gridStateMgr2.removeAllRows();
+                      controller.gridStateMgr2.appendRows(controller.rowDatas2);*/
+                    },
+                    onTapOutside:(event) => { controller.focusCnt.value = 0 },
+                    onFieldSubmitted: (value) async{
+                      /*await controller.reqChulThird();
+                      if(controller.isSuccessThird.value == true) {
+                        for(var i = 0; i < controller.chulSecondList.length; i++) {
+                          if(controller.chulSecondList[i]['tagNoRowspan'] != 0) {
+                            if(controller.chulSecondList[i]['tagNo'] == controller.textQrController.text) {
+                              controller.scanOxList[i] = 'O';
+                              controller.chulSecondList[i]['scan'] = true;
+                            }
+                          }
+                        }
+                        await test22(); // 조회
+                        controller.textQrController.text = '';
+                        *//*focusNode2.requestFocus();
+                        Future.delayed(const Duration(), (){
                           focusNode2.requestFocus();
-                          Future.delayed(const Duration(), (){
-                            focusNode2.requestFocus();
-                            //  FocusScope.of(context).requestFocus(focusNode);
-                            Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                          });
-                        },
-                        child: Image.asset('assets/app/search.png', color: AppTheme.a6c6c6c, width: 25, height: 25,)
+                          //  FocusScope.of(context).requestFocus(focusNode);
+                          Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                        });*//*
+                      }*/
+                    },
+                    keyboardType: TextInputType.none,
+                    decoration: InputDecoration(
+                      labelStyle: AppTheme.a16400.copyWith(color: AppTheme.black),
+                      contentPadding: const EdgeInsets.all(0),
+                      fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
+                      filled: true,
+                      // hintText: 'BC 번호를 입력해주세요',
+                      hintStyle: AppTheme.a16400.copyWith(color: AppTheme.black),
+                      border: InputBorder.none,
                     ),
-*/
-                    contentPadding: const EdgeInsets.all(0),
-                    fillColor: Colors.white,
-                    filled: true,
-                    hintText: '',
-                    hintStyle: AppTheme.a20400.copyWith(color: AppTheme.aBCBCBC),
-                    border: InputBorder.none,
+                    showCursor: true,
+
+
                   ),
-                  showCursor: true,
-
-
                 ),)
           ),
         ),
@@ -676,7 +704,20 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                   controller.isQr.value = false;
                    // controller.requestFocus();
                 },
+
                 rowColorCallback: (c) {
+                  // 찾아
+                  for (var i = 0; i < controller.noList.length; i++) {
+                    // controller.changedRows.value.add(controller.noList[i]);
+                    controller.changedRows.value.add(controller.noList[i]);
+                  }
+                  if (controller.changedRows.contains(c.row.cells['boxNo']?.value.toString())
+                      || controller.changedRows.contains(c.row.cells['tagNo']?.value.toString())) {
+                    return AppTheme.gray_c_gray_200; // 이미 변경된 색상 유지
+                  } else {
+                    return Colors.transparent;
+                  }
+
                   if(controller.tete.value) {
                     if(controller.gridStateMgr2.currentRowIdx == c.rowIdx) {
                       return AppTheme.blue_blue_50;
@@ -720,7 +761,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
-      PlutoColumn(
+     /* PlutoColumn(
         title: '스캔',
         field: 'scanNm',
         type: PlutoColumnType.text(),
@@ -742,13 +783,13 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
               // color: textColor,
               child: Center(
                 child: Text(
-                    controller.scanOxList[rendererContext.rowIdx],
+                    controller.scanOxList2[rendererContext.rowIdx],
                     style: AppTheme.a14500.copyWith(color: Colors.black)
                 ),
               ),
             );
           }
-      ),
+      ),*/
       PlutoColumn(
         title: 'BOM변경',
         field: 'bcStatusNm',
@@ -783,7 +824,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         title: '바코드',
         field: 'tagNo',
         type: PlutoColumnType.text(),
-        width: 120,
+        width: 240,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,

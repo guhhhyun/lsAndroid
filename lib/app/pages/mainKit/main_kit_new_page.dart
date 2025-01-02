@@ -73,7 +73,8 @@ class MainKitNewPage extends StatelessWidget {
                     // controller.changedRows.value.add(controller.noList[i]);
                     controller.changedRows2.value.add(controller.noList2[i]);
                   }
-                  if (controller.changedRows2.contains(c.row.cells['itemCd']?.value.toString())) {
+                  if (controller.changedRows2.contains(c.row.cells['cbxSuNo']?.value.toString())
+                    || controller.changedRows2.contains(c.row.cells['sboxNo']?.value.toString())) {
                     return Colors.white; // 이미 변경된 색상 유지
                   } else {
                     return AppTheme.red_red_200;
@@ -93,7 +94,8 @@ class MainKitNewPage extends StatelessWidget {
                         return Colors.white; // 이미 변경된 색상 유지
                       }*/
                     }
-                    if (controller.changedRows.contains(c.row.cells['itemCd']?.value.toString())) {
+                    if (controller.changedRows.contains(c.row.cells['cbxSuNo']?.value.toString())
+                        || controller.changedRows.contains(c.row.cells['sboxNo']?.value.toString())) {
                       return Colors.white; // 이미 변경된 색상 유지
                     } else {
                       return AppTheme.red_red_200;
@@ -225,58 +227,94 @@ class MainKitNewPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10),
                                   color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                                 ),
-                                child: TextFormField(
-                                  minLines: null,
-                                  expands: true,
-                                  maxLines: null,
-                                  focusNode: controller.focusNode,
-                                  style: AppTheme.a16400.copyWith(color: AppTheme.a6c6c6c),
-                                  controller: controller.textQrController,
-                                  textAlignVertical: TextAlignVertical.center,
-                                  textInputAction: TextInputAction.done,
-                                  onTap: () {
-                                    if (controller.focusCnt.value++ > 1)
-                                      controller.focusCnt.value = 0;
-                                    else
-                                      Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                                  },
-                                  onTapOutside: (event) => {controller.focusCnt.value = 0},
-                                  onFieldSubmitted: (value) async {
-                                    controller.isFocus.value = false;
-                                    await controller.checkBoxData();
-                                    if(controller.smallBoxDataList[0]['tagType'].toString() == '20') {
-                                        await controller.checkBoxItemData();
-                                        for (var i = 0; i < controller.smallBoxDataList.length; i++) {
-                                          controller.smallBoxDataList[i].addAll({'no': '${i + 1}'});
+                                child: KeyboardListener(
+                                  focusNode: controller.focusNodeKey,
+                                  onKeyEvent: (event) async {
+                                    if (event is KeyDownEvent) {
+                                      //  final inputChar = event.character ?? '';
+                                      //  controller.textLocController.text += inputChar;
+                                      // 키보드 입력값 수신 처리
+                                      if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
+                                        // 엔터 키 감지
+                                        controller.isFocus.value = false;
+                                        await controller.checkBoxData();
+                                        if(controller.tagType.value == '20') {
+                                          await controller.checkBoxItemData();
+                                          for (var i = 0; i < controller.smallBoxDataList.length; i++) {
+                                            controller.smallBoxDataList[i].addAll({'no': '${i + 1}'});
+                                          }
+                                        }else {
+                                          if(controller.smallBoxItemDataList.isNotEmpty) {
+                                            /// 구성자재 스캔 시작
+                                            await controller.registMainKitQr();
+                                          }else {
+                                            Get.dialog(CommonDialogWidget(contentText: '메인박스를 먼저 스캔해주세요', pageFlag: 0));
+                                          }
                                         }
-                                    }else {
-                                      if(controller.smallBoxItemDataList.isNotEmpty) {
-                                        /// 구성자재 스캔 시작
-                                         await controller.registMainKitQr();
-                                      }else {
-                                        Get.dialog(CommonDialogWidget(contentText: '메인박스를 먼저 스캔해주세요', pageFlag: 0));
+                                        controller.textQrController.text = '';
+
+                                        await controller.test();
+                                        controller.focusNode.requestFocus();
+                                        Future.delayed(const Duration(), () {
+                                          controller.focusNode.requestFocus();
+                                          Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                                        });
                                       }
                                     }
-                                    controller.textQrController.text = '';
-
-                                    await controller.test();
-                                    controller.focusNode.requestFocus();
-                                    Future.delayed(const Duration(), () {
-                                      controller.focusNode.requestFocus();
-                                      Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                                    });
                                   },
-                                  keyboardType: TextInputType.text,
-                                  decoration: InputDecoration(
-                                    labelStyle: AppTheme.a16400.copyWith(color: AppTheme.black),
-                                    contentPadding: const EdgeInsets.all(0),
-                                    fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
-                                    filled: true,
-                                    // hintText: 'BC 번호를 입력해주세요',
-                                    hintStyle: AppTheme.a16400.copyWith(color: AppTheme.black),
-                                    border: InputBorder.none,
+                                  child: TextFormField(
+                                    minLines: null,
+                                    expands: true,
+                                    maxLines: null,
+                                    focusNode: controller.focusNode,
+                                    style: AppTheme.a16400.copyWith(color: AppTheme.a6c6c6c),
+                                    controller: controller.textQrController,
+                                    textAlignVertical: TextAlignVertical.center,
+                                    textInputAction: TextInputAction.done,
+                                    onTap: () {
+                                      /*if (controller.focusCnt.value++ > 1)
+                                        controller.focusCnt.value = 0;
+                                      else
+                                        Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
+                                    },
+                                    onTapOutside: (event) => {controller.focusCnt.value = 0},
+                                    onFieldSubmitted: (value) async {
+                                     /* controller.isFocus.value = false;
+                                      await controller.checkBoxData();
+                                      if(controller.tagType.value == '20') {
+                                          await controller.checkBoxItemData();
+                                          for (var i = 0; i < controller.smallBoxDataList.length; i++) {
+                                            controller.smallBoxDataList[i].addAll({'no': '${i + 1}'});
+                                          }
+                                      }else {
+                                        if(controller.smallBoxItemDataList.isNotEmpty) {
+                                          /// 구성자재 스캔 시작
+                                           await controller.registMainKitQr();
+                                        }else {
+                                          Get.dialog(CommonDialogWidget(contentText: '메인박스를 먼저 스캔해주세요', pageFlag: 0));
+                                        }
+                                      }
+                                      controller.textQrController.text = '';
+
+                                      await controller.test();
+                                      controller.focusNode.requestFocus();
+                                      Future.delayed(const Duration(), () {
+                                        controller.focusNode.requestFocus();
+                                        Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                                      });*/
+                                    },
+                                    keyboardType: TextInputType.none,
+                                    decoration: InputDecoration(
+                                      labelStyle: AppTheme.a16400.copyWith(color: AppTheme.black),
+                                      contentPadding: const EdgeInsets.all(0),
+                                      fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
+                                      filled: true,
+                                      // hintText: 'BC 번호를 입력해주세요',
+                                      hintStyle: AppTheme.a16400.copyWith(color: AppTheme.black),
+                                      border: InputBorder.none,
+                                    ),
+                                    showCursor: true,
                                   ),
-                                  showCursor: true,
                                 ),
                               ),
                             ),
@@ -342,7 +380,11 @@ class MainKitNewPage extends StatelessWidget {
                           SizedBox(
                             width: 32,
                           ),
-                          _subData2('확정일', controller.wrkCfmDt.value == 'null' ? '' : controller.wrkCfmDt.value, false)
+                          _subData2('확정일', controller.wrkCfmDt.value == 'null' ? '' : controller.wrkCfmDt.value, false),
+                          SizedBox(
+                            width: 32,
+                          ),
+                          _subData2('BOM 점검', controller.bcSts.value == 'null' ? '' : controller.bcSts.value, false)
                         ],
                       ),
                     ),
@@ -501,7 +543,7 @@ class MainKitNewPage extends StatelessWidget {
               int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'].toString()) + controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']) {
             controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] = controller.rows[controller.no.value].cells['cbxQty']?.value;
             controller.isSaveColor.value = true;
-            controller.noList2.add(controller.uniqueSmallBoxList[controller.no.value]['itemCd'].toString());
+            controller.noList2.add(controller.uniqueSmallBoxList[controller.no.value]['cbxSuNo'].toString());
             controller.test();
           } else {
             controller.isSaveColor.value = false;
@@ -652,7 +694,7 @@ class MainKitNewPage extends StatelessWidget {
                   controller.smallBoxSave[0].addAll({'newQty': controller.rows[controller.no.value].cells['cbxQty']?.value});
                   controller.isSaveColor.value = false;
                   controller.isColor.value = true;
-                  controller.noList3.add(controller.uniqueSmallBoxList[i]['itemCd']);
+                  controller.noList3.add(controller.uniqueSmallBoxList[i]['cbxSuNo']);
                   controller.test();
                 } else {
                   controller.isSaveColor.value = false;
@@ -710,7 +752,7 @@ class MainKitNewPage extends StatelessWidget {
                   controller.smallBoxSave[ii]['qty'] = controller.rows[controller.no.value].cells['cbxQty']?.value;
                   controller.isSaveColor.value = false;
                   controller.isColor.value = true;
-                  controller.noList3.add(controller.uniqueSmallBoxList[i]['itemCd']);
+                  controller.noList3.add(controller.uniqueSmallBoxList[i]['cbxSuNo']);
                   controller.test();
                 } else {
                   controller.smallBoxSave[ii]['qty'] = (controller.smallBoxSave[ii]['qty'] + controller.smallBoxSave[ii]['qtyRes']).toInt();
@@ -1248,7 +1290,7 @@ class MainKitNewPage extends StatelessWidget {
         controller.isSaveColor.value = true;
         for (var dong = 0; dong < controller.smallBoxItemDataList.length; dong++) {
          // Get.log('smallBoxSaveList: ${controller.smallBoxItemDataList}');
-          controller.noList2.add(controller.smallBoxItemDataList[dong]['itemCd']);
+          controller.noList2.add(controller.smallBoxItemDataList[dong]['cbxSuNo']);
           if (controller.smallBoxSaveList.isEmpty) {
             controller.noSync.value = true;
           }
@@ -1906,6 +1948,10 @@ class MainKitNewPage extends StatelessWidget {
                   width: 32,
                 ),
                 _subData2('확정일', controller.wrkCfmDt.value ?? '', false),
+               /* SizedBox(
+                  width: 32,
+                ),
+                _subData2('BOM 점검', controller.bcSts.value ?? '', false),*/
               ],
             ),
             SizedBox(

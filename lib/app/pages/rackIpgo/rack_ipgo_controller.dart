@@ -69,6 +69,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
   RxInt selectedInvnrIndex = 0.obs; // 선택된 거래명세서의 index
   RxString statusText = ''.obs;
   RxBool isDbConnected = true.obs;
+  RxBool isRackIpgo = false.obs;
 
 
   final FocusNode focusNode = FocusNode();
@@ -280,11 +281,16 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
       try {
         final retVal = await HomeApi.to.registRackIpgo(params);
 
-        if (retVal == '0000') {
-          Get.log('보류되었습니다');
-          isDbConnected.value = true;
-        } else {
-          Get.log('보류 실패');
+
+        if (retVal.body![0]['resultMessage'] == '') {
+          if(retVal.body![0]['returnMessage'] != '') {
+            statusText.value = retVal.body![0]['returnMessage'].toString(); // 일단 return 메세지?
+            isDbConnected.value = false;
+          }else {
+            Get.log('보류되었습니다');
+            isDbConnected.value = true;
+
+          }
 
         }
       } catch (e) {
@@ -390,17 +396,27 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
       try {
         final retVal = await HomeApi.to.registRackIpgo(params);
 
-        if (retVal == '0000') {
-          Get.log('등록되었습니다');
-          isDbConnected.value = true;
+        if (retVal.body![0]['resultMessage'] == '') {
+          if(retVal.body![0]['returnMessage'] != '') {
+            statusText.value = retVal.body![0]['returnMessage'].toString(); // 일단 return 메세지?
+            isRackIpgo.value = false;
+          }else {
+            Get.log('등록되었습니다');
+            isDbConnected.value = true;
+            isRackIpgo.value = true;
+            statusText.value = '';
+          }
         } else {
           Get.log('등록 실패');
-
+          statusText.value = retVal.body![0]['resultMessage'].toString();
+          isDbConnected.value = false;
+          isRackIpgo.value = false;
         }
       } catch (e) {
         Get.log('registRackIpgo catch !!!!');
         Get.log(e.toString());
         isDbConnected.value = false;
+        isRackIpgo.value = false;
       } finally {
         bLoading.value = false;
 

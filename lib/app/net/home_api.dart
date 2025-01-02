@@ -1944,13 +1944,13 @@ class HomeApi extends NetworkManager{
   }
 
   /// 랙입고 등록
-  Future<String> registRackIpgo(var params) async {
-    String a = '0000';
+  Future<RackIpgoTodayModel> registRackIpgo(var params) async {
+    var registRackIpgo = RackIpgoTodayModel();
     try {
       if (APP_CONST.LOCAL_JSON_MODE) {
-        var urlPath = 'assets/json/ipgo_rack_regist.json';
+        var urlPath = 'assets/json/rack_ipgo.json';
         final jsonResponse = await localJsonPaser(urlPath);
-       // ipgoModel = IpgoModel.fromJson(jsonResponse);
+        registRackIpgo = RackIpgoTodayModel.fromJson(jsonResponse);
       } else {
 
         final response = await HttpUtil.getDio()
@@ -1967,7 +1967,7 @@ class HomeApi extends NetworkManager{
           var rtoken = response.headers['mng-bo-rtoken'];
           var jsonData = response.data;
 
-        //  ipgoModel = IpgoModel.fromJson(jsonData);
+          registRackIpgo = RackIpgoTodayModel.fromJson(jsonData);
 
           await Utils.getStorage.write('token', token);
           await Utils.getStorage.write('rtoken', rtoken);
@@ -1977,15 +1977,13 @@ class HomeApi extends NetworkManager{
 
     } on DioError catch (e) {
       Get.log('registRackIpgo - error');
-      a = '1111';
       RackIpgoController controller = Get.find();
       controller.isDbConnected.value = false;
       // commonError(e);
     } catch (err) {
       Get.log('registRackIpgo = ${err.toString()}');
-      a = '1111';
     }
-    return a;
+    return registRackIpgo;
   }
 
   /// 랙입고 오늘자 전체 조회
@@ -2300,15 +2298,17 @@ class HomeApi extends NetworkManager{
     return ipgoSmallboxModel;
   }
 
+  
+
   /// 입고 등록
-  Future<String> registIpgo(var params) async {
-    var ipgoModel = IpgoModel();
+  Future<IpgoSmallboxModel> registIpgo(var params) async {
+    var ipgoSmallboxModel = IpgoSmallboxModel();
     String a = '0000';
     try {
       if (APP_CONST.LOCAL_JSON_MODE) {
         var urlPath = 'assets/json/ipgo_regist.json';
         final jsonResponse = await localJsonPaser(urlPath);
-        ipgoModel = IpgoModel.fromJson(jsonResponse);
+        ipgoSmallboxModel = IpgoSmallboxModel.fromJson(jsonResponse);
       } else {
 
         final response = await HttpUtil.getDio()
@@ -2325,7 +2325,7 @@ class HomeApi extends NetworkManager{
           var rtoken = response.headers['mng-bo-rtoken'];
           var jsonData = response.data;
 
-          ipgoModel = IpgoModel.fromJson(jsonData);
+          ipgoSmallboxModel = IpgoSmallboxModel.fromJson(jsonData);
 
           await Utils.getStorage.write('token', token);
           await Utils.getStorage.write('rtoken', rtoken);
@@ -2343,7 +2343,7 @@ class HomeApi extends NetworkManager{
       Get.log('registIpgo = ${err.toString()}');
       a = '1111';
     }
-    return a;
+    return ipgoSmallboxModel;
   }
 
   /// 입고 QR조회
