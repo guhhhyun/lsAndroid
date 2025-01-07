@@ -112,6 +112,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxBool successIpgo = false.obs;
   RxInt alertIndex = 3.obs;
   RxInt currentRowIndex = 0.obs; // 소박스 등록에서 왼쪽 선택된 리스트의 자재들이 우측 리스트에 보여주기 위함
+  RxBool isSboxIpgo = false.obs;
 
   /// 공통 드롭다운 조회(zone) -> 존 구분
   Future<void> reqCommon2() async {
@@ -750,17 +751,21 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
         try {
           final retVal = await HomeApi.to.registIpgo(params);
 
-          if (retVal == '0000') {
+          if (retVal.body![0]['resultMessage'] == '') {
             Get.log('등록되었습니다');
             isDbConnected.value = true;
+            isSboxIpgo.value = true;
           } else {
+            statusText.value = retVal.body![0]['resultMessage'];
             Get.log('등록 실패');
+            isSboxIpgo.value = false;
 
           }
         } catch (e) {
           Get.log('registIpgoBtn catch !!!!');
           Get.log(e.toString());
           isDbConnected.value = false;
+          isSboxIpgo.value = false;
         } finally {
           bLoading.value = false;
           isIpgoClick.value = false;

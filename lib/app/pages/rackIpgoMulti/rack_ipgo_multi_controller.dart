@@ -323,7 +323,7 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
           },
           {
             'paramName': 'p_QR_CODE',
-            'paramValue': '${registRackIpgoList[i]['TAG_NO']}',
+            'paramValue': registRackIpgoList[i]['TAG_TYPE'] == '90' ? '${registRackIpgoList[i]['QR_NO']}' : '${registRackIpgoList[i]['TAG_NO']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },

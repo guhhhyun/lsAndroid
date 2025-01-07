@@ -1247,6 +1247,36 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
+      PlutoColumn(
+        title: '라벨번호',
+        field: 'tagNo',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '수량',
+        field: 'qty',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
 
     ];
     return gridCols;
@@ -1275,6 +1305,15 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
               },
               onChanged: (PlutoGridOnChangedEvent event) {
                 print(event);
+                /// 그리드에서 변경된 값 그대로 업데이트
+                if (event.column.field == 'qtyUse') {
+                  print('선택한 값: ${event.value}');
+                  controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][event.rowIdx].addAll({'qtyUse': event.value});
+                  Get.log('controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][event.rowIdx] :: '
+                      '${controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][event.rowIdx]['qtyUse']}');
+                }
+
+
               },
               onSelected: (c) {
                 print(controller.gridStateMgr5.currentRowIdx);
@@ -1387,6 +1426,24 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '출고수량',
+        field: 'qtyUse',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: true,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+        checkReadOnly: (PlutoRow row, PlutoCell cell) {
+          return row.cells['qtyUse']!.value == 1;
+        },
       ),
       PlutoColumn(
         title: '단위',
@@ -1541,8 +1598,8 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                 SizedBox(width: 24,),
                 _invnrTextForm2('출고담당자', 1),
                 SizedBox(width: 24,),
-                _invnrTextForm2('저장위치', 2),
-                SizedBox(width: 24,),
+        /*        _invnrTextForm2('저장위치', 2),
+                SizedBox(width: 24,),*/
                 _invnrTextForm2('비고', 3),
               ],
             ),
@@ -1627,9 +1684,9 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                       }
                       if(controller.isEtcChulgoQrCheckList.value) {
                         await controller.registSaveIpgoBtn();
-                        controller.etcChulgoSaveQrList.removeAt(controller.isEtcChulgoQrCheckListIdx.value); // 좌측리스트 삭제
+                       /* controller.etcChulgoSaveQrList.removeAt(controller.isEtcChulgoQrCheckListIdx.value); // 좌측리스트 삭제
                         controller.etcChulgoQrDetailTotalList.removeAt(controller.isEtcChulgoQrCheckListIdx.value); // 우측 디테일 삭제
-                        controller.etcChulgoQrCheckList.removeAt(controller.isEtcChulgoQrCheckListIdx.value);
+                        controller.etcChulgoQrCheckList.removeAt(controller.isEtcChulgoQrCheckListIdx.value);*/
                         /// 좌측 리스트 삭제
                         controller.gridStateMgr4.removeAllRows();
                         controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcChulgoSaveQrList.length, (index) =>
@@ -1814,73 +1871,114 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                   borderRadius: BorderRadius.circular(10),
                   color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                 ),
-                child: TextFormField(
-                  expands :true,
-                  minLines: null,
-                  maxLines: null,
-                  focusNode: controller.focusNode,
-                  style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
-                  // maxLines: 5,
-                  controller: controller.textQrController,
-                  textAlignVertical: TextAlignVertical.center,
-                  onTap: () {
-                    controller.isQrFocus.value = false;
-                    if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
-                    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                  },
-                  onTapOutside:(event) => { controller.focusCnt.value = 0 },
-                  onFieldSubmitted: (value) async{
-                    controller.isDuplQr.value = false;
-                    for(var i = 0; i < controller.etcChulgoQrList.length; i++) {
-                      if(controller.etcChulgoQrList[i]['qrNo'].contains(controller.textQrController.text)) {
-                        controller.isDuplQr.value = true;
+                child: KeyboardListener(
+                  focusNode: controller.focusNodeKey,
+                  onKeyEvent: (event) async {
+                    if (event is KeyDownEvent) {
+                      //  final inputChar = event.character ?? '';
+                      //  controller.textLocController.text += inputChar;
+                      // 키보드 입력값 수신 처리
+                      if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
+                        controller.isDuplQr.value = false;
+                        for(var i = 0; i < controller.etcChulgoQrList.length; i++) {
+                          if(controller.etcChulgoQrList[i]['qrNo'].contains(controller.textQrController.text)) {
+                            controller.isDuplQr.value = true;
+                          }
+                        }
+                        if(controller.isDuplQr.value) {
+                          controller.statusText.value = '중복된 QR코드입니다.';
+                          controller.textQrController.text = '';
+                        }else{
+                          await controller.reqChulThird(); // 조회
+                          if(controller.etcChulgoQrList.isNotEmpty) {
+                            await controller.reqChulThirdDetail(); // 디테일 조회
+                            controller.etcChulgoSaveQrList.add(controller.etcChulgoQrList[0]);
+                          }
+                          controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcChulgoSaveQrList.length, (index) =>
+                              PlutoRow(cells:
+                              Map.from((controller.etcChulgoSaveQrList[index]).map((key, value) =>
+                                  MapEntry(key, PlutoCell(value: value == null ? '' : value )),
+                              )))
+                          );
+                          controller.textQrController.text = '';
+                          controller.gridStateMgr4.removeAllRows();
+                          controller.gridStateMgr4.appendRows(controller.rowDatas4);
+
+
+                          controller.focusNodeKey.requestFocus();
+
+                        }
                       }
                     }
-                    if(controller.isDuplQr.value) {
-                      controller.statusText.value = '중복된 QR코드입니다.';
-                      controller.textQrController.text = '';
-                    }else{
-                      await controller.reqChulThird(); // 조회
-                      if(controller.etcChulgoQrList.isNotEmpty) {
-                        await controller.reqChulThirdDetail(); // 디테일 조회
-                        controller.etcChulgoSaveQrList.add(controller.etcChulgoQrList[0]);
+                  },
+                  child: TextFormField(
+                    expands :true,
+                    minLines: null,
+                    maxLines: null,
+                    focusNode: controller.focusNode,
+                    style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+                    // maxLines: 5,
+                    controller: controller.textQrController,
+                    textAlignVertical: TextAlignVertical.center,
+                    onTap: () {
+                      controller.isQrFocus.value = false;
+                    /*  if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
+                      else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
+                    },
+                    onTapOutside:(event) => { controller.focusCnt.value = 0 },
+                    onFieldSubmitted: (value) async{
+                      /*controller.isDuplQr.value = false;
+                      for(var i = 0; i < controller.etcChulgoQrList.length; i++) {
+                        if(controller.etcChulgoQrList[i]['qrNo'].contains(controller.textQrController.text)) {
+                          controller.isDuplQr.value = true;
+                        }
                       }
-                      controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcChulgoSaveQrList.length, (index) =>
-                          PlutoRow(cells:
-                          Map.from((controller.etcChulgoSaveQrList[index]).map((key, value) =>
-                              MapEntry(key, PlutoCell(value: value == null ? '' : value )),
-                          )))
-                      );
-                      controller.textQrController.text = '';
-                      controller.gridStateMgr4.removeAllRows();
-                      controller.gridStateMgr4.appendRows(controller.rowDatas4);
+                      if(controller.isDuplQr.value) {
+                        controller.statusText.value = '중복된 QR코드입니다.';
+                        controller.textQrController.text = '';
+                      }else{
+                        await controller.reqChulThird(); // 조회
+                        if(controller.etcChulgoQrList.isNotEmpty) {
+                          await controller.reqChulThirdDetail(); // 디테일 조회
+                          controller.etcChulgoSaveQrList.add(controller.etcChulgoQrList[0]);
+                        }
+                        controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcChulgoSaveQrList.length, (index) =>
+                            PlutoRow(cells:
+                            Map.from((controller.etcChulgoSaveQrList[index]).map((key, value) =>
+                                MapEntry(key, PlutoCell(value: value == null ? '' : value )),
+                            )))
+                        );
+                        controller.textQrController.text = '';
+                        controller.gridStateMgr4.removeAllRows();
+                        controller.gridStateMgr4.appendRows(controller.rowDatas4);
 
 
 
 
-                      controller.focusNode.requestFocus();
-                      Future.delayed(const Duration(), (){
                         controller.focusNode.requestFocus();
-                        //  FocusScope.of(context).requestFocus(focusNode);
-                        Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                      });
-                    }
+                        Future.delayed(const Duration(), (){
+                          controller.focusNode.requestFocus();
+                          //  FocusScope.of(context).requestFocus(focusNode);
+                          Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                        });
+                      }*/
 
 
 
-                  },
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(0),
-                    fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
-                    filled: true,
-                    hintText: '',
-                    hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
-                    border: InputBorder.none,
+                    },
+                    keyboardType: TextInputType.none,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(0),
+                      fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
+                      filled: true,
+                      hintText: '',
+                      hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+                      border: InputBorder.none,
+                    ),
+                    showCursor: true,
+
+
                   ),
-                  showCursor: true,
-
-
                 ),)
           ),
         ),

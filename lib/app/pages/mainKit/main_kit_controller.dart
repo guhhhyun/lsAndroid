@@ -34,6 +34,8 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
   var newRows2 = <PlutoRow>[].obs;
 
 
+  RxList<dynamic> isSelect = [].obs;
+
   var insertRow = <PlutoRow>[].obs;
   RxList<dynamic> isRow = [].obs; // 리스트 길이만큼 false 추가용
 
@@ -68,6 +70,10 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
   RxList<dynamic> bomList = [].obs; // bom list정보
   RxList<dynamic> bomDetailList = [].obs; // bom 디테일 list정보
+
+  /// 자재선택 리스트
+  RxList<dynamic> popUpDataList = [].obs;
+
 
 
 
@@ -167,6 +173,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
   RxBool isSuccsessDong = true.obs;
 
+  RxInt alertIndex = 0.obs;
 
 
 
@@ -1537,6 +1544,72 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
   }
 
   /// //////////////////////////////////////////////새롭게 만들어진 프로시저 적용 -류 /////////////////////////////////////////////////////
+  /// 자재선택 프로시저
+  Future<void> reqCommon3() async {
+
+    bLoading.value = true;
+    popUpDataList.clear();
+    //cheburnIpgoList.clear();
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_SELECT_ITEM_R01',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_ITEM_CD',
+          'paramValue': smallBoxDataList[0]['itemCd'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_QR_NO',
+          'paramValue': smallBoxDataList[0]['qrNo'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqSelectItem(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          popUpDataList.addAll(retVal.body![1]);
+          for(var i = 0; i < popUpDataList.length; i++) {
+            isSelect.add(false);
+          }
+          isDbConnected.value = true;
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+        }
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('reqCommon3 catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+
+    }
+  }
+
 
 
   /// 메인박스 KIT 박스정보 조회
@@ -1546,6 +1619,8 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     bLoading.value = true;
 
     smallBoxDataList.clear();
+    isSelect.clear();
+
     var params = {
       'programId': 'A1020',
       'procedure': 'USP_A2060_R02',
@@ -1598,6 +1673,10 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
             bcSts.value = smallBoxDataList[0]['bcSts'].toString();
           }
           tagType.value = smallBoxDataList[0]['tagType'].toString();
+          if(smallBoxDataList.length > 1) {
+            await reqCommon3();
+
+          }
           Get.log(smallBoxDataList.toString());
           Get.log('조회 성공');
           statusText.value = '정상 조회 되었습니다.';
@@ -1817,6 +1896,94 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     } finally {
       bLoading.value = false;
       plutoRowNew2();
+    }
+  }
+
+  /// 메인키트 구성자재 스캔 등록 -- 중복라벨의 경우
+  Future<void> registMainKitQrMulti() async {
+    Get.log('메인키트 구성자재 스캔 시작!!!');
+
+    smallBoxItemMsgList.clear();
+    bLoading.value = true;
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A2060_S03',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'N',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_QR_NO',
+          'paramValue': smallBoxDataList[alertIndex.value]['qrNo'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_TAG_NO',
+          'paramValue': smallBoxDataList[alertIndex.value]['tagNo'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_CBX_MA_NO',
+          'paramValue': cbxMaNo.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_TAG_TYPE',
+          'paramValue': smallBoxDataList[alertIndex.value]['tagType'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_ID',
+          'paramValue': gs.loginId.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_IP',
+          'paramValue': 'MOBILE',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+
+
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.registMainKitQr(params);
+
+      if (retVal.body![0]['resultMessage'] == '') {
+        smallBoxItemMsgList.addAll(retVal.body![1]);
+        Get.log('등록되었습니다');
+        isDbConnected.value = true;
+        await checkBoxItemSaveData();
+      } else {
+        Get.log('등록 실패');
+        statusText.value = retVal.body![0]['resultMessage'].toString();
+      }
+    } catch (e) {
+      Get.log('registMainKitQr catch !!!!');
+      Get.log(e.toString());
+      statusText.value = '등록 실패했습니다.';
+      isDbConnected.value = false;
+
+    } finally {
+      bLoading.value = false;
+
     }
   }
 
@@ -2809,7 +2976,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     );
     stateManager.removeAllRows();
     stateManager.appendRows(newRows);
-    stateManager.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
+    stateManager.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: const Duration(milliseconds: 100));
   }
 
   Future<void> plutoRowNew2() async {

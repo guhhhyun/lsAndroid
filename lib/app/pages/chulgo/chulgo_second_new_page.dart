@@ -356,6 +356,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                               const EdgeInsets.all(0))),
                       onPressed: () async {
                         Get.log('BOM변경확인 클릭!');
+                        controller.textSaleOrdController.text = controller.chulOneList[0]['soNo']; // bom변경확인 팝업 열었을 때 판매오더번호
                         await controller.reqBom();
                         if(controller.bomList.isNotEmpty) {
                           await controller.reqBomDetail();
@@ -1167,7 +1168,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '오더번호',
+        title: '판매오더번호',
         field: 'soNo',
         type: PlutoColumnType.text(),
         width: 150,
@@ -1388,7 +1389,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         content: Container(
           //padding: EdgeInsets.only(bottom: 20),
           width: 550,
-          height: 650,
+          height: 610,
           margin: EdgeInsets.only(left: 12, right: 12),
           child: SingleChildScrollView(
             child: Column(
@@ -1522,6 +1523,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppTheme.ae2e2e2)),
           child: TextFormField(
+            readOnly: true,
             onTap: () {
               controller.isFocus.value = true;
             },
@@ -1565,8 +1567,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
             child: Row(
               children: [
                 _invnrTextForm3('판매오더', 0),
-                SizedBox(width: 12,),
-                _invnrTextForm3('제품코드', 1),
+
                 /*  SizedBox(width: 12,),
                  _invnrTextForm2('생산오더', 2),*/
               ],
@@ -1592,6 +1593,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                         const EdgeInsets.all(0))),
                 onPressed: () async{
                   Get.log('BOM변경확인 조회');
+                  controller.textSaleOrdController.text = controller.chulOneList[0]['soNo'];
                   await controller.reqBom();
                   if(controller.bomList.isNotEmpty) {
                     await controller.reqBomDetail();
@@ -1787,7 +1789,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '판매오더',
+        title: '판매오더번호',
         field: 'soNo',
         type: PlutoColumnType.text(),
         width: 200,
@@ -1816,21 +1818,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
-      PlutoColumn(
-        title: 'SET수',
-        field: 'setQty',
-        type: PlutoColumnType.text(),
-        width: 100,
-        enableSorting: false,
-        enableEditingMode: false,
-        enableContextMenu: false,
-        enableRowDrag: false,
-        enableDropToResize: false,
-        enableColumnDrag: false,
-        titleTextAlign: PlutoColumnTextAlign.center,
-        textAlign: PlutoColumnTextAlign.center,
-        backgroundColor: AppTheme.gray_c_gray_200,
-      ),
+
     ];
     return gridCols3;
   }
@@ -1844,7 +1832,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
           children: [
             Container(
               width: MediaQuery.of(context).size.width-110,
-              height: 300,
+              height: 260,
               child: PlutoGrid(
                 // mode: PlutoGridMode.selectWithOneTap, // 탭 한번으로 반응하게?
                 columns: gridCols5(context),

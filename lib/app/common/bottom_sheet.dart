@@ -23,12 +23,125 @@ class BottomSheetModal extends StatelessWidget {
       width: 150,
       child: CustomScrollView(
         slivers: [
-        //  _title(),
+          _title(),
           Obx(() =>   controller.popUpDataList.isNotEmpty ?
-          _listArea() : SliverToBoxAdapter(child: Container()))
+          _listArea() : SliverToBoxAdapter(child: Container())),
+          SliverToBoxAdapter(child: SizedBox(height: 12,))
           // _bottom(context)
         ],
       ),
+    );
+  }
+
+  Widget _itemQr() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 4),
+          child: Text('자재명',
+            style: AppTheme.a18700
+                .copyWith(color: AppTheme.black), textAlign: TextAlign.end,),
+        ),
+        SizedBox(width: 8,),
+
+
+        Container(
+          padding: EdgeInsets.only(top: 4, bottom: 4, left: 8),
+          height: 40,
+          width: 180,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: AppTheme.ae2e2e2),
+
+          ),
+
+          child: Center(
+              child: Container(
+                child:  TextFormField(
+                  textInputAction:TextInputAction.done,
+                  expands :true,
+                  minLines: null,
+                  maxLines: null,
+                  style:  AppTheme.a18700.copyWith(color: AppTheme.a6c6c6c),
+                  // maxLines: 5,
+                  controller: controller.textSelectItemNmController, // 주석 풀어야할수있음
+                  textAlignVertical: TextAlignVertical.center,
+                  onFieldSubmitted: (value) async{
+
+                  },
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(0),
+                    fillColor: Colors.white,
+                    filled: true,
+                    hintStyle: AppTheme.a18700.copyWith(color: AppTheme.aBCBCBC),
+                    border: InputBorder.none,
+                  ),
+                  showCursor: true,
+
+                ),
+              )
+          ),
+
+        ),
+      ],
+    );
+  }
+
+  Widget _itemItemCd() {
+    return Row(
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 4),
+          width: 80,
+          child: Text('자재코드',
+            style: AppTheme.a18700
+                .copyWith(color: AppTheme.black), textAlign: TextAlign.end,),
+        ),
+        SizedBox(width: 8,),
+
+
+        Container(
+          padding: EdgeInsets.only(top: 4, bottom: 4, left: 8),
+          height: 40,
+          width: 210,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: AppTheme.ae2e2e2),
+
+          ),
+
+          child: Center(
+              child: Container(
+                child:  TextFormField(
+                  textInputAction:TextInputAction.done,
+                  expands :true,
+                  minLines: null,
+                  maxLines: null,
+                  style:  AppTheme.a18700.copyWith(color: AppTheme.a6c6c6c),
+                  // maxLines: 5,
+                  controller: controller.textSelectItemController, // 주석 풀어야할수있음
+                  textAlignVertical: TextAlignVertical.center,
+                  onFieldSubmitted: (value) async{
+
+                  },
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(0),
+                    fillColor: Colors.white,
+                    filled: true,
+                    hintStyle: AppTheme.a18700.copyWith(color: AppTheme.aBCBCBC),
+                    border: InputBorder.none,
+                  ),
+                  showCursor: true,
+
+                ),
+              )
+          ),
+
+        ),
+      ],
     );
   }
 
@@ -37,11 +150,62 @@ class BottomSheetModal extends StatelessWidget {
   Widget _title() {
     return SliverToBoxAdapter(
       child: Container(
-          padding: EdgeInsets.only(left: 12, bottom: 20),
-          child: Text('자재 선택', style: AppTheme.titleHeadline.copyWith(color: AppTheme.black),
-          )),
+          padding: EdgeInsets.only(left: 12, top: 12, right: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                 // _itemQr(),
+                  _itemItemCd(),
+                ],
+              ),
+
+              Container(
+                margin: EdgeInsets.only(right: 8),
+                width: 120,
+                height: 40,
+                child: TextButton(
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all<
+                          RoundedRectangleBorder>(
+                          const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10)))),
+                      padding: MaterialStateProperty.all(
+                          const EdgeInsets.all(0))),
+                  onPressed: () async {
+                    Get.log('조회 클릭!');
+                    await controller.reqCommon3();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: AppTheme.navy_navy_800,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppTheme.ae2e2e2)
+                    ),
+                    width: 120,
+                    height: 40,
+                    padding: const EdgeInsets.only(
+
+                    ),
+                    child: Center(
+                      child: Text('조회', //입고취소 조회
+                          style: AppTheme.a20700.copyWith(
+                            color: AppTheme.white,
+                          )),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          )
     );
   }
+
+
 
 
 

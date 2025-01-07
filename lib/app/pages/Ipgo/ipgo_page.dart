@@ -1590,9 +1590,9 @@ class IpgoPage extends StatelessWidget {
                              controller.statusText.value = '중복된 QR코드입니다.';
                              controller.textQrController.text = '';
                            }else{*/
-                           await controller.checkBoxQR();
+                         /*  await controller.checkBoxQR();
                              if(controller.ipgoQrBoxList.isNotEmpty) {
-                               /* controller.ipgoQrBoxList[0].addAll({'no': '${controller.ipgoBoxList.length + 1}'});*/
+                               *//* controller.ipgoQrBoxList[0].addAll({'no': '${controller.ipgoBoxList.length + 1}'});*//*
                                //  controller.ipgoBoxList.add(controller.ipgoQrBoxList[0]);
                                  controller.insertRow2 = List<PlutoRow>.generate(controller.ipgoBoxList.length, (index) =>
                                      PlutoRow(cells:
@@ -1623,12 +1623,12 @@ class IpgoPage extends StatelessWidget {
                              controller.requestFocus2();
 
                            //}
-                         /*}else {
+                         *//*}else {
                            controller.statusText2.value = '거래명세서를 선택해주세요.';
                            controller.textQrController2.text = '';
                            // Get.dialog(_dialog('거래명세서를 선택해주세요'));
-                         }*/
-                         controller.isQr2.value = false;
+                         }*//*
+                         controller.isQr2.value = false;*/
                        },
                        keyboardType: TextInputType.none,
                        decoration: InputDecoration(
@@ -1771,14 +1771,16 @@ class IpgoPage extends StatelessWidget {
                            Get.log('입고등록 클릭!');
                            await controller.reqCheburnIpgo();
                            await controller.registIpgoBoxBtn();
+                           if(controller.isSboxIpgo.value) {
+                             SchedulerBinding.instance!.addPostFrameCallback((_) {
+                               Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
+                             });
+                             controller.ipgoQrBoxList.clear();
+                             controller.ipgoBoxList.clear();
+                             controller.gridStateMgr4.removeAllRows();
+                             controller.gridStateMgr5.removeAllRows();
+                           }
 
-                           SchedulerBinding.instance!.addPostFrameCallback((_) {
-                             Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
-                           });
-                           controller.ipgoQrBoxList.clear();
-                           controller.ipgoBoxList.clear();
-                           controller.gridStateMgr4.removeAllRows();
-                           controller.gridStateMgr5.removeAllRows();
                          }
 
 

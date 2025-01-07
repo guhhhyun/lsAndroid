@@ -245,8 +245,19 @@ class MainKitNewPage extends StatelessWidget {
                                           }
                                         }else {
                                           if(controller.smallBoxItemDataList.isNotEmpty) {
-                                            /// 구성자재 스캔 시작
-                                            await controller.registMainKitQr();
+                                            if(controller.smallBoxDataList.length > 1) {
+                                              showDialog(
+                                                barrierDismissible: false,
+                                                context: context, //context
+                                                builder: (BuildContext context) {
+                                                  return _dupAlertDialog(context);
+                                                },
+                                              );
+                                            }else {
+                                              /// 구성자재 스캔 시작
+                                              await controller.registMainKitQr();
+                                            }
+
                                           }else {
                                             Get.dialog(CommonDialogWidget(contentText: '메인박스를 먼저 스캔해주세요', pageFlag: 0));
                                           }
@@ -255,10 +266,7 @@ class MainKitNewPage extends StatelessWidget {
 
                                         await controller.test();
                                         controller.focusNode.requestFocus();
-                                        Future.delayed(const Duration(), () {
-                                          controller.focusNode.requestFocus();
-                                          Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                                        });
+
                                       }
                                     }
                                   },
@@ -1676,7 +1684,6 @@ class MainKitNewPage extends StatelessWidget {
         type: PlutoColumnType.select(controller.reasonNames),
         checkReadOnly: (PlutoRow row, PlutoCell cell) {
           return !(row.cells['prtNo']!.value == 'O' && row.cells['test']!.value == 'test');
-
         },
         /*renderer: (rendererContext) {
             return Container(
@@ -1746,6 +1753,62 @@ class MainKitNewPage extends StatelessWidget {
               ),
             );
           }),
+      PlutoColumn(
+          enableSorting: false,
+          enableEditingMode: false,
+          enableContextMenu: false,
+          enableRowDrag: false,
+          enableDropToResize: false,
+          enableColumnDrag: false,
+          titleTextAlign: PlutoColumnTextAlign.center,
+          textAlign: PlutoColumnTextAlign.center,
+          width: 110,
+          title: '변경내용',
+          field: 'chkRst',
+          type: PlutoColumnType.text(),
+          renderer: (rendererContext) {
+            return Container(
+              margin: EdgeInsets.all(0),
+              padding: EdgeInsets.all(0),
+              width: 60,
+              // color: textColor,
+              child: Center(
+                child: Text(
+                    rendererContext.cell.value.toString(),
+                    style: AppTheme.a14500.copyWith(color: Colors.black)
+                ),
+              ),
+            );
+          }
+      ),
+      PlutoColumn(
+          enableSorting: false,
+          enableEditingMode: false,
+          enableContextMenu: false,
+          enableRowDrag: false,
+          enableDropToResize: false,
+          enableColumnDrag: false,
+          titleTextAlign: PlutoColumnTextAlign.center,
+          textAlign: PlutoColumnTextAlign.center,
+          width: 110,
+          title: '변경수량',
+          field: 'chkQty',
+          type: PlutoColumnType.text(),
+          renderer: (rendererContext) {
+            return Container(
+              margin: EdgeInsets.all(0),
+              padding: EdgeInsets.all(0),
+              width: 60,
+              // color: textColor,
+              child: Center(
+                child: Text(
+                    rendererContext.cell.value.toString(),
+                    style: AppTheme.a14500.copyWith(color: Colors.black)
+                ),
+              ),
+            );
+          }
+      ),
     ];
 
     return gridCols2;
@@ -2773,6 +2836,214 @@ class MainKitNewPage extends StatelessWidget {
 
 
 
+  Widget _dupAlertDialog(BuildContext context) {
+
+    return AlertDialog(
+        backgroundColor: AppTheme.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0)),
+        title: Column(
+          children: [
+            const SizedBox(
+              height: AppTheme.spacing_l_20,
+            ),
+            Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 24, right: 12),
+                  child: Text(
+                    '자재 선택',
+                    style: AppTheme.a18700
+                        .copyWith(color: AppTheme.black),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            Container(
+              width: double.infinity,
+              height: 1,
+              color: Colors.black,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+
+        content: _dupAlertList(context), /// 내부 메인body
+
+        buttonPadding: const EdgeInsets.all(0),
+        // insetPadding 이게 전체크기 조정
+        insetPadding: const EdgeInsets.only(left: 45, right: 45),
+        contentPadding: const EdgeInsets.all(0),
+        actionsPadding: const EdgeInsets.all(0),
+        titlePadding: const EdgeInsets.all(0),
+        //
+        actions: [
+          Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 1,
+                color: const Color(0x5c3c3c43),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15)))),
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(0))),
+                      onPressed: () async {
+                        Get.log('선택 클릭!');
+                        await controller.registMainKitQrMulti();
+                        /*await controller.checkQrBtn2();
+                        controller.textQrController.text = '';
+                        Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+                        controller.isFocus.value = true;
+                        await controller.checkDetailBtn(); // 디테일 조회
+                        controller.focusNode.unfocus();
+                        focusNode.requestFocus();*/
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                right: BorderSide(color: const Color(0x5c3c3c43),)
+                            ),
+                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
+                            color: AppTheme.navy_navy_900
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.only(
+                          top: AppTheme.spacing_s_12,
+                          bottom: AppTheme.spacing_s_12,
+                        ),
+                        child: Center(
+                          child: Text('선택',
+                              style: AppTheme.titleHeadline.copyWith(
+                                  color: AppTheme.white,
+                                  fontSize: 17)),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          )
+        ]);
+  }
+
+  Widget _dupAlertList(BuildContext context) {
+    return Container(
+      height: 300,
+      width: 300,
+      child: CustomScrollView(
+        slivers: [
+          _listArea()
+        ],
+      ),
+    );
+  }
+
+
+  Widget _listArea() {
+    return Obx(() => SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
+          return _listItem(index: index, context: context);
+        }, childCount: controller.popUpDataList.length)));
+  }
+
+
+  Widget _listItem({required BuildContext context, required int index}) {
+    return  TextButton(
+        style: ButtonStyle(shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(5)))),
+            /*backgroundColor: MaterialStateProperty.all<Color>(
+                AppTheme.light_primary,
+              ),*/
+            padding:
+            MaterialStateProperty.all(const EdgeInsets.all(0))),
+        onPressed: () async{
+          if(controller.isSelect[index] == true) {
+            controller.isSelect[index] = false;
+
+          }else {
+            for(var i = 0; i < controller.isSelect.length; i++) {
+              controller.isSelect[i] = false;
+            }
+            controller.isSelect[index] = true;
+
+          }
+          controller.alertIndex.value = index;
+          //  Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+        },
+        child: Obx(() => Container(
+          margin: const EdgeInsets.only(left: 18, right: 18, bottom: 18),
+          padding: const EdgeInsets.only(top: 18, bottom: 18, left: 18, right: 18),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: controller.isSelect[index] ? Border.all(color: AppTheme.black, width: 3) : Border.all(color: AppTheme.ae2e2e2),
+              color: AppTheme.white,
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.gray_c_gray_100.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(0, 3), // changes position of shadow
+                ),
+              ]
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text('QR코드: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.popUpDataList[index]['tagNo']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      SizedBox(width: 12,),
+                      Text('자재코드: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.popUpDataList[index]['itemCd']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      SizedBox(width: 12,),
+                      Text('수량: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.popUpDataList[index]['qty']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                    ],
+                  ),
+
+                ],
+              )
+
+            ],
+          ),
+        ),)
+    );
+  }
 
 
 

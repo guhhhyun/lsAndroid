@@ -732,6 +732,10 @@ class PickingController extends GetxController with GetSingleTickerProviderState
 
   final FocusNode focusNode = FocusNode();
 
+  Future<void> aa() async {
+
+  }
+
   @override
   void onClose() {
     Get.log('IpgoController - onClose !!');

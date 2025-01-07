@@ -61,6 +61,10 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
   RxList<dynamic> bomDetailList = [].obs; // bom 디테일 list정보
 
 
+  /// 자재선택
+  RxList<dynamic> selectedItemList = [].obs; // 자재선택 담는 그릇
+
+
   late PlutoGridStateManager stateManager;
   late PlutoGridStateManager stateManager2;
   late PlutoGridStateManager stateManager3; // BOM 리스트
@@ -129,6 +133,70 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
 
   /// bom관련
   RxInt bomCurrentIdx = 0.obs; // 마스터 선택 idx
+
+
+
+  /// 자재선택 프로시저
+  Future<void> reqCommon3() async {
+
+    bLoading.value = true;
+    //cheburnIpgoList.clear();
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_SELECT_ITEM_R01',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_QR_NO',
+          'paramValue': textQrController.text,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_ITEM_CD',
+          'paramValue': '',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqSelectItem(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          selectedItemList.addAll(retVal.body![1]);
+          isDbConnected.value = true;
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+        }
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('reqCommon3 catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+
+    }
+  }
 
 
 

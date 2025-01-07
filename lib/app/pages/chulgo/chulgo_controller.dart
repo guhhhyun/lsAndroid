@@ -640,7 +640,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
 
     var params = {
       'programId': 'A2065',
-      'procedure': 'USP_CHK_BOM_R02',
+      'procedure': 'USP_CHK_BOM_R01',
       'params': [
         {
           'paramName': 'p_work_type',
@@ -656,31 +656,19 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
         },
         {
           'paramName': 'p_BC_ID',
-          'paramValue': chulSecondList[0]['tagNo'],
+          'paramValue': chulOneList[0]['mstKey'],
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
         {
           'paramName': 'p_SO_NO',
-          'paramValue': chulSecondList[0]['delOrdNo'], // 판매오더
+          'paramValue': chulOneList[0]['soNo'], // 판매오더
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
         {
           'paramName': 'p_PITM_CD',
-          'paramValue': chulSecondList[0]['pitmCd'], //제품코드
-          'paramJdbcType': 'VARCHAR',
-          'paramMode': 'IN'
-        },
-        {
-          'paramName': 'p_SET_QTY',
-          'paramValue': chulSecondList[0]['setQty'] ?? '', //
-          'paramJdbcType': 'VARCHAR',
-          'paramMode': 'IN'
-        },
-        {
-          'paramName': 'p_GUBUN',
-          'paramValue': '10',
+          'paramValue': '',
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -725,7 +713,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
 
     var params = {
       'programId': 'A1020',
-      'procedure': 'USP_CHK_BOM_R02',
+      'procedure': 'USP_CHK_BOM_R01',
       'params': [
         {
           'paramName': 'p_work_type',
@@ -756,19 +744,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
           'paramValue': '', //제품코드
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
-        },
-        {
-          'paramName': 'p_SET_QTY',
-          'paramValue': chulOneList[0]['setQty'], //제품코드
-          'paramJdbcType': 'VARCHAR',
-          'paramMode': 'IN'
-        },
-        {
-          'paramName': 'p_GUBUN',
-          'paramValue': '',
-          'paramJdbcType': 'VARCHAR',
-          'paramMode': 'IN'
-        },
+        }
       ]
     };
 

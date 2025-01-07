@@ -1402,6 +1402,62 @@ class OtherKitNewPage extends StatelessWidget {
             );
           }
       ),
+      PlutoColumn(
+          enableSorting: false,
+          enableEditingMode: false,
+          enableContextMenu: false,
+          enableRowDrag: false,
+          enableDropToResize: false,
+          enableColumnDrag: false,
+          titleTextAlign: PlutoColumnTextAlign.center,
+          textAlign: PlutoColumnTextAlign.center,
+          width: 110,
+          title: '변경내용',
+          field: 'chkRst',
+          type: PlutoColumnType.text(),
+          renderer: (rendererContext) {
+            return Container(
+              margin: EdgeInsets.all(0),
+              padding: EdgeInsets.all(0),
+              width: 60,
+              // color: textColor,
+              child: Center(
+                child: Text(
+                    rendererContext.cell.value.toString(),
+                    style: AppTheme.a14500.copyWith(color: Colors.black)
+                ),
+              ),
+            );
+          }
+      ),
+      PlutoColumn(
+          enableSorting: false,
+          enableEditingMode: false,
+          enableContextMenu: false,
+          enableRowDrag: false,
+          enableDropToResize: false,
+          enableColumnDrag: false,
+          titleTextAlign: PlutoColumnTextAlign.center,
+          textAlign: PlutoColumnTextAlign.center,
+          width: 110,
+          title: '변경수량',
+          field: 'chkQty',
+          type: PlutoColumnType.text(),
+          renderer: (rendererContext) {
+            return Container(
+              margin: EdgeInsets.all(0),
+              padding: EdgeInsets.all(0),
+              width: 60,
+              // color: textColor,
+              child: Center(
+                child: Text(
+                    rendererContext.cell.value.toString(),
+                    style: AppTheme.a14500.copyWith(color: Colors.black)
+                ),
+              ),
+            );
+          }
+      ),
 /*      PlutoColumn(
           enableSorting: false,
           enableEditingMode: false,

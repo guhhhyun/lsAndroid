@@ -94,102 +94,67 @@ class ChulgoPage extends StatelessWidget {
             width: MediaQuery.of(context).size.width-26,
             height: 40,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Obx(() => Container(
-                  margin: const EdgeInsets.only(right: 14),
-                  decoration: BoxDecoration(
-                      color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(8)
-                  ),
-                  width: 40,
-                  height: 40,
-                ),),
-                   /* Container(
-                      margin: EdgeInsets.only(right: 12),
-                      width: 140,
+                Row(
+                  children: [
+                    SizedBox(width: 12,),
+                    Obx(() => _dropDownItem2(),)
+                  ],
+                ),
+                Row(
+                  children: [
+                    Obx(() => Container(
+                      margin: const EdgeInsets.only(right: 14),
+                      decoration: BoxDecoration(
+                          color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.7) : Colors.redAccent.withOpacity(0.6),
+                          borderRadius: BorderRadius.circular(8)
+                      ),
+                      width: 40,
                       height: 40,
-                      child: TextButton(
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                                const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(10),
-                                        bottomRight: Radius.circular(10)))),
-                            padding: MaterialStateProperty.all(
-                                const EdgeInsets.all(0))),
-                        onPressed: () async {
-                          Get.log('BOM변경확인 클릭!');
-                          await controller.reqBom();
-                          if(controller.bomList.isNotEmpty) {
-                            await controller.reqBomDetail();
-                          }
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return _alertDialog2(context);
-                            },
-                          );
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: AppTheme.navy_navy_800,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: AppTheme.ae2e2e2)
-                          ),
-                          width: 140,
-                          height: 40,
-                          padding: const EdgeInsets.only(
+                    ),),
+                    TextButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(10),
+                                      bottomRight: Radius.circular(10)))),
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(0))),
+                      onPressed: () async {
+                        Get.log('출고등록 클릭!');
+                        // 로직 넣기
+                        await controller.checkQR2();
+                        await controller.reqChulSecond();
 
-                          ),
-                          child: Center(
-                            child: Text('BOM변경확인', //입고취소 조회
-                                style: AppTheme.a20700.copyWith(
-                                  color: AppTheme.white,
-                                )),
-                          ),
+                        Get.to(ChulgoSecondNewPage());
+
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: AppTheme.navy_navy_800,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppTheme.ae2e2e2)
+                        ),
+                        width: 120,
+                        height: 40,
+                        padding: const EdgeInsets.only(
+
+                        ),
+                        child: Center(
+                          child: Text('출고등록',
+                              style: AppTheme.a20700.copyWith(
+                                color: AppTheme.white,
+                              )),
                         ),
                       ),
-                    ),*/
-                TextButton(
-                  style: ButtonStyle(
-                      shape: MaterialStateProperty.all<
-                          RoundedRectangleBorder>(
-                          const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(10),
-                                  bottomRight: Radius.circular(10)))),
-                      padding: MaterialStateProperty.all(
-                          const EdgeInsets.all(0))),
-                  onPressed: () async {
-                    Get.log('출고등록 클릭!');
-                    // 로직 넣기
-                    await controller.checkQR2();
-                    await controller.reqChulSecond();
-
-                    Get.to(ChulgoSecondNewPage());
-
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: AppTheme.navy_navy_800,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppTheme.ae2e2e2)
                     ),
-                    width: 120,
-                    height: 40,
-                    padding: const EdgeInsets.only(
-
-                    ),
-                    child: Center(
-                      child: Text('출고등록',
-                          style: AppTheme.a20700.copyWith(
-                            color: AppTheme.white,
-                          )),
-                    ),
-                  ),
+                  ],
                 ),
+
+
               ],
             ),
           ),
@@ -318,7 +283,7 @@ class ChulgoPage extends StatelessWidget {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '오더번호',
+        title: '판매오더번호', 
         field: 'soNo',
         type: PlutoColumnType.text(),
         width: 150,
@@ -573,12 +538,12 @@ class ChulgoPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 16,),
-                _invnrTextForm2('오더번호', 0),
+                _invnrTextForm2('판매오더번호', 0),
                 SizedBox(width: 16,),
-                _invnrTextForm2('프로젝트명', 1),
+                _invnrTextForm2('프로젝트명', 1), 
                // _joneDropDownItem('존 구분', 0),
-                SizedBox(width: 16,),
-                _dropDownItem2(),
+             /*   SizedBox(width: 16,),
+                _dropDownItem2(),*/
               //  _joneDropDownItem('입고 구분', 1),
 
               ],
@@ -696,7 +661,7 @@ class ChulgoPage extends StatelessWidget {
               border: Border.all(color: AppTheme.ae2e2e2)),
           child: Center(
             child: TextFormField(
-              focusNode: title == '오더번호' ? controller.focusNode : null,
+              focusNode: title == '판매오더번호' ? controller.focusNode : null,
               readOnly:  plag == 4 ? true : false,
               expands :true,
               minLines: null,

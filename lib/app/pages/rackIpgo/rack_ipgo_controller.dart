@@ -324,7 +324,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_QR_CODE',
-            'paramValue': '${rackIpgoList[currentFirstIndex.value]['TAG_NO']}',
+            'paramValue': rackIpgoList[i]['TAG_TYPE'] == '90' ? '${rackIpgoList[i]['QR_NO']}' : '${rackIpgoList[i]['TAG_NO']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
@@ -366,13 +366,13 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_ITEM_CD',
-            'paramValue': '${rackIpgoList[0]['ITEM_CD']}',
+            'paramValue': '${rackIpgoList[i]['ITEM_CD']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },
           {
             'paramName': 'p_INB_NO',
-            'paramValue': '${rackIpgoList[0]['INB_NO']}',
+            'paramValue': '${rackIpgoList[i]['INB_NO']}',
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },

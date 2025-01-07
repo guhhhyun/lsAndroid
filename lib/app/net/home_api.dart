@@ -16,6 +16,7 @@ import 'package:lsandroid/app/model/chulgoModel/other_kit_new2_model.dart';
 import 'package:lsandroid/app/model/chulgoModel/other_kit_new3_model.dart';
 import 'package:lsandroid/app/model/chulgoModel/other_kit_new_model.dart';
 import 'package:lsandroid/app/model/commonModel/common_model.dart';
+import 'package:lsandroid/app/model/commonModel/select_item_model.dart';
 import 'package:lsandroid/app/model/commonModel/zone_model.dart';
 import 'package:lsandroid/app/model/etcChulgoModel/etc_chulgo_model.dart';
 import 'package:lsandroid/app/model/etcChulgoModel/etc_chulgo_second_detail_model.dart';
@@ -26,6 +27,7 @@ import 'package:lsandroid/app/model/etcIpgoModel/etc_ipgo_model.dart';
 import 'package:lsandroid/app/model/etcIpgoModel/etc_ipgo_second_detail_model.dart';
 import 'package:lsandroid/app/model/etcIpgoModel/etc_ipgo_second_model.dart';
 import 'package:lsandroid/app/model/inventoryCntModel/inventory_cnt_model.dart';
+import 'package:lsandroid/app/model/inventoryCntModel/inventory_cnt_qr_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_cancel_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_cheburn_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_model.dart';
@@ -62,6 +64,48 @@ import 'package:http/http.dart' as http;
 class HomeApi extends NetworkManager{
   static HomeApi get to => Get.find();
 
+
+  /// 재고실사 QR 조회
+  Future<InventoryCntQrModel> reqInventoryCntQr(var params) async {
+    var inventoryCntQrModel = InventoryCntQrModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/ipgo_invnr.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        inventoryCntQrModel = InventoryCntQrModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          inventoryCntQrModel = InventoryCntQrModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqInventoryCntQr - error');
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqInventoryCntQr = ${err.toString()}');
+    }
+    return inventoryCntQrModel;
+  }
 
 
   /// 재고실사 마스터 조회
@@ -358,14 +402,14 @@ class HomeApi extends NetworkManager{
   }
 
   /// 기타 입고취소/저장 처리
-  Future<String> registEtcCancelIpgo(var params) async {
-    //  var ipgoModel = IpgoModel();
-    String a = '0000';
+  Future<EtcChulgoModel> registEtcCancelIpgo(var params) async {
+    var etcChulgoModel = EtcChulgoModel();
+
     try {
       if (APP_CONST.LOCAL_JSON_MODE) {
-        var urlPath = 'assets/json/ipgo_regist.json';
+        var urlPath = 'assets/json/small_kit.json';
         final jsonResponse = await localJsonPaser(urlPath);
-        //   ipgoModel = IpgoModel.fromJson(jsonResponse);
+        etcChulgoModel = EtcChulgoModel.fromJson(jsonResponse);
       } else {
 
         final response = await HttpUtil.getDio()
@@ -382,7 +426,7 @@ class HomeApi extends NetworkManager{
           var rtoken = response.headers['mng-bo-rtoken'];
           var jsonData = response.data;
 
-          //  ipgoModel = IpgoModel.fromJson(jsonData);
+          etcChulgoModel = EtcChulgoModel.fromJson(jsonData);
 
           await Utils.getStorage.write('token', token);
           await Utils.getStorage.write('rtoken', rtoken);
@@ -393,12 +437,10 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('registEtcCancelIpgo - error');
       // commonError(e);
-      a = '1111';
     } catch (err) {
       Get.log('registEtcCancelIpgo = ${err.toString()}');
-      a = '1111';
     }
-    return a;
+    return etcChulgoModel;
   }
 
   /// 기타입고 QR 디테일 조회
@@ -2429,6 +2471,48 @@ class HomeApi extends NetworkManager{
       Get.log('reqLogin = ${err.toString()}');
     }
     return loginModel;
+  }
+
+  /// 자재선택 팝업 조회
+  Future<SelectItemModel> reqSelectItem(var params) async {
+    var selectItemModel = SelectItemModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/zone.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        selectItemModel = SelectItemModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          selectItemModel = SelectItemModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqSelectItem - error');
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqSelectItem = ${err.toString()}');
+    }
+    return selectItemModel;
   }
 
   /// 존 조회

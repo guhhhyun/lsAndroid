@@ -384,13 +384,14 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
         try {
           final retVal = await HomeApi.to.registEtcCancelIpgo(params);
 
-          if (retVal == '0000') {
+          if(retVal.body![0]['resultValue'] == true) {
             Get.log('기타출고 저장되었습니다');
             etcChulgoSaveQrList.removeAt(e); // 좌측리스트 삭제
             etcChulgoQrDetailTotalList.removeAt(e); // 우측 디테일 삭제
             etcChulgoQrCheckList.removeAt(e);
           } else {
             Get.log('저장 실패');
+            statusText.value = retVal.body![0]['resultMessage'].toString();
           }
         } catch (e) {
           Get.log('registSaveIpgoBtn catch !!!!');
@@ -711,6 +712,9 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
           etcIpgoQrDetailListNew.addAll(retVal.body![1]);
+          for(var i = 0; i < etcIpgoQrDetailListNew.length; i++) {
+            etcIpgoQrDetailListNew[i].addAll({'qtyUse': etcIpgoQrDetailListNew[i]['qty']});
+          }
           etcChulgoQrDetailTotalList.add(etcIpgoQrDetailListNew);
 
           statusText.value = '정상 조회되었습니다.';
@@ -900,6 +904,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
   }*/
 
   final focusNode = FocusNode();
+  final focusNodeKey = FocusNode();
   final focusNode2 = FocusNode();
 
   void requestFocus() {

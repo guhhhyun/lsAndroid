@@ -753,7 +753,7 @@ class RackIpgoMultiPage extends StatelessWidget {
                           controller.textQrMultiController.text = '';
                         }else{
                           await controller.checkQR(); // 조회
-                          if(controller.rackIpgoList.length > 1) {
+                          if(controller.rackIpgoList.length > 1 && controller.rackIpgoList[0]['TAG_TYPE'] != '90') {
                             // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
                             showDialog(
                               barrierDismissible: false,

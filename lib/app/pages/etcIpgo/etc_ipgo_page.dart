@@ -2044,67 +2044,107 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   borderRadius: BorderRadius.circular(10),
                   color: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
                 ),
-                child: TextFormField(
-                  expands :true,
-                  minLines: null,
-                  maxLines: null,
-                  focusNode: controller.focusNode,
-                  style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
-                  // maxLines: 5,
-                  controller: controller.textQrController,
-                  textAlignVertical: TextAlignVertical.center,
-                  onTap: () {
-                    controller.isQrFocus.value = false;
-                    if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
-                    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                  },
-                  onTapOutside:(event) => { controller.focusCnt.value = 0 },
-                  onFieldSubmitted: (value) async{
-                    controller.isDuplQr.value = false;
-                    for(var i = 0; i < controller.etcIpgoQrList.length; i++) {
-                      if(controller.etcIpgoQrList[i]['qrNo'].contains(controller.textQrController.text)) {
-                        controller.isDuplQr.value = true;
+                child: KeyboardListener(
+                  focusNode: controller.focusNodeKey,
+                  onKeyEvent: (event) async {
+                    if (event is KeyDownEvent) {
+                      //  final inputChar = event.character ?? '';
+                      //  controller.textLocController.text += inputChar;
+                      // 키보드 입력값 수신 처리
+                      if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
+                        controller.isDuplQr.value = false;
+                        for(var i = 0; i < controller.etcIpgoQrList.length; i++) {
+                          if(controller.etcIpgoQrList[i]['qrNo'].contains(controller.textQrController.text)) {
+                            controller.isDuplQr.value = true;
+                          }
+                        }
+                        if(controller.isDuplQr.value) {
+                          controller.statusText.value = '중복된 QR코드입니다.';
+                          controller.textQrController.text = '';
+                        }else{
+                          await controller.checkQR2(); // 조회
+                          if(controller.etcIpgoQrList.isNotEmpty) {
+                            await controller.checkDetailQR2(); // 디테일 조회
+                            controller.etcIpgoSaveQrList.add(controller.etcIpgoQrList[0]);
+                          }
+                          controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcIpgoSaveQrList.length, (index) =>
+                              PlutoRow(cells:
+                              Map.from((controller.etcIpgoSaveQrList[index]).map((key, value) =>
+                                  MapEntry(key, PlutoCell(value: value ?? '' )),
+                              )))
+                          );
+                          controller.textQrController.text = '';
+                          controller.gridStateMgr4.removeAllRows();
+                          controller.gridStateMgr4.appendRows(controller.rowDatas4);
+
+                          controller.focusNodeKey.requestFocus();
+
+                        }
                       }
                     }
-                    if(controller.isDuplQr.value) {
-                      controller.statusText.value = '중복된 QR코드입니다.';
-                      controller.textQrController.text = '';
-                    }else{
-                      await controller.checkQR2(); // 조회
-                      if(controller.etcIpgoQrList.isNotEmpty) {
-                        await controller.checkDetailQR2(); // 디테일 조회
-                        controller.etcIpgoSaveQrList.add(controller.etcIpgoQrList[0]);
+                  },
+                  child: TextFormField(
+                    expands :true,
+                    minLines: null,
+                    maxLines: null,
+                    focusNode: controller.focusNode,
+                    style:  AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+                    // maxLines: 5,
+                    controller: controller.textQrController,
+                    textAlignVertical: TextAlignVertical.center,
+                    onTap: () {
+                      controller.isQrFocus.value = false;
+                  /*    if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
+                      else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
+                    },
+                    onTapOutside:(event) => { controller.focusCnt.value = 0 },
+                    onFieldSubmitted: (value) async {
+                      /*controller.isDuplQr.value = false;
+                      for(var i = 0; i < controller.etcIpgoQrList.length; i++) {
+                        if(controller.etcIpgoQrList[i]['qrNo'].contains(controller.textQrController.text)) {
+                          controller.isDuplQr.value = true;
+                        }
                       }
-                      controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcIpgoSaveQrList.length, (index) =>
-                          PlutoRow(cells:
-                          Map.from((controller.etcIpgoSaveQrList[index]).map((key, value) =>
-                              MapEntry(key, PlutoCell(value: value ?? '' )),
-                          )))
-                      );
-                      controller.textQrController.text = '';
-                      controller.gridStateMgr4.removeAllRows();
-                      controller.gridStateMgr4.appendRows(controller.rowDatas4);
+                      if(controller.isDuplQr.value) {
+                        controller.statusText.value = '중복된 QR코드입니다.';
+                        controller.textQrController.text = '';
+                      }else{
+                        await controller.checkQR2(); // 조회
+                        if(controller.etcIpgoQrList.isNotEmpty) {
+                          await controller.checkDetailQR2(); // 디테일 조회
+                          controller.etcIpgoSaveQrList.add(controller.etcIpgoQrList[0]);
+                        }
+                        controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcIpgoSaveQrList.length, (index) =>
+                            PlutoRow(cells:
+                            Map.from((controller.etcIpgoSaveQrList[index]).map((key, value) =>
+                                MapEntry(key, PlutoCell(value: value ?? '' )),
+                            )))
+                        );
+                        controller.textQrController.text = '';
+                        controller.gridStateMgr4.removeAllRows();
+                        controller.gridStateMgr4.appendRows(controller.rowDatas4);
 
-                      controller.focusNode.requestFocus();
-                      Future.delayed(const Duration(), (){
                         controller.focusNode.requestFocus();
-                        //  FocusScope.of(context).requestFocus(focusNode);
-                        Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                      });
-                    }
-                  },
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(0),
-                    fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
-                    filled: true,
-                    hintText: '',
-                    hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
-                    border: InputBorder.none,
+                        Future.delayed(const Duration(), (){
+                          controller.focusNode.requestFocus();
+                          //  FocusScope.of(context).requestFocus(focusNode);
+                          Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+                        });
+                      }*/
+                    },
+                    keyboardType: TextInputType.none,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(0),
+                      fillColor: Color.lerp(Colors.yellowAccent, Colors.white, 0.8),
+                      filled: true,
+                      hintText: '',
+                      hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+                      border: InputBorder.none,
+                    ),
+                    showCursor: true,
+
+
                   ),
-                  showCursor: true,
-
-
                 ),)
           ),
         ),

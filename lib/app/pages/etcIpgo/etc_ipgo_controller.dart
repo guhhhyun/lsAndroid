@@ -954,6 +954,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
 
 
   final focusNode = FocusNode();
+  final focusNodeKey = FocusNode();
   final focusNode2 = FocusNode();
   void requestFocus() {
     Future.microtask(() => focusNode.requestFocus());
