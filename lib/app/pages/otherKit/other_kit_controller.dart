@@ -92,6 +92,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
   RxString itemCdNm = ''.obs;
   RxString wrkNo = ''.obs;
   RxString boxNo = ''.obs;
+  RxString bcSts = ''.obs;
   RxString wrkCfmDt = ''.obs;
   RxString cbxMaNo = ''.obs;
   RxInt no = 990.obs;
@@ -376,7 +377,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
 
       final retVal = await HomeApi.to.registSmallKitSave(params);
 
-      if (retVal == '0000') {
+      if(retVal.body![0]['resultMessage'] == '') {
         Get.log('등록되었습니다');
         isSave.value = true;
         isSaveText.value = '저장되었습니다.';
@@ -384,7 +385,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
       } else {
         Get.log('등록 실패');
         isSave.value = false;
-        isSaveText.value = '저장에 실패하였습니다.';
+        isSaveText.value = retVal.body![0]['resultMessage'];
       }
 
     } catch (e) {
@@ -1662,7 +1663,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
 
       final retVal = await HomeApi.to.registOtherKitSave(params);
 
-      if (retVal == '0000') {
+      if(retVal.body![0]['resultMessage'] == '') {
         Get.log('자재입고 취소되었습니다');
 
         isDbConnected.value = true;
@@ -1749,7 +1750,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
 
       final retVal = await HomeApi.to.registOtherKitSave(params);
 
-      if (retVal == '0000') {
+      if (retVal.body![0]['resultMessage'] == '') {
         Get.log('자재 등록되었습니다');
         textQrController.text = smallBoxItemDataList[0]['cbxExNo'].toString();
         await checkBoxItemSaveData('');
@@ -1760,7 +1761,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
       } else {
         Get.log('자재 등록 실패');
         isSave.value = false;
-        isSaveText.value = '저장에 실패하였습니다.';
+        isSaveText.value = retVal.body![0]['resultMessage'];
       }
     } catch (e) {
       Get.log('registSmallKitDetailSave catch !!!!');
@@ -1920,6 +1921,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
           wrkNo.value = retVal.body![1][0]['wrkNo'].toString();
           boxNo.value = textQrController.text;//retVal.body![1][''];
           wrkCfmDt.value = retVal.body![1][0]['wrkCfmDttm'].toString();
+          // bcSts.value = retVal.body![1][0]['bcSts'].toString();
 
           Get.log(smallBoxItemDataList.toString());
           Get.log('조회 성공');
@@ -1996,11 +1998,13 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
             outerLoop:
             for(var ii = 0; ii < smallBoxItemDataList.length; ii++) {
               if(smallBoxItemSaveDataList[i]['itemCd'] == smallBoxItemDataList[ii]['itemCd']) {
-                if(smallBoxItemSaveDataList[i]['wrkQty'] == smallBoxItemDataList[ii]['cbxQty']) {
+                if(smallBoxItemSaveDataList[i]['wrkQty'] >= smallBoxItemDataList[ii]['cbxQty']) {
                   /// 색 변경 로직 시작
                   isSaveColor.value = false;
                   isColor.value = true;
-                  noList2.add(smallBoxItemSaveDataList[i]['itemCd']);
+                  if(smallBoxItemSaveDataList[i]['chkRst'] == ''){
+                    noList2.add(smallBoxItemSaveDataList[i]['itemCd']);
+                  }
                 }
                 smallBoxItemSaveDataList[i].addAll({'no': '${smallBoxItemDataList[ii]['no']}'});
                 break outerLoop;
@@ -2112,7 +2116,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
 
         final retVal = await HomeApi.to.registSmallKitSave(params);
 
-        if (retVal == '0000') {
+        if (retVal.body![0]['resultMessage'] == '') {
           Get.log('등록되었습니다');
           isBomSave.value = true;
           isBomSaveText.value = '저장되었습니다.';
@@ -2120,7 +2124,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
         } else {
           Get.log('등록 실패');
           isBomSave.value = false;
-          isBomSaveText.value = '저장에 실패하였습니다.';
+          isBomSaveText.value = retVal.body![0]['resultMessage'];
         }
 
       } catch (e) {

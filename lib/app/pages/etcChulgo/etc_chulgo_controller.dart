@@ -22,6 +22,8 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
   var textItemNmController = TextEditingController();
   var textWrkNoController = TextEditingController(); // 제조번호
   var textOrderController = TextEditingController();
+  var textPlaceController = TextEditingController();
+
 
 
   late  PlutoGridStateManager gridStateMgr;
@@ -119,6 +121,8 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
   RxBool isQr = false.obs;
   RxBool isQrFocus = false.obs;
   RxBool isChecked = false.obs;
+  RxDouble list3Qty = 0.0.obs;
+  RxString chulgoDate = DateFormat('yyyyMMdd').format(DateTime.now()).obs;
 
 
   /// 채번 프로시저
@@ -225,10 +229,11 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
 
     bLoading.value = true;
 
-    for(var e = etcChulgoQrCheckList.length - 1; e >= 0; e--) {
-      await reqCheburn();
-      await reqCheburn2();
-      if(etcChulgoQrCheckList[e] == true) {
+    await reqCheburn();
+    await reqCheburn2();
+
+    for(var e = etcChulgoSaveQrList.length - 1; e >= 0; e--) {
+
         var params = {
           'programId': 'A1020',
           'procedure': 'USP_A4030_S02',
@@ -265,7 +270,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
             },
             {
               'paramName': 'p_OTB_DATE',
-              'paramValue': DateFormat('yyyyMMdd').format(DateTime.now()),
+              'paramValue': chulgoDate.value,
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
@@ -277,7 +282,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
             },
             {
             'paramName': 'p_PLACE_NM',
-            'paramValue': 'testMobile', //이거 어디서 가져오는지 물어봐야함
+            'paramValue': textPlaceController.text,
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
             },
@@ -399,7 +404,6 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
         } finally {
           bLoading.value = false;
         }
-      }
     }
   }
 
@@ -559,9 +563,10 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
         try {
           final retVal = await HomeApi.to.registEtcCancelIpgo(params);
 
-          if (retVal == '0000') {
+          if(retVal.body![0]['resultMessage'] == '') {
             Get.log('기타입고 취소되었습니다');
           } else {
+
             Get.log('취소 실패');
           }
         } catch (e) {

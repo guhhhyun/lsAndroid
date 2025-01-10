@@ -13,6 +13,7 @@ import 'package:lsandroid/app/common/utils.dart';
 import 'package:lsandroid/app/pages/chulgo/chulgo_controller.dart';
 import 'package:lsandroid/app/pages/home/home_page.dart';
 import 'package:lsandroid/app/pages/picking/picking_controller.dart';
+import 'package:lsandroid/app/routes/app_route.dart';
 
 import 'package:pluto_grid/pluto_grid.dart';
 import 'package:freedom_table/freedom_table.dart';
@@ -413,7 +414,9 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                         }
                         if(controller.isChulgo.value) {
                           await controller.registChulgoBtn(0);
-                          Get.dialog(CommonDialogWidget(contentText: '등록되었습니다.', pageFlag: 0));
+                          controller.isRegistChulgo.value ?
+                          Get.dialog(CommonDialogWidget(contentText: '등록되었습니다.', pageFlag: 0)) :  Get.dialog(CommonDialogWidget(contentText: '등록 실패했습니다.', pageFlag: 0));
+                         // Get.toNamed(Routes.CHULGO);
                         }else {
                           Get.dialog(CommonDialogWidget(contentText: '스캔되지않은 제품이 있습니다.', pageFlag: 0));
                         }

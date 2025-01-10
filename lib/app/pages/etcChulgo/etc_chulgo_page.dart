@@ -148,7 +148,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         Container(
           width:  MediaQuery.of(context).size.width ,
           padding: EdgeInsets.only(left: 24, right: 24),
-          child: _dropDownItem(),
+          child: _dropDownItem(context),
 
         ),
       ],
@@ -156,7 +156,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
   }
 
 
-  Widget _dropDownItem() {
+  Widget _dropDownItem(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -440,8 +440,8 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                         const EdgeInsets.all(0))),
                 onPressed: () async {
                   Get.log('삭제 클릭!');
-                  for(var i = 0; i < controller.etcChulgoQrCheckList.length; i++) {
-                    if(controller.etcChulgoQrCheckList[i] == true) {
+                  for(var i = 0; i < controller.etcChulgoCheckList.length; i++) {
+                    if(controller.etcChulgoCheckList[i] == true) {
                       controller.isRowChecked.value = true;
                       break;
                     }else {
@@ -1165,7 +1165,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                       controller.currentRowIndex2.value = controller.gridStateMgr4.currentRowIdx!;
 
                       /// 오른쪽 분할 그리드 시작!!
-
+                      controller.list3Qty.value = controller.etcChulgoSaveQrList[controller.currentRowIndex.value]['qty'];
                       controller.rowDatas5.value = List<PlutoRow>.generate(controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value].length, (index) =>
                           PlutoRow(cells:
                           Map.from((controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][index]).map((key, value) =>
@@ -1251,7 +1251,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         title: '라벨번호',
         field: 'tagNo',
         type: PlutoColumnType.text(),
-        width: 120,
+        width: 200,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -1311,6 +1311,8 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                   controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][event.rowIdx].addAll({'qtyUse': event.value});
                   Get.log('controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][event.rowIdx] :: '
                       '${controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][event.rowIdx]['qtyUse']}');
+
+                  controller.etcChulgoSaveQrList[controller.currentRowIndex2.value].addAll({'qty': event.value});
                 }
 
 
@@ -1368,8 +1370,8 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '구성번호',
-        field: 'tagSeq',
+        title: '수량',
+        field: 'qty',
         type: PlutoColumnType.text(),
         width: 90,
         enableSorting: false,
@@ -1381,6 +1383,31 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '출고수량',
+        field: 'qtyUse',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: true,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+        checkReadOnly: (PlutoRow row, PlutoCell cell) {
+          var i = true;
+          if(controller.list3Qty.value == 1.0) {
+            i = true;
+          }else {
+            i = false;
+          }
+          return i;
+          /*controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value]['qty'].toString() == '1';*/
+        },
       ),
       PlutoColumn(
         title: '자재코드',
@@ -1412,39 +1439,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         textAlign: PlutoColumnTextAlign.left,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
-      PlutoColumn(
-        title: '수량',
-        field: 'qty',
-        type: PlutoColumnType.text(),
-        width: 90,
-        enableSorting: false,
-        enableEditingMode: false,
-        enableContextMenu: false,
-        enableRowDrag: false,
-        enableDropToResize: false,
-        enableColumnDrag: false,
-        titleTextAlign: PlutoColumnTextAlign.center,
-        textAlign: PlutoColumnTextAlign.center,
-        backgroundColor: AppTheme.gray_c_gray_200,
-      ),
-      PlutoColumn(
-        title: '출고수량',
-        field: 'qtyUse',
-        type: PlutoColumnType.text(),
-        width: 120,
-        enableSorting: false,
-        enableEditingMode: true,
-        enableContextMenu: false,
-        enableRowDrag: false,
-        enableDropToResize: false,
-        enableColumnDrag: false,
-        titleTextAlign: PlutoColumnTextAlign.center,
-        textAlign: PlutoColumnTextAlign.center,
-        backgroundColor: AppTheme.gray_c_gray_200,
-        checkReadOnly: (PlutoRow row, PlutoCell cell) {
-          return row.cells['qtyUse']!.value == 1;
-        },
-      ),
+
       PlutoColumn(
         title: '단위',
         field: 'qtyUnit',
@@ -1594,13 +1589,17 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                       }),
                 ),
                 SizedBox(width: 24,),
-                _invnrTextForm2('출고번호', 0),
+                Obx(() => _chulgoDate(context)),
+                SizedBox(width: 24,),
+                _placeTextField(),
+              //  _invnrTextForm2('출고번호', 0),
                 SizedBox(width: 24,),
                 _invnrTextForm2('출고담당자', 1),
-                SizedBox(width: 24,),
+                SizedBox(width: 12,),
         /*        _invnrTextForm2('저장위치', 2),
                 SizedBox(width: 24,),*/
                 _invnrTextForm2('비고', 3),
+                SizedBox(width: 12,),
               ],
             ),
 
@@ -1673,7 +1672,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                             const EdgeInsets.all(0))),
                     onPressed: () async {
                       Get.log('저장 클릭!');
-                      for(var i = 0; i < controller.etcChulgoQrCheckList.length; i++) {
+                      /*for(var i = 0; i < controller.etcChulgoQrCheckList.length; i++) {
                         if(controller.etcChulgoQrCheckList[i] == true) {
                           controller.isEtcChulgoQrCheckList.value = true;
                           controller.isEtcChulgoQrCheckListIdx.value = i;
@@ -1682,7 +1681,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                           controller.isEtcChulgoQrCheckList.value = false;
                         }
                       }
-                      if(controller.isEtcChulgoQrCheckList.value) {
+                      if(controller.isEtcChulgoQrCheckList.value) {*/
                         await controller.registSaveIpgoBtn();
                        /* controller.etcChulgoSaveQrList.removeAt(controller.isEtcChulgoQrCheckListIdx.value); // 좌측리스트 삭제
                         controller.etcChulgoQrDetailTotalList.removeAt(controller.isEtcChulgoQrCheckListIdx.value); // 우측 디테일 삭제
@@ -1709,9 +1708,9 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                         controller.statusText.value = '';
                         Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
 
-                      }else {
+                     /* }else {
                         Get.dialog(CommonDialogWidget(contentText: '선택된 리스트가 없습니다.', pageFlag: 3,));
-                      }
+                      }*/
 
                     },
                     child: Container(
@@ -1803,6 +1802,119 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
             )
           ],
         )
+      ],
+    );
+  }
+
+
+  Widget _chulgoDate(BuildContext context) {
+    return Row(
+      children: [
+        Text('출고일자', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
+        SizedBox(width: 8,),
+        Container(
+          child: InkWell(
+            onTap: () async{
+              final selectedDate = await showDatePicker(
+                locale : const Locale('ko', 'KR'),
+                context: context, // 팝업으로 띄우기 때문에 context 전달
+                initialDate: DateTime.now(), // 달력을 띄웠을 때 선택된 날짜. 위에서 date 변수에 오늘 날짜를 넣었으므로 오늘 날짜가 선택돼서 나옴
+                firstDate: DateTime(1950), // 시작 년도
+                lastDate: DateTime.now().add(Duration(days: 60)), // 마지막 년도. 오늘로 지정하면 미래의 날짜는 선택할 수 없음
+              );
+              if (selectedDate != null) {
+                controller.chulgoDate.value = DateFormat('yyyyMMdd').format(selectedDate);
+                /*var datePicked = await DatePicker.showSimpleDatePicker(
+                titleText: '날짜 선택',
+                itemTextStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.black),
+                context,
+                confirmText: '확인',
+                cancelText: '취소',
+                textColor: AppTheme.black,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2060),
+                dateFormat: "yyyy-MM-dd",
+                locale: DateTimePickerLocale.ko,
+                looping: false,
+              );
+
+              if(datePicked != null) {
+                int startIndex = datePicked.toString().indexOf(' ');
+                int lastIndex = datePicked.toString().length;
+                controller.chulgoDate.value = datePicked.toString().replaceRange(startIndex, lastIndex, '');
+                controller.chulgoDate.value = DateFormat('yyyyMMdd').format(datePicked);
+                */ /*    if(controller.choiceButtonVal.value != 0) {
+
+                           }*/ /*
+              }else {
+                controller.chulgoDate.value = DateFormat('yyyyMMdd').format(DateTime.now());
+              }
+              if(datePicked.toString() == '1994-01-01 00:00:00.000') {
+                controller.chulgoDate.value = DateFormat('yyyyMMdd').format(DateTime.now());
+              }*/
+              }},
+            child: Container(
+              height: 40,
+              width: 130,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all( color: AppTheme.ae2e2e2)),
+              padding: const EdgeInsets.only(right: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 10,),
+                  Text(controller.chulgoDate.value, style: AppTheme.a20400
+                      .copyWith(color: AppTheme.a6c6c6c
+                      , fontSize: 17),),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+  Widget _placeTextField() {
+    return Row(
+      children: [
+        Text('출고처명',
+            style: AppTheme.a20700
+                .copyWith(color: AppTheme.black)),
+        SizedBox(width: 8,),
+        Container(
+          padding: EdgeInsets.only(top: 5, left: 8),
+          height: 40,
+          width: 150,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppTheme.ae2e2e2)),
+          child: Container(
+            height: 40,
+            child: TextFormField(
+              readOnly:  false,
+              expands :true,
+              minLines: null,
+              maxLines: null,
+              style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
+
+              // maxLines: 5,
+              controller: controller.textPlaceController,
+              textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(0),
+                fillColor: Colors.white,
+                border: InputBorder.none,
+              ),
+              showCursor: true,
+
+              // onChanged: ((value) => controller.submitSearch(value)),
+            ),
+          ),
+
+        ),
       ],
     );
   }
@@ -1904,6 +2016,15 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                           controller.gridStateMgr4.removeAllRows();
                           controller.gridStateMgr4.appendRows(controller.rowDatas4);
 
+                          controller.rowDatas5.value = List<PlutoRow>.generate(controller.etcChulgoQrDetailTotalList[controller.etcChulgoQrDetailTotalList.length - 1].length, (index) =>
+                              PlutoRow(cells:
+                              Map.from((controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][index]).map((key, value) =>
+                                  MapEntry(key, PlutoCell(value: value ?? '' )),
+                              )))
+                          );
+
+                          controller.gridStateMgr5.removeAllRows();
+                          controller.gridStateMgr5.appendRows(controller.rowDatas5);
 
                           controller.focusNodeKey.requestFocus();
 

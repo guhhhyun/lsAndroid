@@ -380,6 +380,8 @@ class IpgoPage extends StatelessWidget {
                  Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
                  controller.invnrHeight.value = 53*(double.parse((controller.ipgoCancelList.length + 1).toString()));
                }
+               controller.isQr.value = true;
+               controller.focusNode.unfocus();
              },
              child: Container(
                decoration: BoxDecoration(
@@ -502,7 +504,8 @@ class IpgoPage extends StatelessWidget {
                  Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
                  controller.selectedInvnrIndex.value = controller.gridStateMgr.currentRowIdx!;
                  controller.isSelectedInvnr.value = true;
-                 controller.isQr.value = false;
+                 controller.isQr.value = true;
+                 controller.textInvnrController.text = '';
                  /*controller.focusNode.requestFocus();
                  Future.delayed(const Duration(), (){
                    controller.focusNode.requestFocus();
@@ -1034,7 +1037,7 @@ class IpgoPage extends StatelessWidget {
                            controller.textQrController.text = '';
                            // Get.dialog(_dialog('거래명세서를 선택해주세요'));
                          }
-                         controller.isQr.value = false;
+                         controller.isQr.value = true;
 
                        }
                      }
@@ -1339,6 +1342,7 @@ class IpgoPage extends StatelessWidget {
                },
                onChanged: (PlutoGridOnChangedEvent event) {
                  print(event);
+                 controller.ipgoList[event.rowIdx].addAll({'qty': event.value!});
                },
          /*             rowColorCallback: (c) {
                  return c.row.checked == true ? Colors.red : Colors.transparent;
@@ -1460,7 +1464,7 @@ class IpgoPage extends StatelessWidget {
          type: PlutoColumnType.text(),
          width: 90,
          enableSorting: false,
-         enableEditingMode: false,
+         enableEditingMode: true,
          enableContextMenu: false,
          enableRowDrag: false,
          enableDropToResize: false,
@@ -1468,7 +1472,18 @@ class IpgoPage extends StatelessWidget {
          titleTextAlign: PlutoColumnTextAlign.center,
          textAlign: PlutoColumnTextAlign.center,
          backgroundColor: AppTheme.gray_c_gray_200,
-
+         checkReadOnly: (PlutoRow row, PlutoCell cell) {
+           var isCheck = true;
+           if(controller.ipgoList.isNotEmpty) {
+             if(controller.ipgoList[row.sortIdx]['qrNo'].toString().contains('^^^^')) {
+               isCheck = false;
+             }else {
+               isCheck = true;
+             }
+           }
+           return isCheck;
+           /*controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value]['qty'].toString() == '1';*/
+         },
        ),
        PlutoColumn(
          title: '세트수',
@@ -2939,7 +2954,7 @@ class IpgoPage extends StatelessWidget {
          title: '프로젝트명',
          field: 'pjtNm',
          type: PlutoColumnType.text(),
-         width: 200,
+         width: 240,
          enableSorting: false,
          enableEditingMode: false,
          enableContextMenu: false,

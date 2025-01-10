@@ -233,44 +233,38 @@ class OtherKitNewPage extends StatelessWidget {
                                         // 엔터 키 감지
                                         controller.isFocus.value = false;
                                         if(controller.smallBoxItemDataList.isNotEmpty) {
-
-                                          if(controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') {
-                                            await controller.checkItemQr();
-                                            if(controller.isSmallBoxDataList.value) {
+                                          await controller.checkItemQr();
+                                          if(controller.isSmallBoxDataList.value) {
+                                            if(controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') {
                                               /// 자재 읽기
-                                              if(controller.isSmallBoxDataList.value) {
-                                                // 자재 저장 프로시저 돌리기
-                                                if(controller.smallBoxDataList.length > 1) {
-                                                  // 중복 qr이니 alert 띄우기
-                                                  showDialog(
-                                                    barrierDismissible: false,
-                                                    context: context, //context
-                                                    builder: (BuildContext context) {
-                                                      return _dupAlertDialog(context);
-                                                    },
-                                                  ); // context가 왜?
-                                                }else {
-                                                  // 중복 X
-                                                  if(controller.smallBoxDataList[0]['cancleFlag'] > 0) {
-                                                    // 이미 스캔된 자재일 경우 취소 여부 물어볼 메세지처리
-                                                    await Get.dialog(CommonDialogOtherWidget(contentText: '이미 스캔된 자재입니다. 스캔 취소하시겠습니까?', pageFlag: 1));
-                                                    if(controller.isCancelIpgo.value) {
-                                                      await controller.registSmallKitCancel();
-                                                      await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxExNo'].toString());
-                                                      await controller.test();
-                                                    }
-                                                  }else {
-                                                    await controller.registSmallKitItemSave();
+                                              // 자재 저장 프로시저 돌리기
+                                              if(controller.smallBoxDataList.length > 1) {
+                                                // 중복 qr이니 alert 띄우기
+                                                showDialog(
+                                                  barrierDismissible: false,
+                                                  context: context, //context
+                                                  builder: (BuildContext context) {
+                                                    return _dupAlertDialog(context);
+                                                  },
+                                                ); // context가 왜?
+                                              }else {
+                                                // 중복 X
+                                                if(controller.smallBoxDataList[0]['cancleFlag'] > 0) {
+                                                  // 이미 스캔된 자재일 경우 취소 여부 물어볼 메세지처리
+                                                  await Get.dialog(CommonDialogOtherWidget(contentText: '이미 스캔된 자재입니다. 스캔 취소하시겠습니까?', pageFlag: 1));
+                                                  if(controller.isCancelIpgo.value) {
+                                                    await controller.registSmallKitCancel();
+                                                    await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxExNo'].toString());
+                                                    await controller.test();
                                                   }
+                                                }else {
+                                                  await controller.registSmallKitItemSave();
                                                 }
                                               }
+                                            }else {
+                                              Get.dialog(CommonDialogWidget(contentText: '확정된 별도박스입니다.', pageFlag: 3,));
                                             }
-
-                                          }else {
-                                            Get.dialog(CommonDialogWidget(contentText: '확정된 별도박스입니다.', pageFlag: 3,));
                                           }
-
-
                                         }else {
                                           /// 별도박스 읽기
                                           await controller.checkBoxItemData();
@@ -410,7 +404,7 @@ class OtherKitNewPage extends StatelessWidget {
                   height: 1,
                 ),
                 SizedBox(height: 8,),
-                Container(
+                Obx(() => Container(
                   width: MediaQuery.of(context).size.width - 10,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -420,14 +414,16 @@ class OtherKitNewPage extends StatelessWidget {
                         _subData2('프로젝트명', controller.projectNm.value == null ? controller.projectNm.value : controller.projectNm.value, true),
                         SizedBox(width: 32,),
                         _subData2('자재코드/자재명', controller.itemCdNm.value.trim(), true),
+                       /* SizedBox(width: 32,),
+                        _subData2('BOM 점검', controller.boxNo.value, false),*/
                         SizedBox(width: 32,),
                         _subData2('박스번호', controller.boxNo.value, false),
                         SizedBox(width: 32,),
-                        _subData2('확정일', controller.wrkCfmDt.value == 'null' ? '' : controller.wrkCfmDt.value, false)
+                        _subData2('확정일', controller.wrkCfmDt.value, false)
                       ],
                     ),
                   ),
-                ),
+                ),),
                 SizedBox(height: 4,),
                 Container(
                   color: AppTheme.dark_text_secondary,
@@ -986,6 +982,8 @@ class OtherKitNewPage extends StatelessWidget {
             controller.smallBoxItemDataList[dong].addAll({'prtNo': 'O'});
             controller.smallBoxItemDataList[dong].addAll({'ncbxRmkName': ''});
             controller.smallBoxItemDataList[dong].addAll({'wrkQty': controller.smallBoxItemDataList[dong]['cbxQty']});
+            controller.smallBoxItemDataList[dong].addAll({'chkRst': ''});
+            controller.smallBoxItemDataList[dong].addAll({'chkQty': ''});
           //  controller.smallBoxItemDataList[dong].addAll({'sboxNo': controller.smallBoxItemDataList[dong]['cbxSuNo']});
             controller.smallBoxSaveList.add(controller.smallBoxItemDataList[dong]);
 
@@ -1003,15 +1001,15 @@ class OtherKitNewPage extends StatelessWidget {
             item.addAll({'test': 'test'}); // 마지막 항목에만 'test' 추가
           }
         }*/
-
-        /* for (var dong2 = 0; dong2 < controller.smallBoxSaveList.length; dong2++) {
+          /// 왜 주석 해놨었지?
+         for (var dong2 = 0; dong2 < controller.smallBoxSaveList.length; dong2++) {
           if (controller.smallBoxSaveList[dong2]['prtNo'] == 'O') {
             //동기화가 O인 것만 드롭다운 버튼 활성화
             controller.isDropdownEnabled.value = true; // 드롭다운 활성화 상태 토글
             controller.stateManager2.columns[4]!.enableEditingMode = controller.isDropdownEnabled.value; //enableEditingMode
 
           }
-        }*/
+        }
         controller.no.value = 990;
         controller.rows2.value = List<PlutoRow>.generate(
             controller.smallBoxSaveList.length,

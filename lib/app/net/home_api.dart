@@ -34,6 +34,7 @@ import 'package:lsandroid/app/model/ipgoModel/ipgo_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_qr_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_smallbox_item_model.dart';
 import 'package:lsandroid/app/model/ipgoModel/ipgo_smallbox_model.dart';
+import 'package:lsandroid/app/model/locationModel/location_model.dart';
 import 'package:lsandroid/app/model/loginModel/login_model.dart';
 import 'package:lsandroid/app/model/mainKitModel/main_kit_model.dart';
 import 'package:lsandroid/app/model/mainKitModel/main_kit_new2_model.dart';
@@ -52,6 +53,7 @@ import 'package:lsandroid/app/model/smallKitModel/small_kit_new_model.dart';
 import 'package:lsandroid/app/model/smallKitModel/small_kit_save_model.dart';
 import 'package:lsandroid/app/pages/Ipgo/ipgo_controller.dart';
 import 'package:lsandroid/app/pages/chulgo/chulgo_controller.dart';
+import 'package:lsandroid/app/pages/etcIpgo/etc_ipgo_controller.dart';
 import 'package:lsandroid/app/pages/mainKit/main_kit_controller.dart';
 import 'package:lsandroid/app/pages/otherKit/other_kit_controller.dart';
 import 'package:lsandroid/app/pages/picking/picking_controller.dart';
@@ -63,6 +65,51 @@ import 'package:http/http.dart' as http;
 
 class HomeApi extends NetworkManager{
   static HomeApi get to => Get.find();
+
+
+  /// 로케이션 조회
+  Future<LocationModel> reqLocation(var params) async {
+    var locationModel = LocationModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/ipgo_cheburn.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        locationModel = LocationModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          locationModel = LocationModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqLocation - error');
+      EtcIpgoController controller = Get.find();
+      controller.isDbConnected.value = false;
+      // commonError(e);
+    } catch (err) {
+      Get.log('reqLocation = ${err.toString()}');
+    }
+    return locationModel;
+  }
 
 
   /// 재고실사 QR 조회
@@ -1012,12 +1059,13 @@ class HomeApi extends NetworkManager{
   }
 
   /// 출고 등록
-  Future<String> registChulgo(var params) async {
-    String a = '0000';
+  Future<ChulThirdModel> registChulgo(var params) async {
+    var chulThirdModel = ChulThirdModel();
     try {
       if (APP_CONST.LOCAL_JSON_MODE) {
-        var urlPath = 'assets/json/ipgo_regist.json';
+        var urlPath = 'assets/json/picking_second.json';
         final jsonResponse = await localJsonPaser(urlPath);
+        chulThirdModel = ChulThirdModel.fromJson(jsonResponse);
       } else {
 
         final response = await HttpUtil.getDio()
@@ -1034,6 +1082,8 @@ class HomeApi extends NetworkManager{
           var rtoken = response.headers['mng-bo-rtoken'];
           var jsonData = response.data;
 
+          chulThirdModel = ChulThirdModel.fromJson(jsonData);
+
           await Utils.getStorage.write('token', token);
           await Utils.getStorage.write('rtoken', rtoken);
         }
@@ -1043,14 +1093,12 @@ class HomeApi extends NetworkManager{
     } on DioError catch (e) {
       Get.log('registChulgo - error');
       // commonError(e);
-      a = '1111';
       ChulgoController controller = Get.find();
       controller.isDbConnected.value = false;
     } catch (err) {
       Get.log('registChulgo = ${err.toString()}');
-      a = '1111';
     }
-    return a;
+    return chulThirdModel;
   }
 
   /// 출고등록 세번째 조회
@@ -1629,60 +1677,13 @@ class HomeApi extends NetworkManager{
   }
 
   /// 별도박스 저장
-  Future<String> registOtherKitSave(var params) async {
-    String a = '0000';
+  Future<SmallKitNew3Model> registOtherKitSave(var params) async {
+    var smallKitNew3Model = SmallKitNew3Model();
     try {
       if (APP_CONST.LOCAL_JSON_MODE) {
-        var urlPath = 'assets/json/small_kit_save_regist.json';
+        var urlPath = 'assets/json/small_kit.json';
         final jsonResponse = await localJsonPaser(urlPath);
-        // ipgoModel = IpgoModel.fromJson(jsonResponse);
-      } else {
-
-        final response = await HttpUtil.getDio()
-            .post('/api/common/procedure/multiPosts', data: jsonEncode(params),
-          options: Options(
-            headers: {
-              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
-              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
-            },
-          ),
-        );
-        if (response.statusCode == 200) {
-          var token = response.headers['mng-bo-token'];
-          var rtoken = response.headers['mng-bo-rtoken'];
-          var jsonData = response.data;
-
-          //  ipgoModel = IpgoModel.fromJson(jsonData);
-
-          await Utils.getStorage.write('token', token);
-          await Utils.getStorage.write('rtoken', rtoken);
-        }
-        // loginModel = LoginModel.fromJson(response.data);
-      }
-
-    } on DioError catch (e) {
-      Get.log('registOtherKitSave - error');
-      a = '1111';
-      // commonError(e);
-      OtherKitController controller = Get.find();
-      controller.isDbConnected.value = false;
-    } catch (err) {
-      Get.log('registOtherKitSave = ${err.toString()}');
-      a = '1111';
-    }
-    return a;
-  }
-
-
-
-  /// 소박스 저장
-  Future<String> registSmallKitSave(var params) async {
-    String a = '0000';
-    try {
-      if (APP_CONST.LOCAL_JSON_MODE) {
-        var urlPath = 'assets/json/small_kit_save_regist.json';
-        final jsonResponse = await localJsonPaser(urlPath);
-        // ipgoModel = IpgoModel.fromJson(jsonResponse);
+        smallKitNew3Model = SmallKitNew3Model.fromJson(jsonResponse);
       } else {
 
         final response = await HttpUtil.getDio()
@@ -1699,7 +1700,52 @@ class HomeApi extends NetworkManager{
           var rtoken = response.headers['mng-bo-rtoken'];
           var jsonData = response.data;
 
-          //  ipgoModel = IpgoModel.fromJson(jsonData);
+          smallKitNew3Model = SmallKitNew3Model.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('registOtherKitSave - error');
+      // commonError(e);
+      OtherKitController controller = Get.find();
+      controller.isDbConnected.value = false;
+    } catch (err) {
+      Get.log('registOtherKitSave = ${err.toString()}');
+    }
+    return smallKitNew3Model;
+  }
+
+
+
+  /// 소박스 저장
+  Future<SmallKitNew3Model> registSmallKitSave(var params) async {
+    var smallKitNew3Model = SmallKitNew3Model();
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        smallKitNew3Model = SmallKitNew3Model.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          smallKitNew3Model = SmallKitNew3Model.fromJson(jsonData);
 
           await Utils.getStorage.write('token', token);
           await Utils.getStorage.write('rtoken', rtoken);
@@ -1709,15 +1755,13 @@ class HomeApi extends NetworkManager{
 
     } on DioError catch (e) {
       Get.log('registSmallKitSave - error');
-      a = '1111';
+      // commonError(e);
       SmallKitController controller = Get.find();
       controller.isDbConnected.value = false;
-      // commonError(e);
     } catch (err) {
       Get.log('registSmallKitSave = ${err.toString()}');
-      a = '1111';
     }
-    return a;
+    return smallKitNew3Model;
   }
 
   /// 소박스 KIT 저장 조회

@@ -52,6 +52,8 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
   RxList<dynamic> cheburnIpgoList = [].obs; //
   RxList<dynamic> cheburnIpgoLotList = [].obs; //
 
+  RxList<dynamic> locationList = [].obs; //
+
 
   RxBool isText = true.obs;
 
@@ -115,6 +117,68 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
   RxBool isQrFocus = false.obs;
   RxBool isChecked = false.obs;
 
+  RxString locSaveText = 'A-00-00-00'.obs;
+  /// 자재 팝업 리스트
+  RxList<dynamic> popUpDataList = [].obs;
+  RxList<dynamic> selectedPopList = [].obs;
+  RxList<dynamic> selectedItemPopContainer = [].obs;
+  RxString selectedQrNo = ''.obs;
+  RxInt noTagIdx = 0.obs;
+
+  /// 로케이션 프로시저
+  Future<void> reqLocation() async {
+    bLoading.value = true;
+    popUpDataList.clear();
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_LOCATION_R01',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_WH_CD',
+          'paramValue': 'WH01',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_LOC_CD',
+          'paramValue': textLocController.text,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqLocation(params);
+
+      if(retVal.body![0]['resultMessage'] == '') {
+        popUpDataList.addAll(retVal.body![1]);
+        Get.log('로케이션 조회 성공');
+        isDbConnected.value = true;
+      } else {
+        Get.log('로케이션 조회 실패');
+      }
+    } catch (e) {
+      Get.log('reqLocation catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+    }
+  }
 
   /// 채번 프로시저
   Future<void> reqCheburn() async {
@@ -221,13 +285,12 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
     Get.log('저장 클릭');
 
     bLoading.value = true;
-
-    for(var e = etcIpgoQrCheckList.length - 1; e >= 0; e--) {
+    await reqCheburn();
+    await reqCheburn2();
+    for(var e = etcIpgoSaveQrList.length - 1; e >= 0; e--) {
       Get.log('길이는?? ${etcIpgoQrCheckList.length}');
       Get.log('길이는2?? ${etcIpgoQrList.length}');
-      await reqCheburn();
-      await reqCheburn2();
-      if(etcIpgoQrCheckList[e] == true) {
+
         var params = {
           'programId': 'A1020',
           'procedure': 'USP_A4020_S02',
@@ -388,13 +451,15 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
         try {
           final retVal = await HomeApi.to.registEtcCancelIpgo(params);
 
-          if (retVal == '0000') {
+          if (retVal.body![0]['resultValue'] == true) {
             Get.log('기타입고 저장되었습니다');
             etcIpgoSaveQrList.removeAt(e); // 좌측리스트 삭제
             etcIpgoQrDetailTotalList.removeAt(e); // 우측 디테일 삭제
             etcIpgoQrCheckList.removeAt(e);
+            statusText.value = '';
           } else {
             Get.log('저장 실패');
+            statusText.value = retVal.body![0]['resultMessage'];
           }
         } catch (e) {
           Get.log('registSaveIpgoBtn catch !!!!');
@@ -402,7 +467,6 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
         } finally {
           bLoading.value = false;
         }
-      }
     }
   }
 
@@ -568,7 +632,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
         try {
           final retVal = await HomeApi.to.registEtcCancelIpgo(params);
 
-          if (retVal == '0000') {
+          if(retVal.body![0]['resultMessage'] == '') {
             Get.log('기타입고 취소되었습니다');
           } else {
             Get.log('취소 실패');

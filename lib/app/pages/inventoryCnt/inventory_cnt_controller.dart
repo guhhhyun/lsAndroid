@@ -134,12 +134,16 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
   RxBool isFocus = false.obs;
   RxInt currentMasterIdx = 0.obs;
   RxBool duplicationLabel = false.obs;
-  RxBool isCheckBool = false.obs;
+  RxBool isCheckBool = true.obs;
   RxString isCheck = 'N'.obs;
   RxString invType = ''.obs;
   RxString invTypeCode = ''.obs;
+  RxList<dynamic> cheburnIpgoLotList = [].obs; //
 
-  /// 자재선택 프로시저
+
+
+
+ /* /// 자재선택 프로시저
   Future<void> reqCommon3() async {
 
     bLoading.value = true;
@@ -167,6 +171,63 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         }
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqSelectItem(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          popUpDataList.addAll(retVal.body![1]);
+          isDbConnected.value = true;
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+        }
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('reqCommon3 catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+
+    }
+  }*/
+
+  /// 자재선택 프로시저
+  Future<void> reqCommon3() async {
+
+    bLoading.value = true;
+    //cheburnIpgoList.clear();
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_SELECT_ITEM_R01',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q3',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_ITEM_NM',
+          'paramValue': textSelectItemNmController.text,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+
       ]
     };
 
@@ -587,6 +648,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
     bLoading.value = true;
 
     for(var i = 0; i < inventoryCntDetailList.length; i++) {
+      Get.log('checkList:: ${checkList}');
       if(checkList[i] == true) {
         var params = {
           'programId': 'A1020',
@@ -630,7 +692,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
             },
             {
               'paramName': 'p_ITEM_CD',
-              'paramValue': inventoryCntDetailList[i]['ITEM_CD'],
+              'paramValue': inventoryCntDetailList[i]['itemCd'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
@@ -850,6 +912,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
         }else {
           statusText.value = retVal.body![0]['returnMessage'].toString();
           isDbConnected.value = false;
+          statusText.value = retVal.body![0]['returnMessage'];
         }
       } else {
         Get.log('조회 실패');
@@ -934,6 +997,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
         }else {
           statusText.value = retVal.body![0]['resultMessage'].toString();
           isDbConnected.value = false;
+          textQrController.text = '';
         }
 
       } else {
@@ -957,6 +1021,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
 
     bLoading.value = true;
     inventoryCntDetailList.clear();
+    checkList.clear();
 
     var params = {
       'programId': 'A1020',
@@ -1058,7 +1123,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
         },
         {
           'paramName': 'P_INV_TYPE',
-          'paramValue': selectedItemGubunContainer['CODE'], // 재고구분 선택된 CODE,
+          'paramValue': '', // 재고구분 선택된 CODE,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -1084,11 +1149,11 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
         inventoryCntList.value.addAll(retVal.body![1]);
         inventoryCntList.value = inventoryCntList.reversed.toList();
         if(inventoryCntList.isNotEmpty) {
-          invCntDt.value = inventoryCntList[0]['invCntDt'];
+          invCntDt.value = inventoryCntList[0]['invCntNm'];
         }
 
         for(var i = 0; i < inventoryCntList.length; i++) {
-          invCntDtList.add(inventoryCntList[i]['invCntDt']);
+          invCntDtList.add(inventoryCntList[i]['invCntNm']);
         //  invCntDtList.add(inventoryCntList[i]['invCntNo']);
         }
         Get.log(inventoryCntList.toString());
@@ -1117,6 +1182,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
             MapEntry(key, PlutoCell(value: key == 'cntWhtUnit' ? value == null || value == '' ? 'EA' : value : value ?? '' )),
         )))
     ).reversed.toList();
+
     gridStateMgr.removeAllRows();
     gridStateMgr.appendRows(rowDatas);
     gridStateMgr.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
@@ -1147,17 +1213,20 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
     super.onInit();
     await reqCommon();
     await checkMaster();
-    invType.value = inventoryCntList[currentMasterIdx.value]['invType'];
-    switch(invType.value) {
-      case '원자재':
-        invTypeCode.value = '70';
-        break;
-      case '반제품':
-        invTypeCode.value = '60';
-        break;
-      case '상품':
-        invTypeCode.value = '40';
-        break;
+    if(inventoryCntList.isNotEmpty) {
+      invType.value = inventoryCntList[currentMasterIdx.value]['invType'];
+      switch(invType.value) {
+        case '원자재':
+          invTypeCode.value = '70';
+          break;
+        case '반제품':
+          invTypeCode.value = '60';
+          break;
+        case '상품':
+          invTypeCode.value = '40';
+          break;
+
+      }
     }
 
   }

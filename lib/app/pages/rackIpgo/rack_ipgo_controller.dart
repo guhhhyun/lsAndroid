@@ -171,12 +171,12 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
       try {
         final retVal = await HomeApi.to.registRackIpgo(params);
 
-        if (retVal == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
           Get.log('보류되었습니다');
           isDbConnected.value = true;
         } else {
           Get.log('보류 실패');
-
+          statusText.value = retVal.body![0]['resultMessage'];
         }
       } catch (e) {
         Get.log('registRackIpgo catch !!!!');
@@ -484,6 +484,7 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
             Get.log('조회 성공');
             isDbConnected.value = true;
           }
+          statusText.value = '정상 조회되었습니다.';
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];

@@ -174,6 +174,8 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
   RxBool isFocus = false.obs;
   RxBool isDbConnected = true.obs;
 
+  RxBool isRegistChulgo = false.obs;
+
 
   /// 출고 등록/취소
   Future<void> registChulgoBtn(int flag) async {
@@ -233,12 +235,13 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
       try {
         final retVal = await HomeApi.to.registChulgo(params);
 
-        if (retVal == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
           Get.log('등록되었습니다');
           isDbConnected.value = true;
+          isRegistChulgo.value = true;
         } else {
           Get.log('등록 실패');
-
+          isRegistChulgo.value = false;
         }
       } catch (e) {
         Get.log('registIpgoBtn catch !!!!');
@@ -604,7 +607,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
 
         final retVal = await HomeApi.to.registSmallKitSave(params);
 
-        if (retVal == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
           Get.log('등록되었습니다');
           isBomSave.value = true;
           isBomSaveText.value = '저장되었습니다.';
@@ -612,7 +615,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
         } else {
           Get.log('등록 실패');
           isBomSave.value = false;
-          isBomSaveText.value = '저장에 실패하였습니다.';
+          isBomSaveText.value = retVal.body![0]['resultMessage'];
         }
 
       } catch (e) {

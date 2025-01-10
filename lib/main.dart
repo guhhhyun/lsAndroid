@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:lsandroid/app/net/http_util.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app/common/color_schemes.g.dart';
 import 'app/common/init_binding.dart';
@@ -73,6 +73,16 @@ class _MyHomePageState extends State<MyHomePage> {
           colorScheme: lightColorScheme,
           fontFamily: 'NotoSansKR'
       ),
+        localizationsDelegates: [
+          // 앱의 로컬라이제이션을 구성합니다.
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+
+      supportedLocales: [
+        const Locale('ko','KR'),
+      ],
       //locale: ui.window.locale,
     );
   }

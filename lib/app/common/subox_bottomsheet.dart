@@ -4,11 +4,12 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lsandroid/app/common/app_theme.dart';
 import 'package:lsandroid/app/pages/inventoryCnt/inventory_cnt_controller.dart';
+import 'package:lsandroid/app/pages/smallKit/small_kit_controller.dart';
 
 
-class BottomSheetModal extends StatelessWidget {
-  BottomSheetModal({Key? key}) : super(key: key);
-  InventoryCntController controller = Get.find();
+class SuboxBottomSheet extends StatelessWidget {
+  SuboxBottomSheet({Key? key}) : super(key: key);
+  SmallKitController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +19,12 @@ class BottomSheetModal extends StatelessWidget {
           borderRadius: BorderRadius.only(
               topRight: Radius.circular(25.0), topLeft: Radius.circular(25.0))
       ),
-     // padding: EdgeInsets.only(top: 40, bottom: 24, left: 16, right: 16),
-      height: 240,
+      // padding: EdgeInsets.only(top: 40, bottom: 24, left: 16, right: 16),
+      height: 600,
       width: 150,
       child: CustomScrollView(
         slivers: [
-          _title(),
+         // _title(),
           Obx(() =>   controller.popUpDataList.isNotEmpty ?
           _listArea() : SliverToBoxAdapter(child: Container())),
           SliverToBoxAdapter(child: SizedBox(height: 12,))
@@ -33,131 +34,19 @@ class BottomSheetModal extends StatelessWidget {
     );
   }
 
-  Widget _itemQr() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
-          margin: EdgeInsets.only(left: 4),
-          child: Text('자재명',
-            style: AppTheme.a18700
-                .copyWith(color: AppTheme.black), textAlign: TextAlign.end,),
-        ),
-        SizedBox(width: 8,),
 
 
-        Container(
-          padding: EdgeInsets.only(top: 4, bottom: 4, left: 8),
-          height: 40,
-          width: 180,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppTheme.ae2e2e2),
-
-          ),
-
-          child: Center(
-              child: Container(
-                child:  TextFormField(
-                  textInputAction:TextInputAction.done,
-                  expands :true,
-                  minLines: null,
-                  maxLines: null,
-                  style:  AppTheme.a18700.copyWith(color: AppTheme.a6c6c6c),
-                  // maxLines: 5,
-                  controller: controller.textSelectItemNmController, // 주석 풀어야할수있음
-                  textAlignVertical: TextAlignVertical.center,
-                  onFieldSubmitted: (value) async{
-
-                  },
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(0),
-                    fillColor: Colors.white,
-                    filled: true,
-                    hintStyle: AppTheme.a18700.copyWith(color: AppTheme.aBCBCBC),
-                    border: InputBorder.none,
-                  ),
-                  showCursor: true,
-
-                ),
-              )
-          ),
-
-        ),
-      ],
-    );
-  }
-
-  Widget _itemItemCd() {
-    return Row(
-      children: [
-        Container(
-          margin: EdgeInsets.only(left: 4),
-          width: 80,
-          child: Text('자재코드',
-            style: AppTheme.a18700
-                .copyWith(color: AppTheme.black), textAlign: TextAlign.end,),
-        ),
-        SizedBox(width: 8,),
-
-
-        Container(
-          padding: EdgeInsets.only(top: 4, bottom: 4, left: 8),
-          height: 40,
-          width: 210,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppTheme.ae2e2e2),
-
-          ),
-
-          child: Center(
-              child: Container(
-                child:  TextFormField(
-                  textInputAction:TextInputAction.done,
-                  expands :true,
-                  minLines: null,
-                  maxLines: null,
-                  style:  AppTheme.a18700.copyWith(color: AppTheme.a6c6c6c),
-                  // maxLines: 5,
-                  controller: controller.textSelectItemController, // 주석 풀어야할수있음
-                  textAlignVertical: TextAlignVertical.center,
-                  onFieldSubmitted: (value) async{
-
-                  },
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(0),
-                    fillColor: Colors.white,
-                    filled: true,
-                    hintStyle: AppTheme.a18700.copyWith(color: AppTheme.aBCBCBC),
-                    border: InputBorder.none,
-                  ),
-                  showCursor: true,
-
-                ),
-              )
-          ),
-
-        ),
-      ],
-    );
-  }
-
-
-
-  Widget _title() {
+ /* Widget _title() {
     return SliverToBoxAdapter(
-      child: Container(
+        child: Container(
           padding: EdgeInsets.only(left: 12, top: 12, right: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  _itemQr(),
-                 // _itemItemCd(),
+                  // _itemQr(),
+                  _itemItemCd(),
                 ],
               ),
 
@@ -201,10 +90,10 @@ class BottomSheetModal extends StatelessWidget {
               ),
             ],
           ),
-          )
+        )
     );
   }
-
+*/
 
 
 
@@ -236,23 +125,26 @@ class BottomSheetModal extends StatelessWidget {
       onPressed: () {
         if(controller.selectedPopList[index] == true) {
           controller.selectedPopList[index] = false;
+          //  controller.isChoiceSheet.value = false;
 
         }else {
           for(var i = 0; i < controller.selectedPopList.length; i++) {
             controller.selectedPopList[i] = false;
           }
+
           controller.selectedPopList[index] = true;
           if(controller.selectedPopList[index] == true) {
-        //    controller.isChoiceSheet.value = true;
+            //    controller.isChoiceSheet.value = true;
 
             controller.selectedItemPopContainer.add(controller.popUpDataList[index]);
             /*  controller.measList[0]['CAR_NO'] = controller.selectedContainer[0]['CAR_NO'];
               controller.measList[0]['CUST_NM'] = controller.selectedContainer[0]['NAME'];
               controller.weighingInfoTextController.text = controller.selectedContainer[0]['CODE'];*/
-            controller.itemCdController.text = controller.selectedItemPopContainer[0]['itemCd'];
+          //  controller.itemCdController.text = controller.selectedItemPopContainer[0]['itemCd'];
+            controller.selectedQrNo.value = controller.selectedItemPopContainer[0]['tagNo'];
           }
         }
-
+        Get.back();
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -272,15 +164,29 @@ class BottomSheetModal extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('자재코드', style: AppTheme.a14700.copyWith(color: AppTheme.black)),
-                        Text('${controller.popUpDataList[index]['itemCd']}', style: AppTheme.a14700.copyWith(color: AppTheme.black)),
+                        Text('QR 코드', style: AppTheme.a20700.copyWith(color: AppTheme.black)),
+                        Text('${controller.popUpDataList[index]['tagNo']}', style: AppTheme.a20700.copyWith(color: AppTheme.black)),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('자재명:', style: AppTheme.a14700.copyWith(color: AppTheme.black)),
-                        Text('${controller.popUpDataList[index]['itemNm']}', style: AppTheme.a14700.copyWith(color: AppTheme.black)),
+                        Text('자재코드', style: AppTheme.a20700.copyWith(color: AppTheme.black)),
+                        Text('${controller.popUpDataList[index]['itemCd']}', style: AppTheme.a20700.copyWith(color: AppTheme.black)),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('자재명', style: AppTheme.a20700.copyWith(color: AppTheme.black)),
+                        Text('${controller.popUpDataList[index]['itemNm']}', style: AppTheme.a20700.copyWith(color: AppTheme.black)),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('수량', style: AppTheme.a20700.copyWith(color: AppTheme.black)),
+                        Text('${controller.popUpDataList[index]['qty']}', style: AppTheme.a20700.copyWith(color: AppTheme.black)),
                       ],
                     ),
 

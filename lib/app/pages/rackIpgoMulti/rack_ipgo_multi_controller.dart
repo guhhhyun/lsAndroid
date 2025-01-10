@@ -175,7 +175,7 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
       try {
         final retVal = await HomeApi.to.registRackIpgo(params);
 
-        if (retVal == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
           Get.log('보류되었습니다');
           isDbConnected.value = true;
         } else {

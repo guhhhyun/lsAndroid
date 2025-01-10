@@ -73,8 +73,7 @@ class MainKitNewPage extends StatelessWidget {
                     // controller.changedRows.value.add(controller.noList[i]);
                     controller.changedRows2.value.add(controller.noList2[i]);
                   }
-                  if (controller.changedRows2.contains(c.row.cells['cbxSuNo']?.value.toString())
-                    || controller.changedRows2.contains(c.row.cells['sboxNo']?.value.toString())) {
+                  if (controller.changedRows2.contains('${c.row.cells['no']?.value.toString()}${c.row.cells['itemCd']?.value.toString()}')) {
                     return Colors.white; // 이미 변경된 색상 유지
                   } else {
                     return AppTheme.red_red_200;
@@ -94,8 +93,7 @@ class MainKitNewPage extends StatelessWidget {
                         return Colors.white; // 이미 변경된 색상 유지
                       }*/
                     }
-                    if (controller.changedRows.contains(c.row.cells['cbxSuNo']?.value.toString())
-                        || controller.changedRows.contains(c.row.cells['sboxNo']?.value.toString())) {
+                    if (controller.changedRows.contains('${c.row.cells['no']?.value.toString()}${c.row.cells['itemCd']?.value.toString()}')) {
                       return Colors.white; // 이미 변경된 색상 유지
                     } else {
                       return AppTheme.red_red_200;
@@ -238,30 +236,35 @@ class MainKitNewPage extends StatelessWidget {
                                         // 엔터 키 감지
                                         controller.isFocus.value = false;
                                         await controller.checkBoxData();
-                                        if(controller.tagType.value == '20') {
-                                          await controller.checkBoxItemData();
-                                          for (var i = 0; i < controller.smallBoxDataList.length; i++) {
-                                            controller.smallBoxDataList[i].addAll({'no': '${i + 1}'});
-                                          }
-                                        }else {
-                                          if(controller.smallBoxItemDataList.isNotEmpty) {
-                                            if(controller.smallBoxDataList.length > 1) {
-                                              showDialog(
-                                                barrierDismissible: false,
-                                                context: context, //context
-                                                builder: (BuildContext context) {
-                                                  return _dupAlertDialog(context);
-                                                },
-                                              );
-                                            }else {
-                                              /// 구성자재 스캔 시작
-                                              await controller.registMainKitQr();
+                                        if(controller.smallBoxDataList.isNotEmpty) {
+                                          if(controller.tagType.value == '20') {
+                                            await controller.checkBoxItemData();
+                                            for (var i = 0; i < controller.smallBoxDataList.length; i++) {
+                                              controller.smallBoxDataList[i].addAll({'no': '${i + 1}'});
                                             }
-
                                           }else {
-                                            Get.dialog(CommonDialogWidget(contentText: '메인박스를 먼저 스캔해주세요', pageFlag: 0));
+                                            ///확정했으면 여기서 qr 스캔 못하게 걸러준다?
+
+                                            if(controller.smallBoxItemDataList.isNotEmpty) {
+                                              if(controller.smallBoxDataList.length > 1) {
+                                                showDialog(
+                                                  barrierDismissible: false,
+                                                  context: context, //context
+                                                  builder: (BuildContext context) {
+                                                    return _dupAlertDialog(context);
+                                                  },
+                                                );
+                                              }else {
+                                                /// 구성자재 스캔 시작
+                                                await controller.registMainKitQr();
+                                              }
+
+                                            }else {
+                                              Get.dialog(CommonDialogWidget(contentText: '메인박스를 먼저 스캔해주세요', pageFlag: 0));
+                                            }
                                           }
                                         }
+
                                         controller.textQrController.text = '';
 
                                         await controller.test();
@@ -551,7 +554,7 @@ class MainKitNewPage extends StatelessWidget {
               int.parse(controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'].toString()) + controller.smallBoxSave[0]['qty'] + controller.smallBoxSave[0]['qtyRes']) {
             controller.smallBoxSaveList[controller.dupSaveListIndex.value]['qty'] = controller.rows[controller.no.value].cells['cbxQty']?.value;
             controller.isSaveColor.value = true;
-            controller.noList2.add(controller.uniqueSmallBoxList[controller.no.value]['cbxSuNo'].toString());
+            controller.noList2.add(controller.uniqueSmallBoxList[controller.no.value]['itemCd'].toString());
             controller.test();
           } else {
             controller.isSaveColor.value = false;
@@ -702,7 +705,8 @@ class MainKitNewPage extends StatelessWidget {
                   controller.smallBoxSave[0].addAll({'newQty': controller.rows[controller.no.value].cells['cbxQty']?.value});
                   controller.isSaveColor.value = false;
                   controller.isColor.value = true;
-                  controller.noList3.add(controller.uniqueSmallBoxList[i]['cbxSuNo']);
+
+                  controller.noList3.add('${controller.uniqueSmallBoxList[i]['no']}${controller.uniqueSmallBoxList[i]['itemCd']}');
                   controller.test();
                 } else {
                   controller.isSaveColor.value = false;
@@ -760,7 +764,7 @@ class MainKitNewPage extends StatelessWidget {
                   controller.smallBoxSave[ii]['qty'] = controller.rows[controller.no.value].cells['cbxQty']?.value;
                   controller.isSaveColor.value = false;
                   controller.isColor.value = true;
-                  controller.noList3.add(controller.uniqueSmallBoxList[i]['cbxSuNo']);
+                  controller.noList3.add('${controller.uniqueSmallBoxList[i]['no']}${controller.uniqueSmallBoxList[i]['itemCd']}');
                   controller.test();
                 } else {
                   controller.smallBoxSave[ii]['qty'] = (controller.smallBoxSave[ii]['qty'] + controller.smallBoxSave[ii]['qtyRes']).toInt();
@@ -1071,7 +1075,7 @@ class MainKitNewPage extends StatelessWidget {
                   if (item['prtNo'].toString() == 'O') {
                     if(item['ncbxRmk'] == '') {
                     if (item['savedWrkQty'] == null) {
-                      controller.noList2.remove(item['itemCd']);
+                      controller.noList2.remove('${item['no']}${item['itemCd']}');
                       controller.test();
                       controller.stateManager.rowColorCallback!;
                       shouldRemove = true;
@@ -1082,7 +1086,7 @@ class MainKitNewPage extends StatelessWidget {
                       controller.smallBoxSaveList[index].addAll({'prtNo': 'X'});
                       controller.smallBoxSaveList[index].addAll({'syncYn': 'N'});
                       Get.log('qty::: ${controller.smallBoxSaveList[index]['qty']}');
-                      controller.noList2.remove(item['itemCd']);
+                      controller.noList2.remove('${item['no']}${item['itemCd']}');
                       shouldRemove = false;
                       controller.test();
                     }
@@ -1134,7 +1138,6 @@ class MainKitNewPage extends StatelessWidget {
             else if (text == '확정') {
               if (controller.isConfirmClick.value == false) {
                 controller.isConfirmClick.value = true;
-
                 try {
                   for(var i = 0; i < controller.smallBoxSaveList.length; i++) {
                     if(controller.smallBoxSaveList[i]['prtNo'] == 'O' && controller.smallBoxSaveList[i]['test'] == 'test') {
@@ -1174,6 +1177,7 @@ class MainKitNewPage extends StatelessWidget {
                   controller.focusNode.unfocus();
                 }
               }
+              controller.isConfirmClick.value = true;
             } else if (text == '확정 취소') {
               await controller.registMainKitConfirmNew('N');
               controller.isConfirm.value ?
@@ -1298,7 +1302,8 @@ class MainKitNewPage extends StatelessWidget {
         controller.isSaveColor.value = true;
         for (var dong = 0; dong < controller.smallBoxItemDataList.length; dong++) {
          // Get.log('smallBoxSaveList: ${controller.smallBoxItemDataList}');
-          controller.noList2.add(controller.smallBoxItemDataList[dong]['cbxSuNo']);
+         // controller.noList2.add(controller.smallBoxItemDataList[dong]['itemCd']);
+          controller.noList2.add('${controller.smallBoxItemDataList[dong]['no'].toString()}${controller.smallBoxItemDataList[dong]['itemCd'].toString()}');
           if (controller.smallBoxSaveList.isEmpty) {
             controller.noSync.value = true;
           }
@@ -1306,7 +1311,8 @@ class MainKitNewPage extends StatelessWidget {
           // 동기화 시에 수량이 왼쪽 수량보다 적을 시 수량 맞춰주는 동기화(수량, 동기화(prt_no) 값 바꾸기)
           for (var dong2 = 0; dong2 < controller.smallBoxSaveList.length; dong2++) {
             // 이미 오른쪽에 스캔된 자재가 있는데 수량이 작다면? -> 동기화 대상
-            if (controller.smallBoxItemDataList[dong]['itemCd'] == controller.smallBoxSaveList[dong2]['itemCd']) {
+            if (controller.smallBoxItemDataList[dong]['itemCd'] == controller.smallBoxSaveList[dong2]['itemCd']
+                && controller.smallBoxItemDataList[dong]['no'] == controller.smallBoxSaveList[dong2]['no']) {
               controller.noSync.value = false;
               if (int.parse(controller.smallBoxItemDataList[dong]['cbxQty'].toString()) > int.parse(controller.smallBoxSaveList[dong2]['wrkQty'].toString())) {
                 controller.smallBoxSaveList[dong2].addAll({'savedWrkQty': controller.smallBoxSaveList[dong2]['wrkQty']});
@@ -1344,6 +1350,8 @@ class MainKitNewPage extends StatelessWidget {
             controller.smallBoxItemDataList[dong].addAll({'ncbxRmkName': ''});
             controller.smallBoxItemDataList[dong].addAll({'wrkQty': controller.smallBoxItemDataList[dong]['cbxQty']});
             controller.smallBoxItemDataList[dong].addAll({'sboxNo': controller.smallBoxItemDataList[dong]['sboxNo']});
+            controller.smallBoxItemDataList[dong].addAll({'chkRst': ''});
+            controller.smallBoxItemDataList[dong].addAll({'chkQty': ''});
             controller.smallBoxSaveList.add(controller.smallBoxItemDataList[dong]);
 
           }

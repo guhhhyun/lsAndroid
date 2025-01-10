@@ -443,7 +443,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
       final retVal = await HomeApi.to.registSmallKitSave(params);
 
-      if (retVal == '0000') {
+      if(retVal.body![0]['resultMessage'] == '') {
         Get.log('등록되었습니다');
         isSave.value = true;
         isSaveText.value = '저장되었습니다.';
@@ -451,7 +451,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
       } else {
         Get.log('등록 실패');
         isSave.value = false;
-        isSaveText.value = '저장에 실패하였습니다.';
+        isSaveText.value = retVal.body![0]['resultMessage'];
       }
 
     } catch (e) {
@@ -678,7 +678,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         if(smallBoxSave[0]['extrVal'] != 'D') {
           final retVal = await HomeApi.to.registSmallKitSave(params);
 
-          if (retVal == '0000') {
+          if(retVal.body![0]['resultMessage'] == '') {
             Get.log('등록되었습니다');
             isSave.value = true;
             isSaveText.value = '저장되었습니다.';
@@ -686,7 +686,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
           } else {
             Get.log('등록 실패');
             isSave.value = false;
-            isSaveText.value = '저장에 실패하였습니다.';
+            isSaveText.value = retVal.body![0]['resultMessage'];
           }
         }
 
@@ -1165,7 +1165,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         if(smallBoxSaveList[i]['extrVal'] != 'D') {
           final retVal = await HomeApi.to.registSmallKitSave(params);
 
-          if (retVal == '0000') {
+          if(retVal.body![0]['resultMessage'] == '') {
             Get.log('등록되었습니다');
             isSave.value = true;
             isSaveText.value = '저장되었습니다.';
@@ -1173,7 +1173,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
           } else {
             Get.log('등록 실패');
             isSave.value = false;
-            isSaveText.value = '저장에 실패하였습니다.';
+            isSaveText.value = retVal.body![0]['resultMessage'];
           }
         }
 
@@ -1618,7 +1618,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
     bLoading.value = true;
 
-    smallBoxDataList.clear();
+
     isSelect.clear();
 
     var params = {
@@ -1639,7 +1639,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         },
         {
           'paramName': 'p_QR_NO',
-          'paramValue': textQrController.text,
+          'paramValue': textQrController.text.trim(),
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -1650,37 +1650,49 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
       final retVal = await HomeApi.to.reqMainKitNew(params);
 
       if (retVal.resultCode == '0000') {
-        if(retVal.body![0]['resultMessage'] == '') {
 
+        if(retVal.body![0]['resultMessage'] == '') {
+          smallBoxDataList.clear();
           smallBoxDataList.addAll(retVal.body![1]);
 
-          if(smallBoxDataList[0]['tagType'] == '20') {
+          if(smallBoxDataList.isNotEmpty) {
+            if(smallBoxDataList[0]['tagType'] == '20') {
 
-            smallBoxSave.clear();
-            smallBoxSaveList.clear();
-            smallBoxList.clear();
-            stateManager.removeAllRows();
-            stateManager2.removeAllRows();
-            /// 박스정보들 새로 담아서 관리
-            projectNm.value = smallBoxDataList[0]['pjtNm2'].toString();
-            itemCdNm.value = '${smallBoxDataList[0]['pitmCd'].toString()}/${smallBoxDataList[0]['pitmNm']}';
-            itemCd.value = smallBoxDataList[0]['pitmCd'].toString();
-            wrkNo.value = smallBoxDataList[0]['wrkNo'].toString();
-            boxNo.value = smallBoxDataList[0]['qrNo'].toString();
-            wrkCfmDt.value = smallBoxDataList[0]['wrkCfmDttm'].toString();
-            cbxMaNo.value = smallBoxDataList[0]['cbxMaNo'].toString();
-            setQty.value = smallBoxDataList[0]['setQty'].toString();
-            bcSts.value = smallBoxDataList[0]['bcSts'].toString();
-          }
-          tagType.value = smallBoxDataList[0]['tagType'].toString();
-          if(smallBoxDataList.length > 1) {
-            await reqCommon3();
+              smallBoxSave.clear();
+              smallBoxSaveList.clear();
+              smallBoxList.clear();
+              stateManager.removeAllRows();
+              stateManager2.removeAllRows();
+              /// 박스정보들 새로 담아서 관리
+              projectNm.value = smallBoxDataList[0]['pjtNm2'].toString();
+              itemCdNm.value = '${smallBoxDataList[0]['pitmCd'].toString()}/${smallBoxDataList[0]['pitmNm']}';
+              itemCd.value = smallBoxDataList[0]['pitmCd'].toString();
+              wrkNo.value = smallBoxDataList[0]['wrkNo'].toString();
+              boxNo.value = smallBoxDataList[0]['qrNo'].toString();
+              if(smallBoxDataList[0]['wrkCfmDttm'].toString().contains('T')) {
+                var firstIdx = smallBoxDataList[0]['wrkCfmDttm'].toString().indexOf('T');
+                var lastIdx = smallBoxDataList[0]['wrkCfmDttm'].toString().length;
+                wrkCfmDt.value = smallBoxDataList[0]['wrkCfmDttm'].toString().replaceRange(firstIdx, lastIdx, '');
+              }else {
+                wrkCfmDt.value = smallBoxDataList[0]['wrkCfmDttm'].toString();
+              }
+              cbxMaNo.value = smallBoxDataList[0]['cbxMaNo'].toString();
+              setQty.value = smallBoxDataList[0]['setQty'].toString();
+              bcSts.value = smallBoxDataList[0]['bcSts'].toString();
+            }
+            tagType.value = smallBoxDataList[0]['tagType'].toString();
+            if(smallBoxDataList.length > 1) {
+              await reqCommon3();
 
+            }
+            Get.log(smallBoxDataList.toString());
+            Get.log('조회 성공');
+            statusText.value = '정상 조회 되었습니다.';
+            isDbConnected.value = true;
+          }else {
+            statusText.value = 'QR코드를 다시 입력해주세요.';
           }
-          Get.log(smallBoxDataList.toString());
-          Get.log('조회 성공');
-          statusText.value = '정상 조회 되었습니다.';
-          isDbConnected.value = true;
+
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -1697,6 +1709,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
       Get.log(e.toString());
       statusText.value = '조회 실패했습니다.';
       isDbConnected.value = false;
+      focusNode.requestFocus();
       textQrController.text = '';
     } finally {
       bLoading.value = false;
@@ -1709,7 +1722,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     Get.log('QR 조회');
 
     bLoading.value = true;
-    smallBoxItemDataList.clear();
+
     noList2.clear();
     noList3.clear();
     changedRows.clear();
@@ -1745,7 +1758,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
-
+          smallBoxItemDataList.clear();
           smallBoxItemDataList.addAll(retVal.body![1]);
           for(var i = 0; i < smallBoxItemDataList.length; i++) {
             smallBoxItemDataList[i].addAll({'no': '${i + 1}'});
@@ -1765,6 +1778,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         Get.log('조회 실패');
         statusText.value = '조회 실패했습니다.';
         textQrController.text = '';
+        focusNode.requestFocus();
       }
     } catch (e) {
       Get.log('checkQR catch !!!!');
@@ -1772,6 +1786,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
       statusText.value = '조회 실패했습니다.';
       isDbConnected.value = false;
       textQrController.text = '';
+      focusNode.requestFocus();
     } finally {
       bLoading.value = false;
       plutoRowNew();
@@ -1780,7 +1795,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
   }
 
 
-  /// 메인박스 KIT 구성 자재정보 저장된 값 조회
+  /// 메인박스 KIT 구성 자재정보 저장된 값 조회 - 우측 리스트
   Future<void> checkBoxItemSaveData() async {
     Get.log('QR 조회');
 
@@ -1826,17 +1841,21 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
           for(var i = 0; i < smallBoxItemSaveDataList.length; i++) {
             outerLoop:
             for(var ii = 0; ii < smallBoxItemDataList.length; ii++) {
-              if(smallBoxItemSaveDataList[i]['itemCd'] == smallBoxItemDataList[ii]['itemCd']) {
-                if(smallBoxItemSaveDataList[i]['wrkQty'] == smallBoxItemDataList[ii]['cbxQty']) {
+              if(smallBoxItemSaveDataList[i]['itemCd'] == smallBoxItemDataList[ii]['itemCd']
+              && smallBoxItemSaveDataList[i]['sboxNo'] == smallBoxItemDataList[ii]['sboxNo'] ) {
+                smallBoxItemSaveDataList[i].addAll({'no': '${smallBoxItemDataList[ii]['no']}'});
+                if(smallBoxItemSaveDataList[i]['wrkQty'] >= smallBoxItemDataList[ii]['cbxQty']) {
                   /// 색 변경 로직 시작
                   isSaveColor.value = false;
                   isColor.value = true;
-                  noList3.add(smallBoxItemSaveDataList[i]['sboxNo']);
+                  if(smallBoxItemSaveDataList[i]['chkRst'] == '') {
+                    noList3.add('${smallBoxItemSaveDataList[i]['no'].toString()}${smallBoxItemSaveDataList[i]['itemCd']}');
+                    Get.log('noList3::: ${noList3}');
+                  }
                 }
-                smallBoxItemSaveDataList[i].addAll({'no': '${smallBoxItemDataList[ii]['no']}'});
                 break outerLoop;
               }else {
-                smallBoxItemSaveDataList[i].addAll({'no': '${smallBoxItemDataList.length + 1}'});
+                smallBoxItemSaveDataList[i].addAll({'no': smallBoxItemDataList.length + 1});
               }
             }
           }
@@ -1886,6 +1905,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         Get.log('조회 실패');
         textQrController.text = '';
         statusText.value = '조회 실패했습니다.';
+        focusNode.requestFocus();
       }
     } catch (e) {
       Get.log('checkQR catch !!!!');
@@ -1893,6 +1913,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
       statusText.value = '조회 실패했습니다.';
       isDbConnected.value = false;
       textQrController.text = '';
+      focusNode.requestFocus();
     } finally {
       bLoading.value = false;
       plutoRowNew2();
@@ -1971,6 +1992,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         Get.log('등록되었습니다');
         isDbConnected.value = true;
         await checkBoxItemSaveData();
+        await checkBoxItemData(); /// 지울수도
       } else {
         Get.log('등록 실패');
         statusText.value = retVal.body![0]['resultMessage'].toString();
@@ -2068,6 +2090,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         Get.log(e.toString());
         statusText.value = '등록 실패했습니다.';
         isDbConnected.value = false;
+        focusNode.requestFocus();
 
       } finally {
         bLoading.value = false;
@@ -2614,7 +2637,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
         final retVal = await HomeApi.to.registSmallKitSave(params);
 
-        if (retVal == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
           Get.log('등록되었습니다');
           isBomSave.value = true;
           isBomSaveText.value = '저장되었습니다.';
@@ -2622,7 +2645,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         } else {
           Get.log('등록 실패');
           isBomSave.value = false;
-          isBomSaveText.value = '저장에 실패하였습니다.';
+          isBomSaveText.value = retVal.body![0]['resultMessage'];
         }
 
       } catch (e) {

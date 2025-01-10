@@ -170,7 +170,6 @@ class InventoryCntPage extends StatelessWidget {
                         }
                       }*/
                       await controller.checkDelete();
-                      controller.isFocus.value = true;
                       await controller.checkDetailBtn(); // 디테일 조회
                       controller.focusNode.unfocus();
 
@@ -346,14 +345,17 @@ class InventoryCntPage extends StatelessWidget {
                       final inputChar = event.character ?? '';
                       if(controller.textLocController.text.length == 10) {
                         final scannedData = controller.textLocController.text;
+
                         // 데이터 처리
                         controller.locTextS.value = scannedData;
+                        controller.countLocController.text = controller.locTextS.value;
                         controller.textLocController.clear(); // 텍스트 필드 초기화
-
                         Get.log('Scanned Data: $scannedData');
+                        focusNodeForm.requestFocus();
                       }else {
                         controller.textLocController.clear(); // 텍스트 필드 초기화
                         Get.dialog(CommonDialogWidget(contentText: '바코드를 다시 입력해주세요', pageFlag: 3,));
+                        focusNode2Form.requestFocus();
                       }
                     }
                   }
@@ -464,7 +466,7 @@ class InventoryCntPage extends StatelessWidget {
         Container(
           padding: EdgeInsets.only(top: 4, bottom: 4, left: 8),
           height: 40,
-          width: 140,
+          width: 300,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: AppTheme.ae2e2e2),
@@ -503,16 +505,16 @@ class InventoryCntPage extends StatelessWidget {
                             controller.isFocus.value = true;
                             await controller.checkDetailBtn(); // 디테일 조회
                             controller.focusNode.unfocus();
-                            focusNode.requestFocus();
+                            focusNodeForm.requestFocus();
                           }
                         }else {
-                          controller.statusText.value = '선택된 자재분류와 다른 자재입니다.';
+                          //  controller.statusText.value = '선택된 자재분류와 다른 자재입니다.';
                          // Get.dialog(CommonDialogWidget(contentText: '선택된 자재분류와 다른 자재입니다.', pageFlag: 0));
                           controller.textQrController.text = '';
                           focusNodeForm.requestFocus();
                         }
                       }
-
+                      focusNodeForm.requestFocus();
                     }
                   }
                 },
@@ -565,7 +567,7 @@ class InventoryCntPage extends StatelessWidget {
               }
 
             }),),
-            Text('기존/신규', style: AppTheme.a18400.copyWith(color: AppTheme.black),)
+            Text('신규', style: AppTheme.a18400.copyWith(color: AppTheme.black),)
           ],
         )
       ],
@@ -724,18 +726,18 @@ class InventoryCntPage extends StatelessWidget {
               value: controller.invCntDt.value,
               items: controller.inventoryCntList.map((value) {
                 return DropdownMenuItem<String>(
-                  value: value['invCntDt'].toString(),
+                  value: value['invCntNm'].toString(),
                   child: Text(
-                    value['invCntDt'].toString(),
+                    value['invCntNm'].toString(),
                     style: AppTheme.a20400
-                        .copyWith(color: value['invCntDt'].toString() == '선택해주세요' ? AppTheme.aBCBCBC : AppTheme.a6c6c6c),
+                        .copyWith(color: value['invCntNm'].toString() == '선택해주세요' ? AppTheme.aBCBCBC : AppTheme.a6c6c6c),
                   ),
                 );
               }).toList(),
               onChanged: (value) {
                 controller.invCntDt.value = value!;
                 for(var i = 0; i < controller.inventoryCntList.length; i++) {
-                  if(controller.inventoryCntList[i]['invCntDt'] == controller.invCntDt.value) {
+                  if(controller.inventoryCntList[i]['invCntNm'] == controller.invCntDt.value) {
                     controller.currentMasterIdx.value = i;
                     controller.invType.value = controller.inventoryCntList[controller.currentMasterIdx.value]['invType'];
                     switch(controller.invType.value) {
@@ -753,6 +755,9 @@ class InventoryCntPage extends StatelessWidget {
 
                   }
                 }
+                controller.statusText.value = '';
+                controller.locTextS.value = '';
+                controller.countLocController.text = '';
                 Get.log('마스터 idx 확인: ${controller.currentMasterIdx.value}');
               }),
         ),
@@ -785,11 +790,11 @@ class InventoryCntPage extends StatelessWidget {
               /// 그리드에서 변경된 값 그대로 업데이트
               if (event.column.field == 'cntLocCd') {
                 print('선택한 값: ${event.value}');
-                controller.inventoryCntDetailList[event.rowIdx].addAll({'cntLocCd': event.value});
+                controller.inventoryCntDetailList[controller.inventoryCntDetailList.length - 1 - event.rowIdx].addAll({'cntLocCd': event.value});
               }
               if (event.column.field == 'cntQty') {
                 print('선택한 값: ${event.value}');
-                controller.inventoryCntDetailList[event.rowIdx].addAll({'cntQty': event.value});
+                controller.inventoryCntDetailList[controller.inventoryCntDetailList.length - 1 - event.rowIdx].addAll({'cntQty': event.value});
               }
             },
             onRowChecked: (event) {
@@ -810,11 +815,11 @@ class InventoryCntPage extends StatelessWidget {
 
                 }else {
                   if (event.isChecked == true) {
-                    controller.checkList[event.rowIdx!] = true;
+                    controller.checkList[controller.checkList.length - 1 - event.rowIdx!] = true;
                     // controller.selectedCancelList.add(event.row!.cells.entries);
                     Get.log('이거 봐야함2 ${controller.checkList.value}');
                   } else {
-                    controller.checkList[event.rowIdx!] = false;
+                    controller.checkList[controller.checkList.length - 1 - event.rowIdx!] = false;
                     //  controller.selectedCancelList.remove(event.rowIdx);
                     Get.log('이거 봐야함3 ${controller.checkList.value}');
                   }
@@ -846,6 +851,7 @@ class InventoryCntPage extends StatelessWidget {
   List<PlutoColumn> gridCols(BuildContext context) {
     final List<PlutoColumn> gridCols = <PlutoColumn>[
       PlutoColumn(
+        cellPadding: EdgeInsets.zero,
         title: '',
         field: 'checkBox',
         type: PlutoColumnType.text(),
@@ -865,7 +871,7 @@ class InventoryCntPage extends StatelessWidget {
         title: '번호',
         field: 'no',
         type: PlutoColumnType.text(),
-        width: 100,
+        width: 80,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -876,7 +882,7 @@ class InventoryCntPage extends StatelessWidget {
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
-      PlutoColumn(
+    /*  PlutoColumn(
         title: '자재분류',
         field: 'invType',
         type: PlutoColumnType.text(),
@@ -890,7 +896,7 @@ class InventoryCntPage extends StatelessWidget {
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
-      ),
+      ),*/
       PlutoColumn(
         title: '자재코드',
         field: 'itemCd',
@@ -910,7 +916,7 @@ class InventoryCntPage extends StatelessWidget {
         title: '자재명',
         field: 'itemNm',
         type: PlutoColumnType.text(),
-        width: 280,
+        width: 160,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -955,7 +961,7 @@ class InventoryCntPage extends StatelessWidget {
         title: '수량',
         field: 'sysQty',
         type: PlutoColumnType.text(),
-        width: 130,
+        width: 100,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -967,10 +973,10 @@ class InventoryCntPage extends StatelessWidget {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '개당단위수량',
+        title: '단위수량',
         field: 'sysWht',
         type: PlutoColumnType.text(),
-        width: 150,
+        width: 100,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -1441,7 +1447,7 @@ class InventoryCntPage extends StatelessWidget {
             _alertInput('실사 위치', context),
             _alertInput('실사 수량', context),
             _alertInput('실사 개당단위수량', context),
-            _alertInput('단위', context),
+          //  _alertInput('단위', context),
             _alertInput('개당단위수량 단위', context),
 
 
@@ -1457,7 +1463,7 @@ class InventoryCntPage extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 180,
+            width: 220,
             child: Text(
               title,
               style: AppTheme.a24700.copyWith(color: AppTheme.black),
@@ -1478,8 +1484,9 @@ class InventoryCntPage extends StatelessWidget {
                   expands :true,
                   minLines: null,
                   maxLines: null,
-                    autofocus: true,
-                  style: AppTheme.a16400.copyWith(color: AppTheme.a6c6c6c),
+                  autofocus: true,
+                  readOnly: title == '실사 위치' ? true : false,
+                  style: AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
                   controller: title == '자재코드'
                       ? controller.itemCdController
                       : title == 'LOT번호'
@@ -1595,7 +1602,7 @@ class InventoryCntPage extends StatelessWidget {
                                 const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)))),
                             padding: MaterialStateProperty.all(const EdgeInsets.all(0))),
                         onPressed: () async {
-
+                          Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
                         },
                         child: Container(
                           decoration: BoxDecoration(

@@ -88,7 +88,31 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                     color: AppTheme.gray_c_gray_200
                 ), height: 55,
                  padding: EdgeInsets.all(8), child: Center(child: Text('피킹지시번호', style: AppTheme.a20400.copyWith(color: AppTheme.black),))),
-
+            Container(
+                decoration: BoxDecoration(
+                    color: AppTheme.gray_c_gray_200
+                ), height: 55,
+                padding: EdgeInsets.all(8), child: Center(child: Text('자재번호', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
+            Container(
+                decoration: BoxDecoration(
+                    color: AppTheme.gray_c_gray_200
+                ), height: 55,
+                padding: EdgeInsets.all(8), child: Center(child: Text('자재명', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
+            Container(
+                decoration: BoxDecoration(
+                    color: AppTheme.gray_c_gray_200
+                ), height: 55,
+                padding: EdgeInsets.all(8), child: Center(child: Text('피킹지시수량', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
+            Container(
+                decoration: BoxDecoration(
+                    color: AppTheme.gray_c_gray_200
+                ), height: 55,
+                padding: EdgeInsets.all(8), child: Center(child: Text('피킹수량', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
+            Container(
+                decoration: BoxDecoration(
+                    color: AppTheme.gray_c_gray_200
+                ), height: 55,
+                padding: EdgeInsets.all(8), child: Center(child: Text('재고위치', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
@@ -110,16 +134,7 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                     color: AppTheme.gray_c_gray_200
                 ), height: 55,
                  padding: EdgeInsets.all(8), child: Center(child: Text('품명', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
-            Container(
-                decoration: BoxDecoration(
-                    color: AppTheme.gray_c_gray_200
-                ), height: 55,
-                padding: EdgeInsets.all(8), child: Center(child: Text('자재번호', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
-            Container(
-                decoration: BoxDecoration(
-                    color: AppTheme.gray_c_gray_200
-                ), height: 55,
-                padding: EdgeInsets.all(8), child: Center(child: Text('자재명', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
+
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
@@ -129,22 +144,8 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
                 ), height: 55,
-                 padding: EdgeInsets.all(8), child: Center(child: Text('피킹지시수량', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
-            Container(
-                decoration: BoxDecoration(
-                    color: AppTheme.gray_c_gray_200
-                ), height: 55,
-                 padding: EdgeInsets.all(8), child: Center(child: Text('피킹수량', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
-            Container(
-                decoration: BoxDecoration(
-                    color: AppTheme.gray_c_gray_200
-                ), height: 55,
                 padding: EdgeInsets.all(8), child: Center(child: Text('중요 자재 여부', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
-            Container(
-                decoration: BoxDecoration(
-                    color: AppTheme.gray_c_gray_200
-                ), height: 55,
-                padding: EdgeInsets.all(8), child: Center(child: Text('재고위치', style: AppTheme.a20400.copyWith(color: AppTheme.black)))),
+
             Container(
                 decoration: BoxDecoration(
                     color: AppTheme.gray_c_gray_200
@@ -252,6 +253,18 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
             Container(
                 padding: EdgeInsets.all(8),
                 child: i == 0 ? Center(child: Text(controller.pickingSecondList[i]['pickNo'], style: AppTheme.a18400.copyWith(color: AppTheme.black))) : Text('', style: AppTheme.a18400.copyWith(color: AppTheme.black))),
+            Container(padding: EdgeInsets.all(8), child: Center(child: Text(controller.pickingSecondList[i]['itemCd'], style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
+            Container(padding: EdgeInsets.all(8), child: Text(controller.pickingSecondList[i]['itemNm'].replaceAll('\n', ''), style: AppTheme.a18400.copyWith(color: AppTheme.black))),
+            Container(
+                padding: EdgeInsets.all(8),
+                child: controller.pickingSecondList[i]['pickOrdQtyRowspan'] != 0 ? Center(child: Text(controller.pickingSecondList[i]['pickOrdQty'].toString(), style: AppTheme.a18400.copyWith(color: AppTheme.black))) : Text('', style: AppTheme.a18400.copyWith(color: AppTheme.black))),
+            Container(
+                padding: EdgeInsets.all(8),
+                child: controller.pickingSecondList[i]['pickQtyRowspan'] != 0 ? Center(child: Text(controller.pickingSecondList[i]['pickQty'].toString(), style: AppTheme.a18400.copyWith(color: AppTheme.black))) : Text('', style: AppTheme.a18400.copyWith(color: AppTheme.black))),
+            Container(
+                padding: EdgeInsets.all(8),
+                child: controller.pickingSecondList[i]['locCdRowspan'] != 0 ? Center(child: Text(controller.pickingSecondList[i]['locCd'], style: AppTheme.a18400.copyWith(color: AppTheme.black))) : Text('')),
+
             Container(
 
                 padding: EdgeInsets.all(8),
@@ -265,23 +278,15 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
             Container(
                 padding: EdgeInsets.all(8),
                 child: controller.pickingSecondList[i]['pitmNmRowspan'] != 0 ? Text(controller.pickingSecondList[i]['pitmNm'], style: AppTheme.a18400.copyWith(color: AppTheme.black)) : Text('', style: AppTheme.a18400.copyWith(color: AppTheme.black))),
-            Container(padding: EdgeInsets.all(8), child: Center(child: Text(controller.pickingSecondList[i]['itemCd'], style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
-            Container(padding: EdgeInsets.all(8), child: Text(controller.pickingSecondList[i]['itemNm'].replaceAll('\n', ''), style: AppTheme.a18400.copyWith(color: AppTheme.black))),
+
             Container(
                 padding: EdgeInsets.all(8),
                 child: controller.pickingSecondList[i]['wrkNoRowspan'] != 0 ? Center(child: Text(controller.pickingSecondList[i]['wrkNo'].toString().trim().replaceAll('\n', ''), style: AppTheme.a18400.copyWith(color: AppTheme.black))) : Text('', style: AppTheme.a18400.copyWith(color: AppTheme.black))),
-            Container(
-                padding: EdgeInsets.all(8),
-                child: controller.pickingSecondList[i]['pickOrdQtyRowspan'] != 0 ? Center(child: Text(controller.pickingSecondList[i]['pickOrdQty'].toString(), style: AppTheme.a18400.copyWith(color: AppTheme.black))) : Text('', style: AppTheme.a18400.copyWith(color: AppTheme.black))),
-            Container(
-                padding: EdgeInsets.all(8),
-                child: controller.pickingSecondList[i]['pickQtyRowspan'] != 0 ? Center(child: Text(controller.pickingSecondList[i]['pickQty'].toString(), style: AppTheme.a18400.copyWith(color: AppTheme.black))) : Text('', style: AppTheme.a18400.copyWith(color: AppTheme.black))),
+
             Container(
                 padding: EdgeInsets.all(8),
                 child: Center(child: Text(controller.pickingSecondList[i]['othRackOutBtnVisible'] ? '예' : '아니오', style: AppTheme.a18400.copyWith(color: AppTheme.black)))),
-            Container(
-                padding: EdgeInsets.all(8),
-                child: controller.pickingSecondList[i]['locCdRowspan'] != 0 ? Center(child: Text(controller.pickingSecondList[i]['locCd'], style: AppTheme.a18400.copyWith(color: AppTheme.black))) : Text('')),
+
             Container(
                 padding: const EdgeInsets.all(8),
                 child: controller.pickingSecondList[i]['pickRankRowspan'] != 0 ? Center(child: Text(controller.pickingSecondList[i]['pickRank'].toString())) : Text('', style: AppTheme.a18400.copyWith(color: AppTheme.black))),
@@ -334,19 +339,19 @@ class _PickingSecondPageState extends State<PickingSecondPage> {
                 child: Table(
                   columnWidths: {
                     0: FixedColumnWidth(90.0),
-                    1: FixedColumnWidth(130.0),
+                    1: FixedColumnWidth(140.0),
                     2: FixedColumnWidth(200.0),
-                    3: FixedColumnWidth(500.0),
-                    4: FixedColumnWidth(200.0),
-                    5: FixedColumnWidth(120.0),
-                    6: FixedColumnWidth(400.0),
-                    7: FixedColumnWidth(100.0),
+                    3: FixedColumnWidth(200.0),
+                    4: FixedColumnWidth(500.0),
+                    5: FixedColumnWidth(180.0),
+                    6: FixedColumnWidth(180.0),
+                    7: FixedColumnWidth(130.0),
                     8: FixedColumnWidth(400.0),
                     9: FixedColumnWidth(120.0),
                     10: FixedColumnWidth(130.0),
-                    11: FixedColumnWidth(90.0),
-                    12: FixedColumnWidth(100.0),
-                    13: FixedColumnWidth(130.0),
+                    11: FixedColumnWidth(100.0),
+                    12: FixedColumnWidth(120.0),
+                    13: FixedColumnWidth(180.0),
                   },
                   border: TableBorder(
                     horizontalInside: BorderSide(color: Colors.transparent),
