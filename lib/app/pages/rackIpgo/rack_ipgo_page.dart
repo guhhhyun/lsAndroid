@@ -511,10 +511,10 @@ class RackIpgoPage extends StatelessWidget {
         Text('상태',
             style: AppTheme.a20700
                 .copyWith(color: AppTheme.black)),
-        SizedBox(width: 8,),
+        const SizedBox(width: 8,),
         Container(
 
-          padding: EdgeInsets.only(top: 6, left: 8, right: 8),
+          padding: const EdgeInsets.only(top: 6, left: 8, right: 8),
           height: 40,
           width: controller.statusText.value == '' ? 300 : null,
           decoration: BoxDecoration(
@@ -551,9 +551,9 @@ class RackIpgoPage extends StatelessWidget {
         Text('QR 코드',
             style: AppTheme.a20700
                 .copyWith(color: AppTheme.black)),
-        SizedBox(width: 8,),
+        const SizedBox(width: 8,),
         Container(
-          padding: EdgeInsets.only(top: 4),
+          padding: const EdgeInsets.only(top: 4),
           width: 250,
           height: 40,
           // padding: const EdgeInsets.only(left: 20, right: 12, top: 4),
@@ -1233,7 +1233,6 @@ class RackIpgoPage extends StatelessWidget {
           ),
 
           child: Center(
-
               child: KeyboardListener(
                 focusNode: focusNode4,
                 onKeyEvent: (event) {
@@ -1271,7 +1270,9 @@ class RackIpgoPage extends StatelessWidget {
                   onTap: () {
                     controller.isQrFocus.value = true;
                  /*   if(controller.focusCnt2.value++ > 1) controller.focusCnt2.value = 0;
-                    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
+                    else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+
+                    */
                   },
                   onTapOutside:(event) => { controller.focusCnt2.value = 0 },
                   onFieldSubmitted: (value) async{
@@ -1295,8 +1296,19 @@ class RackIpgoPage extends StatelessWidget {
                 ),
               )
           ),
-
         ),
+        SizedBox(width: 12,),
+        Obx(() => Container(
+          padding: EdgeInsets.only(top: 8, left: 8),
+          height: 40,
+          width: 120,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: AppTheme.ae2e2e2),
+            color: Color.lerp(Colors.white, Colors.white, 0.8),
+          ),
+          child: Text(controller.locTextS.value, style: AppTheme.a18700.copyWith(color: AppTheme.a6c6c6c),),
+        ))
       ],
     );
   }

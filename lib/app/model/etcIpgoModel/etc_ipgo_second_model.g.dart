@@ -96,6 +96,7 @@ _$SubBodyItemImpl _$$SubBodyItemImplFromJson(Map<String, dynamic> json) =>
       tagTypeNm: json['tagTypeNm'] as String? ?? '',
       qtyUnit: json['qtyUnit'] as String? ?? '',
       prtDt: json['prtDt'] as String? ?? '',
+      stkIspSts: json['stkIspSts'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$SubBodyItemImplToJson(_$SubBodyItemImpl instance) =>
@@ -123,4 +124,5 @@ Map<String, dynamic> _$$SubBodyItemImplToJson(_$SubBodyItemImpl instance) =>
       'tagTypeNm': instance.tagTypeNm,
       'qtyUnit': instance.qtyUnit,
       'prtDt': instance.prtDt,
+      'stkIspSts': instance.stkIspSts,
     };

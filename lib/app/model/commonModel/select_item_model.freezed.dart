@@ -777,6 +777,7 @@ mixin _$Zone {
   double get wht => throw _privateConstructorUsedError;
   double get qtyRes => throw _privateConstructorUsedError;
   String get locCd => throw _privateConstructorUsedError;
+  String get wrkYn => throw _privateConstructorUsedError;
   String get itemCd => throw _privateConstructorUsedError;
   String get tagNo => throw _privateConstructorUsedError;
   String get itemNm => throw _privateConstructorUsedError;
@@ -803,6 +804,7 @@ abstract class $ZoneCopyWith<$Res> {
       double wht,
       double qtyRes,
       String locCd,
+      String wrkYn,
       String itemCd,
       String tagNo,
       String itemNm,
@@ -832,6 +834,7 @@ class _$ZoneCopyWithImpl<$Res, $Val extends Zone>
     Object? wht = null,
     Object? qtyRes = null,
     Object? locCd = null,
+    Object? wrkYn = null,
     Object? itemCd = null,
     Object? tagNo = null,
     Object? itemNm = null,
@@ -859,6 +862,10 @@ class _$ZoneCopyWithImpl<$Res, $Val extends Zone>
       locCd: null == locCd
           ? _value.locCd
           : locCd // ignore: cast_nullable_to_non_nullable
+              as String,
+      wrkYn: null == wrkYn
+          ? _value.wrkYn
+          : wrkYn // ignore: cast_nullable_to_non_nullable
               as String,
       itemCd: null == itemCd
           ? _value.itemCd
@@ -916,6 +923,7 @@ abstract class _$$ZoneImplCopyWith<$Res> implements $ZoneCopyWith<$Res> {
       double wht,
       double qtyRes,
       String locCd,
+      String wrkYn,
       String itemCd,
       String tagNo,
       String itemNm,
@@ -942,6 +950,7 @@ class __$$ZoneImplCopyWithImpl<$Res>
     Object? wht = null,
     Object? qtyRes = null,
     Object? locCd = null,
+    Object? wrkYn = null,
     Object? itemCd = null,
     Object? tagNo = null,
     Object? itemNm = null,
@@ -969,6 +978,10 @@ class __$$ZoneImplCopyWithImpl<$Res>
       locCd: null == locCd
           ? _value.locCd
           : locCd // ignore: cast_nullable_to_non_nullable
+              as String,
+      wrkYn: null == wrkYn
+          ? _value.wrkYn
+          : wrkYn // ignore: cast_nullable_to_non_nullable
               as String,
       itemCd: null == itemCd
           ? _value.itemCd
@@ -1022,6 +1035,7 @@ class _$ZoneImpl implements _Zone {
       this.wht = 0.0,
       this.qtyRes = 0.0,
       this.locCd = '',
+      this.wrkYn = '',
       this.itemCd = '',
       this.tagNo = '',
       this.itemNm = '',
@@ -1048,6 +1062,9 @@ class _$ZoneImpl implements _Zone {
   @override
   @JsonKey()
   final String locCd;
+  @override
+  @JsonKey()
+  final String wrkYn;
   @override
   @JsonKey()
   final String itemCd;
@@ -1081,7 +1098,7 @@ class _$ZoneImpl implements _Zone {
 
   @override
   String toString() {
-    return 'Zone(no: $no, wht: $wht, qtyRes: $qtyRes, locCd: $locCd, itemCd: $itemCd, tagNo: $tagNo, itemNm: $itemNm, whtUnit: $whtUnit, zoneNm: $zoneNm, locDt: $locDt, qty: $qty, qrNo: $qrNo, checkBox: $checkBox, selected: $selected)';
+    return 'Zone(no: $no, wht: $wht, qtyRes: $qtyRes, locCd: $locCd, wrkYn: $wrkYn, itemCd: $itemCd, tagNo: $tagNo, itemNm: $itemNm, whtUnit: $whtUnit, zoneNm: $zoneNm, locDt: $locDt, qty: $qty, qrNo: $qrNo, checkBox: $checkBox, selected: $selected)';
   }
 
   @override
@@ -1093,6 +1110,7 @@ class _$ZoneImpl implements _Zone {
             (identical(other.wht, wht) || other.wht == wht) &&
             (identical(other.qtyRes, qtyRes) || other.qtyRes == qtyRes) &&
             (identical(other.locCd, locCd) || other.locCd == locCd) &&
+            (identical(other.wrkYn, wrkYn) || other.wrkYn == wrkYn) &&
             (identical(other.itemCd, itemCd) || other.itemCd == itemCd) &&
             (identical(other.tagNo, tagNo) || other.tagNo == tagNo) &&
             (identical(other.itemNm, itemNm) || other.itemNm == itemNm) &&
@@ -1109,8 +1127,23 @@ class _$ZoneImpl implements _Zone {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, no, wht, qtyRes, locCd, itemCd,
-      tagNo, itemNm, whtUnit, zoneNm, locDt, qty, qrNo, checkBox, selected);
+  int get hashCode => Object.hash(
+      runtimeType,
+      no,
+      wht,
+      qtyRes,
+      locCd,
+      wrkYn,
+      itemCd,
+      tagNo,
+      itemNm,
+      whtUnit,
+      zoneNm,
+      locDt,
+      qty,
+      qrNo,
+      checkBox,
+      selected);
 
   @JsonKey(ignore: true)
   @override
@@ -1132,6 +1165,7 @@ abstract class _Zone implements Zone {
       final double wht,
       final double qtyRes,
       final String locCd,
+      final String wrkYn,
       final String itemCd,
       final String tagNo,
       final String itemNm,
@@ -1153,6 +1187,8 @@ abstract class _Zone implements Zone {
   double get qtyRes;
   @override
   String get locCd;
+  @override
+  String get wrkYn;
   @override
   String get itemCd;
   @override

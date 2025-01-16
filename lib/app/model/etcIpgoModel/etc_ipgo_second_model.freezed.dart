@@ -832,6 +832,7 @@ mixin _$SubBodyItem {
   String get tagTypeNm => throw _privateConstructorUsedError;
   String get qtyUnit => throw _privateConstructorUsedError;
   String get prtDt => throw _privateConstructorUsedError;
+  String get stkIspSts => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -868,7 +869,8 @@ abstract class $SubBodyItemCopyWith<$Res> {
       String tagType,
       String tagTypeNm,
       String qtyUnit,
-      String prtDt});
+      String prtDt,
+      String stkIspSts});
 }
 
 /// @nodoc
@@ -907,6 +909,7 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
     Object? tagTypeNm = null,
     Object? qtyUnit = null,
     Object? prtDt = null,
+    Object? stkIspSts = null,
   }) {
     return _then(_value.copyWith(
       wht: null == wht
@@ -1001,6 +1004,10 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
           ? _value.prtDt
           : prtDt // ignore: cast_nullable_to_non_nullable
               as String,
+      stkIspSts: null == stkIspSts
+          ? _value.stkIspSts
+          : stkIspSts // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -1036,7 +1043,8 @@ abstract class _$$SubBodyItemImplCopyWith<$Res>
       String tagType,
       String tagTypeNm,
       String qtyUnit,
-      String prtDt});
+      String prtDt,
+      String stkIspSts});
 }
 
 /// @nodoc
@@ -1073,6 +1081,7 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
     Object? tagTypeNm = null,
     Object? qtyUnit = null,
     Object? prtDt = null,
+    Object? stkIspSts = null,
   }) {
     return _then(_$SubBodyItemImpl(
       wht: null == wht
@@ -1167,6 +1176,10 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
           ? _value.prtDt
           : prtDt // ignore: cast_nullable_to_non_nullable
               as String,
+      stkIspSts: null == stkIspSts
+          ? _value.stkIspSts
+          : stkIspSts // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -1197,7 +1210,8 @@ class _$SubBodyItemImpl implements _SubBodyItem {
       this.tagType = '',
       this.tagTypeNm = '',
       this.qtyUnit = '',
-      this.prtDt = ''});
+      this.prtDt = '',
+      this.stkIspSts = ''});
 
   factory _$SubBodyItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$SubBodyItemImplFromJson(json);
@@ -1271,10 +1285,13 @@ class _$SubBodyItemImpl implements _SubBodyItem {
   @override
   @JsonKey()
   final String prtDt;
+  @override
+  @JsonKey()
+  final String stkIspSts;
 
   @override
   String toString() {
-    return 'SubBodyItem(wht: $wht, tagId: $tagId, locCd: $locCd, whCd: $whCd, inbNo: $inbNo, grpKey: $grpKey, whNm: $whNm, expDt: $expDt, remark: $remark, tagNo: $tagNo, itemCd: $itemCd, whtUnit: $whtUnit, lotNo: $lotNo, zoneNm: $zoneNm, usrNm: $usrNm, inbDt: $inbDt, plant: $plant, qrNo: $qrNo, qty: $qty, tagType: $tagType, tagTypeNm: $tagTypeNm, qtyUnit: $qtyUnit, prtDt: $prtDt)';
+    return 'SubBodyItem(wht: $wht, tagId: $tagId, locCd: $locCd, whCd: $whCd, inbNo: $inbNo, grpKey: $grpKey, whNm: $whNm, expDt: $expDt, remark: $remark, tagNo: $tagNo, itemCd: $itemCd, whtUnit: $whtUnit, lotNo: $lotNo, zoneNm: $zoneNm, usrNm: $usrNm, inbDt: $inbDt, plant: $plant, qrNo: $qrNo, qty: $qty, tagType: $tagType, tagTypeNm: $tagTypeNm, qtyUnit: $qtyUnit, prtDt: $prtDt, stkIspSts: $stkIspSts)';
   }
 
   @override
@@ -1305,7 +1322,9 @@ class _$SubBodyItemImpl implements _SubBodyItem {
             (identical(other.tagTypeNm, tagTypeNm) ||
                 other.tagTypeNm == tagTypeNm) &&
             (identical(other.qtyUnit, qtyUnit) || other.qtyUnit == qtyUnit) &&
-            (identical(other.prtDt, prtDt) || other.prtDt == prtDt));
+            (identical(other.prtDt, prtDt) || other.prtDt == prtDt) &&
+            (identical(other.stkIspSts, stkIspSts) ||
+                other.stkIspSts == stkIspSts));
   }
 
   @JsonKey(ignore: true)
@@ -1334,7 +1353,8 @@ class _$SubBodyItemImpl implements _SubBodyItem {
         tagType,
         tagTypeNm,
         qtyUnit,
-        prtDt
+        prtDt,
+        stkIspSts
       ]);
 
   @JsonKey(ignore: true)
@@ -1375,7 +1395,8 @@ abstract class _SubBodyItem implements SubBodyItem {
       final String tagType,
       final String tagTypeNm,
       final String qtyUnit,
-      final String prtDt}) = _$SubBodyItemImpl;
+      final String prtDt,
+      final String stkIspSts}) = _$SubBodyItemImpl;
 
   factory _SubBodyItem.fromJson(Map<String, dynamic> json) =
       _$SubBodyItemImpl.fromJson;
@@ -1426,6 +1447,8 @@ abstract class _SubBodyItem implements SubBodyItem {
   String get qtyUnit;
   @override
   String get prtDt;
+  @override
+  String get stkIspSts;
   @override
   @JsonKey(ignore: true)
   _$$SubBodyItemImplCopyWith<_$SubBodyItemImpl> get copyWith =>

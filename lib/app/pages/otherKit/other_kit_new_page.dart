@@ -1,16 +1,11 @@
 import 'dart:async';
-import 'dart:ffi';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lsandroid/app/common/app_theme.dart';
 import 'package:lsandroid/app/common/common_appbar_widget.dart';
-import 'package:lsandroid/app/common/common_dialog_box.dart';
 import 'package:lsandroid/app/common/common_dialog_other.dart';
 import 'package:lsandroid/app/common/dialog_widget.dart';
 import 'package:lsandroid/app/pages/home/home_page.dart';
@@ -238,7 +233,9 @@ class OtherKitNewPage extends StatelessWidget {
                                             if(controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') {
                                               /// 자재 읽기
                                               // 자재 저장 프로시저 돌리기
+                                              /// 중복라벨의 경우
                                               if(controller.smallBoxDataList.length > 1) {
+                                                await controller.reqCommon4();
                                                 // 중복 qr이니 alert 띄우기
                                                 showDialog(
                                                   barrierDismissible: false,
@@ -247,7 +244,34 @@ class OtherKitNewPage extends StatelessWidget {
                                                     return _dupAlertDialog(context);
                                                   },
                                                 ); // context가 왜?
+                                                /*if(controller.smallBoxDataList[0]['cancleFlag'] > 0) {
+                                                  // 이미 스캔된 자재일 경우 취소 여부 물어볼 메세지처리
+                                                  await Get.dialog(CommonDialogOtherWidget(contentText: '이미 스캔된 자재입니다. 스캔 취소하시겠습니까?', pageFlag: 0));
+                                                  if(controller.isCancelIpgo.value) {
+                                                    await controller.reqCommon4();
+                                                    // 중복 qr이니 alert 띄우기
+                                                    showDialog(
+                                                      barrierDismissible: false,
+                                                      context: context, //context
+                                                      builder: (BuildContext context) {
+                                                        return _dupAlertDialog(context);
+                                                      },
+                                                    ); // context가 왜?
+                                                  }
+                                                }else {
+                                                  controller.isCancelIpgo.value = false;
+                                                  await controller.reqCommon4();
+                                                  // 중복 qr이니 alert 띄우기
+                                                  showDialog(
+                                                    barrierDismissible: false,
+                                                    context: context, //context
+                                                    builder: (BuildContext context) {
+                                                      return _dupAlertDialog(context);
+                                                    },
+                                                  ); // context가 왜?
+                                                }*/
                                               }else {
+                                                controller.isCancelIpgo.value = false;
                                                 // 중복 X
                                                 if(controller.smallBoxDataList[0]['cancleFlag'] > 0) {
                                                   // 이미 스캔된 자재일 경우 취소 여부 물어볼 메세지처리
@@ -258,6 +282,7 @@ class OtherKitNewPage extends StatelessWidget {
                                                     await controller.test();
                                                   }
                                                 }else {
+                                                  controller.isCancelIpgo.value = false;
                                                   await controller.registSmallKitItemSave();
                                                 }
                                               }
@@ -419,7 +444,9 @@ class OtherKitNewPage extends StatelessWidget {
                         SizedBox(width: 32,),
                         _subData2('박스번호', controller.boxNo.value, false),
                         SizedBox(width: 32,),
-                        _subData2('확정일', controller.wrkCfmDt.value, false)
+                        _subData2('확정일', controller.wrkCfmDt.value, false),
+                        SizedBox(width: 32,),
+                        _subData2('BOM 점검', controller.bcSts.value == 'null' ? '' : controller.bcSts.value, false)
                       ],
                     ),
                   ),
@@ -433,15 +460,19 @@ class OtherKitNewPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _subDataMemo('메모'),
-                    SizedBox(width: 12,),
-                    _subDataWeight(),
-                    SizedBox(width: 12,),
-                    _subDataWeight2(),
+                   Row(
+                     children: [
+                       _subDataMemo('메모'),
+                       SizedBox(width: 12,),
+                       _subDataWeight(),
+                       SizedBox(width: 12,),
+                       _subDataWeight2(),
+                     ],
+                   ),
                     Row(
                       children: [
 
-                        Container(
+                       /* Container(
                           margin: EdgeInsets.only(right: 12),
                           width: 120,
                           height: 56,
@@ -477,7 +508,7 @@ class OtherKitNewPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                        ),
+                        ),*/
 
                         Container(
                           margin: EdgeInsets.only(right: 12),
@@ -747,12 +778,14 @@ class OtherKitNewPage extends StatelessWidget {
             {
               controller.isFocus.value = true;
               controller.smallBoxItemDataList.isNotEmpty ?
+              controller.wrkCfmDt.value == '' ?
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return _alertDialog(context);
                 },
-              ) :  Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요', pageFlag: 0));
+              )   :  Get.dialog(CommonDialogWidget(contentText: '확정된 박스입니다.', pageFlag: 0))
+                  :  Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요', pageFlag: 0));
               /*controller.insertRow.value = List<PlutoRow>.generate(controller.ipgoQrList.length, (index) =>
             PlutoRow(cells:
             Map.from((controller.ipgoQrList[index]).map((key, value) =>
@@ -772,10 +805,14 @@ class OtherKitNewPage extends StatelessWidget {
               if(controller.isSaveClick.value == false) { // 중복방지 로직
                 controller.isSaveClick.value = true;
                 Get.log('저장할 리스트!: ${controller.smallBoxSaveList.length}');
-                await controller.registMemoSmallKitSave();
-                controller.isSave.value ?
-                Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0)) :
-                Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
+                if(controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') {
+                  await controller.registMemoSmallKitSave();
+                  controller.isSave.value ?
+                  Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0)) :
+                  Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
+                }else {
+                  Get.dialog(CommonDialogWidget(contentText: '박스가 확정된 상태입니다.', pageFlag: 0));
+                }
               }
               // await controller.registSmallKitDetailSave()
             }
@@ -910,10 +947,21 @@ class OtherKitNewPage extends StatelessWidget {
             else if(text == '확정 취소')
             {
               await controller.registSmallKitConfirmNew('N');
-              controller.isConfirm.value ?
-              Get.dialog(CommonDialogWidget(contentText: '확정 취소되었습니다.', pageFlag: 0)) :
-              Get.dialog(CommonDialogWidget(contentText: '취소되지않았습니다.', pageFlag: 0));
+              if(controller.isConfirm.value) {
+                controller.textQrController.text = controller.smallBoxItemDataList[0]['cbxExNo'].toString();
+                Get.dialog(CommonDialogWidget(contentText: '확정 취소되었습니다.', pageFlag: 0));
+                /// 전체 재조회 해야할듯?
+                await controller.checkBoxItemData();
+                for (var i = 0; i < controller.smallBoxItemDataList.length; i++) {
+                  controller.smallBoxItemDataList[i].addAll({'no': '${i + 1}'});
+                }
+                controller.textQrController.text = '';
+                controller.wrkCfmDt.value = '';
+              }
               controller.focusNode.unfocus();
+              controller.isConfirmClick.value = false;
+              controller.isConfirm.value = false;
+
             }
           } ,
           child: Container(
@@ -2059,6 +2107,7 @@ class OtherKitNewPage extends StatelessWidget {
             onTap: () {
               controller.isQrFocus.value = true;
             },
+            readOnly: true,
             expands : true,
             minLines: null,
             maxLines: null,
@@ -2397,9 +2446,14 @@ class OtherKitNewPage extends StatelessWidget {
                     // controller.bomConfirm, Add Location('현재 위치: ') controller.bomConfirm.add(controller.boxNo); 현재 위치에서 out 떄리고
                     // bom 사유에서 변경됐을 경우 rowInx == 0 ? Get.log('')
                   }
-                  if (event.column.field == 'chgCfFlag') {
+                  if (event.column.field == 'chgCfFlagName') {
                     print('선택한 값: ${event.value}');
-                    controller.bomDetailList[event.rowIdx].addAll({'chgCfFlag': event.value});
+                    final code = controller.bomConfirm.firstWhere((item) => item['NAME'] == event.value, orElse: () => {'CODE': ''})['CODE'];
+                    print('선택한 값의 코드: ${code}');
+                    print('선택한 값의 idx: ${event.rowIdx}');
+                    controller.bomDetailList[event.rowIdx].addAll({'chgCfFlag': code.toString()});
+                    print('최종x: ${controller.bomDetailList[event.rowIdx]['chgCfFlag']}');
+
                   }
                 },
                 onSelected: (c) {
@@ -2443,8 +2497,8 @@ class OtherKitNewPage extends StatelessWidget {
       ),
       PlutoColumn(
         title: '변경확정',
-        field: 'chgCfFlag',
-        type: PlutoColumnType.select(controller.bomConfirm),
+        field: 'chgCfFlagName',
+        type: PlutoColumnType.select(controller.bomConfirmNames),
         width: 100,
         enableSorting: false,
         enableEditingMode: true,
@@ -2681,7 +2735,14 @@ class OtherKitNewPage extends StatelessWidget {
                               const EdgeInsets.all(0))),
                       onPressed: () async {
                         Get.log('선택 클릭!');
-                        await controller.registSmallKitItemSave();
+                        if(controller.popUpDataList[controller.alertIndex.value]['wrkYn'] == 'Y') {
+                          await controller.registSmallKitCancelDup();
+                          await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxExNo'].toString());
+                        }else {
+                          await controller.registSmallKitItemSaveDup();
+
+                        }
+
                         Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
                       },
                       child: Container(
@@ -2730,7 +2791,7 @@ class OtherKitNewPage extends StatelessWidget {
     return Obx(() => SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
           return _listItem(index: index, context: context);
-        }, childCount: controller.smallBoxDataList.length)));
+        }, childCount: controller.popUpDataList.length)));
   }
 
 
@@ -2782,24 +2843,31 @@ class OtherKitNewPage extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text('QR코드: ', style: AppTheme.a16700.copyWith(
+                      Text('작업여부: ', style: AppTheme.a16700.copyWith(
                         color: AppTheme.a1f1f1f,
                       ),),
-                      Text('${controller.smallBoxDataList[index]['qrNo']}', style: AppTheme.a16400.copyWith(
+                      Text('${controller.popUpDataList[index]['wrkYn']}', style: AppTheme.a16700.copyWith(
                         color: AppTheme.a1f1f1f,
                       ),),
                       SizedBox(width: 12,),
-                      Text('소박스 번호: ', style: AppTheme.a16700.copyWith(
+                      Text('QR코드: ', style: AppTheme.a16700.copyWith(
                         color: AppTheme.a1f1f1f,
                       ),),
-                      Text('${controller.smallBoxItemDataList[0]['cbxSuNo']}', style: AppTheme.a16400.copyWith(
+                      Text('${controller.popUpDataList[index]['tagNo']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      SizedBox(width: 12,),
+                      Text('자재코드: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.popUpDataList[index]['itemCd']}', style: AppTheme.a16400.copyWith(
                         color: AppTheme.a1f1f1f,
                       ),),
                       SizedBox(width: 12,),
                       Text('수량: ', style: AppTheme.a16700.copyWith(
                         color: AppTheme.a1f1f1f,
                       ),),
-                      Text('${controller.smallBoxDataList[index]['oderQty']}', style: AppTheme.a16400.copyWith(
+                      Text('${controller.popUpDataList[index]['qty']}', style: AppTheme.a16400.copyWith(
                         color: AppTheme.a1f1f1f,
                       ),),
                     ],

@@ -92,7 +92,7 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
 
     for(var i = 0; i < registRackIpgoList.length; i++) {
       var params = {
-        'programId': 'A1020',
+        'programId': 'A1020', //A1030
         'procedure': 'USP_A1030_S01',
         'params': [
           {
@@ -202,7 +202,7 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
 
     for(var i = 0; i < registRackIpgoList.length; i++) {
       var params = {
-        'programId': 'A1020',
+        'programId': 'A1020', //A1030
         'procedure': 'USP_A1030_S01',
         'params': [
           {
@@ -312,7 +312,7 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
 
     for(var i = 0; i < registRackIpgoList.length; i++) {
       var params = {
-        'programId': 'A1020',
+        'programId': 'A1020', //A1030
         'procedure': 'USP_A1030_S01',
         'params': [
           {
@@ -427,7 +427,7 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
     rackIpgoTodayList.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A1030
       'procedure': 'USP_A1030_R01',
       'params': [
         {
@@ -497,7 +497,7 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
     isSelect.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A1030
       'procedure': 'USP_A1030_R01',
       'params': [
         {

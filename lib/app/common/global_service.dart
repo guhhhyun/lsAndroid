@@ -82,6 +82,7 @@ class GlobalService extends GetxService {
   RxList<dynamic> allList = [].obs;
   RxList<int> datasList = [0].obs;
   RxBool isLoading = false.obs;
+
   /*Future<void> req() async {
     try{
       allList.clear();

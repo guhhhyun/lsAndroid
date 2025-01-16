@@ -1,11 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
-import 'package:flutter_layout_grid/flutter_layout_grid.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+
 import 'package:lsandroid/app/common/app_theme.dart';
 import 'package:lsandroid/app/common/common_appbar_widget.dart';
 import 'package:lsandroid/app/common/dialog_widget.dart';
@@ -13,8 +10,6 @@ import 'package:lsandroid/app/pages/home/home_page.dart';
 import 'package:lsandroid/app/pages/picking/picking_controller.dart';
 
 import 'package:pluto_grid/pluto_grid.dart';
-import 'package:freedom_table/freedom_table.dart';
-import 'package:vs_scrollbar/vs_scrollbar.dart';
 
 class PickingSecondPage extends StatefulWidget {
   const PickingSecondPage({super.key});

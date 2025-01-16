@@ -49,6 +49,8 @@ class LoginController extends GetxController {
           if (retVal.body!.resCd == '0000') {
             Utils.showToast(msg: '로그인 되었습니다.');
             gs.loginList.value = retVal.body!.authorities!;
+
+          //  Get.log('gs.loginList::: ${gs.loginList[0]['Authority']}');
             gs.loginNm.value = retVal.body!.userName;
             Get.offAllNamed(Routes.MAIN);
           } else {

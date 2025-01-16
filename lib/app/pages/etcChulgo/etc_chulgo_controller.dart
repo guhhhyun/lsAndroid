@@ -131,7 +131,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
     cheburnIpgoList.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A4030
       'procedure': 'USP_GET_CODE_SEQ',
       'params': [
         {
@@ -182,7 +182,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
     cheburnIpgoLotList.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A4030
       'procedure': 'USP_GET_CODE_SEQ',
       'params': [
         {
@@ -235,7 +235,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
     for(var e = etcChulgoSaveQrList.length - 1; e >= 0; e--) {
 
         var params = {
-          'programId': 'A1020',
+          'programId': 'A1020', //A4030
           'procedure': 'USP_A4030_S02',
           'params': [
             {
@@ -416,7 +416,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
     for(var e = 0; e < etcChulgoCheckList.length; e++) {
       if(etcChulgoCheckList[e] == true) {
         var params = {
-          'programId': 'A1020',
+          'programId': 'A1020', //A4030
           'procedure': 'USP_A4030_S02',
           'params': [
             {

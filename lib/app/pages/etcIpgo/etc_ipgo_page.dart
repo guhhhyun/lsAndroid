@@ -1,26 +1,20 @@
+// ignore_for_file: prefer_const_constructors
 
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
-import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lsandroid/app/common/app_theme.dart';
 import 'package:lsandroid/app/common/common_appbar_widget.dart';
 import 'package:lsandroid/app/common/dialog_widget.dart';
-import 'package:lsandroid/app/common/utils.dart';
-import 'package:lsandroid/app/pages/chulgo/chulgo_controller.dart';
-import 'package:lsandroid/app/pages/etcChulgo/etc_chulgo_controller.dart';
 import 'package:lsandroid/app/pages/etcIpgo/etc_ipgo_controller.dart';
 import 'package:lsandroid/app/pages/home/home_page.dart';
-import 'package:lsandroid/app/pages/picking/picking_controller.dart';
 
 import 'package:pluto_grid/pluto_grid.dart';
-import 'package:freedom_table/freedom_table.dart';
-import 'package:vs_scrollbar/vs_scrollbar.dart';
 
 class EtcIpgoPage extends StatefulWidget {
   const EtcIpgoPage({super.key});
@@ -32,9 +26,7 @@ class EtcIpgoPage extends StatefulWidget {
 class _EtcIpgoPageState extends State<EtcIpgoPage> {
   @override
   void initState() {
-    //  late  PlutoGridStateManager gridStateMgr3;
     super.initState();
-
   }
 
 
@@ -87,7 +79,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
               height: 4,
             ),
             Container(
-              padding: EdgeInsets.only(left: 24, right: 24),
+              padding: const EdgeInsets.only(left: 24, right: 24),
               child: Row(
                 children: [
                   _invnrTextForm('자재코드',0),
@@ -124,8 +116,8 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
           width:  MediaQuery.of(context).size.width ,
           padding: EdgeInsets.only(left: 24, right: 24),
           child: _dropDownItem(),
-
         ),
+
       ],
     );
   }
@@ -141,7 +133,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
             SizedBox(width: 8,),
             Container(
               height: 40,
-              width: 150,
+              width: 120,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: AppTheme.ae2e2e2)),
@@ -216,7 +208,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                 },
                 child: Container(
                   height: 40,
-                  width: 150,
+                  width: 120,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all( color: AppTheme.ae2e2e2)),
@@ -273,7 +265,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: AppTheme.ae2e2e2)),
-                  width: 150,
+                  width: 120,
                   padding: const EdgeInsets.only( right: 12),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -287,6 +279,8 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                 ),
               ),
             ),
+            SizedBox(width: 24,),
+            _inbTypeDropDownItem()
           ],
         ),
         Row(
@@ -307,6 +301,10 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                         const EdgeInsets.all(0))),
                 onPressed: () async {
                   Get.log('조회 클릭!');
+                  Get.dialog(
+                    Center(child: CircularProgressIndicator()),
+                    barrierDismissible: false, // 사용자가 다이얼로그를 닫을 수 없도록 설정
+                  );
                   if(controller.isChecked.value == false) {
                     controller.isChecked.value = true;
                     controller.gridStateMgr3.removeAllRows();
@@ -327,6 +325,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                       controller.gridStateMgr3.removeAllRows();
                       controller.gridStateMgr3.appendRows(controller.rowDatas3.value);
                     }
+                    Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
                   }
 
                   /* await controller.checkBtn();
@@ -463,6 +462,56 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
     );
   }
 
+  Widget _inbTypeDropDownItem() {
+    return Row(
+      children: [
+        Text('입고구분', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
+        SizedBox(width: 8,),
+        Container(
+          height: 40,
+          width: 150,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppTheme.ae2e2e2)),
+          padding: const EdgeInsets.only(right: 12),
+          child: DropdownButton(
+              padding: EdgeInsets.only(left: 12),
+              borderRadius: BorderRadius.circular(3),
+              isExpanded: true,
+              underline: Container(
+                height: 1,
+                color: Colors.white,
+              ),
+              icon: SvgPicture.asset(
+                'assets/app/arrowBottom.svg',
+                color: AppTheme.light_placeholder,
+              ),
+              dropdownColor: AppTheme.light_ui_01,
+              value: controller.selectedInbTypeDropdown['NAME'],
+              items: controller.inbTypeList.map((value) {
+                return DropdownMenuItem<String>(
+                  value: value['NAME'].toString(),
+                  child: Text(
+                    value['NAME'].toString(),
+                    style: AppTheme.a20400
+                        .copyWith(color: value['NAME'].toString() == '선택해주세요' ? AppTheme.aBCBCBC : AppTheme.a6c6c6c),
+                  ),
+                );
+              }).toList(),
+
+              onChanged: (value) {
+                controller.inbTypeList.map((e) {
+                  if(e['NAME'] == value) {
+                    controller.selectedInbTypeDropdown['CODE'] = e['CODE'];
+                    controller.selectedInbTypeDropdown['NAME'] = e['NAME'];
+                  }
+                }).toList();
+              }),
+        ),
+      ],
+    );
+  }
+
   Widget _invnrTextForm(String title, int plag) {
     return Row(
       children: [
@@ -571,7 +620,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                 onChanged: (PlutoGridOnChangedEvent event) {
                   print(event);
                 },
-                onSelected: (c) {
+                onSelected: (c) async{
                   Get.log('controller.itemTotalList::: ${controller.itemTotalList}');
                   print(controller.gridStateMgr2.currentRowIdx);
                   controller.currentRowIndex.value = c.rowIdx!;
@@ -579,9 +628,18 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                       ? {/*controller.ipgoQrList.clear(), controller.ipgoList.clear(),*/ controller.gridStateMgr3.removeAllRows()} : null;
                   controller.currentRowIndex.value = controller.gridStateMgr2.currentRowIdx!;
 
+                 /* // 만약 클릭했을 때 단건으로 바꾸게된다면
+                  await controller.checkDetailQROne();
                   /// 오른쪽 분할 그리드 시작!!
-                  ///
+                  controller.rowDatas3.value = List<PlutoRow>.generate(controller.itemTotalListOne.length, (index) =>
+                      PlutoRow(cells:
+                      Map.from((controller.itemTotalListOne[index]).map((key, value) =>
+                          MapEntry(key, PlutoCell(value: value ?? '' )),
+                      )))
+                  );*/
 
+
+                  /// 오른쪽 분할 그리드 시작!!
                   controller.rowDatas3.value = List<PlutoRow>.generate(controller.itemTotalList[controller.currentRowIndex.value].length, (index) =>
                       PlutoRow(cells:
                       Map.from((controller.itemTotalList[controller.currentRowIndex.value][index]).map((key, value) =>
@@ -879,7 +937,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         type: PlutoColumnType.text(),
         width: 90,
         enableSorting: false,
-        enableEditingMode: false,
+        enableEditingMode: true,
         enableContextMenu: false,
         enableRowDrag: false,
         enableDropToResize: false,
@@ -1088,7 +1146,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  width: MediaQuery.of(context).size.width/2 + 50,
+                  width: MediaQuery.of(context).size.width/2 -90,
                     height: 290,
                     child: PlutoGrid(
                       mode: PlutoGridMode.selectWithOneTap, // 탭 한번으로 반응하게?
@@ -1176,7 +1234,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   ),
                 SizedBox(width: 12,),
                 Container(
-                  width: MediaQuery.of(context).size.width/2 - 180,
+                  width: MediaQuery.of(context).size.width/2 - 40,
                   height: 290,
                   child: PlutoGrid(
                     columns: gridCols4(context),
@@ -1189,6 +1247,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                     },
                     onChanged: (PlutoGridOnChangedEvent event) {
                       print(event);
+                      controller.etcIpgoQrDetailTotalList[controller.currentRowIndex2.value][event.rowIdx].addAll({'qty': event.value!});
                     },
                     onSelected: (c) {
                       print(controller.gridStateMgr5.currentRowIdx);
@@ -1246,8 +1305,38 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
-
       ),
+      PlutoColumn(
+        title: '실사여부',
+        field: 'stkIspSts',
+        type: PlutoColumnType.text(),
+        width: 100,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '라벨타입',
+        field: 'tagTypeNm',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+
       /*PlutoColumn(
         title: '입고번호',
         field: 'inbNo',
@@ -1263,7 +1352,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),*/
-      PlutoColumn(
+      /*PlutoColumn(
         title: '존 구분',
         field: 'zoneNm',
         type: PlutoColumnType.text(),
@@ -1307,7 +1396,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
-      ),
+      ),*/
       PlutoColumn(
         title: '입고일',
         field: 'inbDt',
@@ -1509,39 +1598,6 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
 
 
 
-  Widget _rackIpgoList4(BuildContext context) {
-    return Container(
-        width: MediaQuery.of(context).size.width,
-        height: 290,
-        child: PlutoGrid(
-          columns: gridCols4(context),
-          rows: controller.rowDatas5.value,
-          onLoaded: (PlutoGridOnLoadedEvent event) {
-            controller.gridStateMgr5 = event.stateManager;
-            controller.gridStateMgr5.setSelectingMode(PlutoGridSelectingMode.none);
-            // Get.log('${controller.gridStateMgr2.currentRowIdx!}');
-            //gridStateMgr.setShowColumnFilter(true);
-          },
-          onChanged: (PlutoGridOnChangedEvent event) {
-            print(event);
-          },
-          onSelected: (c) {
-            print(controller.gridStateMgr5.currentRowIdx);
-          },
-          configuration: PlutoGridConfiguration(
-            style: PlutoGridStyleConfig(
-              columnHeight: 55,
-              rowHeight: 55,
-              //gridBorderColor: Colors.transparent,
-              //   activatedColor: Colors.transparent,
-              //  cellColorInReadOnlyState: Colors.white,
-              columnTextStyle: AppTheme.a18400.copyWith(color: AppTheme.black),
-              cellTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black),
-            ),
-          ),
-        ),
-      );
-  }
   List<PlutoColumn> gridCols4(BuildContext context) {
     final List<PlutoColumn> gridCols4 = <PlutoColumn>[
       PlutoColumn(
@@ -1625,7 +1681,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         type: PlutoColumnType.text(),
         width: 90,
         enableSorting: false,
-        enableEditingMode: false,
+        enableEditingMode: true,
         enableContextMenu: false,
         enableRowDrag: false,
         enableDropToResize: false,
@@ -1633,6 +1689,18 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
+        checkReadOnly: (PlutoRow row, PlutoCell cell) {
+          var isCheck = true;
+          if(controller.etcIpgoQrDetailTotalList[controller.currentRowIndex2.value].isNotEmpty) {
+            if(controller.etcIpgoQrDetailTotalList[controller.currentRowIndex2.value][row.sortIdx]['qrNo'].toString().contains('^^^^')) {
+              isCheck = false;
+            }else {
+              isCheck = true;
+            }
+          }
+          return isCheck;
+          /*controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value]['qty'].toString() == '1';*/
+        },
       ),
       PlutoColumn(
         title: '단위',

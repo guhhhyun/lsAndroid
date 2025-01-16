@@ -73,7 +73,7 @@ class SubBodyItem with _$SubBodyItem {
     @Default('') String tagTypeNm,
     @Default('') String qtyUnit,
     @Default('') String prtDt,
-
+    @Default('') String stkIspSts,
   }) = _SubBodyItem;
 
   factory SubBodyItem.fromJson(Map<String, dynamic> json) => _$SubBodyItemFromJson(json);

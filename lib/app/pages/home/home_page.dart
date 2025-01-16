@@ -1,12 +1,8 @@
 
 
 import 'package:lsandroid/app/common/global_service.dart';
-import 'package:lsandroid/app/common/utils.dart';
 import 'package:lsandroid/app/net/home_api.dart';
-import 'package:lsandroid/app/pages/home/widget/home_news_widget.dart';
 import 'package:lsandroid/app/pages/home/widget/main_icon_widget.dart';
-import 'package:lsandroid/app/pages/home/widget/main_read_more_widget.dart';
-import 'package:lsandroid/app/pages/home/widget/main_slide_widget.dart';
 import 'package:lsandroid/app/routes/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';

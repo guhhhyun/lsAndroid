@@ -147,143 +147,256 @@ class MainIconWidget extends StatelessWidget {
               const SizedBox(height: 27,),
            Container(
                 width: MediaQuery.of(context).size.width-30,
-                child: Column(
+                child: Center(
+                  child: Wrap(
 
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buttonArea2(
-                            imgUrl: 'assets/app/Group 1014.svg',
-                            title: '입고등록',
-                            subTitle: '',
-                            onPressed: () {
-                              Get.log('입고등록');
-                              Get.toNamed(Routes.IPGO);
-                            }, context: context),
-                        _buttonArea2(
-                            imgUrl: 'assets/app/Group 1014-3.svg',
-                            title: '출고등록',
-                            subTitle: '',
-                            onPressed: () {
-                              Get.log('출고등록');
-                              Get.toNamed(Routes.CHULGO);
-                            }, context: context),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buttonArea2(
-                            imgUrl: 'assets/app/Group 1014-6.svg',
-                            title: '랙입고',
-                            subTitle: '',
-                            onPressed: () {
-                              Get.log('랙입고');
-                              Get.toNamed(Routes.RACK_IPGO);
-                            }, context: context),
-                        _buttonArea2(
-                            imgUrl: 'assets/app/Group 1014-6.svg',
-                            title: '랙입고 일괄처리',
-                            subTitle: '',
-                            onPressed: () {
-                              Get.log('랙입고 일괄처리');
-                              Get.toNamed(Routes.RACK_IPGO_MULTI);
-                            }, context: context),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buttonArea2(
-                            imgUrl: 'assets/app/Group 1014-1.svg',
-                            title: '소박스 KIT 작업',
-                            subTitle: '',
-                            onPressed: () {
-                              Get.log('소박스 KIT 작업');
-                              Get.toNamed(Routes.SMALL_KIT);
-                            }, context: context),
-                        _buttonArea2(
-                            imgUrl: 'assets/app/Group 1014-5.svg',
-                            title: '별도 박스 KIT 작업',
-                            subTitle: '',
-                            onPressed: () {
-                              Get.log('별도박스 KIT 작업');
-                              Get.toNamed(Routes.OTHER_KIT);
-                            }, context: context),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buttonArea2(
-                            imgUrl: 'assets/app/Group 1014-2.svg',
-                            title: '메인 박스 KIT 작업',
-                            subTitle: '',
-                            onPressed: () {
-                              Get.log('메인 KIT 작업');
-                              Get.toNamed(Routes.MAIN_KIT);
-                            }, context: context),
-                        _buttonArea2(
-                            imgUrl: 'assets/app/Group 1014-6.svg',
-                            title: '피킹 작업(랙출고)',
-                            subTitle: '',
-                            onPressed: () {
-                              Get.log('피킹 작업(랙출고)');
-                              Get.toNamed(Routes.PICKING);
-                            }, context: context),
+                    children: [
 
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buttonArea2(
-                            imgUrl: 'assets/app/Group 1014.svg',
-                            title: '기타입고',
-                            subTitle: '',
-                            onPressed: () {
-                              Get.log('기타입고');
-                              Get.toNamed(Routes.ETC_IPGO);
-                            }, context: context),
-                        _buttonArea2(
-                            imgUrl: 'assets/app/Group 1014-3.svg',
-                            title: '기타출고',
-                            subTitle: '',
-                            onPressed: () {
-                              Get.log('기타출고');
-                              Get.toNamed(Routes.ETC_CHULGO);
-                            }, context: context),
+                      _buttonArea2(
+                          imgUrl: 'assets/app/Group 1014.svg',
+                          title: '입고등록',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('입고등록');
+                            Get.toNamed(Routes.IPGO);
+                          }, context: context),
+                      _buttonArea2(
+                          imgUrl: 'assets/app/Group 1014-3.svg',
+                          title: '출고등록',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('출고등록');
+                            Get.toNamed(Routes.CHULGO);
+                          }, context: context),
+                      _buttonArea2(
+                          imgUrl: 'assets/app/Group 1014-6.svg',
+                          title: '랙입고',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('랙입고');
+                            Get.toNamed(Routes.RACK_IPGO);
+                          }, context: context),
+                      _buttonArea2(
+                          imgUrl: 'assets/app/Group 1014-6.svg',
+                          title: '랙입고 일괄처리',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('랙입고 일괄처리');
+                            Get.toNamed(Routes.RACK_IPGO_MULTI);
+                          }, context: context),
+                      _buttonArea2(
+                          imgUrl: 'assets/app/Group 1014-1.svg',
+                          title: '소박스 KIT 작업',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('소박스 KIT 작업');
+                            Get.toNamed(Routes.SMALL_KIT);
+                          }, context: context),
+                      _buttonArea2(
+                          imgUrl: 'assets/app/Group 1014-5.svg',
+                          title: '별도 박스 KIT 작업',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('별도박스 KIT 작업');
+                            Get.toNamed(Routes.OTHER_KIT);
+                          }, context: context),
+                      _buttonArea2(
+                          imgUrl: 'assets/app/Group 1014-2.svg',
+                          title: '메인 박스 KIT 작업',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('메인 KIT 작업');
+                            Get.toNamed(Routes.MAIN_KIT);
+                          }, context: context),
+                      _buttonArea2(
+                          imgUrl: 'assets/app/Group 1014-6.svg',
+                          title: '피킹 작업(랙출고)',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('피킹 작업(랙출고)');
+                            Get.toNamed(Routes.PICKING);
+                          }, context: context),
+                      _buttonArea2(
+                          imgUrl: 'assets/app/Group 1014.svg',
+                          title: '기타입고',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('기타입고');
+                            Get.toNamed(Routes.ETC_IPGO);
+                          }, context: context),
+                      _buttonArea2(
+                          imgUrl: 'assets/app/Group 1014-3.svg',
+                          title: '기타출고',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('기타출고');
+                            Get.toNamed(Routes.ETC_CHULGO);
+                          }, context: context),
 
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buttonArea2(
-                            imgUrl: 'assets/app/Group 1014-3.svg',
-                            title: '재고실사등록',
-                            subTitle: '',
-                            onPressed: () {
-                              Get.log('재고실사등록');
-                              Get.toNamed(Routes.INVENTORY_CNT);
-                            }, context: context),
-                        Utils.getStorage.hasData('userId') &&
-                            Utils.getStorage.hasData('userPw') == false ? SizedBox(width: 0, height: 0,) :
-                        _buttonArea2(
-                            imgUrl: 'assets/app/logout_icon.svg',
-                            title: '로그아웃',
-                            subTitle: '',
-                            onPressed: () {
-                              Get.log('로그아웃');
-                              gs.logout();
-                            }, context: context),
-                      ],
-                    ),
-                  ],
+                      _buttonArea2(
+                          imgUrl: 'assets/app/Group 1014-3.svg',
+                          title: '재고실사등록',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('재고실사등록');
+                            Get.toNamed(Routes.INVENTORY_CNT);
+                          }, context: context),
+                      Utils.getStorage.hasData('userId') &&
+                          Utils.getStorage.hasData('userPw') == false ? SizedBox(width: 0, height: 0,) :
+                      _buttonArea2(
+                          imgUrl: 'assets/app/logout_icon.svg',
+                          title: '로그아웃',
+                          subTitle: '',
+                          onPressed: () {
+                            Get.log('로그아웃');
+                            gs.logout();
+                          }, context: context),
+                    ],
+                  ),
                 )
               ),
 
+
+
+
+              /*Container(
+                  width: MediaQuery.of(context).size.width-30,
+                  child: Column(
+
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buttonArea2(
+                              imgUrl: 'assets/app/Group 1014.svg',
+                              title: '입고등록',
+                              subTitle: '',
+                              onPressed: () {
+                                Get.log('입고등록');
+                                Get.toNamed(Routes.IPGO);
+                              }, context: context),
+                          _buttonArea2(
+                              imgUrl: 'assets/app/Group 1014-3.svg',
+                              title: '출고등록',
+                              subTitle: '',
+                              onPressed: () {
+                                Get.log('출고등록');
+                                Get.toNamed(Routes.CHULGO);
+                              }, context: context),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buttonArea2(
+                              imgUrl: 'assets/app/Group 1014-6.svg',
+                              title: '랙입고',
+                              subTitle: '',
+                              onPressed: () {
+                                Get.log('랙입고');
+                                Get.toNamed(Routes.RACK_IPGO);
+                              }, context: context),
+                          _buttonArea2(
+                              imgUrl: 'assets/app/Group 1014-6.svg',
+                              title: '랙입고 일괄처리',
+                              subTitle: '',
+                              onPressed: () {
+                                Get.log('랙입고 일괄처리');
+                                Get.toNamed(Routes.RACK_IPGO_MULTI);
+                              }, context: context),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buttonArea2(
+                              imgUrl: 'assets/app/Group 1014-1.svg',
+                              title: '소박스 KIT 작업',
+                              subTitle: '',
+                              onPressed: () {
+                                Get.log('소박스 KIT 작업');
+                                Get.toNamed(Routes.SMALL_KIT);
+                              }, context: context),
+                          _buttonArea2(
+                              imgUrl: 'assets/app/Group 1014-5.svg',
+                              title: '별도 박스 KIT 작업',
+                              subTitle: '',
+                              onPressed: () {
+                                Get.log('별도박스 KIT 작업');
+                                Get.toNamed(Routes.OTHER_KIT);
+                              }, context: context),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buttonArea2(
+                              imgUrl: 'assets/app/Group 1014-2.svg',
+                              title: '메인 박스 KIT 작업',
+                              subTitle: '',
+                              onPressed: () {
+                                Get.log('메인 KIT 작업');
+                                Get.toNamed(Routes.MAIN_KIT);
+                              }, context: context),
+                          _buttonArea2(
+                              imgUrl: 'assets/app/Group 1014-6.svg',
+                              title: '피킹 작업(랙출고)',
+                              subTitle: '',
+                              onPressed: () {
+                                Get.log('피킹 작업(랙출고)');
+                                Get.toNamed(Routes.PICKING);
+                              }, context: context),
+
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buttonArea2(
+                              imgUrl: 'assets/app/Group 1014.svg',
+                              title: '기타입고',
+                              subTitle: '',
+                              onPressed: () {
+                                Get.log('기타입고');
+                                Get.toNamed(Routes.ETC_IPGO);
+                              }, context: context),
+                          _buttonArea2(
+                              imgUrl: 'assets/app/Group 1014-3.svg',
+                              title: '기타출고',
+                              subTitle: '',
+                              onPressed: () {
+                                Get.log('기타출고');
+                                Get.toNamed(Routes.ETC_CHULGO);
+                              }, context: context),
+
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buttonArea2(
+                              imgUrl: 'assets/app/Group 1014-3.svg',
+                              title: '재고실사등록',
+                              subTitle: '',
+                              onPressed: () {
+                                Get.log('재고실사등록');
+                                Get.toNamed(Routes.INVENTORY_CNT);
+                              }, context: context),
+                          Utils.getStorage.hasData('userId') &&
+                              Utils.getStorage.hasData('userPw') == false ? SizedBox(width: 0, height: 0,) :
+                          _buttonArea2(
+                              imgUrl: 'assets/app/logout_icon.svg',
+                              title: '로그아웃',
+                              subTitle: '',
+                              onPressed: () {
+                                Get.log('로그아웃');
+                                gs.logout();
+                              }, context: context),
+                        ],
+                      ),
+                    ],
+                  )
+              ),*/
                 ],
               )
         ),

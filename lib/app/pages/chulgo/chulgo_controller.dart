@@ -184,7 +184,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     bLoading.value = true;
 
       var params = {
-        'programId': 'A1020',
+        'programId': 'A1020', //A3020
         'procedure': 'USP_A3020_S01',
         'params': [
           {
@@ -261,7 +261,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     //cheburnIpgoList.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A3020
       'procedure': 'USP_GET_COMMON_CODE_R01',
       'params': [
         {
@@ -323,7 +323,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     chulThirdList.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A3020
       'procedure': 'USP_A3020_R03',
       'params': [
         { "paramName": "p_work_type", "paramValue": "Q", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
@@ -374,7 +374,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     changedRows.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A3020
       'procedure': 'USP_A3020_R02',
       'params': [
         { "paramName": "p_work_type", "paramValue": "Q", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
@@ -445,7 +445,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     chulList.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A3020
       'procedure': 'USP_A3020_R01',
       'params': [
         { "paramName": "p_work_type", "paramValue": "Q", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
@@ -499,7 +499,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
     chulOneList.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A3020
       'procedure': 'USP_A3020_R01',
       'params': [
         { "paramName": "p_work_type", "paramValue": "Q", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
@@ -547,7 +547,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
   Future<void> registBomSave() async {
     for(var i = 0; i < bomDetailList.length; i++) {
       var params = {
-        'programId': 'A1020',
+        'programId': 'A1020', //A3020
         'procedure': 'USP_CHK_BOM_S01',
         'params': [
           {

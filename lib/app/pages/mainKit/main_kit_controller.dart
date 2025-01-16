@@ -25,6 +25,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
   RxSet<String> changedRows = <String>{}.obs;
   RxSet<String> changedRows2 = <String>{}.obs;
+  RxSet<String> rightChangedRows = <String>{}.obs;
   /// 리스트
   var rows = <PlutoRow>[].obs;
   var rows2 = <PlutoRow>[].obs;
@@ -125,6 +126,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
   RxList<dynamic> noList = [].obs;
   RxList<dynamic> noList2 = [].obs;
   RxList<dynamic> noList3 = [].obs; // 자재쪽 noList
+  RxList<dynamic> rightNoList = [].obs; // 우측 그리드 noList
   RxBool duplicationQr = false.obs; // 이미 스캔한 자재를 또 스캔했을 때
   RxBool duplicationQr2 = false.obs; // 이미 스캔한 자재를 또 스캔했을 때
   RxBool duplicationQr3 = false.obs; // 이미 스캔한 qr코드를 스캔했을 때
@@ -175,6 +177,9 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
   RxInt alertIndex = 0.obs;
 
+  RxInt cancelIndex = 0.obs; // 취소할 데이터의 index
+  RxBool isCancelOk = false.obs;
+
 
 
   final FocusNode focusNode = FocusNode();
@@ -190,6 +195,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
   List<PlutoCell> createPlutoCells(List<String> columnNames) {
     return columnNames.map((name) => PlutoCell(value: name)).toList();
   }
+
 
   /// 공통 드롭다운 조회(동기화 사유)
   Future<void> reqCommon() async {
@@ -324,7 +330,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A2060
       'procedure': 'USP_A2060_S01',
       'params': [
         {
@@ -395,7 +401,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
   /// 메모 저장
   Future<void> registMemoSmallKitSave() async {
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A2060
       'procedure': 'USP_A2060_S01',
       'params': [
         {
@@ -473,7 +479,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     bLoading.value = true;
 
       var params = {
-        'programId': 'A1020',
+        'programId': 'A1020', //A2060
         'procedure': 'USP_A2060_S01',
         'params': [
           {
@@ -1578,6 +1584,12 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
           'paramValue': smallBoxDataList[0]['qrNo'],
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_KIT_ID',
+          'paramValue': cbxMaNo.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
         }
       ]
     };
@@ -1623,7 +1635,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
     var params = {
       'programId': 'A1020',
-      'procedure': 'USP_A2060_R02',
+      'procedure': 'USP_A2060_R05',
       'params': [
         {
           'paramName': 'p_work_type',
@@ -1643,6 +1655,12 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
+        {
+          'paramName': 'p_CBX_MA_NO',
+          'paramValue': cbxMaNo.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
       ]
     };
 
@@ -1669,6 +1687,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
               itemCd.value = smallBoxDataList[0]['pitmCd'].toString();
               wrkNo.value = smallBoxDataList[0]['wrkNo'].toString();
               boxNo.value = smallBoxDataList[0]['qrNo'].toString();
+              textMemoController.text = smallBoxDataList[0]['wrkRemark'] ?? '';
               if(smallBoxDataList[0]['wrkCfmDttm'].toString().contains('T')) {
                 var firstIdx = smallBoxDataList[0]['wrkCfmDttm'].toString().indexOf('T');
                 var lastIdx = smallBoxDataList[0]['wrkCfmDttm'].toString().length;
@@ -1690,7 +1709,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
             statusText.value = '정상 조회 되었습니다.';
             isDbConnected.value = true;
           }else {
-            statusText.value = 'QR코드를 다시 입력해주세요.';
+            statusText.value = '올바른 QR코드를 다시 입력해주세요.';
           }
 
         }else{
@@ -1727,6 +1746,8 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     noList3.clear();
     changedRows.clear();
     changedRows2.clear();
+    rightNoList.clear();
+    rightChangedRows.clear();
 
     var params = {
       'programId': 'A1020',
@@ -1746,7 +1767,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         },
         {
           'paramName': 'p_CBX_MA_NO',
-          'paramValue': smallBoxDataList[0]['cbxMaNo'],
+          'paramValue': cbxMaNo.value,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -1804,6 +1825,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     smallBoxSaveList.clear();
     noList3.clear(); // 색 클리어
 
+
     var params = {
       'programId': 'A1020',
       'procedure': 'USP_A2060_R04',
@@ -1848,8 +1870,10 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
                   /// 색 변경 로직 시작
                   isSaveColor.value = false;
                   isColor.value = true;
-                  if(smallBoxItemSaveDataList[i]['chkRst'] == '') {
-                    noList3.add('${smallBoxItemSaveDataList[i]['no'].toString()}${smallBoxItemSaveDataList[i]['itemCd']}');
+                  noList3.add('${smallBoxItemSaveDataList[i]['no'].toString()}${smallBoxItemSaveDataList[i]['itemCd']}');
+                  Get.log('noList3::: ${noList3}');
+                  if(smallBoxItemSaveDataList[i]['chkRst'] != '') {
+                    rightNoList.add('${smallBoxItemSaveDataList[i]['no'].toString()}${smallBoxItemSaveDataList[i]['itemCd']}');
                     Get.log('noList3::: ${noList3}');
                   }
                 }
@@ -1945,13 +1969,13 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         },
         {
           'paramName': 'p_QR_NO',
-          'paramValue': smallBoxDataList[alertIndex.value]['qrNo'],
+          'paramValue': popUpDataList[alertIndex.value]['qrNo'],
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
         {
           'paramName': 'p_TAG_NO',
-          'paramValue': smallBoxDataList[alertIndex.value]['tagNo'],
+          'paramValue': popUpDataList[alertIndex.value]['tagNo'],
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -1963,7 +1987,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         },
         {
           'paramName': 'p_TAG_TYPE',
-          'paramValue': smallBoxDataList[alertIndex.value]['tagType'],
+          'paramValue': popUpDataList[alertIndex.value]['tagType'],
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -1992,7 +2016,6 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         Get.log('등록되었습니다');
         isDbConnected.value = true;
         await checkBoxItemSaveData();
-        await checkBoxItemData(); /// 지울수도
       } else {
         Get.log('등록 실패');
         statusText.value = retVal.body![0]['resultMessage'].toString();
@@ -2332,7 +2355,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
       'params': [
         {
           'paramName': 'p_work_type',
-          'paramValue': 'N',
+          'paramValue': 'U1',
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -2350,13 +2373,13 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         },
         {
           'paramName': 'p_BOX_WHT',
-          'paramValue': textWeightController.text,
+          'paramValue': textWeightController.text == '' ? 0 : textWeightController.text,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
         {
           'paramName': 'p_BOX_WHT2',
-          'paramValue': textWeightController2.text,
+          'paramValue': textWeightController2.text == '' ? 0 : textWeightController2.text,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -2386,6 +2409,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
       } else {
         Get.log('확정 실패');
         isSave.value = false;
+        isSaveText.value = retVal.body![0]['resultMessage'];
       }
     } catch (e) {
       Get.log('registMainKitMemoSave catch !!!!');
@@ -2550,6 +2574,9 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
           for(var ii = 0; ii < bomDetailList.length; ii++) {
             final name = bomConfirm.firstWhere((item) => item['CODE'] == bomDetailList[ii]['chgCfFlag'], orElse: () => {'NAME': ''})['NAME'];
             bomDetailList[ii].addAll({'chgCfFlagName': name.toString()});
+
+         /*   final name2 = bomConfirm.firstWhere((item) => item['CODE'] == bomDetailList[ii]['chgCfRmk'], orElse: () => {'NAME': ''})['NAME'];
+            bomDetailList[ii].addAll({'chgCfRmkName': name2.toString()});*/
           }
 
           Get.log('조회 성공');

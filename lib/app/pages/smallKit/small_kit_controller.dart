@@ -39,6 +39,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
   RxList<dynamic> smallBoxList = [].obs; // 소박스 qr찍고 난 정보
   RxList<dynamic> smallBoxDataList = [].obs; // 정합성 체크 담는 그릇 -> 메인 KIT의  R02 느낌
   RxList<dynamic> isSelect = [].obs;
+  RxList<dynamic> isSelect2 = [].obs;
   RxList<dynamic> smallBoxItemDataList = [].obs; // 구성자재 조회
   RxList<dynamic> smallBoxItemSaveDataList = [].obs; // 저장된 구성자재 조회
   RxList<dynamic> smallBoxSave = [].obs;
@@ -60,12 +61,19 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
   RxList<dynamic> bomList = [].obs; // bom list정보
   RxList<dynamic> bomDetailList = [].obs; // bom 디테일 list정보
 
-  /// 자재 팝업 리스트
+  /// 동기화 자재 팝업 리스트
   RxList<dynamic> popUpDataList = [].obs;
   RxList<dynamic> selectedPopList = [].obs;
   RxList<dynamic> selectedItemPopContainer = [].obs;
   RxString selectedQrNo = ''.obs;
   RxInt noTagIdx = 0.obs;
+
+  /// 중복qr 자재 팝업 리스트
+  RxList<dynamic> popUpDataList2 = [].obs;
+  RxList<dynamic> selectedPopList2 = [].obs;
+  RxList<dynamic> selectedItemPopContainer2 = [].obs;
+  RxString selectedQrNo2 = ''.obs;
+  RxInt noTagIdx2 = 0.obs;
 
 
   /// 자재선택
@@ -152,7 +160,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
     //cheburnIpgoList.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A2025
       'procedure': 'USP_A2025_R02',
       'params': [
         {
@@ -211,7 +219,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
 
     bLoading.value = true;
       var params = {
-        'programId': 'A1020',
+        'programId': 'A1020', //A2025
         'procedure': 'USP_A2025_S01',
         'params': [
           {
@@ -420,7 +428,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
     bLoading.value = true;
 
       var params = {
-        'programId': 'A1020',
+        'programId': 'A1020', //A2025
         'procedure': 'USP_A2025_S01',
         'params': [
 
@@ -787,6 +795,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
     isBomSave.value == true ?
     await reqBomDetail() : null;
   }
+
 
 
 
@@ -1620,6 +1629,81 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
   }
 
   /// //////////////////////////////////////////////새롭게 만들어진 프로시저 적용 -류 /////////////////////////////////////////////////////
+  ///
+  ///
+  /// 자재선택 프로시저
+  Future<void> reqCommon4() async {
+
+    bLoading.value = true;
+    popUpDataList2.clear();
+    //cheburnIpgoList.clear();
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_SELECT_ITEM_R01',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_ITEM_CD',
+          'paramValue': smallBoxTagTypeList[0]['itemCd'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_QR_NO',
+          'paramValue': smallBoxTagTypeList[0]['qrNo'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_KIT_ID',
+          'paramValue': smallBoxItemDataList[0]['cbxSuNo'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqSelectItem(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          popUpDataList2.addAll(retVal.body![1]);
+          for(var i = 0; i < popUpDataList2.length; i++) {
+            isSelect2.add(false);
+          }
+          isDbConnected.value = true;
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+        }
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('reqCommon4 catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+
+    }
+  }
+
+
   /// 자재 저장인데 동기화 TAG 미부착일때만 사용할것
   Future<void> registSmallKitItemSaveDong(int index) async {
     Get.log('자재 등록');
@@ -1943,14 +2027,14 @@ Future<void> registSmallKitConfirmNew(String confirmYn) async {
 
     final retVal = await HomeApi.to.registSmallKitSave(params);
 
-    if (retVal.body![0]['resultMessage'] == '') {
+    if (retVal.body![0]['returnMessage'] == '') {
       Get.log('확정되었습니다');
 
       isConfirm.value = true;
       isDbConnected.value = true;
     } else {
       Get.log('확정 실패');
-      statusText.value = retVal.body![0]['resultMessage'];
+      statusText.value = retVal.body![0]['returnMessage'];
     }
   } catch (e) {
     Get.log('registSmallKitConfirmNew catch !!!!');
@@ -2053,9 +2137,8 @@ Future<void> registSmallKitDonggiSave() async {
 
 }
 
-
-  /// 자재 입고 취소처리
-  Future<void> registSmallKitCancel() async {
+  /// 자재 입고 취소처리 중복자재용
+  Future<void> registSmallKitCancelDup() async {
     Get.log('자재 취소 저장');
 
     bLoading.value = true;
@@ -2085,13 +2168,13 @@ Future<void> registSmallKitDonggiSave() async {
         },
         {
           'paramName': 'p_CBX_SU_SEQ',
-          'paramValue': smallBoxDataList[alertIndex.value]['cbxSuSeq'] == 'null' ? null :'${smallBoxDataList[alertIndex.value]['cbxSuSeq'].toString().trim()}',
+          'paramValue': smallBoxDataList[0]['cbxSuSeq'] == null ? null :'${smallBoxDataList[0]['cbxSuSeq'].toString().trim()}',
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
         {
           'paramName': 'p_TAG_NO',
-          'paramValue': smallBoxDataList[alertIndex.value]['tagNo'] == null ? null :'${smallBoxDataList[alertIndex.value]['tagNo'].toString().trim()}',
+          'paramValue': popUpDataList2[alertIndex.value]['tagNo'] == null ? null :'${popUpDataList2[alertIndex.value]['tagNo'].toString().trim()}',
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -2135,6 +2218,182 @@ Future<void> registSmallKitDonggiSave() async {
 
   }
 
+
+  /// 자재 입고 취소처리
+  Future<void> registSmallKitCancel() async {
+    Get.log('자재 취소 저장');
+
+    bLoading.value = true;
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A2025_S02',
+      'params': [
+
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'N5',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_CBX_SU_NO',
+          'paramValue': smallBoxItemDataList[0]['cbxSuNo'] == null ? null : '${smallBoxItemDataList[0]['cbxSuNo'].toString().trim()}',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_CBX_SU_SEQ',
+          'paramValue': smallBoxDataList[0]['cbxSuSeq'] == 'null' ? null :'${smallBoxDataList[0]['cbxSuSeq'].toString().trim()}',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_TAG_NO',
+          'paramValue': smallBoxDataList[0]['tagNo'] == null ? null :'${smallBoxDataList[0]['tagNo'].toString().trim()}',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_ID',
+          'paramValue': gs.loginId.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_IP',
+          'paramValue': 'MOBILE',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+
+
+      ]
+    };
+
+    try {
+
+      final retVal = await HomeApi.to.registSmallKitSave(params);
+
+      if (retVal.body![0]['resultMessage'] == '') {
+        Get.log('자재입고 취소되었습니다');
+
+        isDbConnected.value = true;
+      } else {
+        Get.log('취소 실패');
+        isSave.value = false;
+      }
+    } catch (e) {
+      Get.log('registSmallKitConfirmNew catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+
+    }
+
+  }
+
+  /// 중복 자재 저장
+  Future<void> registSmallKitItemSaveDup() async {
+    Get.log('자재 등록');
+
+    bLoading.value = true;
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A2025_S02',
+      'params': [
+
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'N1',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_CBX_SU_NO',
+          'paramValue': smallBoxItemDataList[0]['cbxSuNo'] == null ? null : '${smallBoxItemDataList[0]['cbxSuNo'].toString().trim()}',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_CBX_SU_SEQ',
+          'paramValue': smallBoxDataList[0]['cbxSuSeq'] == 'null' ? null :'${smallBoxDataList[0]['cbxSuSeq'].toString().trim()}',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_QR_NO',
+          'paramValue': popUpDataList2[alertIndex.value]['qrNo'] == null ? null :'${popUpDataList2[alertIndex.value]['qrNo'].toString().trim()}',               // 만들어주면 입력
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_TAG_NO',
+          'paramValue': popUpDataList2[alertIndex.value]['tagNo'] == null ? null :'${popUpDataList2[alertIndex.value]['tagNo'].toString().trim()}',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_ID',
+          'paramValue': gs.loginId.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_IP',
+          'paramValue': 'MOBILE',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+
+
+      ]
+    };
+
+    try {
+
+      final retVal = await HomeApi.to.registSmallKitSave(params);
+
+      if (retVal.body![0]['returnMessage'] == '') {
+        Get.log('자재 등록되었습니다');
+        textQrController.text = smallBoxItemDataList[0]['cbxSuNo'].toString();
+        await checkBoxItemSaveData('');
+
+        textQrController.text = '';
+        isSave.value = true;
+        isDbConnected.value = true;
+      } else {
+        Get.log('자재 등록 실패');
+        isSave.value = false;
+        statusText.value = retVal.body![0]['returnMessage'];
+        isSaveText.value = '저장에 실패하였습니다.';
+      }
+    } catch (e) {
+      Get.log('registSmallKitDetailSave catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+      isConfirmClick.value = false;
+      isSaveClick.value = false;
+    }
+
+  }
+
 /// 자재 저장
 Future<void> registSmallKitItemSave() async {
   Get.log('자재 등록');
@@ -2166,19 +2425,19 @@ Future<void> registSmallKitItemSave() async {
         },
         {
           'paramName': 'p_CBX_SU_SEQ',
-          'paramValue': smallBoxDataList[alertIndex.value]['cbxSuSeq'] == 'null' ? null :'${smallBoxDataList[alertIndex.value]['cbxSuSeq'].toString().trim()}',
+          'paramValue': smallBoxDataList[0]['cbxSuSeq'] == 'null' ? null :'${smallBoxDataList[0]['cbxSuSeq'].toString().trim()}',
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
         {
           'paramName': 'p_QR_NO',
-          'paramValue': smallBoxDataList[alertIndex.value]['qrNo'] == null ? null :'${smallBoxDataList[alertIndex.value]['qrNo'].toString().trim()}',               // 만들어주면 입력
+          'paramValue': smallBoxDataList[0]['qrNo'] == null ? null :'${smallBoxDataList[0]['qrNo'].toString().trim()}',               // 만들어주면 입력
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
         {
           'paramName': 'p_TAG_NO',
-          'paramValue': smallBoxDataList[alertIndex.value]['tagNo'] == null ? null :'${smallBoxDataList[alertIndex.value]['tagNo'].toString().trim()}',
+          'paramValue': smallBoxDataList[0]['tagNo'] == null ? null :'${smallBoxDataList[0]['tagNo'].toString().trim()}',
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -2369,7 +2628,6 @@ Future<void> registSmallKitItemSave() async {
 
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
-
           smallBoxItemDataList.addAll(retVal.body![1]);
           for(var i = 0; i < smallBoxItemDataList.length; i++) {
             smallBoxItemDataList[i].addAll({'no': '${i + 1}'});
@@ -2380,7 +2638,7 @@ Future<void> registSmallKitItemSave() async {
           wrkNo.value = retVal.body![1][0]['wrkNo'].toString();
           boxNo.value = textQrController.text;//retVal.body![1][''];
           wrkCfmDt.value = retVal.body![1][0]['wrkCfmDttm'].toString();
-
+          textMemoController.text = retVal.body![1][0]['wrkRemark'] ?? '';
           Get.log(smallBoxItemDataList.toString());
           Get.log('조회 성공');
           statusText.value = '정상 조회 되었습니다.';

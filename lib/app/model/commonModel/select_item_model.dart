@@ -51,6 +51,7 @@ class Zone with _$Zone {
     @Default(0.0) double wht,
     @Default(0.0) double qtyRes,
     @Default('') String locCd,
+    @Default('') String wrkYn,
     @Default('') String itemCd,
     @Default('') String tagNo,
     @Default('') String itemNm,

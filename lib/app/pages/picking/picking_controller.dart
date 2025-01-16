@@ -140,7 +140,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
     for(var e = 0; e < registPickingList2.length; e++) {*/
     registPickingList2.add(pickingThirdList[i]);
       var params = {
-        'programId': 'A1020',
+        'programId': 'A1020', //A2050
         'procedure': 'USP_A2050_S01',
         'params': [
           {
@@ -273,7 +273,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
      for(var e = 0; e < registPickingList.length; e++) {
 
         var params = {
-          'programId': 'A1020',
+          'programId': 'A1020', //A2050
           'procedure': 'USP_A2050_S01',
           'params': [
             {
@@ -348,7 +348,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
     pickingThirdList.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A2050
       'procedure': 'USP_A2050_R03',
       'params': [
         {
@@ -420,7 +420,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
     pickingSecondList.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A2050
       'procedure': 'USP_A2050_R02',
       'params': [
         {
@@ -486,7 +486,7 @@ class PickingController extends GetxController with GetSingleTickerProviderState
     pickingFirstList.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A2050
       'procedure': 'USP_A2050_R01',
       'params': [
         {

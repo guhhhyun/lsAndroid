@@ -206,7 +206,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
     //cheburnIpgoList.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A4041
       'procedure': 'USP_SELECT_ITEM_R01',
       'params': [
         {
@@ -263,7 +263,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
     //cheburnIpgoList.clear();
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A4041
       'procedure': 'USP_GET_COMMON_CODE_R01',
       'params': [
         {
@@ -313,7 +313,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
     bLoading.value = true;
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A4041
       'procedure': 'USP_GET_COMMON_CODE_R01',
       'params': [
         {
@@ -372,7 +372,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
     bLoading.value = true;
 
     var params = {
-      'programId': 'A1020',
+      'programId': 'A1020', //A4041
       'procedure': 'USP_A4041_S01',
       'params': [
         {

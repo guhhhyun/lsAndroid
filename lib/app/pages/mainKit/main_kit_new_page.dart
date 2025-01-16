@@ -1,12 +1,9 @@
 import 'dart:async';
-import 'dart:ffi';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:lsandroid/app/common/app_theme.dart';
 import 'package:lsandroid/app/common/common_appbar_widget.dart';
 import 'package:lsandroid/app/common/dialog_widget.dart';
@@ -168,6 +165,20 @@ class MainKitNewPage extends StatelessWidget {
 
                 }
               },
+              rowColorCallback: (c) {
+                for (var i = 0; i < controller.rightNoList.length; i++) {
+                  // controller.changedRows.value.add(controller.noList[i]);
+                  controller.rightChangedRows.value.add(controller.rightNoList[i]);
+                  /*   if (controller.changedRows.contains(controller.uniqueSmallBoxList[0]['itemCd'])) {
+                        return Colors.white; // 이미 변경된 색상 유지
+                      }*/
+                }
+                if (controller.rightChangedRows.contains('${c.row.cells['no']?.value.toString()}${c.row.cells['itemCd']?.value.toString()}')) {
+                  return AppTheme.red_red_200; // 이미 변경된 색상 유지
+                } else {
+                  return AppTheme.white;
+                }
+              },
               configuration: PlutoGridConfiguration(
                 style: PlutoGridStyleConfig(
                   columnTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black),
@@ -247,6 +258,12 @@ class MainKitNewPage extends StatelessWidget {
 
                                             if(controller.smallBoxItemDataList.isNotEmpty) {
                                               if(controller.smallBoxDataList.length > 1) {
+                                                await controller.reqCommon3();
+                                                for(var i = 0; i < controller.popUpDataList.length; i++) {
+                                                  if(controller.popUpDataList[i]['wrkYn'] == 'Y') {
+                                                    controller.isCancelOk.value = true;
+                                                  }
+                                                }
                                                 showDialog(
                                                   barrierDismissible: false,
                                                   context: context, //context
@@ -1040,12 +1057,14 @@ class MainKitNewPage extends StatelessWidget {
             if (text == '행 추가') {
               controller.isFocus.value = true;
               controller.smallBoxItemDataList.isNotEmpty
-                  ? showDialog(
+                  ?
+              controller.wrkCfmDt.value == '' ?
+              showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return _alertDialog(context);
                 },
-              )
+              ) : Get.dialog(CommonDialogWidget(contentText: '확정된 박스입니다.', pageFlag: 0))
                   : Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요', pageFlag: 0));
             } else if (text == '동기화') {
               controller.smallBoxDataList[0]['wrkCfmYn'] != 'Y' ? syncProcess() : Get.dialog(CommonDialogWidget(contentText: '확정 처리된 상태입니다.', pageFlag: 0));
@@ -1059,6 +1078,7 @@ class MainKitNewPage extends StatelessWidget {
                     ? Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0))
                     : Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
               }
+              controller.isSaveClick.value = true;
             } else if (text == '동기화 취소') {
               Get.log('동기화 취소');
               Get.log('동기화 취소1: ${controller.smallBoxSaveList.length}');
@@ -1164,6 +1184,12 @@ class MainKitNewPage extends StatelessWidget {
                     await controller.registMainKitConfirmNew('Y');
                     if(controller.isConfirm.value) {
                       Get.dialog(CommonDialogWidget(contentText: '확정되었습니다.', pageFlag: 3));
+                      await controller.checkBoxItemData();
+                      for (var i = 0; i < controller.smallBoxDataList.length; i++) {
+                        controller.smallBoxDataList[i].addAll({'no': '${i + 1}'});
+                      }
+                      controller.wrkCfmDt.value = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
                     }else {
                       Get.dialog(CommonDialogWidget(contentText: controller.isConfirmText.value, pageFlag: 3));
                     }
@@ -1184,6 +1210,8 @@ class MainKitNewPage extends StatelessWidget {
               Get.dialog(CommonDialogWidget(contentText: '확정 취소되었습니다.', pageFlag: 0)) :
               Get.dialog(CommonDialogWidget(contentText: '${controller.isConfirmText.value}', pageFlag: 0));
               controller.focusNode.unfocus();
+              controller.isConfirmClick.value = false;
+              controller.wrkCfmDt.value = '';
             }
             /* text == '행 추가' ?
             {
@@ -2018,7 +2046,7 @@ class MainKitNewPage extends StatelessWidget {
                 SizedBox(
                   width: 32,
                 ),
-                _subData2('확정일', controller.wrkCfmDt.value ?? '', false),
+
                /* SizedBox(
                   width: 32,
                 ),
@@ -2050,10 +2078,6 @@ class MainKitNewPage extends StatelessWidget {
             SizedBox(
               height: 4,
             ),
-            _alertInput('세트'),
-            SizedBox(
-              height: 4,
-            ),
             _alertInput('단위'),
           ],
         ),
@@ -2079,10 +2103,13 @@ class MainKitNewPage extends StatelessWidget {
           child: Container(
             width: 200,
             child: Container(
-              padding: const EdgeInsets.only(left: 16, right: 6),
+              padding: const EdgeInsets.only(left: 16, right: 6, bottom: 6),
               decoration: BoxDecoration(border: Border.all(color: AppTheme.ae2e2e2), borderRadius: BorderRadius.circular(10), color: AppTheme.white),
               child: TextFormField(
-                style: AppTheme.a16400.copyWith(color: AppTheme.a6c6c6c),
+
+                minLines: null,
+                maxLines: null,
+                style: AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
                 controller: title == '자재코드'
                     ? controller.textItemCdController
                     : title == '자재명'
@@ -2102,7 +2129,7 @@ class MainKitNewPage extends StatelessWidget {
                   fillColor: AppTheme.white,
                   filled: true,
                   // hintText: 'BC 번호를 입력해주세요',
-                  hintStyle: AppTheme.a16400.copyWith(color: AppTheme.aBCBCBC),
+                  hintStyle: AppTheme.a20400.copyWith(color: AppTheme.aBCBCBC),
                   border: InputBorder.none,
                 ),
                 showCursor: true,
@@ -2293,7 +2320,9 @@ class MainKitNewPage extends StatelessWidget {
           child: TextFormField(
             onTap: () {
               controller.isFocus.value = true;
+
             },
+            readOnly: true,
             expands : true,
             minLines: null,
             maxLines: null,
@@ -2306,7 +2335,6 @@ class MainKitNewPage extends StatelessWidget {
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(0),
               fillColor: Colors.white,
-              // filled: true,
               hintText: '',
               hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
               border: InputBorder.none,
@@ -2314,7 +2342,7 @@ class MainKitNewPage extends StatelessWidget {
             showCursor: true,
           ),
 
-
+          // text('', style: AppTheme.a14400.copyWith())
           /* Text(subTitle, style: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),)*/
 
         ),
@@ -2360,7 +2388,10 @@ class MainKitNewPage extends StatelessWidget {
                     padding: MaterialStateProperty.all(
                         const EdgeInsets.all(0))),
                 onPressed: () async{
-
+                  await controller.reqBom();
+                  if(controller.bomList.isNotEmpty) {
+                    await controller.reqBomDetail();
+                  }
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -2632,9 +2663,17 @@ class MainKitNewPage extends StatelessWidget {
                     print('선택한 값: ${event.value}');
                     controller.bomDetailList[event.rowIdx].addAll({'chgCfFlag': event.value});
                   }
+                  if (event.column.field == 'chgCfFlagName') {
+                    print('선택한 값: ${event.value}');
+                    // NAME 값이 event.value와 같은 항목의 CODE를 가져옴
+                    final code = controller.bomConfirm.firstWhere((item) => item['NAME'] == event.value, orElse: () => {'CODE': ''})['CODE'];
+                    controller.bomDetailList[event.rowIdx].addAll({'chgCfFlag': code.toString()});
+
+                  }
                 },
                 onSelected: (c) {
                   print(controller.stateManager4.currentRowIdx);
+
 
                 },
                 configuration: PlutoGridConfiguration(
@@ -2674,8 +2713,8 @@ class MainKitNewPage extends StatelessWidget {
       ),
       PlutoColumn(
         title: '변경확정',
-        field: 'chgCfFlag',
-        type: PlutoColumnType.select(controller.bomConfirm),
+        field: 'chgCfFlagName',
+        type: PlutoColumnType.select(controller.bomConfirmNames),
         width: 100,
         enableSorting: false,
         enableEditingMode: true,
@@ -2914,7 +2953,10 @@ class MainKitNewPage extends StatelessWidget {
                               const EdgeInsets.all(0))),
                       onPressed: () async {
                         Get.log('선택 클릭!');
+                        controller.isCancelOk.value = false;
                         await controller.registMainKitQrMulti();
+                        await controller.checkBoxItemData();
+                        Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
                         /*await controller.checkQrBtn2();
                         controller.textQrController.text = '';
                         Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
@@ -2995,7 +3037,11 @@ class MainKitNewPage extends StatelessWidget {
             controller.isSelect[index] = true;
 
           }
-          controller.alertIndex.value = index;
+          for(var i = 0; i < controller.smallBoxDataList.length; i++) {
+           if(controller.smallBoxDataList[i]['tagNo'] == controller.popUpDataList[index]['tagNo']) {
+             controller.alertIndex.value = i;
+           }
+          }
           //  Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
         },
         child: Obx(() => Container(
@@ -3004,7 +3050,7 @@ class MainKitNewPage extends StatelessWidget {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               border: controller.isSelect[index] ? Border.all(color: AppTheme.black, width: 3) : Border.all(color: AppTheme.ae2e2e2),
-              color: AppTheme.white,
+              color: controller.isCancelOk.value ? controller.popUpDataList[index]['wrkYn'] == 'Y' ? AppTheme.gray_c_gray_200 : AppTheme.white : AppTheme.white,
               boxShadow: [
                 BoxShadow(
                   color: AppTheme.gray_c_gray_100.withOpacity(0.5),
@@ -3021,6 +3067,13 @@ class MainKitNewPage extends StatelessWidget {
                 children: [
                   Row(
                     children: [
+                      Text('작업여부: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.popUpDataList[index]['wrkYn']}', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      SizedBox(width: 12,),
                       Text('QR코드: ', style: AppTheme.a16700.copyWith(
                         color: AppTheme.a1f1f1f,
                       ),),
