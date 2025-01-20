@@ -1959,23 +1959,7 @@ class IpgoPage extends StatelessWidget {
                 //   controller.gridStateMgr5.insertRows(controller.ipgoBoxList.length, controller.insertRow3);
 
                    controller.isQr2.value = false;
-
-
-                   /// 여기부터 지워야한다
-                   var originalFried  = controller.ipgoList.map((v) {
-                     if(v.toString() == '') {
-                       Get.log('');
-                       controller.statusText.value = ' ';
-                       controller.statusText.value == 'remove' ? '' : '';
-                       // 아니 그래서 언제가는
-                        controller.
-
-                       // 데 시발아 집을 좀 가야할거아냐
-                     }
-                   }).toList();
-                   ///
-                   ///
-
+                    
 
                  /*  Map<dynamic, List<Map<String, dynamic>>> groupedMap = {};
                    // chulSecondList를 순회하면서 no 값을 키로 그룹화
