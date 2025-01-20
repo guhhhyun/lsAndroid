@@ -30,6 +30,8 @@ import 'package:lsandroid/app/pages/rackIpgoMulti/rack_ipgo_multi_page.dart';
 import 'package:lsandroid/app/pages/smallKit/small_kit_binding.dart';
 import 'package:lsandroid/app/pages/smallKit/small_kit_new_page.dart';
 import 'package:lsandroid/app/pages/smallKit/small_kit_page.dart';
+import 'package:lsandroid/app/pages/test/yellow_sound_binding.dart';
+import 'package:lsandroid/app/pages/test/yellow_sound_page.dart';
 
 import '../pages/splash/splash_binding.dart';
 import '../pages/splash/splash_page.dart';
@@ -50,7 +52,7 @@ abstract class Routes {
   static const ETC_IPGO = _PathName.ETC_IPGO;
   static const ETC_CHULGO = _PathName.ETC_CHULGO;
   static const INVENTORY_CNT = _PathName.INVENTORY_CNT;
-
+  static const YELLOW_SOUND = _PathName.YELLOW_SOUND;
 
 }
 
@@ -70,6 +72,7 @@ abstract class _PathName {
   static const String ETC_IPGO = '/etc_ipgo'; // 기타입고 페이지
   static const String ETC_CHULGO = '/etc_chulgo'; // 기타출고 페이지
   static const String INVENTORY_CNT = '/inventory_cnt'; // 재고실사 페이지
+  static const String YELLOW_SOUND = '/yellow_sound';
 
 
 }
@@ -106,6 +109,8 @@ class AppRoute {
         name: _PathName.ETC_CHULGO, page: () => EtcChulgoPage(), binding: EtcChulgoBinding()),
     GetPage(
         name: _PathName.INVENTORY_CNT, page: () => InventoryCntPage(), binding: InventoryCntBinding()),
+    GetPage(
+        name: _PathName.YELLOW_SOUND, page: () => YellowSoundPage(), binding: YellowSoundBinding()),
   /*    GetPage(
         name: _PathName.FACILITY, page: () => FacilityPage(), binding: FacilityBinding()),
     GetPage(
