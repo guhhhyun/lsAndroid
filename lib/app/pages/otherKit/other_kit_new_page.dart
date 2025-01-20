@@ -778,7 +778,7 @@ class OtherKitNewPage extends StatelessWidget {
             {
               controller.isFocus.value = true;
               controller.smallBoxItemDataList.isNotEmpty ?
-              controller.wrkCfmDt.value == '' ?
+              controller.wrkCfmDt.value == '' || controller.wrkCfmDt.value == 'null' ?
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -802,30 +802,35 @@ class OtherKitNewPage extends StatelessWidget {
             }
             else if(text == '저장')
             {
-              if(controller.isSaveClick.value == false) { // 중복방지 로직
-                controller.isSaveClick.value = true;
-                Get.log('저장할 리스트!: ${controller.smallBoxSaveList.length}');
-                if(controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') {
-                  await controller.registMemoSmallKitSave();
-                  controller.isSave.value ?
-                  Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0)) :
-                  Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
-                }else {
-                  Get.dialog(CommonDialogWidget(contentText: '박스가 확정된 상태입니다.', pageFlag: 0));
+              if(controller.wrkCfmDt.value == '' || controller.wrkCfmDt.value == 'null') {
+                if(controller.isSaveClick.value == false) { // 중복방지 로직
+                  controller.isSaveClick.value = true;
+                  Get.log('저장할 리스트!: ${controller.smallBoxSaveList.length}');
+                  if(controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') {
+                    await controller.registMemoSmallKitSave();
+                    controller.isSave.value ?
+                    Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0)) :
+                    Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
+                  }else {
+                    Get.dialog(CommonDialogWidget(contentText: '박스가 확정된 상태입니다.', pageFlag: 0));
+                  }
                 }
+              }else {
+                Get.dialog(CommonDialogWidget(contentText: '확정된 박스입니다.', pageFlag: 0));
               }
-              // await controller.registSmallKitDetailSave()
             }
             else if(text == '동기화 취소')
             {
               Get.log('동기화 취소');
               Get.log('동기화 취소1: ${controller.smallBoxSaveList.length}');
-              // smallBoxSaveList의 리스트에 changedRows에 {1,2} 가 있는데 smallBoxSaveList[1]이 존재하지않으면 ch
+              // 동기화 드어주는 작은별
               if (controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') {
                 controller.isColor.value = false;
                 controller.isSaveColor.value = true;
                 controller.changedRows.clear();
                 controller.isDonggi.value = false;
+                // 동기화화양동궁민사립밤톨게이트 그대는 흐으은
+                // 보쿠가와 나니고레
 
                 controller.smallBoxSaveList.removeWhere((item) {
                   bool shouldRemove = false;
@@ -851,7 +856,7 @@ class OtherKitNewPage extends StatelessWidget {
                     } else if(item['ncbxRmk'] != '') {
                       Get.log('동기화취소 안돼!');
                       item.addAll({'ncbxRmk':''});
-
+                      //Get.log(); Get.log(); .log()
                     }
                   }
                   return shouldRemove;

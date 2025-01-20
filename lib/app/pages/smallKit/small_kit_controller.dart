@@ -2047,7 +2047,7 @@ Future<void> registSmallKitConfirmNew(String confirmYn) async {
   }
 
 }
-
+//
 
 
 /// 동기화 저장
@@ -2542,6 +2542,13 @@ Future<void> registSmallKitItemSave() async {
             {
               isSmallBoxDataList.value = false;
               statusText.value = '자재의 재고가 없습니다.';
+              return;
+            }
+
+            if(smallBoxDataList[0]['convQty'] > smallBoxDataList[0]['oderQty'] && smallBoxDataList[0]['wrkQty'] != 0)
+            {
+              isSmallBoxDataList.value = false;
+              statusText.value = '자재의 재고가 지시수량보다 많습니다';
               return;
             }
 

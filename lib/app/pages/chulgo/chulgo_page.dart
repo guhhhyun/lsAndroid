@@ -608,6 +608,7 @@ class ChulgoPage extends StatelessWidget {
               border: Border.all(color: AppTheme.ae2e2e2)),
           padding: const EdgeInsets.only(right: 12),
           child: DropdownButton(
+              menuWidth: 300,
               padding: EdgeInsets.only(left: 12),
               borderRadius: BorderRadius.circular(3),
               isExpanded: true,
@@ -797,6 +798,7 @@ class ChulgoPage extends StatelessWidget {
                       onPressed: () {
                         Get.log('취소 클릭!');
                         Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+                        // 흩날리는 RldjrQnaoverlatContext!, rootNavigtor
                       },
                       child: Container(
                         decoration: BoxDecoration(

@@ -244,6 +244,7 @@ class MainKitNewPage extends StatelessWidget {
                                       //  controller.textLocController.text += inputChar;
                                       // 키보드 입력값 수신 처리
                                       if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
+
                                         // 엔터 키 감지
                                         controller.isFocus.value = false;
                                         await controller.checkBoxData();
@@ -486,6 +487,7 @@ class MainKitNewPage extends StatelessWidget {
                                 if(controller.bomList.isNotEmpty) {
                                   await controller.reqBomDetail();
                                 }
+
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
@@ -1058,7 +1060,7 @@ class MainKitNewPage extends StatelessWidget {
               controller.isFocus.value = true;
               controller.smallBoxItemDataList.isNotEmpty
                   ?
-              controller.wrkCfmDt.value == '' ?
+              controller.wrkCfmDt.value == '' || controller.wrkCfmDt.value == 'null'?
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -1069,20 +1071,24 @@ class MainKitNewPage extends StatelessWidget {
             } else if (text == '동기화') {
               controller.smallBoxDataList[0]['wrkCfmYn'] != 'Y' ? syncProcess() : Get.dialog(CommonDialogWidget(contentText: '확정 처리된 상태입니다.', pageFlag: 0));
             } else if (text == '저장') {
-              if (controller.isSaveClick.value == false) {
-                controller.isSaveClick.value = true;
-                Get.log('저장할 리스트!: ${controller.smallBoxSaveList.length}');
-                await controller.registMainKitMemoSave();
+              if(controller.wrkCfmDt.value == '' || controller.wrkCfmDt.value == 'null') {
+                if (controller.isSaveClick.value == false) {
+                  controller.isSaveClick.value = true;
+                  Get.log('저장할 리스트!: ${controller.smallBoxSaveList.length}');
+                  await controller.registMainKitMemoSave();
 
-                controller.isSave.value
-                    ? Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0))
-                    : Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
+                  controller.isSave.value
+                      ? Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0))
+                      : Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
+                } 
+              }else {
+                Get.dialog(CommonDialogWidget(contentText: '확정된 박스입니다.', pageFlag: 0));
               }
               controller.isSaveClick.value = true;
             } else if (text == '동기화 취소') {
               Get.log('동기화 취소');
               Get.log('동기화 취소1: ${controller.smallBoxSaveList.length}');
-              // smallBoxSaveList의 리스트에 changedRows에 {1,2} 가 있는데 smallBoxSaveList[1]이 존재하지않으면 ch
+
               if (controller.smallBoxDataList[0]['wrkCfmYn'] != 'Y') {
                 controller.isColor.value = false;
                 controller.isSaveColor.value = true;

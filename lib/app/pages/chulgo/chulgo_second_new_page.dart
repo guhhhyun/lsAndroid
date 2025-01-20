@@ -415,8 +415,9 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
                         if(controller.isChulgo.value) {
                           await controller.registChulgoBtn(0);
                           controller.isRegistChulgo.value ?
-                          Get.dialog(CommonDialogWidget(contentText: '등록되었습니다.', pageFlag: 0)) :  Get.dialog(CommonDialogWidget(contentText: '등록 실패했습니다.', pageFlag: 0));
-                         // Get.toNamed(Routes.CHULGO);
+                          Get.dialog(CommonDialogWidget(contentText: '등록되었습니다.', pageFlag: 999)) :  Get.dialog(CommonDialogWidget(contentText: '등록 실패했습니다.', pageFlag: 0));
+                          /// 재조회 필요하면?
+                         // await controller.reqChulSecond();
                         }else {
                           Get.dialog(CommonDialogWidget(contentText: '스캔되지않은 제품이 있습니다.', pageFlag: 0));
                         }
@@ -866,7 +867,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         enableDropToResize: false,
         enableColumnDrag: false,
         titleTextAlign: PlutoColumnTextAlign.center,
-        textAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.left,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
@@ -884,6 +885,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
+
       PlutoColumn(
         title: '제품명',
         field: 'pitmNm',
@@ -896,7 +898,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         enableDropToResize: false,
         enableColumnDrag: false,
         titleTextAlign: PlutoColumnTextAlign.center,
-        textAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.left,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
@@ -2067,6 +2069,11 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
     ];
     return gridCols4;
   }
+
+
+
+
+
 }
 
 

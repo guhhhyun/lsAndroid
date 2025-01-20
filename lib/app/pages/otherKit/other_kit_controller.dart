@@ -2008,6 +2008,13 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
               statusText.value = '정상 조회 되었습니다.';
               return;
             }
+            if(smallBoxDataList[0]['convQty'] > smallBoxDataList[0]['oderQty'] && smallBoxDataList[0]['wrkQty'] != 0)
+            {
+              isSmallBoxDataList.value = false;
+              statusText.value = '자재의 재고가 지시수량보다 많습니다';
+              return;
+            }
+
 
             // 이제 자재 저장 프로시저 실행
             if(smallBoxDataList[0]['oderQty'] - smallBoxDataList[0]['wrkQty'] <= 0)

@@ -288,7 +288,7 @@ class ChulgoController extends GetxController with GetSingleTickerProviderStateM
           for(var i = 0; i < chulgoTotalList.length; i++) {
             chulgoList.add(
                 {'CODE': '${chulgoTotalList[i]['DTL_CD']}',
-                  'NAME': '${chulgoTotalList[i]['CD_NM']}'
+                  'NAME': '${chulgoTotalList[i]['CD_NM']}(${chulgoTotalList[i]['ETC1']})'
                 }
 
             );

@@ -81,6 +81,13 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxString dayStartValue2 = DateFormat('yyyy-MM-dd').format(DateTime.now()).obs; ///입고취소 입고일자
   RxString dayEndValue2 = DateFormat('yyyy-MM-dd').format(DateTime.now()).obs; ///입고취소 입고일자
 
+  /// 소박스입고 입고장 일단 하드코딩 ///////////////////////////
+  RxList<dynamic> smallBoxContainer = [{'CODE':'0-00-00-00', 'NAME': '랙입고대기장'}, {'CODE':'E-00-00-00', 'NAME': '소박스 입고대기장'}].obs;
+  RxMap<String, String> selectedSmallBoxContainer = {'CODE':'0-00-00-00', 'NAME': '랙입고대기장'}.obs;
+  RxList<String> selectListString = [''].obs;
+  RxString lset = ''.obs;
+  /// ///////////////////////////////////////////////////////
+
   RxList<dynamic> containerList = [{'CODE':'1', 'NAME': 'KIT 작업장'}].obs;
   RxMap<String, String> selectedContainer = {'CODE':'', 'NAME': 'KIT 작업장'}.obs;
   RxList<dynamic> cancelContainerList = [{'CODE':'1', 'NAME': 'KIT 작업장'}].obs;
@@ -728,6 +735,12 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
             {
               'paramName': 'p_FST_ROW_YN',
               'paramValue': i == 0 ? 'Y' : 'N',
+              'paramJdbcType': 'VARCHAR',
+              'paramMode': 'IN'
+            },
+            {
+              'paramName': 'p_LOC_CD',
+              'paramValue': selectedSmallBoxContainer['CODE'],
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },

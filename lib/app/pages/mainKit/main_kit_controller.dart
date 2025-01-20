@@ -1669,7 +1669,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
       if (retVal.resultCode == '0000') {
 
-        if(retVal.body![0]['resultMessage'] == '') {
+        if(retVal.body![0]['returnMessage'] == '') {
           smallBoxDataList.clear();
           smallBoxDataList.addAll(retVal.body![1]);
 
@@ -1714,7 +1714,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
-          statusText.value = retVal.body![0]['resultMessage'];
+          statusText.value = retVal.body![0]['returnMessage'];
           textQrController.text = '';
         }
 
@@ -2486,7 +2486,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
           bomList.addAll(retVal.body![1]);
-          textItemCdController2.text = smallBoxItemDataList[0]['pitmCd'];
+          textItemCdController2.text = itemCd.value;
 
           Get.log('조회 성공');
           isDbConnected.value = true;

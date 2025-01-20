@@ -1694,6 +1694,70 @@ class IpgoPage extends StatelessWidget {
        ),
      );
    }
+   Widget _smallItemD() {
+     return Row(
+       children: [
+          Text('장소'),
+          DropdownButton(items: controller.containerList.map((value) {
+            return DropdownMenuItem(child: Text(''));
+          }).toList(),
+          onChanged: (a) {
+            Get.log('');
+            Get.log('');
+          })
+       ],
+     );
+   }
+
+
+   Widget _smallBoxDropDownItem() {
+     return Row(
+       children: [
+         Text('위치', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
+         SizedBox(width: 8,),
+         Container(
+           height: 40,
+           width: 210,
+           decoration: BoxDecoration(
+               borderRadius: BorderRadius.circular(10),
+               border: Border.all(color: AppTheme.ae2e2e2)),
+           padding: const EdgeInsets.only(right: 12),
+           child: DropdownButton(
+               padding: EdgeInsets.only(left: 12),
+               borderRadius: BorderRadius.circular(3),
+               isExpanded: true,
+               underline: Container(
+                 height: 1,
+                 color: Colors.white,
+               ),
+               icon: SvgPicture.asset(
+                 'assets/app/arrowBottom.svg',
+                 color: AppTheme.light_placeholder,
+               ),
+               dropdownColor: AppTheme.light_ui_01,
+               value: controller.selectedSmallBoxContainer['NAME'],
+               items: controller.smallBoxContainer.map((value) {
+                 return DropdownMenuItem<String>(
+                   value: value['NAME'].toString(),
+                   child: Text(
+                     value['NAME'].toString(),
+                     style: AppTheme.a20400
+                         .copyWith(color: value['NAME'].toString() == '선택해주세요' ? AppTheme.aBCBCBC : AppTheme.a6c6c6c),
+                   ),
+                 );
+               }).toList(),
+               onChanged: (value) {
+                 controller.smallBoxContainer.map((e) {
+                   if(e['NAME'] == value) {
+                     controller.selectedSmallBoxContainer['CODE'] = e['CODE'];
+                     controller.selectedSmallBoxContainer['NAME'] = e['NAME'];
+                   }
+                 }).toList();
+               }),
+         ),
+       ],
+     );
+   }
 
 
    Widget _subBody1(BuildContext context) {
@@ -1719,6 +1783,8 @@ class IpgoPage extends StatelessWidget {
                Row(
                  mainAxisAlignment: MainAxisAlignment.start,
                  children: [
+                   Obx(() => _smallBoxDropDownItem(),),
+                   SizedBox(width: 24,),
                    Container(
                      margin: EdgeInsets.only(right: 12),
                      width: 120,
@@ -1867,7 +1933,7 @@ class IpgoPage extends StatelessWidget {
                    controller.gridStateMgr4.setSelectingMode(PlutoGridSelectingMode.none);
                    // controller.requestFocus();
                    // Get.log('${controller.gridStateMgr2.currentRowIdx!}');
-                   //gridStateMgr.setShowColumnFilter(true);
+                   //gridStateMgr.setShowColumnFilter(true); ea.controller.addAll() dajsdeafdaescontroellre .A
                  },
                  onChanged: (PlutoGridOnChangedEvent event) {
                    print(event);
@@ -1895,6 +1961,22 @@ class IpgoPage extends StatelessWidget {
                    controller.isQr2.value = false;
 
 
+                   /// 여기부터 지워야한다
+                   var originalFried  = controller.ipgoList.map((v) {
+                     if(v.toString() == '') {
+                       Get.log('');
+                       controller.statusText.value = ' ';
+                       controller.statusText.value == 'remove' ? '' : '';
+                       // 아니 그래서 언제가는
+                        controller.
+
+                       // 데 시발아 집을 좀 가야할거아냐
+                     }
+                   }).toList();
+                   ///
+                   ///
+
+
                  /*  Map<dynamic, List<Map<String, dynamic>>> groupedMap = {};
                    // chulSecondList를 순회하면서 no 값을 키로 그룹화
                    for (var item in controller.chulSecondList) {
@@ -1902,6 +1984,7 @@ class IpgoPage extends StatelessWidget {
                      if (groupedMap.containsKey(key)) {
                        groupedMap[key]!.add(item);
                      } else {
+
                        groupedMap[key] = [item];
                      }
                    }

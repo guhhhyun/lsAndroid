@@ -412,7 +412,13 @@ class MainIconWidget extends StatelessWidget {
                     width: MediaQuery.of(context).size.width-30,
                     child: Column(
                       children: [
-
+                        /*_buttonArea2(
+                            imgUrl: 'assets/app/logout_icon.svg',
+                            title: 'yellowSound',
+                            subTitle: '',
+                            onPressed: () {
+                              Get.toNamed(Routes.YELLOW_SOUND);
+                            }, context: context),*/
                       ],
                     )
                 ),
