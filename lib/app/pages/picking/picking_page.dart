@@ -187,7 +187,7 @@ class PickingPage extends StatelessWidget {
       ),
       PlutoColumn(
         title: '지시자',
-        field: 'pickUser',
+        field: 'pickUserNm',
         type: PlutoColumnType.text(),
         width: 90,
         enableSorting: false,

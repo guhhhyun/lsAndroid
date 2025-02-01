@@ -2423,6 +2423,8 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
   }
 
 
+  // bloading.value = false; isSave.value = true ;
+
   /// BOM 조회
   Future<void> reqBom() async {
     Get.log('BOM 조회');

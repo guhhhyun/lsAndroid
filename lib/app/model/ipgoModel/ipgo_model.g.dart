@@ -89,6 +89,7 @@ _$BodyItemImpl _$$BodyItemImplFromJson(Map<String, dynamic> json) =>
       vendCd: json['vendCd'],
       mstKey: json['mstKey'] as String? ?? '',
       sapQty: json['sapQty'] ?? 0.0,
+      cntQty: (json['cntQty'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$$BodyItemImplToJson(_$BodyItemImpl instance) =>
@@ -127,4 +128,5 @@ Map<String, dynamic> _$$BodyItemImplToJson(_$BodyItemImpl instance) =>
       'vendCd': instance.vendCd,
       'mstKey': instance.mstKey,
       'sapQty': instance.sapQty,
+      'cntQty': instance.cntQty,
     };

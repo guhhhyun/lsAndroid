@@ -811,11 +811,20 @@ class SmallKitNewPage extends StatelessWidget {
             int cbxQty;
             if(text == '동기화')
             {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 먼저 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y' ? syncProcess() : Get.dialog(CommonDialogWidget(contentText: '확정 처리된 상태입니다.', pageFlag: 0));
             }
 
             else if(text == '저장')
             {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 먼저 스캔해주세요.', pageFlag: 0));
+                return;
+              }
+
               if(controller.wrkCfmDt.value == '' || controller.wrkCfmDt.value == 'null') {
                 if(controller.isSaveClick.value == false) {
                   controller.isSaveClick.value = true;
@@ -833,6 +842,10 @@ class SmallKitNewPage extends StatelessWidget {
             }
             else if(text == '동기화 취소')
             {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 먼저 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               Get.log('동기화 취소');
               Get.log('동기화 취소1: ${controller.smallBoxSaveList.length}');
               // smallBoxSaveList의 리스트에 changedRows에 {1,2} 가 있는데 smallBoxSaveList[1]이 존재하지않으면 ch
@@ -889,6 +902,10 @@ class SmallKitNewPage extends StatelessWidget {
             }
             else if(text == '확정')
             {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 먼저 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               if(controller.isConfirmClick.value == false) {
                 controller.isConfirmClick.value = true;
                /* Get.dialog(
@@ -952,6 +969,10 @@ class SmallKitNewPage extends StatelessWidget {
             }
             else if(text == '확정 취소')
             {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 먼저 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               await controller.registSmallKitConfirmNew('N');
               if(controller.isConfirm.value) {
                 controller.textQrController.text = controller.smallBoxItemDataList[0]['cbxSuNo'].toString();

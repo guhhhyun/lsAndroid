@@ -654,6 +654,7 @@ mixin _$BodyItem {
   dynamic get vendCd => throw _privateConstructorUsedError;
   String get mstKey => throw _privateConstructorUsedError;
   dynamic get sapQty => throw _privateConstructorUsedError;
+  int get cntQty => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -700,7 +701,8 @@ abstract class $BodyItemCopyWith<$Res> {
       dynamic wmsQtyUnit,
       dynamic vendCd,
       String mstKey,
-      dynamic sapQty});
+      dynamic sapQty,
+      int cntQty});
 }
 
 /// @nodoc
@@ -750,6 +752,7 @@ class _$BodyItemCopyWithImpl<$Res, $Val extends BodyItem>
     Object? vendCd = freezed,
     Object? mstKey = null,
     Object? sapQty = freezed,
+    Object? cntQty = null,
   }) {
     return _then(_value.copyWith(
       no: null == no
@@ -888,6 +891,10 @@ class _$BodyItemCopyWithImpl<$Res, $Val extends BodyItem>
           ? _value.sapQty
           : sapQty // ignore: cast_nullable_to_non_nullable
               as dynamic,
+      cntQty: null == cntQty
+          ? _value.cntQty
+          : cntQty // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -934,7 +941,8 @@ abstract class _$$BodyItemImplCopyWith<$Res>
       dynamic wmsQtyUnit,
       dynamic vendCd,
       String mstKey,
-      dynamic sapQty});
+      dynamic sapQty,
+      int cntQty});
 }
 
 /// @nodoc
@@ -982,6 +990,7 @@ class __$$BodyItemImplCopyWithImpl<$Res>
     Object? vendCd = freezed,
     Object? mstKey = null,
     Object? sapQty = freezed,
+    Object? cntQty = null,
   }) {
     return _then(_$BodyItemImpl(
       no: null == no
@@ -1108,6 +1117,10 @@ class __$$BodyItemImplCopyWithImpl<$Res>
           : mstKey // ignore: cast_nullable_to_non_nullable
               as String,
       sapQty: freezed == sapQty ? _value.sapQty! : sapQty,
+      cntQty: null == cntQty
+          ? _value.cntQty
+          : cntQty // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -1149,7 +1162,8 @@ class _$BodyItemImpl implements _BodyItem {
       this.wmsQtyUnit,
       this.vendCd,
       this.mstKey = '',
-      this.sapQty = 0.0});
+      this.sapQty = 0.0,
+      this.cntQty = 0});
 
   factory _$BodyItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$BodyItemImplFromJson(json);
@@ -1246,10 +1260,13 @@ class _$BodyItemImpl implements _BodyItem {
   @override
   @JsonKey()
   final dynamic sapQty;
+  @override
+  @JsonKey()
+  final int cntQty;
 
   @override
   String toString() {
-    return 'BodyItem(no: $no, doc1Rowspan: $doc1Rowspan, doc1Seq: $doc1Seq, pjtNm: $pjtNm, grpKey: $grpKey, pjtNo: $pjtNo, inbType: $inbType, soNo: $soNo, itemNm: $itemNm, selectedRowspan: $selectedRowspan, grDtRowspan: $grDtRowspan, sapQtyUnit: $sapQtyUnit, pjtNm2: $pjtNm2, vendNmRowspan: $vendNmRowspan, doc2: $doc2, noRowspan: $noRowspan, doc1: $doc1, rmnQty: $rmnQty, vendNm: $vendNm, pjtNmRowspan: $pjtNmRowspan, selected: $selected, wmsQty: $wmsQty, doc2Seq: $doc2Seq, whCd: $whCd, pkNo: $pkNo, grDt: $grDt, itemCd: $itemCd, appDttm: $appDttm, lgort: $lgort, plant: $plant, wmsQtyUnit: $wmsQtyUnit, vendCd: $vendCd, mstKey: $mstKey, sapQty: $sapQty)';
+    return 'BodyItem(no: $no, doc1Rowspan: $doc1Rowspan, doc1Seq: $doc1Seq, pjtNm: $pjtNm, grpKey: $grpKey, pjtNo: $pjtNo, inbType: $inbType, soNo: $soNo, itemNm: $itemNm, selectedRowspan: $selectedRowspan, grDtRowspan: $grDtRowspan, sapQtyUnit: $sapQtyUnit, pjtNm2: $pjtNm2, vendNmRowspan: $vendNmRowspan, doc2: $doc2, noRowspan: $noRowspan, doc1: $doc1, rmnQty: $rmnQty, vendNm: $vendNm, pjtNmRowspan: $pjtNmRowspan, selected: $selected, wmsQty: $wmsQty, doc2Seq: $doc2Seq, whCd: $whCd, pkNo: $pkNo, grDt: $grDt, itemCd: $itemCd, appDttm: $appDttm, lgort: $lgort, plant: $plant, wmsQtyUnit: $wmsQtyUnit, vendCd: $vendCd, mstKey: $mstKey, sapQty: $sapQty, cntQty: $cntQty)';
   }
 
   @override
@@ -1299,7 +1316,8 @@ class _$BodyItemImpl implements _BodyItem {
                 .equals(other.wmsQtyUnit, wmsQtyUnit) &&
             const DeepCollectionEquality().equals(other.vendCd, vendCd) &&
             (identical(other.mstKey, mstKey) || other.mstKey == mstKey) &&
-            const DeepCollectionEquality().equals(other.sapQty, sapQty));
+            const DeepCollectionEquality().equals(other.sapQty, sapQty) &&
+            (identical(other.cntQty, cntQty) || other.cntQty == cntQty));
   }
 
   @JsonKey(ignore: true)
@@ -1339,7 +1357,8 @@ class _$BodyItemImpl implements _BodyItem {
         const DeepCollectionEquality().hash(wmsQtyUnit),
         const DeepCollectionEquality().hash(vendCd),
         mstKey,
-        const DeepCollectionEquality().hash(sapQty)
+        const DeepCollectionEquality().hash(sapQty),
+        cntQty
       ]);
 
   @JsonKey(ignore: true)
@@ -1391,7 +1410,8 @@ abstract class _BodyItem implements BodyItem {
       final dynamic wmsQtyUnit,
       final dynamic vendCd,
       final String mstKey,
-      final dynamic sapQty}) = _$BodyItemImpl;
+      final dynamic sapQty,
+      final int cntQty}) = _$BodyItemImpl;
 
   factory _BodyItem.fromJson(Map<String, dynamic> json) =
       _$BodyItemImpl.fromJson;
@@ -1464,6 +1484,8 @@ abstract class _BodyItem implements BodyItem {
   String get mstKey;
   @override
   dynamic get sapQty;
+  @override
+  int get cntQty;
   @override
   @JsonKey(ignore: true)
   _$$BodyItemImplCopyWith<_$BodyItemImpl> get copyWith =>

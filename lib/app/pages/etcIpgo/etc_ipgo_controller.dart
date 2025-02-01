@@ -65,6 +65,8 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
   RxBool isRowChecked = false.obs;
   RxBool isFocus = false.obs;
 
+  RxBool isNewFocus = false.obs;
+
 
   RxDouble height = 0.0.obs;
 
@@ -998,15 +1000,19 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
+          textQrController.text = '';
+          focusNode.requestFocus();
+
         }
 
       } else {
         Get.log('조회 실패');
-
+        textQrController.text = '';
       }
     } catch (e) {
       Get.log('checkQR2 catch !!!!');
       Get.log(e.toString());
+      textQrController.text = '';
     } finally {
       bLoading.value = false;
 

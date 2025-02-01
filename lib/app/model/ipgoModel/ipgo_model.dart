@@ -75,6 +75,7 @@ class BodyItem with _$BodyItem {
     dynamic vendCd,
     @Default('') String mstKey,
     @Default(0.0) sapQty,
+    @Default(0) int cntQty,
   }) = _BodyItem;
 
   factory BodyItem.fromJson(Map<String, dynamic> json) => _$BodyItemFromJson(json);

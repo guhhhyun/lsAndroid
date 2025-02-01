@@ -1,5 +1,6 @@
 
 
+import 'package:lsandroid/app/common/app_const.dart';
 import 'package:lsandroid/app/common/global_service.dart';
 import 'package:lsandroid/app/net/home_api.dart';
 import 'package:lsandroid/app/pages/home/widget/main_icon_widget.dart';
@@ -50,7 +51,8 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Container(
                         padding: EdgeInsets.only(left: 12,),
-                        child: Image.asset('assets/app/logo.png', width: 400, height: 100,)),
+
+                        child: APP_CONST.BASE_URL == 'https://10.152.1.136:443' ? Image.asset('assets/app/logo_real.png', width: 400, height: 100,): Image.asset('assets/app/logo_dev.png', width: 400, height: 100,))  ,
                     Row(
                       children: [
                         SvgPicture.asset('assets/app/user_icon.svg', width: 24, height: 24,),

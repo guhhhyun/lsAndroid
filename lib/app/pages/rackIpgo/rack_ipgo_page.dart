@@ -582,8 +582,10 @@ class RackIpgoPage extends StatelessWidget {
                         if(controller.isDuplQr.value) {
                           controller.statusText.value = '중복된 QR코드입니다.';
                           controller.textQrController.text = '';
+                          controller.focusNodeForm.requestFocus();
                         }else{
                           await controller.checkQR(); // 조회
+                          /// QR번호 중복된 경우 이 로직 따라간다
                           if(controller.rackIpgoList.length > 1 && controller.rackIpgoList[0]['TAG_TYPE'] != '90') {
                             // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
                             showDialog(
@@ -593,6 +595,25 @@ class RackIpgoPage extends StatelessWidget {
                                 return _alertDialog(context);
                               },
                             ); // context가 왜?
+
+                            /// 혹시 랙입고 중복라벨 시 전부 넣어주는거로 바뀐거면? 아래 주석 풀고 중복 라벨 dialog  삭제해야한다.
+                          /*  controller.rowDatas.value = List<PlutoRow>.generate(controller.rackIpgoList.length, (index) =>
+                                PlutoRow(cells:
+                                Map.from((controller.rackIpgoList[index]).map((key, value) =>
+                                    MapEntry(key, PlutoCell(value: value == null ? '' : *//*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : *//*value )),
+                                )))
+                            );
+                            controller.gridStateMgr.removeAllRows();
+                            controller.gridStateMgr.appendRows(controller.rowDatas.value);
+                            controller.gridStateMgr.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
+                            if(controller.rackIpgoList.isNotEmpty) {
+                              controller.zoneText.value = controller.rackIpgoList[0]['LAST_ZONE_NM']?? '';
+                              controller.locText.value = controller.rackIpgoList[0]['LAST_LOC']?? '';
+                              controller.zoneCd.value = controller.rackIpgoList[0]['ZONE_CD']?? '';
+                              controller.locCd.value = controller.rackIpgoList[0]['LOC_CD'] ?? '';
+                              focusNode4Form.requestFocus();
+                            }
+                            controller.textQrController.text = '';*/
                           }else {
                             controller.rowDatas.value = List<PlutoRow>.generate(controller.rackIpgoList.length, (index) =>
                                 PlutoRow(cells:

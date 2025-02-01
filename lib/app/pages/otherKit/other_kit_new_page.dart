@@ -778,7 +778,7 @@ class OtherKitNewPage extends StatelessWidget {
             {
               controller.isFocus.value = true;
               controller.smallBoxItemDataList.isNotEmpty ?
-              controller.wrkCfmDt.value == '' || controller.wrkCfmDt.value == 'null' ?
+              controller.wrkCfmDt.value.trim() == '' || controller.wrkCfmDt.value.trim() == 'null' ?
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -798,11 +798,19 @@ class OtherKitNewPage extends StatelessWidget {
 
             else if(text == '동기화')
             {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y' ? syncProcess() : Get.dialog(CommonDialogWidget(contentText: '확정 처리된 상태입니다.', pageFlag: 0));
             }
             else if(text == '저장')
             {
-              if(controller.wrkCfmDt.value == '' || controller.wrkCfmDt.value == 'null') {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
+                return;
+              }
+              if(controller.wrkCfmDt.value.trim() == '' || controller.wrkCfmDt.value.trim() == 'null') {
                 if(controller.isSaveClick.value == false) { // 중복방지 로직
                   controller.isSaveClick.value = true;
                   Get.log('저장할 리스트!: ${controller.smallBoxSaveList.length}');
@@ -821,6 +829,10 @@ class OtherKitNewPage extends StatelessWidget {
             }
             else if(text == '동기화 취소')
             {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               Get.log('동기화 취소');
               Get.log('동기화 취소1: ${controller.smallBoxSaveList.length}');
               // 동기화 드어주는 작은별
@@ -877,6 +889,10 @@ class OtherKitNewPage extends StatelessWidget {
 
             }
             else if (text == '동기화 저장') {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               var uniqueItems = controller.smallBoxSaveList.fold<Map<String, dynamic>>({}, (map, item) {
                 map[item['sboxNo']] = item; // 'sboxNo'를 기준으로 가장 마지막 항목을 유지
                 return map;
@@ -900,6 +916,10 @@ class OtherKitNewPage extends StatelessWidget {
             }
             else if(text == '확정')
             {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               if (controller.isConfirmClick.value == false) {
                 controller.isConfirmClick.value = true;
                 try{
@@ -951,6 +971,10 @@ class OtherKitNewPage extends StatelessWidget {
             }
             else if(text == '확정 취소')
             {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               await controller.registSmallKitConfirmNew('N');
               if(controller.isConfirm.value) {
                 controller.textQrController.text = controller.smallBoxItemDataList[0]['cbxExNo'].toString();
@@ -1863,8 +1887,8 @@ class OtherKitNewPage extends StatelessWidget {
             Row(
               children: [
                 _subData2('박스번호', controller.boxNo.value, false),
-                SizedBox(width: 32,),
-                _subData2('확정일', controller.wrkCfmDt.value ?? '', false),
+            /*    SizedBox(width: 32,),
+                _subData2('확정일', controller.wrkCfmDt.value ?? '', false),*/
               ],
             ),
             SizedBox(width: 32,),
@@ -1881,8 +1905,8 @@ class OtherKitNewPage extends StatelessWidget {
             SizedBox(height: 4,),
             _alertInput('수량'),
             SizedBox(height: 4,),
-            _alertInput('세트'),
-            SizedBox(height: 4,),
+          /*  _alertInput('세트'),
+            SizedBox(height: 4,),*/
             _alertInput('단위'),
           ],
         ),
@@ -1901,16 +1925,17 @@ class OtherKitNewPage extends StatelessWidget {
         Expanded(
           child: Container(
             width: 200,
-            child: Container(
-              padding: const EdgeInsets.only(left: 16, right: 6),
-              decoration: BoxDecoration(
-                  border: Border.all(color: AppTheme.ae2e2e2),
-                  borderRadius: BorderRadius.circular(10),
-                  color: AppTheme.white
-              ),
+            padding: const EdgeInsets.only(left: 16, right: 6),
+            decoration: BoxDecoration(
+                border: Border.all(color: AppTheme.ae2e2e2),
+                borderRadius: BorderRadius.circular(10),
+                color: AppTheme.white
+            ),
+            child: Center(
               child: TextFormField(
-
-                style:  AppTheme.a16400.copyWith(color: AppTheme.a6c6c6c),
+                minLines: null,
+                maxLines: null,
+                style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
                 controller: title == '자재코드' ? controller.textItemCdController : title == '자재명' ? controller.textItemNmController : title == '수량' ? controller.textQtyController
                     : title == '세트' ? controller.textSetController : title == '단위' ? controller.textUnitController : controller.textItemCdController,
                 textAlignVertical: TextAlignVertical.center,
@@ -1918,7 +1943,7 @@ class OtherKitNewPage extends StatelessWidget {
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
 
-                  contentPadding: const EdgeInsets.all(0),
+                  contentPadding: const EdgeInsets.only(bottom: 8),
                   fillColor: AppTheme.white,
                   filled: true,
                   // hintText: 'BC 번호를 입력해주세요',

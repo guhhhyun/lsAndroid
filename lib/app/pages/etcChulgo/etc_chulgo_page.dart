@@ -354,6 +354,8 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                       controller.gridStateMgr3.appendRows(controller.rowDatas3.value);
                     }
                   }
+
+                  controller.isChecked.value = false;
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -998,7 +1000,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
 
 
   Widget _alertDialog(BuildContext context) {
-
+    controller.isNewFocus.value == false ? controller.requestFocus() : null;
     return AlertDialog(
         backgroundColor: AppTheme.white,
         shape: RoundedRectangleBorder(
@@ -1119,6 +1121,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                     columns: gridCols3(context),
                     rows: controller.rowDatas4.value,
                     onRowChecked: (event) {
+                      controller.isNewFocus.value = true;
                       if (event.isChecked != null) {
                         if(event.isAll == true) {
                           if (event.isChecked == true) {
@@ -1149,6 +1152,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
 
                     },
                     onLoaded: (PlutoGridOnLoadedEvent event) {
+                      controller.isNewFocus.value = true;
                       controller.gridStateMgr4 = event.stateManager;
                       controller.gridStateMgr4.setSelectingMode(PlutoGridSelectingMode.none);
                     },
@@ -1613,7 +1617,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
               children: [
                 _qrCodeTextForm(),
                 SizedBox(width: 24,),
-                _statusText()
+                Obx(() => _statusText())
               ],
             ),
             Row(
@@ -1937,6 +1941,9 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
           child: Container(
             height: 40,
             child: TextFormField(
+              onTap: () {
+                controller.isNewFocus.value = true;
+              },
               readOnly:  plag == 0 ? true : false,
               expands :true,
               minLines: null,
@@ -2005,28 +2012,28 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                           if(controller.etcChulgoQrList.isNotEmpty) {
                             await controller.reqChulThirdDetail(); // 디테일 조회
                             controller.etcChulgoSaveQrList.add(controller.etcChulgoQrList[0]);
+                            controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcChulgoSaveQrList.length, (index) =>
+                                PlutoRow(cells:
+                                Map.from((controller.etcChulgoSaveQrList[index]).map((key, value) =>
+                                    MapEntry(key, PlutoCell(value: value == null ? '' : value )),
+                                )))
+                            );
+                            controller.textQrController.text = '';
+                            controller.gridStateMgr4.removeAllRows();
+                            controller.gridStateMgr4.appendRows(controller.rowDatas4);
+
+                            controller.rowDatas5.value = List<PlutoRow>.generate(controller.etcChulgoQrDetailTotalList[controller.etcChulgoQrDetailTotalList.length - 1].length, (index) =>
+                                PlutoRow(cells:
+                                Map.from((controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][index]).map((key, value) =>
+                                    MapEntry(key, PlutoCell(value: value ?? '' )),
+                                )))
+                            );
+
+                            controller.gridStateMgr5.removeAllRows();
+                            controller.gridStateMgr5.appendRows(controller.rowDatas5);
                           }
-                          controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcChulgoSaveQrList.length, (index) =>
-                              PlutoRow(cells:
-                              Map.from((controller.etcChulgoSaveQrList[index]).map((key, value) =>
-                                  MapEntry(key, PlutoCell(value: value == null ? '' : value )),
-                              )))
-                          );
-                          controller.textQrController.text = '';
-                          controller.gridStateMgr4.removeAllRows();
-                          controller.gridStateMgr4.appendRows(controller.rowDatas4);
 
-                          controller.rowDatas5.value = List<PlutoRow>.generate(controller.etcChulgoQrDetailTotalList[controller.etcChulgoQrDetailTotalList.length - 1].length, (index) =>
-                              PlutoRow(cells:
-                              Map.from((controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][index]).map((key, value) =>
-                                  MapEntry(key, PlutoCell(value: value ?? '' )),
-                              )))
-                          );
-
-                          controller.gridStateMgr5.removeAllRows();
-                          controller.gridStateMgr5.appendRows(controller.rowDatas5);
-
-                          controller.focusNodeKey.requestFocus();
+                          controller.focusNode.requestFocus();
 
                         }
                       }

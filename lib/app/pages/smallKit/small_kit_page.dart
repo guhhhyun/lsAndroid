@@ -426,7 +426,30 @@ class SmallKitPage extends StatelessWidget {
                         SizedBox(width: 32,),
                         _subData2('박스번호', controller.boxNo.value, false),
                         SizedBox(width: 32,),
-                        _subData2('확정일', controller.wrkCfmDt.value ?? '', false)
+                        _subData2('확정일', controller.wrkCfmDt.value ?? '', false),
+                        SizedBox(
+                          width: 30 , height: 30,
+                        ),SizedBox(
+                          width: 30 , height: 30,
+                        ),SizedBox(
+                          width: 30 , height: 30,
+                        ),SizedBox(
+                          width: 30 , height: 30,
+                        ),SizedBox(
+                          width: 30 , height: 30,
+                        ),SizedBox(
+                          width: 30 , height: 30,
+                        ),SizedBox(
+                          width: 30 , height: 30,
+                        ), // wjdtlsskrk~ d
+                        Container(
+                          child: TextButton(onPressed: () {}, child: Text('')),
+                          decoration: BoxDecoration(
+
+                          ),
+                        )
+
+
                       ],
                     ),
                   ),
@@ -1051,6 +1074,8 @@ class SmallKitPage extends StatelessWidget {
                     controller.noList.remove(item['itemCd']);
                     shouldRemove = false;
                     controller.test();
+
+
                   }
                 }else if(item['ncbxRmk'] != '' && item['prtNo'] == 'O') {
                   Get.log('동기화 안돼!');
@@ -2296,7 +2321,7 @@ class SmallKitPage extends StatelessWidget {
        ),
        PlutoColumn(
          title: '조치 담당자',
-         field: 'itemCda',
+         field: 'itemCd',
          type: PlutoColumnType.text(),
          width: 120,
          enableSorting: false,
@@ -2312,7 +2337,6 @@ class SmallKitPage extends StatelessWidget {
      ];
      return gridCols4;
    }
-
 
 }
 

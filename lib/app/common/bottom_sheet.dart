@@ -210,11 +210,11 @@ class BottomSheetModal extends StatelessWidget {
 
 
   Widget _listArea() {
-    return SliverList(
+    return Obx(() => SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
           controller.selectedPopList.add(false);
           return _listItem(index: index, context: context);
-        }, childCount: controller.popUpDataList.length));
+        }, childCount: controller.popUpDataList.length)));
   }
 
   Widget _listItem({required BuildContext context, required int index}) {

@@ -1069,8 +1069,16 @@ class MainKitNewPage extends StatelessWidget {
               ) : Get.dialog(CommonDialogWidget(contentText: '확정된 박스입니다.', pageFlag: 0))
                   : Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요', pageFlag: 0));
             } else if (text == '동기화') {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               controller.smallBoxDataList[0]['wrkCfmYn'] != 'Y' ? syncProcess() : Get.dialog(CommonDialogWidget(contentText: '확정 처리된 상태입니다.', pageFlag: 0));
             } else if (text == '저장') {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               if(controller.wrkCfmDt.value == '' || controller.wrkCfmDt.value == 'null') {
                 if (controller.isSaveClick.value == false) {
                   controller.isSaveClick.value = true;
@@ -1086,6 +1094,10 @@ class MainKitNewPage extends StatelessWidget {
               }
               controller.isSaveClick.value = true;
             } else if (text == '동기화 취소') {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               Get.log('동기화 취소');
               Get.log('동기화 취소1: ${controller.smallBoxSaveList.length}');
 
@@ -1139,6 +1151,10 @@ class MainKitNewPage extends StatelessWidget {
               }
 
             }else if (text == '동기화 저장') {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               var uniqueItems = controller.smallBoxSaveList.fold<Map<String, dynamic>>({}, (map, item) {
                 map[item['sboxNo']] = item; // 'sboxNo'를 기준으로 가장 마지막 항목을 유지
                 return map;
@@ -1162,6 +1178,10 @@ class MainKitNewPage extends StatelessWidget {
             }
 
             else if (text == '확정') {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               if (controller.isConfirmClick.value == false) {
                 controller.isConfirmClick.value = true;
                 try {
@@ -1211,6 +1231,10 @@ class MainKitNewPage extends StatelessWidget {
               }
               controller.isConfirmClick.value = true;
             } else if (text == '확정 취소') {
+              if(controller.projectNm.value == '') {
+                Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
+                return;
+              }
               await controller.registMainKitConfirmNew('N');
               controller.isConfirm.value ?
               Get.dialog(CommonDialogWidget(contentText: '확정 취소되었습니다.', pageFlag: 0)) :
@@ -2109,7 +2133,7 @@ class MainKitNewPage extends StatelessWidget {
           child: Container(
             width: 200,
             child: Container(
-              padding: const EdgeInsets.only(left: 16, right: 6, bottom: 6),
+              padding: const EdgeInsets.only(left: 16, right: 6),
               decoration: BoxDecoration(border: Border.all(color: AppTheme.ae2e2e2), borderRadius: BorderRadius.circular(10), color: AppTheme.white),
               child: TextFormField(
 
@@ -2131,7 +2155,7 @@ class MainKitNewPage extends StatelessWidget {
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(0),
+                  contentPadding: const EdgeInsets.only(bottom: 8),
                   fillColor: AppTheme.white,
                   filled: true,
                   // hintText: 'BC 번호를 입력해주세요',

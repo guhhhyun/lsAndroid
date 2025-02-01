@@ -78,16 +78,7 @@ class IpgoPage extends StatelessWidget {
                       child: TabBar(
                         //  tabAlignment: TabAlignment.start,
                         onTap: (i) async {
-                         /* if (i == 0) {
-                            controller.chkYn.value = '';
-                            await controller.reqListAlarm();
-                          } else if (i == 1) {
-                            controller.chkYn.value = 'N';
-                            await controller.reqListAlarm();
-                          } else if (i == 2) {
-                            controller.chkYn.value = 'Y';
-                            await controller.reqListAlarm();
-                          }*/
+                         // i == 1 ? controller.smallBoxIsQr.value == false ? controller.requestFocus2() : null : null;
                         },
                         indicatorSize: TabBarIndicatorSize.tab,
                         controller: controller.tabController,
@@ -376,13 +367,28 @@ class IpgoPage extends StatelessWidget {
                  controller.isChecked.value = true;
                  await controller.checkBtn();
                  controller.isSelectedInvnr.value = true;
-                 controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
+                 if(controller.gridStateMgr.rows.length == 1) {
+                   controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 0);
+                   controller.selectedInvnrIndex.value = 0;
+                 }else {
+                   controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
+                   Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
+                   controller.selectedInvnrIndex.value = controller.gridStateMgr.currentRowIdx!;
+                 }
+               //  controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
+
                  Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
-                 controller.invnrHeight.value = 53*(double.parse((controller.ipgoCancelList.length + 1).toString()));
+
+                // controller.invnrHeight.value = 53*(double.parse((controller.ipgoCancelList.length + 1).toString()));
                }
+               controller.isChecked.value = false;
                controller.isQr.value = true;
                controller.focusNode.unfocus();
-             },
+               focusNode2.requestFocus();
+
+
+
+               },
              child: Container(
                decoration: BoxDecoration(
                   color: AppTheme.navy_navy_800,
@@ -500,12 +506,18 @@ class IpgoPage extends StatelessWidget {
                  controller.ipgoQrList.clear();
                  controller.ipgoList.clear();
                  controller.gridStateMgr2.removeAllRows();
-                 controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
-                 Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
-                 controller.selectedInvnrIndex.value = controller.gridStateMgr.currentRowIdx!;
+                 if(controller.gridStateMgr.rows.length == 1) {
+                   controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 0);
+                   controller.selectedInvnrIndex.value = 0;
+                 }else {
+                   controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
+                   Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
+                   controller.selectedInvnrIndex.value = controller.gridStateMgr.currentRowIdx!;
+                 }
                  controller.isSelectedInvnr.value = true;
                  controller.isQr.value = true;
                  controller.textInvnrController.text = '';
+                 focusNode2.requestFocus();
                  /*controller.focusNode.requestFocus();
                  Future.delayed(const Duration(), (){
                    controller.focusNode.requestFocus();
@@ -1573,7 +1585,7 @@ class IpgoPage extends StatelessWidget {
                            // Get.dialog(_dialog('거래명세서를 선택해주세요'));
                          }*/
                            controller.isQr2.value = false;
-
+                           controller.smallBoxIsQr.value = true;
                          }
                        }
                      },
@@ -1586,12 +1598,7 @@ class IpgoPage extends StatelessWidget {
                        // maxLines: 5,
                        controller: controller.textQrController2,
                        textAlignVertical: TextAlignVertical.center,
-                       onTap: () {
-                         controller.isQr2.value = true;
-                        /* if(controller.focusCnt2.value++ > 1) controller.focusCnt2.value = 0;
-                         else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
-                       },
-                       onTapOutside:(event) => { controller.focusCnt2.value = 0 },
+
                        onFieldSubmitted: (value) async {
                         // controller.isDuplQr.value = false;
                         /* if(controller.isSelectedInvnr.value) {*/
@@ -1756,155 +1763,172 @@ class IpgoPage extends StatelessWidget {
                }),
          ),
        ],
+
      );
    }
-
+   Widget _aa() {
+     return Container(
+       child: Container(
+         child: Row(
+           children: [],
+         ),
+       )
+     );
+     // lets go // 알겠는데 어찌라고
+   }
 
    Widget _subBody1(BuildContext context) {
-     return Container(
+     return Column(
+       mainAxisAlignment: MainAxisAlignment.start,
+       children: [
+         Container(
+           color: AppTheme.black,
+           height: 1,
+         ),
+         Container(
 
-       child: Column(
-         mainAxisAlignment: MainAxisAlignment.start,
-         children: [
-           Container(
-             color: AppTheme.black, 
-             height: 1,
-           ),
-           Row(
-             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-             children: [
-               Row(
+           child: SingleChildScrollView(
+             padding: EdgeInsets.zero,
+             scrollDirection: Axis.horizontal,
+             child: Container(
+               width: MediaQuery.of(context).size.width- 12,
+               child: Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                  children: [
-                   _qrCodeTextForm2(context),
-                   SizedBox(width: 16,),
-                   Obx(()=> _statusText2()),
-                 ],
-               ),
-               Row(
-                 mainAxisAlignment: MainAxisAlignment.start,
-                 children: [
-                   Obx(() => _smallBoxDropDownItem(),),
-                   SizedBox(width: 24,),
-                   Container(
-                     margin: EdgeInsets.only(right: 12),
-                     width: 120,
-                     height: 40,
-                     child: TextButton(
-                       style: ButtonStyle(
-                           shape: MaterialStateProperty.all<
-                               RoundedRectangleBorder>(
-                               const RoundedRectangleBorder(
-                                   borderRadius: BorderRadius.only(
-                                       bottomLeft: Radius.circular(10),
-                                       bottomRight: Radius.circular(10)))),
-                           padding: MaterialStateProperty.all(
-                               const EdgeInsets.all(0))),
-                       onPressed: () {
-                         Get.log('행 삭제 클릭!');
-                         if(controller.gridStateMgr4.currentRowIdx != null) {
-                           controller.ipgoBoxList.removeAt(controller.gridStateMgr4.currentRowIdx!);
-                           controller.gridStateMgr4.removeAllRows();
-                           controller.gridStateMgr5.removeAllRows();
-                           updateRows2();
-                           controller.gridStateMgr4.appendRows(controller.rowDatas4.value);
-                           controller.statusText.value = '';
-                         }
-
-                       },
-                       child: Container(
-                         decoration: BoxDecoration(
-                             color: AppTheme.navy_navy_800,
-                             borderRadius: BorderRadius.circular(10),
-                             border: Border.all(color: AppTheme.ae2e2e2)
-                         ),
+                   Row(
+                     children: [
+                       _qrCodeTextForm2(context),
+                       SizedBox(width: 16,),
+                       Obx(()=> _statusText2()),
+                     ],
+                   ),
+                   Row(
+                     mainAxisAlignment: MainAxisAlignment.start,
+                     children: [
+                       Obx(() => _smallBoxDropDownItem(),),
+                       SizedBox(width: 24,),
+                       Container(
+                         margin: EdgeInsets.only(right: 12),
                          width: 120,
                          height: 40,
-                         padding: const EdgeInsets.only(
+                         child: TextButton(
+                           style: ButtonStyle(
+                               shape: MaterialStateProperty.all<
+                                   RoundedRectangleBorder>(
+                                   const RoundedRectangleBorder(
+                                       borderRadius: BorderRadius.only(
+                                           bottomLeft: Radius.circular(10),
+                                           bottomRight: Radius.circular(10)))),
+                               padding: MaterialStateProperty.all(
+                                   const EdgeInsets.all(0))),
+                           onPressed: () {
+                             Get.log('행 삭제 클릭!');
+                             if(controller.gridStateMgr4.currentRowIdx != null) {
+                               controller.ipgoBoxList.removeAt(controller.gridStateMgr4.currentRowIdx!);
+                               controller.gridStateMgr4.removeAllRows();
+                               controller.gridStateMgr5.removeAllRows();
+                               updateRows2();
+                               controller.gridStateMgr4.appendRows(controller.rowDatas4.value);
+                               controller.statusText.value = '';
+                             }
 
-                         ),
-                         child: Center(
-                           child: Text('행 삭제',
-                               style: AppTheme.a18700.copyWith(
-                                 color: AppTheme.white,
-                               )),
+                           },
+                           child: Container(
+                             decoration: BoxDecoration(
+                                 color: AppTheme.navy_navy_800,
+                                 borderRadius: BorderRadius.circular(10),
+                                 border: Border.all(color: AppTheme.ae2e2e2)
+                             ),
+                             width: 120,
+                             height: 40,
+                             padding: const EdgeInsets.only(
+
+                             ),
+                             child: Center(
+                               child: Text('행 삭제',
+                                   style: AppTheme.a18700.copyWith(
+                                     color: AppTheme.white,
+                                   )),
+                             ),
+                           ),
                          ),
                        ),
-                     ),
-                   ),
-                   SizedBox(width: 12,),
-                   Container(
-                     margin: EdgeInsets.only(right: 12),
-                     width: 120,
-                     height: 40,
-                     child: TextButton(
-                       style: ButtonStyle(
-                           shape: MaterialStateProperty.all<
-                               RoundedRectangleBorder>(
-                               const RoundedRectangleBorder(
-                                   borderRadius: BorderRadius.only(
-                                       bottomLeft: Radius.circular(10),
-                                       bottomRight: Radius.circular(10)))),
-                           padding: MaterialStateProperty.all(
-                               const EdgeInsets.all(0))),
-                       onPressed: () async {
-                         if(controller.isIpgoClick2.value == false) {
-                           controller.isIpgoClick2.value = true;
-                           Get.log('입고등록 클릭!');
-                           await controller.reqCheburnIpgo();
-                           await controller.registIpgoBoxBtn();
-                           if(controller.isSboxIpgo.value) {
-                             SchedulerBinding.instance!.addPostFrameCallback((_) {
-                               Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
-                             });
-                             controller.ipgoQrBoxList.clear();
-                             controller.ipgoBoxList.clear();
-                             controller.gridStateMgr4.removeAllRows();
-                             controller.gridStateMgr5.removeAllRows();
-                           }
-
-                         }
-
-
-                       },
-                       child: Container(
-                         decoration: BoxDecoration(
-                             color: AppTheme.navy_navy_800,
-                             borderRadius: BorderRadius.circular(10),
-                             border: Border.all(color: AppTheme.ae2e2e2)
-                         ),
+                       SizedBox(width: 12,),
+                       Container(
+                         margin: EdgeInsets.only(right: 12),
                          width: 120,
                          height: 40,
-                         padding: const EdgeInsets.only(
+                         child: TextButton(
+                           style: ButtonStyle(
+                               shape: MaterialStateProperty.all<
+                                   RoundedRectangleBorder>(
+                                   const RoundedRectangleBorder(
+                                       borderRadius: BorderRadius.only(
+                                           bottomLeft: Radius.circular(10),
+                                           bottomRight: Radius.circular(10)))),
+                               padding: MaterialStateProperty.all(
+                                   const EdgeInsets.all(0))),
+                           onPressed: () async {
+                             if(controller.isIpgoClick2.value == false) {
+                               controller.isIpgoClick2.value = true;
+                               Get.log('입고등록 클릭!');
+                               await controller.reqCheburnIpgo();
+                               await controller.registIpgoBoxBtn();
+                               if(controller.isSboxIpgo.value) {
+                                 SchedulerBinding.instance!.addPostFrameCallback((_) {
+                                   Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
+                                 });
+                                 controller.ipgoQrBoxList.clear();
+                                 controller.ipgoBoxList.clear();
+                                 controller.gridStateMgr4.removeAllRows();
+                                 controller.gridStateMgr5.removeAllRows();
+                               }
 
-                         ),
-                         child: Center(
-                           child: Text('입고 등록',
-                               style: AppTheme.a18700.copyWith(
-                                 color: AppTheme.white,
-                               )),
+                             }
+
+
+                           },
+                           child: Container(
+                             decoration: BoxDecoration(
+                                 color: AppTheme.navy_navy_800,
+                                 borderRadius: BorderRadius.circular(10),
+                                 border: Border.all(color: AppTheme.ae2e2e2)
+                             ),
+                             width: 120,
+                             height: 40,
+                             padding: const EdgeInsets.only(
+
+                             ),
+                             child: Center(
+                               child: Text('입고 등록',
+                                   style: AppTheme.a18700.copyWith(
+                                     color: AppTheme.white,
+                                   )),
+                             ),
+                           ),
                          ),
                        ),
-                     ),
+                     ],
                    ),
                  ],
                ),
-             ],
+             ),
            ),
-           Container(
-             height: 4,
-           ),
-           Row(
-             crossAxisAlignment: CrossAxisAlignment.start,
-             children: [
-               _rackIpgoList(context),
-               Container(
-                 width: 12,
-               ),
-               _rackIpgoList2(context),
-             ],
-           )
-         ],
-       ),
+         ),
+         Container(
+           height: 4,
+         ),
+         Row(
+           crossAxisAlignment: CrossAxisAlignment.start,
+           children: [
+             _rackIpgoList(context),
+             Container(
+               width: 12,
+             ),
+             _rackIpgoList2(context),
+           ],
+         )
+       ],
      );
 
    }
@@ -1956,10 +1980,8 @@ class IpgoPage extends StatelessWidget {
 
                    controller.gridStateMgr5.removeAllRows();
                    controller.gridStateMgr5.appendRows(controller.insertRow3);
-                //   controller.gridStateMgr5.insertRows(controller.ipgoBoxList.length, controller.insertRow3);
-
                    controller.isQr2.value = false;
-                    
+
 
                  /*  Map<dynamic, List<Map<String, dynamic>>> groupedMap = {};
                    // chulSecondList를 순회하면서 no 값을 키로 그룹화
@@ -1972,7 +1994,7 @@ class IpgoPage extends StatelessWidget {
                        groupedMap[key] = [item];
                      }
                    }
-
+                  // letMap()
                    // 그룹화된 맵의 각 값을 RxList로 변환하여 itemTotalList에 추가
                    groupedMap.values.forEach((group) {
                      controller.itemTotalList.add(group.obs);  // 각 그룹을 RxList로 변환 후 itemTotalList에 추가

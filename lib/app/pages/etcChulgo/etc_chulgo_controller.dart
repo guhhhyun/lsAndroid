@@ -58,6 +58,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
 
   RxBool isRowChecked = false.obs;
   RxBool isFocus = false.obs;
+  RxBool isNewFocus = false.obs;
 
 
   RxDouble height = 0.0.obs;
@@ -674,11 +675,14 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
+          textQrController.text = '';
+          focusNode.requestFocus();
         }
 
       } else {
         Get.log('조회 실패');
-
+        textQrController.text = '';
+        focusNode.requestFocus();
       }
     } catch (e) {
       Get.log('checkQR2 catch !!!!');

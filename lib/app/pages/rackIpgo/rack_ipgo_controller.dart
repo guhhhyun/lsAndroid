@@ -488,16 +488,21 @@ class RackIpgoController extends GetxController with GetSingleTickerProviderStat
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
+          textQrController.text = '';
+          focusNodeForm.requestFocus();
         }
 
       } else {
         Get.log('조회 실패');
-
+        textQrController.text = '';
+        focusNodeForm.requestFocus();
       }
     } catch (e) {
       Get.log('checkQR catch !!!!');
       Get.log(e.toString());
       isDbConnected.value = false;
+      textQrController.text = '';
+      focusNodeForm.requestFocus();
     } finally {
       bLoading.value = false;
      // plutoRow();

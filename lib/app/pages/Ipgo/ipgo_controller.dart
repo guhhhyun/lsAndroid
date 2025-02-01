@@ -110,6 +110,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxString cheburnInbNumber = ''.obs; // 끝 6자리
   RxString cheburnLotNumber = ''.obs; // 끝 6자리
   RxBool isQr = false.obs;
+  RxBool smallBoxIsQr = false.obs;
   RxBool isQr2 = false.obs;
   RxBool isChecked = false.obs;
   RxBool isCancelChecked = false.obs;

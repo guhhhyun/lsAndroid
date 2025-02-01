@@ -21,6 +21,63 @@ class InventoryCntPage extends StatelessWidget {
   final focusNode2 = FocusNode();
   final focusNode2Form = FocusNode();
 
+  /// 키보드 엔터 없이 그리드에서 업데이트된 항목 바로 적용 시켜주기 위한 로직 /////////////////////////////////////////////////////////////
+  void _listener() {
+    if (controller.gridStateMgr.currentCell == controller.currentCell) {
+      return;
+    }
+
+    if (controller.gridStateMgr.isEditing && controller.gridStateMgr.currentCell != null) {
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        controller.initialValue = controller.gridStateMgr.textEditingController?.text;
+
+        controller.gridStateMgr.textEditingController!.addListener(_textEditingListener);
+        if (controller.gridStateMgr.textEditingController?.selection != null) {
+          controller.gridStateMgr.textEditingController!.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: controller.gridStateMgr.textEditingController!.text.length,
+          );
+        }
+
+      });
+    } else {
+      controller.initialValue = null;
+
+      controller.gridStateMgr.textEditingController?.removeListener(_textEditingListener);
+    }
+
+    controller.currentCell = controller.gridStateMgr.currentCell;
+  }
+
+  void _textEditingListener() {
+    controller.debounce.debounce(callback: _update);
+  }
+
+  void _update() {
+    if (controller.initialValue == controller.gridStateMgr.textEditingController?.text) {
+      return;
+    }
+
+    controller.initialValue = null;
+
+    if (controller.currentCell!.column.field == 'cntLocCd') {
+      print('선택한 값: ${controller.gridStateMgr.textEditingController?.text}');
+      controller.inventoryCntDetailList[controller.inventoryCntDetailList.length - 1 - controller.currentCell!.row!.sortIdx].addAll({'cntLocCd': controller.gridStateMgr.textEditingController?.text});
+    }
+    if (controller.currentCell!.column.field == 'cntQty') {
+
+      print('선택한 값: ${controller.gridStateMgr.textEditingController?.text}');
+      controller.inventoryCntDetailList[controller.inventoryCntDetailList.length - 1 - controller.currentCell!.row!.sortIdx].addAll({'cntQty': controller.gridStateMgr.textEditingController?.text});
+      print('바뀐 값: ${controller.inventoryCntDetailList[controller.inventoryCntDetailList.length - 1 - controller.currentCell!.row!.sortIdx]['cntQty']}');
+
+    }
+
+
+    print('이건가? ${controller.gridStateMgr.textEditingController?.text}');
+  }
+
+  /// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +264,7 @@ class InventoryCntPage extends StatelessWidget {
             children: [
               SizedBox(width: 20,),
               Obx(() => _statusText()),
+            // _buttt()
             ],
           ),
           /*Container(
@@ -771,7 +829,7 @@ class InventoryCntPage extends StatelessWidget {
       child: Column(children: [
         Container(
           width: MediaQuery.of(context).size.width-32,
-          height: MediaQuery.of(context).size.height - 200,
+          height: MediaQuery.of(context).size.height - 250,
           child: PlutoGrid(
             columns: gridCols(context),
             rows: controller.rowDatas.value,
@@ -779,19 +837,21 @@ class InventoryCntPage extends StatelessWidget {
               controller.isSelectedInvnr.value = false;
               controller.gridStateMgr = event.stateManager;
               controller.gridStateMgr.setSelectingMode(PlutoGridSelectingMode.none);
+
+              controller.gridStateMgr.addListener(_listener);
               //gridStateMgr.setShowColumnFilter(true);
             },
             onChanged: (PlutoGridOnChangedEvent event) {
               print(event);
               /// 그리드에서 변경된 값 그대로 업데이트
-              if (event.column.field == 'cntLocCd') {
+           /*   if (event.column.field == 'cntLocCd') {
                 print('선택한 값: ${event.value}');
                 controller.inventoryCntDetailList[controller.inventoryCntDetailList.length - 1 - event.rowIdx].addAll({'cntLocCd': event.value});
               }
               if (event.column.field == 'cntQty') {
                 print('선택한 값: ${event.value}');
                 controller.inventoryCntDetailList[controller.inventoryCntDetailList.length - 1 - event.rowIdx].addAll({'cntQty': event.value});
-              }
+              }*/
             },
             onRowChecked: (event) {
               if (event.isChecked != null) {
@@ -932,7 +992,7 @@ class InventoryCntPage extends StatelessWidget {
         enableEditingMode: false,
         enableContextMenu: false,
         enableRowDrag: false,
-        enableDropToResize: false,
+        enableDropToResize: true,
         enableColumnDrag: false,
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
@@ -1054,6 +1114,7 @@ class InventoryCntPage extends StatelessWidget {
         enableRowDrag: false,
         enableDropToResize: false,
         enableColumnDrag: false,
+        enableAutoEditing: true,
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.blue_blue_200,
@@ -1069,9 +1130,11 @@ class InventoryCntPage extends StatelessWidget {
         enableRowDrag: false,
         enableDropToResize: false,
         enableColumnDrag: false,
+        enableAutoEditing: true,
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.blue_blue_200,
+
       ),
       PlutoColumn(
         title: '실사 개당단위수량',
@@ -1094,7 +1157,7 @@ class InventoryCntPage extends StatelessWidget {
         type: PlutoColumnType.text(),
         width: 120,
         enableSorting: false,
-        enableEditingMode: true,
+        enableEditingMode: false,
         enableContextMenu: false,
         enableRowDrag: false,
         enableDropToResize: false,
@@ -1223,11 +1286,14 @@ class InventoryCntPage extends StatelessWidget {
                         const EdgeInsets.all(0))),
                 onPressed: () async {
                   Get.log('조회 클릭!');
-                  controller.isFocus.value = true;
-                  await controller.checkDetailBtn(); // 디테일 조회
-                  controller.focusNode.unfocus();
-                  // await controller.checkQR();
-
+                  if(controller.doubleClick.value == false) {
+                    controller.doubleClick.value = true;
+                    controller.isFocus.value = true;
+                    await controller.checkDetailBtn(); // 디테일 조회
+                    controller.focusNode.unfocus();
+                    // await controller.checkQR();
+                  }
+                  controller.doubleClick.value = false;
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -1265,11 +1331,20 @@ class InventoryCntPage extends StatelessWidget {
                         const EdgeInsets.all(0))),
                 onPressed: () async {
                   Get.log('저장 클릭!');
-                  await controller.checkUpdate();
-                  // 리프레시 해야한다.
-                  controller.isFocus.value = true;
-                  await controller.checkDetailBtn(); // 디테일 조회
-                  controller.focusNode.unfocus();
+                  if(controller.doubleClick.value == false) {
+                    controller.doubleClick.value = true;
+                    Get.dialog(
+                      Center(child: CircularProgressIndicator()),
+                      barrierDismissible: false, // 사용자가 다이얼로그를 닫을 수 없도록 설정
+                    );
+                    await controller.checkUpdate();
+                    // 리프레시 해야한다.
+                    controller.isFocus.value = true;
+                    await controller.checkDetailBtn(); // 디테일 조회
+                    controller.focusNode.unfocus();
+                    Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+                  }
+                  controller.doubleClick.value = false;
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -1865,5 +1940,13 @@ class InventoryCntPage extends StatelessWidget {
     );
   }
 
+  /// 임시 엑셀 만들기용
+  Widget _buttt() {
+    return TextButton(onPressed: () async {
+      List<String> aa = ['번호', '자재코드','자재명','LOT번호','위치','수량','단위수량','총수량','실사위치','실사수량','실사 개당단위수량','실사총수량', '단위', '바코드'];
+      await controller.exportToExcel(controller.rowDatas.value, aa);
+      controller.moveFileToDownloads();
+    }, child: Text('엑셀'));
+  }
 
 }

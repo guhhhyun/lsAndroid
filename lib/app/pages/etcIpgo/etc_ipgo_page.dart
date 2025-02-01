@@ -328,6 +328,8 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                     Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
                   }
 
+                  controller.isChecked.value = false;
+
                   /* await controller.checkBtn();
                   controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
                   Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
@@ -1029,7 +1031,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
 
 
   Widget _alertDialog(BuildContext context) {
-
+    controller.isNewFocus.value == false ? controller.requestFocus() : null;
     return AlertDialog(
         backgroundColor: AppTheme.white,
         shape: RoundedRectangleBorder(
@@ -1146,13 +1148,14 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  width: MediaQuery.of(context).size.width/2 -90,
+                  width: MediaQuery.of(context).size.width/2 -220,
                     height: 290,
                     child: PlutoGrid(
                       mode: PlutoGridMode.selectWithOneTap, // 탭 한번으로 반응하게?
                       columns: gridCols3(context),
                       rows: controller.rowDatas4.value,
                       onRowChecked: (event) {
+                        controller.isNewFocus.value = true;
                         if (event.isChecked != null) {
                           if(event.isAll == true) {
                             if (event.isChecked == true) {
@@ -1183,6 +1186,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
 
                       },
                       onLoaded: (PlutoGridOnLoadedEvent event) {
+                        controller.isNewFocus.value = true;
                         controller.gridStateMgr4 = event.stateManager;
                         controller.gridStateMgr4.setSelectingMode(PlutoGridSelectingMode.none);
                         // Get.log('${controller.gridStateMgr2.currentRowIdx!}');
@@ -1234,7 +1238,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   ),
                 SizedBox(width: 12,),
                 Container(
-                  width: MediaQuery.of(context).size.width/2 - 40,
+                  width: MediaQuery.of(context).size.width/2 + 90,
                   height: 290,
                   child: PlutoGrid(
                     columns: gridCols4(context),
@@ -1291,7 +1295,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
-      PlutoColumn(
+     /* PlutoColumn(
         title: '창고',
         field: 'whNm',
         type: PlutoColumnType.text(),
@@ -1305,7 +1309,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
-      ),
+      ),*/
       PlutoColumn(
         title: '실사여부',
         field: 'stkIspSts',
@@ -1336,7 +1340,21 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
-
+      PlutoColumn(
+        title: '라벨번호',
+        field: 'tagNo',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
       /*PlutoColumn(
         title: '입고번호',
         field: 'inbNo',
@@ -1397,7 +1415,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),*/
-      PlutoColumn(
+   /*   PlutoColumn(
         title: '입고일',
         field: 'inbDt',
         type: PlutoColumnType.text(),
@@ -1411,7 +1429,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
-      ),
+      ),*/
      /* PlutoColumn(
         title: '라벨타입',
         field: 'tagTypeNm',
@@ -2133,6 +2151,9 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
           child: Container(
             height: 40,
             child: TextFormField(
+              onTap: (){
+                controller.isNewFocus.value = true;
+              },
               readOnly:  plag == 0 ? true : false,
               expands :true,
               minLines: null,
@@ -2209,22 +2230,24 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                                   MapEntry(key, PlutoCell(value: value ?? '' )),
                               )))
                           );
-                          controller.textQrController.text = '';
-                          controller.gridStateMgr4.removeAllRows();
+
+                     //     controller.gridStateMgr4.removeAllRows();
                           controller.gridStateMgr4.appendRows(controller.rowDatas4);
 
-                          controller.rowDatas5.value = List<PlutoRow>.generate(controller.etcIpgoQrDetailTotalList[controller.etcIpgoQrDetailTotalList.length - 1].length, (index) =>
-                              PlutoRow(cells:
-                              Map.from((controller.etcIpgoQrDetailTotalList[controller.currentRowIndex2.value][index]).map((key, value) =>
-                                  MapEntry(key, PlutoCell(value: value ?? '' )),
-                              )))
-                          );
-                          controller.gridStateMgr5.removeAllRows();
-                          controller.gridStateMgr5.appendRows(controller.rowDatas5);
-
+                          if(controller.etcIpgoQrDetailTotalList.isNotEmpty) {
+                            controller.rowDatas5.value = List<PlutoRow>.generate(controller.etcIpgoQrDetailTotalList[controller.etcIpgoQrDetailTotalList.length - 1].length, (index) =>
+                                PlutoRow(cells:
+                                Map.from((controller.etcIpgoQrDetailTotalList[controller.currentRowIndex2.value][index]).map((key, value) =>
+                                    MapEntry(key, PlutoCell(value: value ?? '' )),
+                                )))
+                            );
+                            controller.gridStateMgr5.removeAllRows();
+                            controller.gridStateMgr5.appendRows(controller.rowDatas5);
+                          }
                           controller.focusNode.requestFocus();
-
+                          controller.textQrController.text = '';
                         }
+                        controller.focusNode.requestFocus();
                       }
                     }
                   },

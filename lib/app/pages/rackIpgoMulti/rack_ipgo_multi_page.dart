@@ -758,6 +758,25 @@ class RackIpgoMultiPage extends StatelessWidget {
                                 return _alertDialog(context);
                               },
                             ); // context가 왜?
+                            /// 혹시 랙입고 중복라벨 시 전부 넣어주는거로 바뀐거면?
+                            /* /// /// 혹시 랙입고 중복라벨 시 전부 넣어주는거로 바뀐거면?
+                            controller.rowDatas.value = List<PlutoRow>.generate(controller.registRackIpgoList.length, (index) =>
+                                PlutoRow(cells:
+                                Map.from((controller.registRackIpgoList[index]).map((key, value) =>
+                                    MapEntry(key, PlutoCell(value: value == null ? '' : *//*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : *//*value )),
+                                )))
+                            );
+                            controller.gridStateMgr.removeAllRows();
+                            controller.gridStateMgr.appendRows(controller.rowDatas.value);
+                            controller.gridStateMgr.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
+                            if(controller.rackIpgoList.isNotEmpty) {
+                              controller.zoneText.value = controller.rackIpgoList[0]['LAST_ZONE_NM']?? '';
+                              controller.locText.value = controller.rackIpgoList[0]['LAST_LOC']?? '';
+                              controller.zoneCd.value = controller.rackIpgoList[0]['ZONE_CD']?? '';
+                              controller.locCd.value = controller.rackIpgoList[0]['LOC_CD'] ?? '';
+                            }
+                            controller.textQrMultiController.text = '';*/
+
                           }else {
                             controller.rowDatas.value = List<PlutoRow>.generate(controller.registRackIpgoList.length, (index) =>
                                 PlutoRow(cells:
@@ -768,10 +787,13 @@ class RackIpgoMultiPage extends StatelessWidget {
                             controller.gridStateMgr.removeAllRows();
                             controller.gridStateMgr.appendRows(controller.rowDatas.value);
                             controller.gridStateMgr.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
-                            controller.zoneText.value = controller.rackIpgoList[0]['LAST_ZONE_NM']?? '';
-                            controller.locText.value = controller.rackIpgoList[0]['LAST_LOC']?? '';
-                            controller.zoneCd.value = controller.rackIpgoList[0]['ZONE_CD']?? '';
-                            controller.locCd.value = controller.rackIpgoList[0]['LOC_CD'] ?? '';
+                            if(controller.rackIpgoList.isNotEmpty) {
+                              controller.zoneText.value = controller.rackIpgoList[0]['LAST_ZONE_NM']?? '';
+                              controller.locText.value = controller.rackIpgoList[0]['LAST_LOC']?? '';
+                              controller.zoneCd.value = controller.rackIpgoList[0]['ZONE_CD']?? '';
+                              controller.locCd.value = controller.rackIpgoList[0]['LOC_CD'] ?? '';
+                            }
+
                             controller.textQrMultiController.text = '';
                             // 랙 입고 controller.textQrMultoController.text = '';
                             // controller.zoneCd.value = controller.tackIpgoList[0] controller.value.

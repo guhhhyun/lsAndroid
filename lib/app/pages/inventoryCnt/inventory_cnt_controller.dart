@@ -1,16 +1,24 @@
 
 
 import 'dart:ffi';
+import 'dart:io';
 
+import 'package:excel/excel.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-
+import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lsandroid/app/common/global_service.dart';
-import 'package:lsandroid/app/model/ipgoModel/ipgo_model.dart';
 import 'package:lsandroid/app/net/home_api.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:pluto_grid/pluto_grid.dart';
+RxString exelFileName = ''.obs; // 엑셀파일 이름
+RxString pdfFileName = ''.obs; // pdf파일 이름
+RxBool isExelSuc = false.obs; // 엑셀파일생성 성공여부
+RxBool isPdfSuc = false.obs; // PDF 파일생성 성공여부
 
 class InventoryCntController extends GetxController with GetSingleTickerProviderStateMixin {
 
@@ -135,11 +143,12 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
   RxInt currentMasterIdx = 0.obs;
   RxBool duplicationLabel = false.obs;
   RxBool isCheckBool = true.obs;
-  RxString isCheck = 'N'.obs;
+  RxString isCheck = 'Y'.obs;
   RxString invType = ''.obs;
   RxString invTypeCode = ''.obs;
   RxList<dynamic> cheburnIpgoLotList = [].obs; //
 
+  RxBool doubleClick = false.obs;
 
 
 
@@ -236,6 +245,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
 
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
+          popUpDataList.clear();
           popUpDataList.addAll(retVal.body![1]);
           isDbConnected.value = true;
         }else{
@@ -649,7 +659,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
 
     for(var i = 0; i < inventoryCntDetailList.length; i++) {
       Get.log('checkList:: ${checkList}');
-      if(checkList[i] == true) {
+   //   if(checkList[i] == true) {
         var params = {
           'programId': 'A1020',
           'procedure': 'USP_A4041_S01',
@@ -766,7 +776,6 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
             if(retVal.body![0]['returnMessage'] == '') {
               Get.log('저장 성공');
               isDbConnected.value = true;
-              statusText.value = '정상 조회되었습니다.';
             }else {
               statusText.value = retVal.body![0]['returnMessage'].toString();
               isDbConnected.value = false;
@@ -779,10 +788,11 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
           Get.log('checkBtn catch !!!!');
           Get.log(e.toString());
           isDbConnected.value = false;
+          statusText.value = '';
         } finally {
           bLoading.value = false;
         }
-      }
+    //  }
     }
   }
 
@@ -1014,7 +1024,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
     }
   }
 
-
+  //
   /// 재고실사 디테일 조회
   Future<void> checkDetailBtn() async {
     Get.log('조회 버튼 클릭');
@@ -1056,30 +1066,41 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
 
     try {
       final retVal = await HomeApi.to.reqIpgo(params);
+      inventoryCntDetailList.clear();
 
       if (retVal.resultCode == '0000') {
-        inventoryCntDetailList.value.addAll(retVal.body![1]);
-        for(var i = 0; i < inventoryCntDetailList.length; i++) {
-          inventoryCntDetailList[i].addAll({'no': i + 1});
-          inventoryCntDetailList[i].addAll({'checkBox': ''});
-          checkList.add(false);
+        if(retVal.body![0]['resultMessage'] == '') {
+          inventoryCntDetailList.value.addAll(retVal.body![1]);
+          for(var i = 0; i < inventoryCntDetailList.length; i++) {
+
+        //    inventoryCntDetailList[i].addAll({'cntQty':  inventoryCntDetailList[i].truncate()});
+            inventoryCntDetailList[i].addAll({'no': i + 1});
+            inventoryCntDetailList[i].addAll({'checkBox': ''});
+            checkList.add(false);
+          }
+          Get.log(inventoryCntDetailList.toString());
+          Get.log('조회 성공');
+          isDbConnected.value = true;
+          statusText.value = '정상 조회됐습니다.';
+        }else {
+          statusText.value = retVal.body![0]['resultMessage'];
         }
 
-        Get.log(inventoryCntDetailList.toString());
-        Get.log('조회 성공');
-        isDbConnected.value = true;
       } else {
         Get.log('조회 실패');
-
+        statusText.value = retVal.body![0]['resultMessage'];
       }
     } catch (e) {
       Get.log('checkBtn catch !!!!');
       Get.log(e.toString());
       isDbConnected.value = false;
+      doubleClick.value = false;
+      statusText.value = '';
     } finally {
       bLoading.value = false;
       isChecked.value = false;
-       plutoRow();
+      doubleClick.value = false;
+      plutoRow();
     }
   }
 
@@ -1176,10 +1197,11 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
 
 
   Future<void> plutoRow() async {
+
     rowDatas.value = List<PlutoRow>.generate(inventoryCntDetailList.length, (index) =>
         PlutoRow(cells:
         Map.from((inventoryCntDetailList[index]).map((key, value) =>
-            MapEntry(key, PlutoCell(value: key == 'cntWhtUnit' ? value == null || value == '' ? 'EA' : value : value ?? '' )),
+            MapEntry(key, PlutoCell(value: key == 'cntQty' ? value.toInt() : key == 'cntWhtUnit' ? value == null || value == '' ? 'EA' : value : value ?? '' )),
         )))
     ).reversed.toList();
 
@@ -1188,6 +1210,13 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
     gridStateMgr.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
   }
 
+  final PlutoDebounce debounce = PlutoDebounce(
+    duration: const Duration(milliseconds: 300),
+  );
+
+  PlutoCell? currentCell;
+
+  dynamic initialValue;
 
 
   final FocusNode focusNode = FocusNode();
@@ -1196,6 +1225,166 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
     Future.microtask(() => focusNode.requestFocus());
     if(focusCnt.value++ > 1) focusCnt.value = 0;
     else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
+  }
+
+
+
+  /// 엑셀, PDF 혹시 모르니 만들어두기
+
+
+  // Excel 파일 생성 함수
+  Future<void> exportToExcel(List<PlutoRow> rows, List<String> columnNames) async {
+    Directory? appDocDir = await getApplicationDocumentsDirectory();
+    // List<String> columnNames = ['Name', 'Age', 'City'];
+    var excel = Excel.createExcel();
+    var sheet = excel['Sheet1'];
+    // 컬럼 이름 추가
+    for (int i = 0; i < columnNames.length; i++) {
+      sheet.cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0)).value = TextCellValue(columnNames[i]);
+    }
+
+    // 각 행 데이터를 추가
+    for (int rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+      var row = rows[rowIndex];
+      List<String> rowValues = [
+        row.cells['no']?.value.toString() ?? '',
+        row.cells['itemCd']?.value.toString() ?? '',
+        row.cells['itemNm']?.value.toString() ?? '',
+        row.cells['lotNo']?.value.toString() ?? '',
+        row.cells['sysLocCd']?.value.toString() ?? '',
+        row.cells['sysQty']?.value.toString() ?? '',
+        row.cells['sysWht']?.value.toString() ?? '',
+        row.cells['sysTotQty']?.value.toString() ?? '',
+        row.cells['cntLocCd']?.value.toString() ?? '',
+        row.cells['cntQty']?.value.toString() ?? '',
+        row.cells['cntWht']?.value.toString() ?? '',
+        row.cells['cntTotQty']?.value.toString() ?? '',
+        row.cells['cntWhtUnit']?.value.toString() ?? '',
+        row.cells['tagNo']?.value.toString() ?? '',
+      ];
+
+      // 행 데이터 추가
+      for (int colIndex = 0; colIndex < rowValues.length; colIndex++) {
+        sheet.cell(CellIndex.indexByColumnRow(columnIndex: colIndex, rowIndex: rowIndex + 1)).value = TextCellValue(rowValues[colIndex]);
+      }
+    }
+
+    // Excel 파일 저장
+    String fileName = "count_${DateFormat('yyMMddHHmmss').format(DateTime.now())}.xlsx";
+    String outputFile = "${appDocDir.path}/$fileName";
+    exelFileName.value = fileName;
+    List<int>? fileBytes = excel.save();
+    if (fileBytes != null) {
+      File(join(outputFile))
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(fileBytes);
+    }
+
+    print('Excel 파일이 성공적으로 생성되었습니다: $outputFile');
+  }
+
+  Future<void> moveFileToDownloads() async {
+    isExelSuc.value = false;
+    try{
+      // 기존 파일 경로
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      File originalFile = File('${appDocDir.path}/${exelFileName.value}');
+
+      // 새 파일 경로
+      Directory downloadsDir = Directory('/storage/emulated/0/Download'); // Downloads 폴더
+      File newFile = File('${downloadsDir.path}/${exelFileName.value}');
+
+      // 파일 이동
+      if (await originalFile.exists()) {
+        await originalFile.copy(newFile.path);
+        print('파일이동 경로: ${newFile.path}');
+      } else {
+        print('원본파일이 존재하지않습니다.');
+      }
+      isExelSuc.value = true;
+    }catch(e) {
+      Get.log('file catch !!!!');
+      Get.log(e.toString());
+    }
+  }
+
+
+  Future<void> exportToPdf(List<PlutoRow> rows, List<String> columnNames) async {
+    final pdf = pw.Document();
+    // 폰트 로드
+    final fontData = await rootBundle.load("assets/font/godic.ttf");
+    final ttf = pw.Font.ttf(fontData.buffer.asByteData());
+    // PDF 테이블을 만들기 위한 데이터 생성
+    final tableHeaders = columnNames;
+    final tableData = rows.map((row) {
+      return [
+        row.cells['no']?.value.toString() ?? '',
+        row.cells['itemCd']?.value.toString() ?? '',
+        row.cells['itemNm']?.value.toString() ?? '',
+        row.cells['lotNo']?.value.toString() ?? '',
+        row.cells['sysLocCd']?.value.toString() ?? '',
+        row.cells['sysQty']?.value.toString() ?? '',
+        row.cells['sysWht']?.value.toString() ?? '',
+        row.cells['sysTotQty']?.value.toString() ?? '',
+        row.cells['cntLocCd']?.value.toString() ?? '',
+        row.cells['cntQty']?.value.toString() ?? '',
+        row.cells['cntWht']?.value.toString() ?? '',
+        row.cells['cntTotQty']?.value.toString() ?? '',
+        row.cells['cntWhtUnit']?.value.toString() ?? '',
+        row.cells['tagNo']?.value.toString() ?? '',
+      ];
+    }).toList();
+
+    // PDF 페이지에 테이블 추가
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (context) {
+          return pw.Table.fromTextArray(
+            border: pw.TableBorder.all(color: PdfColors.black),
+            cellStyle: pw.TextStyle(fontSize: 10, font: ttf),
+            headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, font: ttf),
+            headers: tableHeaders,
+            data: tableData,
+          );
+        },
+      ),
+    );
+
+    // 파일 저장
+    Directory? appDocDir = await getApplicationDocumentsDirectory();
+    String fileName = "picking_${DateFormat('yyMMddHHmmss').format(DateTime.now())}.pdf";
+    String outputFile = "${appDocDir.path}/${fileName}";
+    pdfFileName.value = fileName;
+    final file = File(outputFile);
+    await file.writeAsBytes(await pdf.save());
+
+    print('PDF 파일이 성공적으로 생성되었습니다: $outputFile');
+  }
+
+  Future<void> movePdfFileToDownloads() async {
+    isPdfSuc.value = false;
+    try{
+      // 기존 파일 경로
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      File originalFile = File('${appDocDir.path}/${pdfFileName.value}');
+
+      // 새 파일 경로
+      Directory downloadsDir = Directory('/storage/emulated/0/Download'); // Downloads 폴더
+      File newFile = File('${downloadsDir.path}/${pdfFileName.value}');
+
+      // 파일 이동
+      if (await originalFile.exists()) {
+        await originalFile.copy(newFile.path);
+        print('파일이동 경로: ${newFile.path}');
+      } else {
+        print('원본파일이 존재하지않습니다.');
+      }
+      isPdfSuc.value = true;
+    }catch(e) {
+      Get.log('file catch !!!!');
+      Get.log(e.toString());
+    }
   }
 
 
@@ -1230,6 +1419,11 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
     }
 
   }
+
+
+
+
+
 
   @override
   void onReady() {

@@ -753,29 +753,29 @@ mixin _$SubBodyItem {
   String get LOC_CD => throw _privateConstructorUsedError;
   String get LAST_LOC => throw _privateConstructorUsedError;
   dynamic get CUST_CD => throw _privateConstructorUsedError;
-  double get QTY => throw _privateConstructorUsedError;
-  dynamic get VEND_NM => throw _privateConstructorUsedError;
+  int get QTY => throw _privateConstructorUsedError;
+  String get VEND_NM => throw _privateConstructorUsedError;
   String get ZONE_NM => throw _privateConstructorUsedError;
-  dynamic get REMARK => throw _privateConstructorUsedError;
-  dynamic get WHT_UNIT => throw _privateConstructorUsedError;
-  dynamic get PRT_NO => throw _privateConstructorUsedError;
-  dynamic get BOX_WHT => throw _privateConstructorUsedError;
-  dynamic get WHT => throw _privateConstructorUsedError;
+  String get REMARK => throw _privateConstructorUsedError;
+  String get WHT_UNIT => throw _privateConstructorUsedError;
+  String get PRT_NO => throw _privateConstructorUsedError;
+  double get BOX_WHT => throw _privateConstructorUsedError;
+  double get WHT => throw _privateConstructorUsedError;
   String get ITEM_CD => throw _privateConstructorUsedError;
   String get LOC_DT => throw _privateConstructorUsedError;
   String get TAG_NO => throw _privateConstructorUsedError;
   String get INB_YN => throw _privateConstructorUsedError;
-  dynamic get EXP_DT => throw _privateConstructorUsedError;
-  dynamic get EXTR_VAL => throw _privateConstructorUsedError;
+  String get EXP_DT => throw _privateConstructorUsedError;
+  String get EXTR_VAL => throw _privateConstructorUsedError;
   int get D_QTY => throw _privateConstructorUsedError;
-  dynamic get BOX_NM => throw _privateConstructorUsedError;
-  dynamic get PRT_DT => throw _privateConstructorUsedError;
-  dynamic get SET_QTY => throw _privateConstructorUsedError;
-  dynamic get BOX_NO => throw _privateConstructorUsedError;
-  dynamic get PJT_NO => throw _privateConstructorUsedError;
-  dynamic get PJT_NM => throw _privateConstructorUsedError;
-  dynamic get VEND_CD => throw _privateConstructorUsedError;
-  dynamic get TOT_WHT => throw _privateConstructorUsedError;
+  String get BOX_NM => throw _privateConstructorUsedError;
+  String get PRT_DT => throw _privateConstructorUsedError;
+  int get SET_QTY => throw _privateConstructorUsedError;
+  String get BOX_NO => throw _privateConstructorUsedError;
+  String get PJT_NO => throw _privateConstructorUsedError;
+  String get PJT_NM => throw _privateConstructorUsedError;
+  String get VEND_CD => throw _privateConstructorUsedError;
+  double get TOT_WHT => throw _privateConstructorUsedError;
   String get TAG_TYPE => throw _privateConstructorUsedError;
   String get LOT_NO => throw _privateConstructorUsedError;
   String get ZONE_CD => throw _privateConstructorUsedError;
@@ -802,29 +802,29 @@ abstract class $SubBodyItemCopyWith<$Res> {
       String LOC_CD,
       String LAST_LOC,
       dynamic CUST_CD,
-      double QTY,
-      dynamic VEND_NM,
+      int QTY,
+      String VEND_NM,
       String ZONE_NM,
-      dynamic REMARK,
-      dynamic WHT_UNIT,
-      dynamic PRT_NO,
-      dynamic BOX_WHT,
-      dynamic WHT,
+      String REMARK,
+      String WHT_UNIT,
+      String PRT_NO,
+      double BOX_WHT,
+      double WHT,
       String ITEM_CD,
       String LOC_DT,
       String TAG_NO,
       String INB_YN,
-      dynamic EXP_DT,
-      dynamic EXTR_VAL,
+      String EXP_DT,
+      String EXTR_VAL,
       int D_QTY,
-      dynamic BOX_NM,
-      dynamic PRT_DT,
-      dynamic SET_QTY,
-      dynamic BOX_NO,
-      dynamic PJT_NO,
-      dynamic PJT_NM,
-      dynamic VEND_CD,
-      dynamic TOT_WHT,
+      String BOX_NM,
+      String PRT_DT,
+      int SET_QTY,
+      String BOX_NO,
+      String PJT_NO,
+      String PJT_NM,
+      String VEND_CD,
+      double TOT_WHT,
       String TAG_TYPE,
       String LOT_NO,
       String ZONE_CD,
@@ -853,28 +853,28 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
     Object? LAST_LOC = null,
     Object? CUST_CD = freezed,
     Object? QTY = null,
-    Object? VEND_NM = freezed,
+    Object? VEND_NM = null,
     Object? ZONE_NM = null,
-    Object? REMARK = freezed,
-    Object? WHT_UNIT = freezed,
-    Object? PRT_NO = freezed,
-    Object? BOX_WHT = freezed,
-    Object? WHT = freezed,
+    Object? REMARK = null,
+    Object? WHT_UNIT = null,
+    Object? PRT_NO = null,
+    Object? BOX_WHT = null,
+    Object? WHT = null,
     Object? ITEM_CD = null,
     Object? LOC_DT = null,
     Object? TAG_NO = null,
     Object? INB_YN = null,
-    Object? EXP_DT = freezed,
-    Object? EXTR_VAL = freezed,
+    Object? EXP_DT = null,
+    Object? EXTR_VAL = null,
     Object? D_QTY = null,
-    Object? BOX_NM = freezed,
-    Object? PRT_DT = freezed,
-    Object? SET_QTY = freezed,
-    Object? BOX_NO = freezed,
-    Object? PJT_NO = freezed,
-    Object? PJT_NM = freezed,
-    Object? VEND_CD = freezed,
-    Object? TOT_WHT = freezed,
+    Object? BOX_NM = null,
+    Object? PRT_DT = null,
+    Object? SET_QTY = null,
+    Object? BOX_NO = null,
+    Object? PJT_NO = null,
+    Object? PJT_NM = null,
+    Object? VEND_CD = null,
+    Object? TOT_WHT = null,
     Object? TAG_TYPE = null,
     Object? LOT_NO = null,
     Object? ZONE_CD = null,
@@ -910,35 +910,35 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
       QTY: null == QTY
           ? _value.QTY
           : QTY // ignore: cast_nullable_to_non_nullable
-              as double,
-      VEND_NM: freezed == VEND_NM
+              as int,
+      VEND_NM: null == VEND_NM
           ? _value.VEND_NM
           : VEND_NM // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String,
       ZONE_NM: null == ZONE_NM
           ? _value.ZONE_NM
           : ZONE_NM // ignore: cast_nullable_to_non_nullable
               as String,
-      REMARK: freezed == REMARK
+      REMARK: null == REMARK
           ? _value.REMARK
           : REMARK // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      WHT_UNIT: freezed == WHT_UNIT
+              as String,
+      WHT_UNIT: null == WHT_UNIT
           ? _value.WHT_UNIT
           : WHT_UNIT // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      PRT_NO: freezed == PRT_NO
+              as String,
+      PRT_NO: null == PRT_NO
           ? _value.PRT_NO
           : PRT_NO // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      BOX_WHT: freezed == BOX_WHT
+              as String,
+      BOX_WHT: null == BOX_WHT
           ? _value.BOX_WHT
           : BOX_WHT // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      WHT: freezed == WHT
+              as double,
+      WHT: null == WHT
           ? _value.WHT
           : WHT // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as double,
       ITEM_CD: null == ITEM_CD
           ? _value.ITEM_CD
           : ITEM_CD // ignore: cast_nullable_to_non_nullable
@@ -955,50 +955,50 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
           ? _value.INB_YN
           : INB_YN // ignore: cast_nullable_to_non_nullable
               as String,
-      EXP_DT: freezed == EXP_DT
+      EXP_DT: null == EXP_DT
           ? _value.EXP_DT
           : EXP_DT // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      EXTR_VAL: freezed == EXTR_VAL
+              as String,
+      EXTR_VAL: null == EXTR_VAL
           ? _value.EXTR_VAL
           : EXTR_VAL // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String,
       D_QTY: null == D_QTY
           ? _value.D_QTY
           : D_QTY // ignore: cast_nullable_to_non_nullable
               as int,
-      BOX_NM: freezed == BOX_NM
+      BOX_NM: null == BOX_NM
           ? _value.BOX_NM
           : BOX_NM // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      PRT_DT: freezed == PRT_DT
+              as String,
+      PRT_DT: null == PRT_DT
           ? _value.PRT_DT
           : PRT_DT // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      SET_QTY: freezed == SET_QTY
+              as String,
+      SET_QTY: null == SET_QTY
           ? _value.SET_QTY
           : SET_QTY // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      BOX_NO: freezed == BOX_NO
+              as int,
+      BOX_NO: null == BOX_NO
           ? _value.BOX_NO
           : BOX_NO // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      PJT_NO: freezed == PJT_NO
+              as String,
+      PJT_NO: null == PJT_NO
           ? _value.PJT_NO
           : PJT_NO // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      PJT_NM: freezed == PJT_NM
+              as String,
+      PJT_NM: null == PJT_NM
           ? _value.PJT_NM
           : PJT_NM // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      VEND_CD: freezed == VEND_CD
+              as String,
+      VEND_CD: null == VEND_CD
           ? _value.VEND_CD
           : VEND_CD // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      TOT_WHT: freezed == TOT_WHT
+              as String,
+      TOT_WHT: null == TOT_WHT
           ? _value.TOT_WHT
           : TOT_WHT // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as double,
       TAG_TYPE: null == TAG_TYPE
           ? _value.TAG_TYPE
           : TAG_TYPE // ignore: cast_nullable_to_non_nullable
@@ -1042,29 +1042,29 @@ abstract class _$$SubBodyItemImplCopyWith<$Res>
       String LOC_CD,
       String LAST_LOC,
       dynamic CUST_CD,
-      double QTY,
-      dynamic VEND_NM,
+      int QTY,
+      String VEND_NM,
       String ZONE_NM,
-      dynamic REMARK,
-      dynamic WHT_UNIT,
-      dynamic PRT_NO,
-      dynamic BOX_WHT,
-      dynamic WHT,
+      String REMARK,
+      String WHT_UNIT,
+      String PRT_NO,
+      double BOX_WHT,
+      double WHT,
       String ITEM_CD,
       String LOC_DT,
       String TAG_NO,
       String INB_YN,
-      dynamic EXP_DT,
-      dynamic EXTR_VAL,
+      String EXP_DT,
+      String EXTR_VAL,
       int D_QTY,
-      dynamic BOX_NM,
-      dynamic PRT_DT,
-      dynamic SET_QTY,
-      dynamic BOX_NO,
-      dynamic PJT_NO,
-      dynamic PJT_NM,
-      dynamic VEND_CD,
-      dynamic TOT_WHT,
+      String BOX_NM,
+      String PRT_DT,
+      int SET_QTY,
+      String BOX_NO,
+      String PJT_NO,
+      String PJT_NM,
+      String VEND_CD,
+      double TOT_WHT,
       String TAG_TYPE,
       String LOT_NO,
       String ZONE_CD,
@@ -1091,28 +1091,28 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
     Object? LAST_LOC = null,
     Object? CUST_CD = freezed,
     Object? QTY = null,
-    Object? VEND_NM = freezed,
+    Object? VEND_NM = null,
     Object? ZONE_NM = null,
-    Object? REMARK = freezed,
-    Object? WHT_UNIT = freezed,
-    Object? PRT_NO = freezed,
-    Object? BOX_WHT = freezed,
-    Object? WHT = freezed,
+    Object? REMARK = null,
+    Object? WHT_UNIT = null,
+    Object? PRT_NO = null,
+    Object? BOX_WHT = null,
+    Object? WHT = null,
     Object? ITEM_CD = null,
     Object? LOC_DT = null,
     Object? TAG_NO = null,
     Object? INB_YN = null,
-    Object? EXP_DT = freezed,
-    Object? EXTR_VAL = freezed,
+    Object? EXP_DT = null,
+    Object? EXTR_VAL = null,
     Object? D_QTY = null,
-    Object? BOX_NM = freezed,
-    Object? PRT_DT = freezed,
-    Object? SET_QTY = freezed,
-    Object? BOX_NO = freezed,
-    Object? PJT_NO = freezed,
-    Object? PJT_NM = freezed,
-    Object? VEND_CD = freezed,
-    Object? TOT_WHT = freezed,
+    Object? BOX_NM = null,
+    Object? PRT_DT = null,
+    Object? SET_QTY = null,
+    Object? BOX_NO = null,
+    Object? PJT_NO = null,
+    Object? PJT_NM = null,
+    Object? VEND_CD = null,
+    Object? TOT_WHT = null,
     Object? TAG_TYPE = null,
     Object? LOT_NO = null,
     Object? ZONE_CD = null,
@@ -1145,17 +1145,35 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
       QTY: null == QTY
           ? _value.QTY
           : QTY // ignore: cast_nullable_to_non_nullable
-              as double,
-      VEND_NM: freezed == VEND_NM ? _value.VEND_NM! : VEND_NM,
+              as int,
+      VEND_NM: null == VEND_NM
+          ? _value.VEND_NM
+          : VEND_NM // ignore: cast_nullable_to_non_nullable
+              as String,
       ZONE_NM: null == ZONE_NM
           ? _value.ZONE_NM
           : ZONE_NM // ignore: cast_nullable_to_non_nullable
               as String,
-      REMARK: freezed == REMARK ? _value.REMARK! : REMARK,
-      WHT_UNIT: freezed == WHT_UNIT ? _value.WHT_UNIT! : WHT_UNIT,
-      PRT_NO: freezed == PRT_NO ? _value.PRT_NO! : PRT_NO,
-      BOX_WHT: freezed == BOX_WHT ? _value.BOX_WHT! : BOX_WHT,
-      WHT: freezed == WHT ? _value.WHT! : WHT,
+      REMARK: null == REMARK
+          ? _value.REMARK
+          : REMARK // ignore: cast_nullable_to_non_nullable
+              as String,
+      WHT_UNIT: null == WHT_UNIT
+          ? _value.WHT_UNIT
+          : WHT_UNIT // ignore: cast_nullable_to_non_nullable
+              as String,
+      PRT_NO: null == PRT_NO
+          ? _value.PRT_NO
+          : PRT_NO // ignore: cast_nullable_to_non_nullable
+              as String,
+      BOX_WHT: null == BOX_WHT
+          ? _value.BOX_WHT
+          : BOX_WHT // ignore: cast_nullable_to_non_nullable
+              as double,
+      WHT: null == WHT
+          ? _value.WHT
+          : WHT // ignore: cast_nullable_to_non_nullable
+              as double,
       ITEM_CD: null == ITEM_CD
           ? _value.ITEM_CD
           : ITEM_CD // ignore: cast_nullable_to_non_nullable
@@ -1172,20 +1190,50 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
           ? _value.INB_YN
           : INB_YN // ignore: cast_nullable_to_non_nullable
               as String,
-      EXP_DT: freezed == EXP_DT ? _value.EXP_DT! : EXP_DT,
-      EXTR_VAL: freezed == EXTR_VAL ? _value.EXTR_VAL! : EXTR_VAL,
+      EXP_DT: null == EXP_DT
+          ? _value.EXP_DT
+          : EXP_DT // ignore: cast_nullable_to_non_nullable
+              as String,
+      EXTR_VAL: null == EXTR_VAL
+          ? _value.EXTR_VAL
+          : EXTR_VAL // ignore: cast_nullable_to_non_nullable
+              as String,
       D_QTY: null == D_QTY
           ? _value.D_QTY
           : D_QTY // ignore: cast_nullable_to_non_nullable
               as int,
-      BOX_NM: freezed == BOX_NM ? _value.BOX_NM! : BOX_NM,
-      PRT_DT: freezed == PRT_DT ? _value.PRT_DT! : PRT_DT,
-      SET_QTY: freezed == SET_QTY ? _value.SET_QTY! : SET_QTY,
-      BOX_NO: freezed == BOX_NO ? _value.BOX_NO! : BOX_NO,
-      PJT_NO: freezed == PJT_NO ? _value.PJT_NO! : PJT_NO,
-      PJT_NM: freezed == PJT_NM ? _value.PJT_NM! : PJT_NM,
-      VEND_CD: freezed == VEND_CD ? _value.VEND_CD! : VEND_CD,
-      TOT_WHT: freezed == TOT_WHT ? _value.TOT_WHT! : TOT_WHT,
+      BOX_NM: null == BOX_NM
+          ? _value.BOX_NM
+          : BOX_NM // ignore: cast_nullable_to_non_nullable
+              as String,
+      PRT_DT: null == PRT_DT
+          ? _value.PRT_DT
+          : PRT_DT // ignore: cast_nullable_to_non_nullable
+              as String,
+      SET_QTY: null == SET_QTY
+          ? _value.SET_QTY
+          : SET_QTY // ignore: cast_nullable_to_non_nullable
+              as int,
+      BOX_NO: null == BOX_NO
+          ? _value.BOX_NO
+          : BOX_NO // ignore: cast_nullable_to_non_nullable
+              as String,
+      PJT_NO: null == PJT_NO
+          ? _value.PJT_NO
+          : PJT_NO // ignore: cast_nullable_to_non_nullable
+              as String,
+      PJT_NM: null == PJT_NM
+          ? _value.PJT_NM
+          : PJT_NM // ignore: cast_nullable_to_non_nullable
+              as String,
+      VEND_CD: null == VEND_CD
+          ? _value.VEND_CD
+          : VEND_CD // ignore: cast_nullable_to_non_nullable
+              as String,
+      TOT_WHT: null == TOT_WHT
+          ? _value.TOT_WHT
+          : TOT_WHT // ignore: cast_nullable_to_non_nullable
+              as double,
       TAG_TYPE: null == TAG_TYPE
           ? _value.TAG_TYPE
           : TAG_TYPE // ignore: cast_nullable_to_non_nullable
@@ -1224,14 +1272,14 @@ class _$SubBodyItemImpl implements _SubBodyItem {
       this.LOC_CD = '',
       this.LAST_LOC = '',
       this.CUST_CD = '',
-      this.QTY = 0.0,
+      this.QTY = 0,
       this.VEND_NM = '',
       this.ZONE_NM = '',
       this.REMARK = '',
       this.WHT_UNIT = '',
       this.PRT_NO = '',
-      this.BOX_WHT = '',
-      this.WHT = '',
+      this.BOX_WHT = 0.0,
+      this.WHT = 0.0,
       this.ITEM_CD = '',
       this.LOC_DT = '',
       this.TAG_NO = '',
@@ -1241,12 +1289,12 @@ class _$SubBodyItemImpl implements _SubBodyItem {
       this.D_QTY = 0,
       this.BOX_NM = '',
       this.PRT_DT = '',
-      this.SET_QTY = '',
+      this.SET_QTY = 0,
       this.BOX_NO = '',
       this.PJT_NO = '',
       this.PJT_NM = '',
       this.VEND_CD = '',
-      this.TOT_WHT = '',
+      this.TOT_WHT = 0.0,
       this.TAG_TYPE = '',
       this.LOT_NO = '',
       this.ZONE_CD = '',
@@ -1277,28 +1325,28 @@ class _$SubBodyItemImpl implements _SubBodyItem {
   final dynamic CUST_CD;
   @override
   @JsonKey()
-  final double QTY;
+  final int QTY;
   @override
   @JsonKey()
-  final dynamic VEND_NM;
+  final String VEND_NM;
   @override
   @JsonKey()
   final String ZONE_NM;
   @override
   @JsonKey()
-  final dynamic REMARK;
+  final String REMARK;
   @override
   @JsonKey()
-  final dynamic WHT_UNIT;
+  final String WHT_UNIT;
   @override
   @JsonKey()
-  final dynamic PRT_NO;
+  final String PRT_NO;
   @override
   @JsonKey()
-  final dynamic BOX_WHT;
+  final double BOX_WHT;
   @override
   @JsonKey()
-  final dynamic WHT;
+  final double WHT;
   @override
   @JsonKey()
   final String ITEM_CD;
@@ -1313,37 +1361,37 @@ class _$SubBodyItemImpl implements _SubBodyItem {
   final String INB_YN;
   @override
   @JsonKey()
-  final dynamic EXP_DT;
+  final String EXP_DT;
   @override
   @JsonKey()
-  final dynamic EXTR_VAL;
+  final String EXTR_VAL;
   @override
   @JsonKey()
   final int D_QTY;
   @override
   @JsonKey()
-  final dynamic BOX_NM;
+  final String BOX_NM;
   @override
   @JsonKey()
-  final dynamic PRT_DT;
+  final String PRT_DT;
   @override
   @JsonKey()
-  final dynamic SET_QTY;
+  final int SET_QTY;
   @override
   @JsonKey()
-  final dynamic BOX_NO;
+  final String BOX_NO;
   @override
   @JsonKey()
-  final dynamic PJT_NO;
+  final String PJT_NO;
   @override
   @JsonKey()
-  final dynamic PJT_NM;
+  final String PJT_NM;
   @override
   @JsonKey()
-  final dynamic VEND_CD;
+  final String VEND_CD;
   @override
   @JsonKey()
-  final dynamic TOT_WHT;
+  final double TOT_WHT;
   @override
   @JsonKey()
   final String TAG_TYPE;
@@ -1382,28 +1430,30 @@ class _$SubBodyItemImpl implements _SubBodyItem {
                 other.LAST_LOC == LAST_LOC) &&
             const DeepCollectionEquality().equals(other.CUST_CD, CUST_CD) &&
             (identical(other.QTY, QTY) || other.QTY == QTY) &&
-            const DeepCollectionEquality().equals(other.VEND_NM, VEND_NM) &&
+            (identical(other.VEND_NM, VEND_NM) || other.VEND_NM == VEND_NM) &&
             (identical(other.ZONE_NM, ZONE_NM) || other.ZONE_NM == ZONE_NM) &&
-            const DeepCollectionEquality().equals(other.REMARK, REMARK) &&
-            const DeepCollectionEquality().equals(other.WHT_UNIT, WHT_UNIT) &&
-            const DeepCollectionEquality().equals(other.PRT_NO, PRT_NO) &&
-            const DeepCollectionEquality().equals(other.BOX_WHT, BOX_WHT) &&
-            const DeepCollectionEquality().equals(other.WHT, WHT) &&
+            (identical(other.REMARK, REMARK) || other.REMARK == REMARK) &&
+            (identical(other.WHT_UNIT, WHT_UNIT) ||
+                other.WHT_UNIT == WHT_UNIT) &&
+            (identical(other.PRT_NO, PRT_NO) || other.PRT_NO == PRT_NO) &&
+            (identical(other.BOX_WHT, BOX_WHT) || other.BOX_WHT == BOX_WHT) &&
+            (identical(other.WHT, WHT) || other.WHT == WHT) &&
             (identical(other.ITEM_CD, ITEM_CD) || other.ITEM_CD == ITEM_CD) &&
             (identical(other.LOC_DT, LOC_DT) || other.LOC_DT == LOC_DT) &&
             (identical(other.TAG_NO, TAG_NO) || other.TAG_NO == TAG_NO) &&
             (identical(other.INB_YN, INB_YN) || other.INB_YN == INB_YN) &&
-            const DeepCollectionEquality().equals(other.EXP_DT, EXP_DT) &&
-            const DeepCollectionEquality().equals(other.EXTR_VAL, EXTR_VAL) &&
+            (identical(other.EXP_DT, EXP_DT) || other.EXP_DT == EXP_DT) &&
+            (identical(other.EXTR_VAL, EXTR_VAL) ||
+                other.EXTR_VAL == EXTR_VAL) &&
             (identical(other.D_QTY, D_QTY) || other.D_QTY == D_QTY) &&
-            const DeepCollectionEquality().equals(other.BOX_NM, BOX_NM) &&
-            const DeepCollectionEquality().equals(other.PRT_DT, PRT_DT) &&
-            const DeepCollectionEquality().equals(other.SET_QTY, SET_QTY) &&
-            const DeepCollectionEquality().equals(other.BOX_NO, BOX_NO) &&
-            const DeepCollectionEquality().equals(other.PJT_NO, PJT_NO) &&
-            const DeepCollectionEquality().equals(other.PJT_NM, PJT_NM) &&
-            const DeepCollectionEquality().equals(other.VEND_CD, VEND_CD) &&
-            const DeepCollectionEquality().equals(other.TOT_WHT, TOT_WHT) &&
+            (identical(other.BOX_NM, BOX_NM) || other.BOX_NM == BOX_NM) &&
+            (identical(other.PRT_DT, PRT_DT) || other.PRT_DT == PRT_DT) &&
+            (identical(other.SET_QTY, SET_QTY) || other.SET_QTY == SET_QTY) &&
+            (identical(other.BOX_NO, BOX_NO) || other.BOX_NO == BOX_NO) &&
+            (identical(other.PJT_NO, PJT_NO) || other.PJT_NO == PJT_NO) &&
+            (identical(other.PJT_NM, PJT_NM) || other.PJT_NM == PJT_NM) &&
+            (identical(other.VEND_CD, VEND_CD) || other.VEND_CD == VEND_CD) &&
+            (identical(other.TOT_WHT, TOT_WHT) || other.TOT_WHT == TOT_WHT) &&
             (identical(other.TAG_TYPE, TAG_TYPE) ||
                 other.TAG_TYPE == TAG_TYPE) &&
             (identical(other.LOT_NO, LOT_NO) || other.LOT_NO == LOT_NO) &&
@@ -1424,28 +1474,28 @@ class _$SubBodyItemImpl implements _SubBodyItem {
         LAST_LOC,
         const DeepCollectionEquality().hash(CUST_CD),
         QTY,
-        const DeepCollectionEquality().hash(VEND_NM),
+        VEND_NM,
         ZONE_NM,
-        const DeepCollectionEquality().hash(REMARK),
-        const DeepCollectionEquality().hash(WHT_UNIT),
-        const DeepCollectionEquality().hash(PRT_NO),
-        const DeepCollectionEquality().hash(BOX_WHT),
-        const DeepCollectionEquality().hash(WHT),
+        REMARK,
+        WHT_UNIT,
+        PRT_NO,
+        BOX_WHT,
+        WHT,
         ITEM_CD,
         LOC_DT,
         TAG_NO,
         INB_YN,
-        const DeepCollectionEquality().hash(EXP_DT),
-        const DeepCollectionEquality().hash(EXTR_VAL),
+        EXP_DT,
+        EXTR_VAL,
         D_QTY,
-        const DeepCollectionEquality().hash(BOX_NM),
-        const DeepCollectionEquality().hash(PRT_DT),
-        const DeepCollectionEquality().hash(SET_QTY),
-        const DeepCollectionEquality().hash(BOX_NO),
-        const DeepCollectionEquality().hash(PJT_NO),
-        const DeepCollectionEquality().hash(PJT_NM),
-        const DeepCollectionEquality().hash(VEND_CD),
-        const DeepCollectionEquality().hash(TOT_WHT),
+        BOX_NM,
+        PRT_DT,
+        SET_QTY,
+        BOX_NO,
+        PJT_NO,
+        PJT_NM,
+        VEND_CD,
+        TOT_WHT,
         TAG_TYPE,
         LOT_NO,
         ZONE_CD,
@@ -1476,29 +1526,29 @@ abstract class _SubBodyItem implements SubBodyItem {
       final String LOC_CD,
       final String LAST_LOC,
       final dynamic CUST_CD,
-      final double QTY,
-      final dynamic VEND_NM,
+      final int QTY,
+      final String VEND_NM,
       final String ZONE_NM,
-      final dynamic REMARK,
-      final dynamic WHT_UNIT,
-      final dynamic PRT_NO,
-      final dynamic BOX_WHT,
-      final dynamic WHT,
+      final String REMARK,
+      final String WHT_UNIT,
+      final String PRT_NO,
+      final double BOX_WHT,
+      final double WHT,
       final String ITEM_CD,
       final String LOC_DT,
       final String TAG_NO,
       final String INB_YN,
-      final dynamic EXP_DT,
-      final dynamic EXTR_VAL,
+      final String EXP_DT,
+      final String EXTR_VAL,
       final int D_QTY,
-      final dynamic BOX_NM,
-      final dynamic PRT_DT,
-      final dynamic SET_QTY,
-      final dynamic BOX_NO,
-      final dynamic PJT_NO,
-      final dynamic PJT_NM,
-      final dynamic VEND_CD,
-      final dynamic TOT_WHT,
+      final String BOX_NM,
+      final String PRT_DT,
+      final int SET_QTY,
+      final String BOX_NO,
+      final String PJT_NO,
+      final String PJT_NM,
+      final String VEND_CD,
+      final double TOT_WHT,
       final String TAG_TYPE,
       final String LOT_NO,
       final String ZONE_CD,
@@ -1522,21 +1572,21 @@ abstract class _SubBodyItem implements SubBodyItem {
   @override
   dynamic get CUST_CD;
   @override
-  double get QTY;
+  int get QTY;
   @override
-  dynamic get VEND_NM;
+  String get VEND_NM;
   @override
   String get ZONE_NM;
   @override
-  dynamic get REMARK;
+  String get REMARK;
   @override
-  dynamic get WHT_UNIT;
+  String get WHT_UNIT;
   @override
-  dynamic get PRT_NO;
+  String get PRT_NO;
   @override
-  dynamic get BOX_WHT;
+  double get BOX_WHT;
   @override
-  dynamic get WHT;
+  double get WHT;
   @override
   String get ITEM_CD;
   @override
@@ -1546,27 +1596,27 @@ abstract class _SubBodyItem implements SubBodyItem {
   @override
   String get INB_YN;
   @override
-  dynamic get EXP_DT;
+  String get EXP_DT;
   @override
-  dynamic get EXTR_VAL;
+  String get EXTR_VAL;
   @override
   int get D_QTY;
   @override
-  dynamic get BOX_NM;
+  String get BOX_NM;
   @override
-  dynamic get PRT_DT;
+  String get PRT_DT;
   @override
-  dynamic get SET_QTY;
+  int get SET_QTY;
   @override
-  dynamic get BOX_NO;
+  String get BOX_NO;
   @override
-  dynamic get PJT_NO;
+  String get PJT_NO;
   @override
-  dynamic get PJT_NM;
+  String get PJT_NM;
   @override
-  dynamic get VEND_CD;
+  String get VEND_CD;
   @override
-  dynamic get TOT_WHT;
+  double get TOT_WHT;
   @override
   String get TAG_TYPE;
   @override

@@ -76,6 +76,8 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
   RxBool isDbConnected = true.obs;
   RxBool isRackIpgo = false.obs;
 
+  // 어짜피 없어도 상관없을 느낌? // let
+
   final FocusNode focusNode = FocusNode();
   final FocusNode focusNodeKey = FocusNode();
   void requestFocus() {
@@ -387,8 +389,6 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           }
-
-
         ]
       };
 
@@ -416,8 +416,9 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
 
       }
     }
-
   }
+
+
 
   /// 랙입고 오늘 전체 조회
   Future<void> checkTodayList() async {
@@ -539,6 +540,14 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
           }
           rackIpgoList[0].addAll({'no': '${registRackIpgoList.length + 1}'});
           rackIpgoList[0].addAll({'LOC_CD_TO': ''});
+
+         /* /// 혹시 랙입고 중복라벨 시 전부 넣어주는거로 바뀐거면?
+          for(var i = 0; i < rackIpgoDupList.length; i++) {
+            rackIpgoList[i].addAll({'no': '${registRackIpgoList.length + 1}'});
+            rackIpgoList[i].addAll({'LOC_CD_TO': ''});
+          }*/
+
+
           for(var i = 0; i < rackIpgoDupList.length; i++) {
             isSelect.add(false);
           }
@@ -546,6 +555,12 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
           if(rackIpgoList.length == 1) {
             registRackIpgoList.add(rackIpgoList[0]);
           }
+         /* /// 혹시 랙입고 중복라벨 시 전부 넣어주는거로 바뀐거면?
+          for(var i = 0; i < rackIpgoDupList.length; i++) {
+            registRackIpgoList.add(rackIpgoList[i]);
+          }*/
+
+
 
           Get.log(rackIpgoList.toString());
           Get.log('조회 성공');
