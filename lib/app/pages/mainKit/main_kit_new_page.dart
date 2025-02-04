@@ -283,6 +283,7 @@ class MainKitNewPage extends StatelessWidget {
                                           }
                                         }
 
+                                       // controller.plutoRowNew();
                                         controller.textQrController.text = '';
 
                                         await controller.test();
@@ -397,8 +398,12 @@ class MainKitNewPage extends StatelessWidget {
                       child: Row(
                         // mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          _subData2('프로젝트명', controller.projectNm.value == null ? controller.projectNm.value : controller.projectNm.value, true),
+                          _subData2('제조번호', controller.wrkNo.value == null ? controller.wrkNo.value : controller.wrkNo.value, true),
                           SizedBox(
+                            width: 32,
+                          ),
+                          _subData2('프로젝트명', controller.projectNm.value == null ? controller.projectNm.value : controller.projectNm.value, true),
+                          SizedBox( 
                             width: 32,
                           ),
                           _subData2('자재코드/자재명', controller.itemCdNm.value.trim(), true),
@@ -1229,7 +1234,7 @@ class MainKitNewPage extends StatelessWidget {
                   controller.focusNode.unfocus();
                 }
               }
-              controller.isConfirmClick.value = true;
+              controller.isConfirmClick.value = false;
             } else if (text == '확정 취소') {
               if(controller.projectNm.value == '') {
                 Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
