@@ -403,7 +403,7 @@ class MainKitNewPage extends StatelessWidget {
                             width: 32,
                           ),
                           _subData2('프로젝트명', controller.projectNm.value == null ? controller.projectNm.value : controller.projectNm.value, true),
-                          SizedBox( 
+                          SizedBox(
                             width: 32,
                           ),
                           _subData2('자재코드/자재명', controller.itemCdNm.value.trim(), true),
