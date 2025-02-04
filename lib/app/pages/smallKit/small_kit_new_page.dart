@@ -164,12 +164,15 @@ class SmallKitNewPage extends StatelessWidget {
                     controller.noTagIdx.value = event.rowIdx;
                    // controller.qrDonggihwa.value = controller.smallBoxSaveList[event.rowIdx]['qrNo'];
                     await controller.reqCommon3(controller.smallBoxSaveList[event.rowIdx]['itemCd']);
-                    showDialog(
+                    await showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return _alertDialog2(context, event.rowIdx);
                         },
                       );
+
+                    /// 선택 후 선택된 리스트 클리어
+                    controller.selectedPopList.clear();
                   }
                 }
 
@@ -291,7 +294,9 @@ class SmallKitNewPage extends StatelessWidget {
                                                     await Get.dialog(CommonDialogBoxWidget(contentText: '이미 스캔된 자재입니다. 스캔 취소하시겠습니까?', pageFlag: 0));
                                                     if(controller.isCancelIpgo.value) {
                                                       await controller.registSmallKitCancel();
+                                                      controller.isSaveColor.value = false;
                                                       await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxSuNo'].toString());
+
                                                       await controller.test();
                                                     }
                                                   }else {
@@ -458,6 +463,8 @@ class SmallKitNewPage extends StatelessWidget {
                         _subData2('박스번호', controller.boxNo.value, false),
                         SizedBox(width: 32,),
                         _subData2('확정일', controller.wrkCfmDt.value ?? '', false),
+                        SizedBox(width: 32,),
+                        _subData2('무게', controller.boxWht.value ?? '', false),
                         SizedBox(width: 32,),
                         _subData2('BOM 점검', controller.bcSts.value == 'null' ? '' : controller.bcSts.value, false)
                       ],
@@ -811,7 +818,7 @@ class SmallKitNewPage extends StatelessWidget {
             int cbxQty;
             if(text == '동기화')
             {
-              if(controller.projectNm.value == '') {
+              if(controller.itemCdNm.value == '') {
                 Get.dialog(CommonDialogWidget(contentText: '박스를 먼저 스캔해주세요.', pageFlag: 0));
                 return;
               }
@@ -820,12 +827,12 @@ class SmallKitNewPage extends StatelessWidget {
 
             else if(text == '저장')
             {
-              if(controller.projectNm.value == '') {
+              if(controller.itemCdNm.value == '') {
                 Get.dialog(CommonDialogWidget(contentText: '박스를 먼저 스캔해주세요.', pageFlag: 0));
                 return;
               }
 
-              if(controller.wrkCfmDt.value == '' || controller.wrkCfmDt.value == 'null') {
+              if(controller.wrkCfmDt.value.trim() == '' || controller.wrkCfmDt.value.trim() == 'null' || controller.wrkCfmDt.value == null) {
                 if(controller.isSaveClick.value == false) {
                   controller.isSaveClick.value = true;
                   Get.log('저장할 리스트!: ${controller.smallBoxSaveList.length}');
@@ -842,7 +849,7 @@ class SmallKitNewPage extends StatelessWidget {
             }
             else if(text == '동기화 취소')
             {
-              if(controller.projectNm.value == '') {
+              if(controller.itemCdNm.value == '') {
                 Get.dialog(CommonDialogWidget(contentText: '박스를 먼저 스캔해주세요.', pageFlag: 0));
                 return;
               }
@@ -902,10 +909,36 @@ class SmallKitNewPage extends StatelessWidget {
             }
             else if(text == '확정')
             {
-              if(controller.projectNm.value == '') {
+              if(controller.itemCdNm.value == '') {
                 Get.dialog(CommonDialogWidget(contentText: '박스를 먼저 스캔해주세요.', pageFlag: 0));
                 return;
               }
+
+              if(controller.smallBoxSaveList.length != controller.smallBoxItemDataList.length) {
+                Get.dialog(CommonDialogWidget(contentText: '스캔하지않은 자재가 있습니다.', pageFlag: 0));
+                return;
+              }
+              for (var dong = 0; dong < controller.smallBoxItemDataList.length; dong++) {
+                for (var dong2 = 0; dong2 < controller.smallBoxSaveList.length; dong2++) {
+                  // 이미 오른쪽에 스캔된 자재가 있는데 수량이 작다면? -> 동기화 대상
+                  if (controller.smallBoxItemDataList[dong]['itemCd'] == controller.smallBoxSaveList[dong2]['itemCd']) {
+                    controller.noSync.value = false;
+                    if (int.parse(controller.smallBoxItemDataList[dong]['cbxQty'].toString()) > int.parse(controller.smallBoxSaveList[dong2]['wrkQty'].toString())) {
+                      Get.dialog(CommonDialogWidget(contentText: '수량이 맞지않는 자재가 있습니다.', pageFlag: 0));
+                      return;
+                    }
+                  }
+                }
+              }
+
+              for(var idx = 0; idx < controller.smallBoxSaveList.length; idx++) {
+                if(controller.smallBoxSaveList[idx]['prtNo'] == 'O' && controller.smallBoxSaveList[idx]['ncbxRmk'] == '') {
+                  Get.dialog(CommonDialogWidget(contentText: '동기화 사유를 입력하지않은 자재가 있습니다.', pageFlag: 0));
+                  return;
+                }
+              }
+
+
               if(controller.isConfirmClick.value == false) {
                 controller.isConfirmClick.value = true;
                /* Get.dialog(
@@ -969,7 +1002,7 @@ class SmallKitNewPage extends StatelessWidget {
             }
             else if(text == '확정 취소')
             {
-              if(controller.projectNm.value == '') {
+              if(controller.itemCdNm.value == '') {
                 Get.dialog(CommonDialogWidget(contentText: '박스를 먼저 스캔해주세요.', pageFlag: 0));
                 return;
               }
@@ -977,6 +1010,7 @@ class SmallKitNewPage extends StatelessWidget {
               if(controller.isConfirm.value) {
                 controller.textQrController.text = controller.smallBoxItemDataList[0]['cbxSuNo'].toString();
                 Get.dialog(CommonDialogWidget(contentText: '확정 취소되었습니다.', pageFlag: 0));
+
                 await controller.checkBoxItemData();
                 for (var i = 0; i < controller.smallBoxItemDataList.length; i++) {
                   controller.smallBoxItemDataList[i].addAll({'no': '${i + 1}'});
@@ -2489,6 +2523,7 @@ class SmallKitNewPage extends StatelessWidget {
                         Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
                         if(controller.popUpDataList2[controller.alertIndex.value]['wrkYn'] == 'Y' ) {
                           await controller.registSmallKitCancelDup();
+                          controller.isSaveColor.value = false;
                           await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxSuNo'].toString());
                           await controller.test();
                         }else{
@@ -2757,7 +2792,6 @@ class SmallKitNewPage extends StatelessWidget {
                             padding: MaterialStateProperty.all(const EdgeInsets.all(0))),
                         onPressed: () async {
                           controller.smallBoxSaveList[controller.noTagIdx.value].addAll({'tagNo': controller.selectedQrNo.value});
-
                           Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
                         },
                         child: Container(
@@ -2864,35 +2898,37 @@ class SmallKitNewPage extends StatelessWidget {
           padding:
           MaterialStateProperty.all(const EdgeInsets.all(0))),
       onPressed: () {
-        if(controller.selectedPopList[index] == true) {
-          controller.selectedPopList[index] = false;
-          //  controller.isChoiceSheet.value = false;
-          if(controller.selectedQrNo.value.contains(',')) {
-            if(controller.selectedQrNo.value.contains('${controller.popUpDataList[index]['tagNo']}')) {
-              controller.selectedQrNo.value = controller.selectedQrNo.value.replaceAll('${controller.popUpDataList[index]['tagNo']}', '');
-              if(controller.selectedQrNo.value.contains(',,')){
-                controller.selectedQrNo.value = controller.selectedQrNo.value.replaceAll(',,',',');
+        if(controller.selectedPopList.isNotEmpty) {
+          if(controller.selectedPopList[index] == true) {
+            controller.selectedPopList[index] = false;
+            //  controller.isChoiceSheet.value = false;
+            if(controller.selectedQrNo.value.contains(',')) {
+              if(controller.selectedQrNo.value.contains('${controller.popUpDataList[index]['tagNo']}')) {
+                controller.selectedQrNo.value = controller.selectedQrNo.value.replaceAll('${controller.popUpDataList[index]['tagNo']}', '');
+                if(controller.selectedQrNo.value.contains(',,')){
+                  controller.selectedQrNo.value = controller.selectedQrNo.value.replaceAll(',,',',');
+                }
+                if(controller.selectedQrNo.value.startsWith(',')) {
+                  controller.selectedQrNo.value = controller.selectedQrNo.value.replaceFirst(',', '');
+                }
               }
-              if(controller.selectedQrNo.value.startsWith(',')) {
-                controller.selectedQrNo.value = controller.selectedQrNo.value.replaceFirst(',', '');
-              }
+
+            }else {
+              controller.selectedQrNo.value = '';
             }
 
           }else {
-            controller.selectedQrNo.value = '';
-          }
 
-        }else {
+            controller.selectedPopList[index] = true;
+            if(controller.selectedPopList[index] == true) { // 선택했다
+              //    controller.isChoiceSheet.value = true;
 
-          controller.selectedPopList[index] = true;
-          if(controller.selectedPopList[index] == true) { // 선택했다
-            //    controller.isChoiceSheet.value = true;
-
-            controller.selectedItemPopContainer.add(controller.popUpDataList[index]);
-            if(controller.selectedQrNo.value != '') {
-              controller.selectedQrNo.value = '${controller.selectedQrNo.value},${controller.popUpDataList[index]['tagNo']}';
-            }else {
-              controller.selectedQrNo.value = controller.popUpDataList[index]['tagNo'];
+              controller.selectedItemPopContainer.add(controller.popUpDataList[index]);
+              if(controller.selectedQrNo.value != '') {
+                controller.selectedQrNo.value = '${controller.selectedQrNo.value},${controller.popUpDataList[index]['tagNo']}';
+              }else {
+                controller.selectedQrNo.value = controller.popUpDataList[index]['tagNo'];
+              }
             }
           }
         }
@@ -2907,7 +2943,7 @@ class SmallKitNewPage extends StatelessWidget {
                 margin: EdgeInsets.only(left: 16, right: 16, top: 12),
                 padding: EdgeInsets.only(left: 12, right: 12, top: 12, bottom: 12),
                 decoration: BoxDecoration(
-                  border: controller.selectedPopList[index] == true ? Border.all(color: AppTheme.black, width: 2) : Border.all(color: AppTheme.gray_c_gray_200),
+                  border: controller.selectedPopList.isNotEmpty ?controller.selectedPopList[index] == true ? Border.all(color: AppTheme.black, width: 2) : Border.all(color: AppTheme.gray_c_gray_200) : Border.all(color: AppTheme.gray_c_gray_200),
                   borderRadius: BorderRadius.circular(10),
                   color: AppTheme.white,
                 ),

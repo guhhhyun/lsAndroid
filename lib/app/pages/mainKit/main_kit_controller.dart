@@ -1651,7 +1651,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         },
         {
           'paramName': 'p_QR_NO',
-          'paramValue': textQrController.text.trim(),
+          'paramValue': textQrController.text,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -1824,7 +1824,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
     smallBoxItemSaveDataList.clear();
     smallBoxSaveList.clear();
     noList3.clear(); // 색 클리어
-
+    changedRows.clear();
 
     var params = {
       'programId': 'A1020',

@@ -57,6 +57,63 @@ class IpgoPage extends StatelessWidget {
     );
   }
 
+
+   /// 키보드 엔터 없이 그리드에서 업데이트된 항목 바로 적용 시켜주기 위한 로직 /////////////////////////////////////////////////////////////
+   void _listener() {
+     if (controller.gridStateMgr2.currentCell == controller.currentCell) {
+       return;
+     }
+
+     if (controller.gridStateMgr2.isEditing && controller.gridStateMgr2.currentCell != null) {
+
+       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+         controller.initialValue = controller.gridStateMgr2.textEditingController?.text;
+
+         controller.gridStateMgr2.textEditingController!.addListener(_textEditingListener);
+         if (controller.gridStateMgr2.textEditingController?.selection != null) {
+           controller.gridStateMgr2.textEditingController!.selection = TextSelection(
+             baseOffset: 0,
+             extentOffset: controller.gridStateMgr2.textEditingController!.text.length,
+           );
+         }
+
+       });
+     } else {
+       controller.initialValue = null;
+
+       controller.gridStateMgr2.textEditingController?.removeListener(_textEditingListener);
+     }
+
+     controller.currentCell = controller.gridStateMgr2.currentCell;
+   }
+
+   void _textEditingListener() {
+     controller.debounce.debounce(callback: _update);
+   }
+
+   void _update() {
+     if (controller.initialValue == controller.gridStateMgr2.textEditingController?.text) {
+       return;
+     }
+
+     controller.initialValue = null;
+
+   /*  if (controller.currentCell!.column.field == 'cntLocCd') {
+       print('선택한 값: ${controller.gridStateMgr.textEditingController?.text}');
+       controller.inventoryCntDetailList[controller.inventoryCntDetailList.length - 1 - controller.currentCell!.row!.sortIdx].addAll({'cntLocCd': controller.gridStateMgr.textEditingController?.text});
+     }
+     if (controller.currentCell!.column.field == 'cntQty') {
+
+       print('선택한 값: ${controller.gridStateMgr.textEditingController?.text}');
+       controller.inventoryCntDetailList[controller.inventoryCntDetailList.length - 1 - controller.currentCell!.row!.sortIdx].addAll({'cntQty': controller.gridStateMgr.textEditingController?.text});
+       print('바뀐 값: ${controller.inventoryCntDetailList[controller.inventoryCntDetailList.length - 1 - controller.currentCell!.row!.sortIdx]['cntQty']}');
+
+     }*/
+
+     controller.ipgoList[controller.currentCell!.row!.sortIdx].addAll({'qty': controller.gridStateMgr2.textEditingController?.text});
+     print('이건가? ${controller.gridStateMgr2.textEditingController?.text}');
+   }
+
   Widget _mainBody(BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
@@ -516,6 +573,7 @@ class IpgoPage extends StatelessWidget {
                  }
                  controller.isSelectedInvnr.value = true;
                  controller.isQr.value = true;
+                 controller.saveTextInvnr.value = controller.textInvnrController.text;
                  controller.textInvnrController.text = '';
                  focusNode2.requestFocus();
                  /*controller.focusNode.requestFocus();
@@ -814,10 +872,10 @@ class IpgoPage extends StatelessWidget {
          child: Row(
            mainAxisAlignment: MainAxisAlignment.spaceBetween,
            children: [
-             SingleChildScrollView(
-               scrollDirection: Axis.horizontal,
-               child: Container(
-                 width: MediaQuery.of(context).size.width/2 + 30,
+             Container(
+               width: MediaQuery.of(context).size.width/2 + 50,
+               child: SingleChildScrollView(
+                 scrollDirection: Axis.horizontal,
                  child: Row(
                        children: [
                          _qrCodeTextForm(context),
@@ -831,6 +889,8 @@ class IpgoPage extends StatelessWidget {
              ),
              Row(
                children: [
+                 Obx(() => _oneDropDownItem(),),
+                 SizedBox(width: 12,),
                  Container(
                    margin: EdgeInsets.only(right: 12),
                    width: 120,
@@ -903,9 +963,24 @@ class IpgoPage extends StatelessWidget {
                          controller.ipgoQrList.clear();
                          controller.ipgoList.clear();
                          controller.gridStateMgr2.removeAllRows();
+                         await controller.checkBtn2(); // 조회
+                         controller.ipgoQrList.clear();
+                         controller.ipgoList.clear();
+                         controller.gridStateMgr2.removeAllRows();
+                         if(controller.gridStateMgr.rows.length == 1) {
+                           controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 0);
+                           controller.selectedInvnrIndex.value = 0;
+                         }else {
+                           controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
+                           Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
+                           controller.selectedInvnrIndex.value = controller.gridStateMgr.currentRowIdx!;
+                         }
+                         controller.isSelectedInvnr.value = true;
+                         controller.isQr.value = true;
+
                        }
-
-
+                       controller.isIpgoClick.value = false;
+                       focusNode2.requestFocus();
                      },
                      child: Container(
                        decoration: BoxDecoration(
@@ -936,6 +1011,7 @@ class IpgoPage extends StatelessWidget {
    }
 
    Widget _statusText() {
+
      return Row(
        children: [
          Text('상태',
@@ -945,7 +1021,7 @@ class IpgoPage extends StatelessWidget {
          Container(
            padding: EdgeInsets.only(top: 6, left: 8, right: 8),
            height: 40,
-           width: controller.statusText.value == '' ? 250 : null,
+           width: controller.statusText.value == '' ? 200 : null,
            decoration: BoxDecoration(
                borderRadius: BorderRadius.circular(10),
                border: Border.all(color: AppTheme.ae2e2e2)),
@@ -954,7 +1030,6 @@ class IpgoPage extends StatelessWidget {
                // maxLines: 5,
 
              ),
-
          ),
        ],
      );
@@ -1351,10 +1426,11 @@ class IpgoPage extends StatelessWidget {
                  controller.gridStateMgr2 = event.stateManager;
                  //controller.gridStateMgr2.setShowColumnFilter(true);
                  controller.gridStateMgr2.setSelectingMode(PlutoGridSelectingMode.none);
+                 controller.gridStateMgr2.addListener(_listener);
                },
                onChanged: (PlutoGridOnChangedEvent event) {
                  print(event);
-                 controller.ipgoList[event.rowIdx].addAll({'qty': event.value!});
+               //  controller.ipgoList[controller.ipgoList.length - 1 - event.rowIdx].addAll({'qty': event.value!});
                },
          /*             rowColorCallback: (c) {
                  return c.row.checked == true ? Colors.red : Colors.transparent;
@@ -1481,6 +1557,7 @@ class IpgoPage extends StatelessWidget {
          enableRowDrag: false,
          enableDropToResize: false,
          enableColumnDrag: false,
+         enableAutoEditing: true,
          titleTextAlign: PlutoColumnTextAlign.center,
          textAlign: PlutoColumnTextAlign.center,
          backgroundColor: AppTheme.gray_c_gray_200,
@@ -1766,15 +1843,54 @@ class IpgoPage extends StatelessWidget {
 
      );
    }
-   Widget _aa() {
-     return Container(
-       child: Container(
-         child: Row(
-           children: [],
+   Widget _oneDropDownItem() {
+     return Row(
+       children: [
+         Text('위치', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
+         SizedBox(width: 8,),
+         Container(
+           height: 40,
+           width: 210,
+           decoration: BoxDecoration(
+               borderRadius: BorderRadius.circular(10),
+               border: Border.all(color: AppTheme.ae2e2e2)),
+           padding: const EdgeInsets.only(right: 12),
+           child: DropdownButton(
+               padding: EdgeInsets.only(left: 12),
+               borderRadius: BorderRadius.circular(3),
+               isExpanded: true,
+               underline: Container(
+                 height: 1,
+                 color: Colors.white,
+               ),
+               icon: SvgPicture.asset(
+                 'assets/app/arrowBottom.svg',
+                 color: AppTheme.light_placeholder,
+               ),
+               dropdownColor: AppTheme.light_ui_01,
+               value: controller.selectedOneBoxContainer['NAME'],
+               items: controller.oneContainer.map((value) {
+                 return DropdownMenuItem<String>(
+                   value: value['NAME'].toString(),
+                   child: Text(
+                     value['NAME'].toString(),
+                     style: AppTheme.a20400
+                         .copyWith(color: value['NAME'].toString() == '선택해주세요' ? AppTheme.aBCBCBC : AppTheme.a6c6c6c),
+                   ),
+                 );
+               }).toList(),
+               onChanged: (value) {
+                 controller.oneContainer.map((e) {
+                   if(e['NAME'] == value) {
+                     controller.selectedOneBoxContainer['CODE'] = e['CODE'];
+                     controller.selectedOneBoxContainer['NAME'] = e['NAME'];
+                   }
+                 }).toList();
+               }),
          ),
-       )
+       ],
+
      );
-     // lets go // 알겠는데 어찌라고
    }
 
    Widget _subBody1(BuildContext context) {
@@ -1877,6 +1993,7 @@ class IpgoPage extends StatelessWidget {
                                if(controller.isSboxIpgo.value) {
                                  SchedulerBinding.instance!.addPostFrameCallback((_) {
                                    Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
+                                   controller.isIpgoClick2.value = false;
                                  });
                                  controller.ipgoQrBoxList.clear();
                                  controller.ipgoBoxList.clear();
@@ -2785,6 +2902,7 @@ class IpgoPage extends StatelessWidget {
                    Get.log('$value 선택!!!!');
                    // Get.log('${HomeApi.to.BIZ_DATA('L_USER_001')}');
                  })*/
+           // Get.log('aa');
          ),
        ],
      );
@@ -2810,6 +2928,7 @@ class IpgoPage extends StatelessWidget {
 
              },
              onRowChecked: (event) {
+               // 만약 체크 로직을 타게되면 역순으로 바꿔야한다.
                if (event.isChecked != null) {
                  if(event.isAll == true) {
                    if (event.isChecked == true) {
@@ -2827,11 +2946,12 @@ class IpgoPage extends StatelessWidget {
 
                  }else {
                    if (event.isChecked == true) {
-                     controller.ipgoCancelBollList[event.rowIdx!] = true;
+                     // 화면상에서 역순으로 보여지게 만들어놨기 때문에 rowIdx랑 안맞는다 -> 그래서 역순으로 bollList 값을 잡고 바꿔주도록 설계
+                     controller.ipgoCancelBollList[controller.ipgoCancelBollList.length -1 - event.rowIdx!] = true;
                      // controller.selectedCancelList.add(event.row!.cells.entries);
                      Get.log('이거 봐야함2 ${controller.ipgoCancelBollList.value}');
                    } else {
-                     controller.ipgoCancelBollList[event.rowIdx!] = false;
+                     controller.ipgoCancelBollList[controller.ipgoCancelBollList.length -1 - event.rowIdx!] = false;
                      //  controller.selectedCancelList.remove(event.rowIdx);
                      Get.log('이거 봐야함3 ${controller.ipgoCancelBollList.value}');
                    }

@@ -783,7 +783,7 @@ class RackIpgoMultiPage extends StatelessWidget {
                                 Map.from((controller.registRackIpgoList[index]).map((key, value) =>
                                     MapEntry(key, PlutoCell(value: value == null ? '' : /*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : */value )),
                                 )))
-                            );
+                            ).reversed.toList();
                             controller.gridStateMgr.removeAllRows();
                             controller.gridStateMgr.appendRows(controller.rowDatas.value);
                             controller.gridStateMgr.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
@@ -1236,7 +1236,7 @@ class RackIpgoMultiPage extends StatelessWidget {
                             Map.from((controller.registRackIpgoList[index]).map((key, value) =>
                                 MapEntry(key, PlutoCell(value: value == null ? '' : /*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : */value )),
                             )))
-                        );
+                        ).reversed.toList();
                         controller.gridStateMgr.removeAllRows();
                         controller.gridStateMgr.appendRows(controller.rowDatas.value);
 

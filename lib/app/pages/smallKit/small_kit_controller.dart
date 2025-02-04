@@ -102,6 +102,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
   RxString boxNo = ''.obs;
   RxString bcSts = ''.obs;
   RxString wrkCfmDt = ''.obs;
+  RxString boxWht = ''.obs;
   RxInt no = 990.obs;
   RxList<dynamic> noList = [].obs;
   RxList<dynamic> noList2 = [].obs;
@@ -189,6 +190,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
 
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
+          popUpDataList.clear();
           popUpDataList.addAll(retVal.body![1]);
           isDbConnected.value = true;
         }else{
@@ -2604,6 +2606,7 @@ Future<void> registSmallKitItemSave() async {
 
     bLoading.value = true;
     smallBoxItemDataList.clear();
+    wrkCfmDt.value = '';
 
     var params = {
       'programId': 'A1020',
@@ -2639,17 +2642,18 @@ Future<void> registSmallKitItemSave() async {
           for(var i = 0; i < smallBoxItemDataList.length; i++) {
             smallBoxItemDataList[i].addAll({'no': '${i + 1}'});
           }
-
-          projectNm.value = retVal.body![1][0]['pjtNm2'].toString();
-          itemCdNm.value = '${retVal.body![1][0]['itemCd'].toString()}/${retVal.body![1][0]['itemNm']}';
-          wrkNo.value = retVal.body![1][0]['wrkNo'].toString();
+          projectNm.value = smallBoxItemDataList[0]['pjtNm2'].toString();
+          itemCdNm.value = '${smallBoxItemDataList[0]['itemCd'].toString()}/${smallBoxItemDataList[0]['itemNm']}';
+          wrkNo.value = smallBoxItemDataList[0]['wrkNo'].toString();
           boxNo.value = textQrController.text;//retVal.body![1][''];
-          wrkCfmDt.value = retVal.body![1][0]['wrkCfmDttm'].toString();
-          textMemoController.text = retVal.body![1][0]['wrkRemark'] ?? '';
+          wrkCfmDt.value = smallBoxItemDataList[0]['wrkCfmDttm'].toString();
+         boxWht.value = smallBoxItemDataList[0]['boxWht'].toString();
+          textMemoController.text = smallBoxItemDataList[0]['wrkRemark'] ?? '';
           Get.log(smallBoxItemDataList.toString());
           Get.log('조회 성공');
           statusText.value = '정상 조회 되었습니다.';
           isDbConnected.value = true;
+          // 어자피 false야 그럼
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
           statusText.value = retVal.body![0]['resultMessage'];
@@ -3041,6 +3045,8 @@ Future<void> registSmallKitItemSave() async {
               for (var i = 0; i < smallBoxItemDataList.length; i++) {
                 smallBoxItemDataList[i].addAll({'no': '${i + 1}'});
               }
+              /// 여기서 무게 쪽 초기화 한번 ㄱ
+              textWeightController.text = '';
             }else {
 
               await checkBoxData();

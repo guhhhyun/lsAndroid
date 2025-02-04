@@ -450,6 +450,12 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
           'paramMode': 'IN'
         },
         {
+          'paramName': 'p_USER_ID',
+          'paramValue': gs.loginId.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
           'paramName': 'p_WH_CD',
           'paramValue': 'WH01',
           'paramJdbcType': 'VARCHAR',
@@ -596,20 +602,26 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
    /* for(var e = 0; e < ipgoCancelBollList.length; e++) {
       if(ipgoCancelBollList[e] == true) {
         var params = {
+        var params = {
+          if() {
+          }
+        }
           'procedure': 'USP_A1020_S02',
-          'params': [
+          'params': [ 밤 = 고요 로 시작하고 그걸 뒤집는데 그 뒤는 소음 보단 고요? 문맥 상 안맞는 느낌
+            paramName:
             {
-              'paramName': 'p_work_type',
+              'paramName': 'p_work_type', 밤 = 고요
               'paramValue': 'D',
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
             },
             {
+              'paramName'
               'paramName': 'p_PLANT',
               'paramValue': '1302',
               'paramJdbcType': 'VARCHAR',
               'paramMode': 'IN'
-            },
+            }, // PARAMmODE ORGIN ASTER
             {
               'paramName': 'p_WH_CD',
               'paramValue': ipgoCancelList[e]['whCd'],

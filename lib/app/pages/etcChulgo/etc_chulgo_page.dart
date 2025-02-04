@@ -1281,7 +1281,32 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
-
+     /* PlutoColumn(
+        title: '출고수량',
+        field: 'qtyUse',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: true,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        enableAutoEditing: true,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+        checkReadOnly: (PlutoRow row, PlutoCell cell) {
+          var i = true;
+          if(controller.list3Qty.value == 1.0) {
+            i = true;
+          }else {
+            i = false;
+          }
+          return i;
+          *//*controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value]['qty'].toString() == '1';*//*
+        },
+      ),*/
     ];
     return gridCols;
   }
@@ -1399,6 +1424,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         enableRowDrag: false,
         enableDropToResize: false,
         enableColumnDrag: false,
+        enableAutoEditing: true,
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,

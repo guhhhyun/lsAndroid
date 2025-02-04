@@ -65,6 +65,8 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
 
 
 
+  RxString saveTextInvnr = ''.obs;
+
   /// 그리드
   List<PlutoRow> rowDatas = [];
   var rowDatas2 = <PlutoRow>[].obs;
@@ -87,6 +89,10 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxList<String> selectListString = [''].obs;
   RxString lset = ''.obs;
   /// ///////////////////////////////////////////////////////
+  RxList<dynamic> oneContainer = [{'CODE':'0-00-00-00', 'NAME': '랙입고대기장'}, {'CODE':'E-00-00-00', 'NAME': '소박스 입고대기장'}].obs;
+  RxMap<String, String> selectedOneBoxContainer = {'CODE':'0-00-00-00', 'NAME': '랙입고대기장'}.obs;
+  RxList<String> selectListString2 = [''].obs;
+  RxString lset2 = ''.obs;
 
   RxList<dynamic> containerList = [{'CODE':'1', 'NAME': 'KIT 작업장'}].obs;
   RxMap<String, String> selectedContainer = {'CODE':'', 'NAME': 'KIT 작업장'}.obs;
@@ -869,6 +875,12 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
             'paramMode': 'IN'
           },
           {
+            'paramName': 'p_LOC_CD',
+            'paramValue': selectedOneBoxContainer['CODE'],
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
             'paramName': 'p_USR_ID',
             'paramValue': gs.loginId.value,
             'paramJdbcType': 'VARCHAR',
@@ -1084,6 +1096,99 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     }
   }
 
+  /// 입고 조회 (입고등록시에만 재조회 위해서)
+  Future<void> checkBtn2() async {
+    Get.log('조회 버튼 클릭');
+
+    bLoading.value = true;
+    invnrList.clear();
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A1020_R01',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_GR_DT_FR',
+          'paramValue': '${dayStartValue.replaceAll('-', '')}',
+          //   'paramValue': '20240101',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_GR_DT_TO',
+          'paramValue': '${dayEndValue.replaceAll('-', '')}',
+          // 'paramValue': '20240924',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_WH_CD',
+          'paramValue': 'WH01',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_DOC1',
+          'paramValue': saveTextInvnr.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_ITEM_CD',
+          'paramValue': textItemController.text,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_ITEM_NM',
+          'paramValue': '',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PJT_NM',
+          'paramValue': textProjectController.text,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqIpgo(params);
+
+      if (retVal.resultCode == '0000') {
+        invnrList.value.addAll(retVal.body![1]);
+        Get.log(invnrList.toString());
+        Get.log('조회 성공');
+        isDbConnected.value = true;
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('checkBtn catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+      isChecked.value = false;
+      plutoRow();
+    }
+  }
+
   Future<void> plutoRow() async {
     rowDatas = List<PlutoRow>.generate(invnrList.length, (index) =>
         PlutoRow(cells:
@@ -1119,7 +1224,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
         Map.from((ipgoCancelList[index]).map((key, value) =>
             MapEntry(key, PlutoCell(value: value ?? ''/*key == 'STOCK_QTY' ? NumberFormat('#,##0.0').format(value).replaceAll(' ', '') : key == 'IN_DATE' ? value != '' ? value.toString().substring(0,4) + '.' +  value.toString().substring(4,6) + '.' +  value.toString().substring(6, 8) : value : */ )),
         )))
-    );
+    ).reversed.toList();
     gridStateMgr3.removeAllRows();
     gridStateMgr3.appendRows(rowDatas3.value);
     gridStateMgr3.scroll.vertical?.animateTo(25, curve: Curves.bounceIn, duration: Duration(milliseconds: 100));
@@ -1143,7 +1248,13 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
   }
 
+  final PlutoDebounce debounce = PlutoDebounce(
+    duration: const Duration(milliseconds: 300),
+  );
 
+  PlutoCell? currentCell;
+
+  dynamic initialValue;
   @override
   void onClose() {
     Get.log('IpgoController - onClose !!');
