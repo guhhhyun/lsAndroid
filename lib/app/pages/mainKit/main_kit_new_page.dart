@@ -75,7 +75,7 @@ class MainKitNewPage extends StatelessWidget {
                   } else {
                     return AppTheme.red_red_200;
                   }
-                } else {
+                } else {                
                   /*for(var i = 0; i < controller.smallBoxList.length; i++) {
                     if(controller.smallBoxList[i]['no'].toString() == (controller.no.value + 1).toString() && controller.isColor.value) {
                       controller.changedRows.value.add(c.rowIdx); // 색상이 변경된 행을 RxSet에 추가
@@ -282,8 +282,8 @@ class MainKitNewPage extends StatelessWidget {
                                             }
                                           }
                                         }
-
-                                       // controller.plutoRowNew();
+                                        
+                                        // controller.plutoRowNew();
                                         controller.textQrController.text = '';
 
                                         await controller.test();
@@ -2231,7 +2231,7 @@ class MainKitNewPage extends StatelessWidget {
             ),
           ),
         ), /// 내부 메인body
-
+      
         buttonPadding: const EdgeInsets.all(0),
         // insetPadding 이게 전체크기 조정
         insetPadding: const EdgeInsets.only(left: 45, right: 45),
@@ -3074,7 +3074,7 @@ class MainKitNewPage extends StatelessWidget {
           }
           for(var i = 0; i < controller.smallBoxDataList.length; i++) {
            if(controller.smallBoxDataList[i]['tagNo'] == controller.popUpDataList[index]['tagNo']) {
-             controller.alertIndex.value = i;
+             controller.alertIndex.value = index;
            }
           }
           //  Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
@@ -3127,6 +3127,13 @@ class MainKitNewPage extends StatelessWidget {
                         color: AppTheme.a1f1f1f,
                       ),),
                       Text('${controller.popUpDataList[index]['qty']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      SizedBox(width: 12,),
+                      Text('위치: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.popUpDataList[index]['locCd']}', style: AppTheme.a16400.copyWith(
                         color: AppTheme.a1f1f1f,
                       ),),
                     ],

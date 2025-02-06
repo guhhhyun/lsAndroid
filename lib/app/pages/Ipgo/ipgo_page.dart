@@ -423,6 +423,7 @@ class IpgoPage extends StatelessWidget {
                if(controller.isChecked.value == false) {
                  controller.isChecked.value = true;
                  await controller.checkBtn();
+                 controller.saveTextInvnr.value = controller.textInvnrController.text;
                  controller.isSelectedInvnr.value = true;
                  if(controller.gridStateMgr.rows.length == 1) {
                    controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 0);
@@ -951,35 +952,46 @@ class IpgoPage extends StatelessWidget {
                          padding: MaterialStateProperty.all(
                              const EdgeInsets.all(0))),
                      onPressed: () async {
-                       if(controller.isIpgoClick.value == false) {
-                         controller.isIpgoClick.value = true;
-                         Get.log('입고등록 클릭!');
-                         await controller.reqCheburnIpgo();
-                         await controller.registIpgoBtn();
-                         controller.successIpgo.value == true ?
-                         SchedulerBinding.instance!.addPostFrameCallback((_) {
-                           Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
-                         }) : Get.dialog(CommonDialogWidget(contentText: '등록에 실패하였습니다', pageFlag: 3,));
-                         controller.ipgoQrList.clear();
-                         controller.ipgoList.clear();
-                         controller.gridStateMgr2.removeAllRows();
-                         await controller.checkBtn2(); // 조회
-                         controller.ipgoQrList.clear();
-                         controller.ipgoList.clear();
-                         controller.gridStateMgr2.removeAllRows();
-                         if(controller.gridStateMgr.rows.length == 1) {
-                           controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 0);
-                           controller.selectedInvnrIndex.value = 0;
-                         }else {
-                           controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
-                           Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
-                           controller.selectedInvnrIndex.value = controller.gridStateMgr.currentRowIdx!;
-                         }
-                         controller.isSelectedInvnr.value = true;
-                         controller.isQr.value = true;
+                       if(controller.ipgoList.isNotEmpty) {
+                         Get.dialog(
+                           Center(child: CircularProgressIndicator()),
+                           barrierDismissible: false, // 사용자가 다이얼로그를 닫을 수 없도록 설정
+                         );
+                         if(controller.isIpgoClick.value == false) {
+                           controller.isIpgoClick.value = true;
+                           if(controller.isIpgoClick.value) {
+                             Get.log('입고등록 클릭!');
+                             await controller.reqCheburnIpgo();
+                             await controller.registIpgoBtnMulti();
+                             //ipgoList
+                           }
+                           controller.successIpgo.value == true ?
+                           SchedulerBinding.instance!.addPostFrameCallback((_) {
+                             Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
+                           }) : Get.dialog(CommonDialogWidget(contentText: '등록에 실패하였습니다', pageFlag: 3,));
+                           controller.ipgoQrList.clear();
+                           controller.ipgoList.clear();
+                           controller.gridStateMgr2.removeAllRows();
 
+                           /// 거래명세서 재조회
+                           await controller.checkBtn2(); // 조회
+                           controller.ipgoQrList.clear();
+                           controller.ipgoList.clear();
+                           controller.gridStateMgr2.removeAllRows();
+                           if(controller.gridStateMgr.rows.length == 1) {
+                             controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 0);
+                             controller.selectedInvnrIndex.value = 0;
+                           }else {
+                             controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
+                             Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
+                             controller.selectedInvnrIndex.value = controller.gridStateMgr.currentRowIdx!;
+                           }
+                           controller.isSelectedInvnr.value = true;
+                           controller.isQr.value = true;
+                           ///
+                         }
                        }
-                       controller.isIpgoClick.value = false;
+                       // controller.isIpgoClick.value = false;
                        focusNode2.requestFocus();
                      },
                      child: Container(
@@ -1140,59 +1152,8 @@ class IpgoPage extends StatelessWidget {
                      textAlignVertical: TextAlignVertical.center,
                      onTap: () {
                        controller.isQr.value = true;
-                     /*  if(controller.focusCnt.value++ > 1) controller.focusCnt.value = 0;
-                       else Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));*/
                      },
-
                      onTapOutside:(event) => { controller.focusCnt.value = 0 },
-                     onFieldSubmitted: (value) async {
-                       /*controller.isDuplQr.value = false;
-                       if(controller.isSelectedInvnr.value) {
-                         for(var i = 0; i < controller.ipgoList.length; i++) {
-                           if(controller.ipgoList[i]['qrNo'].contains(controller.textQrController.text)) {
-                             controller.isDuplQr.value = true;
-                           }
-                         }
-                         if(controller.isDuplQr.value) {
-                           controller.statusText.value = '중복된 QR코드입니다.';
-                           controller.textQrController.text = '';
-                         }else{
-                           await controller.checkQR();
-                           if(controller.ipgoQrList.isNotEmpty) {
-                             if(controller.ipgoQrList.length > 1) {
-                               // 중복 QR코드가 있을 때 선택하게끔 POP UP 띄우기
-                               showDialog(
-                                 barrierDismissible: false,
-                                 context: context, //context
-                                 builder: (BuildContext context) {yz
-                                   return _alertDialog(context);
-                                 },
-                               ); // context가 왜?
-                             }else {
-                               controller.ipgoQrList[0].addAll({'no': '${controller.ipgoList.length + 1}'});
-                               controller.ipgoList.add(controller.ipgoQrList[0]);
-                               controller.insertRow = List<PlutoRow>.generate(controller.ipgoQrList.length, (index) =>
-                                   PlutoRow(cells:
-                                   Map.from((controller.ipgoQrList[index]).map((key, value) =>
-                                       MapEntry(key, PlutoCell(value: value ?? '' )),
-                                   )))
-                               );
-                               //  controller.rowDatas2.add(controller.insertRow[0]);
-                               controller.gridStateMgr2.insertRows(controller.ipgoList.length, controller.insertRow);
-                             }
-
-                           }
-                           controller.textQrController.text = '';
-                           focusNode2.requestFocus();
-
-                         }
-                       }else {
-                         controller.statusText.value = '거래명세서를 선택해주세요.';
-                         controller.textQrController.text = '';
-                        // Get.dialog(_dialog('거래명세서를 선택해주세요'));
-                       }
-                       controller.isQr.value = false;*/
-                     },
                      keyboardType: TextInputType.none,
                      decoration: InputDecoration(
 
@@ -1653,14 +1614,8 @@ class IpgoPage extends StatelessWidget {
 
                            }
                            controller.textQrController2.text = '';
-                           controller.requestFocus2();
+                           controller.focusNode2.requestFocus();
 
-                           //}
-                           /*}else {
-                           controller.statusText2.value = '거래명세서를 선택해주세요.';
-                           controller.textQrController2.text = '';
-                           // Get.dialog(_dialog('거래명세서를 선택해주세요'));
-                         }*/
                            controller.isQr2.value = false;
                            controller.smallBoxIsQr.value = true;
                          }
@@ -1911,12 +1866,19 @@ class IpgoPage extends StatelessWidget {
                child: Row(
                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                  children: [
-                   Row(
-                     children: [
-                       _qrCodeTextForm2(context),
-                       SizedBox(width: 16,),
-                       Obx(()=> _statusText2()),
-                     ],
+                   Container(
+                     width: MediaQuery.of(context).size.width/2 + 50,
+                     child: SingleChildScrollView(
+                       scrollDirection: Axis.horizontal,
+                       child: Row(
+                         children: [
+                           _qrCodeTextForm2(context),
+                           SizedBox(width: 16,),
+                           Obx(()=> _statusText2()),
+                         ],
+
+                       ),
+                     ),
                    ),
                    Row(
                      mainAxisAlignment: MainAxisAlignment.start,
@@ -1988,21 +1950,24 @@ class IpgoPage extends StatelessWidget {
                              if(controller.isIpgoClick2.value == false) {
                                controller.isIpgoClick2.value = true;
                                Get.log('입고등록 클릭!');
-                               await controller.reqCheburnIpgo();
-                               await controller.registIpgoBoxBtn();
-                               if(controller.isSboxIpgo.value) {
-                                 SchedulerBinding.instance!.addPostFrameCallback((_) {
-                                   Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
-                                   controller.isIpgoClick2.value = false;
-                                 });
-                                 controller.ipgoQrBoxList.clear();
-                                 controller.ipgoBoxList.clear();
-                                 controller.gridStateMgr4.removeAllRows();
-                                 controller.gridStateMgr5.removeAllRows();
+                               if(controller.isIpgoClick2.value) {
+                                 await controller.reqCheburnIpgoSmall();
+                                 await controller.registIpgoBoxBtn();
+                                 if(controller.isSboxIpgo.value) {
+                                   SchedulerBinding.instance!.addPostFrameCallback((_) {
+                                     Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
+                                     controller.isIpgoClick2.value = false;
+                                   });
+                                   controller.ipgoQrBoxList.clear();
+                                   controller.ipgoBoxList.clear();
+                                   controller.gridStateMgr4.removeAllRows();
+                                   controller.gridStateMgr5.removeAllRows();
+                                 }
                                }
 
-                             }
 
+                             }
+                             controller.isIpgoClick2.value = false;
 
                            },
                            child: Container(
@@ -3009,36 +2974,7 @@ class IpgoPage extends StatelessWidget {
          textAlign: PlutoColumnTextAlign.center,
          backgroundColor: AppTheme.gray_c_gray_200,
        ),
-       PlutoColumn(
-         title: '입고번호',
-         field: 'inbNo',
-         type: PlutoColumnType.text(),
-         width: 190,
-         enableSorting: false,
-         enableEditingMode: false,
-         enableContextMenu: false,
-         enableRowDrag: false,
-         enableDropToResize: false,
-         enableColumnDrag: false,
-         titleTextAlign: PlutoColumnTextAlign.center,
-         textAlign: PlutoColumnTextAlign.center,
-         backgroundColor: AppTheme.gray_c_gray_200,
-       ),
-            PlutoColumn(
-         title: '입고구분',
-         field: 'inbTypeNm',
-         type: PlutoColumnType.text(),
-         width: 190,
-         enableSorting: false,
-         enableEditingMode: false,
-         enableContextMenu: false,
-         enableRowDrag: false,
-         enableDropToResize: false,
-         enableColumnDrag: false,
-         titleTextAlign: PlutoColumnTextAlign.center,
-         textAlign: PlutoColumnTextAlign.center,
-         backgroundColor: AppTheme.gray_c_gray_200,
-       ),
+
        PlutoColumn(
          title: '입고일자',
          field: 'InbDt',
@@ -3119,6 +3055,36 @@ class IpgoPage extends StatelessWidget {
          field: 'qty',
          type: PlutoColumnType.text(),
          width: 90,
+         enableSorting: false,
+         enableEditingMode: false,
+         enableContextMenu: false,
+         enableRowDrag: false,
+         enableDropToResize: false,
+         enableColumnDrag: false,
+         titleTextAlign: PlutoColumnTextAlign.center,
+         textAlign: PlutoColumnTextAlign.center,
+         backgroundColor: AppTheme.gray_c_gray_200,
+       ),
+       PlutoColumn(
+         title: '입고번호',
+         field: 'inbNo',
+         type: PlutoColumnType.text(),
+         width: 190,
+         enableSorting: false,
+         enableEditingMode: false,
+         enableContextMenu: false,
+         enableRowDrag: false,
+         enableDropToResize: false,
+         enableColumnDrag: false,
+         titleTextAlign: PlutoColumnTextAlign.center,
+         textAlign: PlutoColumnTextAlign.center,
+         backgroundColor: AppTheme.gray_c_gray_200,
+       ),
+       PlutoColumn(
+         title: '입고구분',
+         field: 'inbTypeNm',
+         type: PlutoColumnType.text(),
+         width: 190,
          enableSorting: false,
          enableEditingMode: false,
          enableContextMenu: false,

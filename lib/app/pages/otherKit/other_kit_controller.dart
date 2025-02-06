@@ -179,7 +179,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
     //cheburnIpgoList.clear();
 
     var params = {
-      'programId': 'A1020', //A2065
+
       // 'procedure': 'USP_GET_COMMON_CODE_R01',
       'grpCds': [
         'LE_NCBX_RMK'
@@ -1867,7 +1867,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
   /// 자재 저장
   Future<void> registSmallKitItemSave() async {
     Get.log('자재 등록');
-
+    alertIndex.value = 0;
     bLoading.value = true;
 
     var params = {
@@ -1895,7 +1895,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
         },
         {
           'paramName': 'p_CBX_EX_SEQ',
-          'paramValue': smallBoxDataList[alertIndex.value]['cbxExSeq'] == 'null' ? null :'${smallBoxDataList[alertIndex.value]['cbxExSeq'].toString().trim()}',
+          'paramValue': smallBoxDataList[alertIndex.value]['cbxExSeq'] == null ? null :'${smallBoxDataList[alertIndex.value]['cbxExSeq'].toString().trim()}',
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -1948,6 +1948,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
     } catch (e) {
       Get.log('registSmallKitDetailSave catch !!!!');
       Get.log(e.toString());
+      textQrController.text = '';
       isDbConnected.value = false;
     } finally {
       bLoading.value = false;
@@ -2002,28 +2003,33 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
 
           smallBoxDataList.addAll(retVal.body![1]);
           if(smallBoxDataList.isNotEmpty) {
-            if(smallBoxDataList[0]['cancleFlag'] > 0)
-            {
-              isSmallBoxDataList.value = true;
-              statusText.value = '정상 조회 되었습니다.';
-              return;
-            }
-            if(smallBoxDataList[0]['convQty'] > smallBoxDataList[0]['oderQty'] && smallBoxDataList[0]['wrkQty'] != 0)
-            {
-              isSmallBoxDataList.value = false;
-              statusText.value = '자재의 재고가 지시수량보다 많습니다';
-              return;
-            }
+            if(smallBoxDataList.length == 1) {
+              if(smallBoxDataList[0]['cancleFlag'] > 0)
+              {
+                isSmallBoxDataList.value = true;
+                statusText.value = '정상 조회 되었습니다.';
+                return;
+              }
+              if(smallBoxDataList[0]['convQty'] > smallBoxDataList[0]['oderQty'] && smallBoxDataList[0]['wrkQty'] != 0)
+              {
+                isSmallBoxDataList.value = false;
+                statusText.value = '자재의 재고가 지시수량보다 많습니다';
+                return;
+              }
 
 
-            // 이제 자재 저장 프로시저 실행
-            if(smallBoxDataList[0]['oderQty'] - smallBoxDataList[0]['wrkQty'] <= 0)
-            {
-              isSmallBoxDataList.value = false;
-              statusText.value = '해당 자재는 작업이 완료되었습니다.';
-              return;
+              // 이제 자재 저장 프로시저 실행
+              if(smallBoxDataList[0]['oderQty'] - smallBoxDataList[0]['wrkQty'] <= 0)
+              {
+                isSmallBoxDataList.value = false;
+                statusText.value = '해당 자재는 작업이 완료되었습니다.';
+                return;
+              }else {
+
+                isSmallBoxDataList.value = true;
+                statusText.value = '정상 조회 되었습니다.';
+              }
             }else {
-
               isSmallBoxDataList.value = true;
               statusText.value = '정상 조회 되었습니다.';
             }
@@ -2066,7 +2072,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
 
     bLoading.value = true;
     isSmallBoxDataList.value = false;
-
+    wrkCfmDt.value = '';
     var params = {
       'programId': 'A1020',
       'procedure': 'USP_A2065_R04',

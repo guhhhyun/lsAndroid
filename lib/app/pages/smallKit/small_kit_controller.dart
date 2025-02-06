@@ -984,7 +984,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
     //cheburnIpgoList.clear();
 
     var params = {
-      'programId': 'A1020',
+     // 'programId': 'A1020',
      // 'procedure': 'USP_GET_COMMON_CODE_R01',
       'grpCds': [
         'LE_NCBX_RMK'
@@ -2534,38 +2534,75 @@ Future<void> registSmallKitItemSave() async {
 
           smallBoxDataList.addAll(retVal.body![1]);
           if(smallBoxDataList.isNotEmpty) {
-            if(smallBoxDataList[0]['cancleFlag'] > 0)
-            {
-              isSmallBoxDataList.value = true;
-              statusText.value = '정상 조회 되었습니다.';
-              return;
-            }
-            if(smallBoxDataList[0]['convQty'] <= 0.0)
-            {
-              isSmallBoxDataList.value = false;
-              statusText.value = '자재의 재고가 없습니다.';
-              return;
-            }
-
-            if(smallBoxDataList[0]['convQty'] > smallBoxDataList[0]['oderQty'] && smallBoxDataList[0]['wrkQty'] != 0)
-            {
-              isSmallBoxDataList.value = false;
-              statusText.value = '자재의 재고가 지시수량보다 많습니다';
-              return;
-            }
-
-            // 이제 자재 저장 프로시저 실행
-            if(smallBoxDataList[0]['oderQty'] - smallBoxDataList[0]['wrkQty'] <= 0)
-            {
-              isSmallBoxDataList.value = false;
-              statusText.value = '해당 자재는 작업이 완료되었습니다.';
-              return;
-            }else {
-              for(var i = 0; i < smallBoxDataList.length; i++) {
-                isSelect.add(false);
+            if(smallBoxDataList.length == 1) {
+              if(smallBoxDataList[0]['cancleFlag'] > 0)
+              {
+                isSmallBoxDataList.value = true;
+                statusText.value = '정상 조회 되었습니다.';
+                return;
               }
+              if(smallBoxDataList[0]['convQty'] <= 0.0)
+              {
+                isSmallBoxDataList.value = false;
+                statusText.value = '자재의 재고가 없습니다.';
+                return;
+              }
+
+              if(smallBoxDataList[0]['convQty'] > smallBoxDataList[0]['oderQty'] && smallBoxDataList[0]['wrkQty'] != 0)
+              {
+                isSmallBoxDataList.value = false;
+                statusText.value = '자재의 재고가 지시수량보다 많습니다';
+                return;
+              }
+
+              // 이제 자재 저장 프로시저 실행
+              if(smallBoxDataList[0]['oderQty'] - smallBoxDataList[0]['wrkQty'] <= 0)
+              {
+                isSmallBoxDataList.value = false;
+                statusText.value = '해당 자재는 작업이 완료되었습니다.';
+                return;
+              }else {
+                isSmallBoxDataList.value = true;
+                statusText.value = '정상 조회 되었습니다.';
+              }
+            }else {
               isSmallBoxDataList.value = true;
               statusText.value = '정상 조회 되었습니다.';
+              /*for(var i = 0; i < smallBoxDataList.length; i++) {
+                if(smallBoxDataList[i]['cancleFlag'] > 0)
+                {
+                  isSmallBoxDataList.value = true;
+                  statusText.value = '정상 조회 되었습니다.';
+                  return;
+                }
+                if(smallBoxDataList[i]['convQty'] <= 0.0)
+                {
+                  isSmallBoxDataList.value = false;
+                  statusText.value = '자재의 재고가 없습니다.';
+                  return;
+                }
+
+                if(smallBoxDataList[i]['convQty'] > smallBoxDataList[i]['oderQty'] && smallBoxDataList[i]['wrkQty'] != 0)
+                {
+                  isSmallBoxDataList.value = false;
+                  statusText.value = '자재의 재고가 지시수량보다 많습니다';
+                  return;
+                }
+
+                // 이제 자재 저장 프로시저 실행
+                if(smallBoxDataList[i]['oderQty'] - smallBoxDataList[i]['wrkQty'] <= 0)
+                {
+                  isSmallBoxDataList.value = false;
+                  statusText.value = '해당 자재는 작업이 완료되었습니다.';
+                  return;
+                }else {
+                  for(var i = 0; i < smallBoxDataList.length; i++) {
+                    isSelect.add(false);
+                  }
+                  isSmallBoxDataList.value = true;
+                  statusText.value = '정상 조회 되었습니다.';
+                }
+              }*/
             }
           }else {
             isSmallBoxDataList.value = false;
@@ -2647,7 +2684,7 @@ Future<void> registSmallKitItemSave() async {
           wrkNo.value = smallBoxItemDataList[0]['wrkNo'].toString();
           boxNo.value = textQrController.text;//retVal.body![1][''];
           wrkCfmDt.value = smallBoxItemDataList[0]['wrkCfmDttm'].toString();
-         boxWht.value = smallBoxItemDataList[0]['boxWht'].toString();
+          boxWht.value = smallBoxItemDataList[0]['boxWht'] == null ? '' : smallBoxItemDataList[0]['boxWht'].toString();
           textMemoController.text = smallBoxItemDataList[0]['wrkRemark'] ?? '';
           Get.log(smallBoxItemDataList.toString());
           Get.log('조회 성공');
@@ -3041,6 +3078,8 @@ Future<void> registSmallKitItemSave() async {
           smallBoxTagTypeList.addAll(retVal.body![1]);
           if(smallBoxTagTypeList.isNotEmpty) {
             if(smallBoxTagTypeList[0]['tagType'] == '90') {
+              isConfirmClick.value = false;
+              wrkCfmDt.value = '';
               await checkBoxItemData();
               for (var i = 0; i < smallBoxItemDataList.length; i++) {
                 smallBoxItemDataList[i].addAll({'no': '${i + 1}'});
@@ -3048,7 +3087,6 @@ Future<void> registSmallKitItemSave() async {
               /// 여기서 무게 쪽 초기화 한번 ㄱ
               textWeightController.text = '';
             }else {
-
               await checkBoxData();
             }
           }else {

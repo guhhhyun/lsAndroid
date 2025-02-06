@@ -462,10 +462,6 @@ class SmallKitNewPage extends StatelessWidget {
                         SizedBox(width: 32,),
                         _subData2('박스번호', controller.boxNo.value, false),
                         SizedBox(width: 32,),
-                        _subData2('확정일', controller.wrkCfmDt.value ?? '', false),
-                        SizedBox(width: 32,),
-                        _subData2('무게', controller.boxWht.value ?? '', false),
-                        SizedBox(width: 32,),
                         _subData2('BOM 점검', controller.bcSts.value == 'null' ? '' : controller.bcSts.value, false)
                       ],
                     ),
@@ -491,6 +487,10 @@ class SmallKitNewPage extends StatelessWidget {
                     ),
                     Row(
                       children: [
+                       Obx(()=>  _subData2('확정일', controller.wrkCfmDt.value ?? '', false),),
+                        SizedBox(width: 32,),
+                        Obx(() => _subData2('무게', controller.boxWht.value ?? '', false),),
+                        SizedBox(width: 32,),
                         /*Container(
                           margin: EdgeInsets.only(right: 12),
                           width: 120,
@@ -815,14 +815,17 @@ class SmallKitNewPage extends StatelessWidget {
               padding: MaterialStateProperty.all<EdgeInsets>(
                   const EdgeInsets.all(0))),
           onPressed: () async {
-            int cbxQty;
             if(text == '동기화')
             {
               if(controller.itemCdNm.value == '') {
                 Get.dialog(CommonDialogWidget(contentText: '박스를 먼저 스캔해주세요.', pageFlag: 0));
                 return;
               }
-              controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y' ? syncProcess() : Get.dialog(CommonDialogWidget(contentText: '확정 처리된 상태입니다.', pageFlag: 0));
+              if(controller.smallBoxItemDataList[0]['wrkCfmYn'].toString() != 'Y') {
+                syncProcess();
+              }else {
+                Get.dialog(CommonDialogWidget(contentText: '확정 처리된 상태입니다.', pageFlag: 0));
+              }
             }
 
             else if(text == '저장')
@@ -842,6 +845,7 @@ class SmallKitNewPage extends StatelessWidget {
                   Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0)) :
                   Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
                 }
+                controller.isSaveClick.value = false;
               }else {
                 Get.dialog(CommonDialogWidget(contentText: '확정된 박스입니다.', pageFlag: 0));
               }
@@ -997,7 +1001,7 @@ class SmallKitNewPage extends StatelessWidget {
                   controller.isConfirmClick.value = false;
                 }
               }
-              controller.isConfirmClick.value = true;
+              controller.isConfirmClick.value = false;
 
             }
             else if(text == '확정 취소')
@@ -1043,13 +1047,9 @@ class SmallKitNewPage extends StatelessWidget {
 
 
   void syncProcess() async {
-    Get.dialog(
-      Center(child: CircularProgressIndicator()),
-      barrierDismissible: false, // 사용자가 다이얼로그를 닫을 수 없도록 설정
-    );
-
     try {
       if (controller.isDonggi.value == false) {
+        controller.isDonggi.value = true;
         controller.isColor.value = false;
         controller.isSaveColor.value = true;
         for (var dong = 0; dong < controller.smallBoxItemDataList.length; dong++) {
@@ -1127,7 +1127,7 @@ class SmallKitNewPage extends StatelessWidget {
         Get.log('이거이거 ${controller.smallBoxSaveList}');
 
         Get.log('동기화 is: ${controller.isDropdownEnabled.value}');
-        controller.isDonggi.value = true;
+        controller.isDonggi.value = false;
       }
     } catch (e) {
       Get.log('$e');

@@ -2402,6 +2402,52 @@ class HomeApi extends NetworkManager{
       } else {
 
         final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/multiPosts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          ipgoSmallboxModel = IpgoSmallboxModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+        // loginModel = LoginModel.fromJson(response.data);
+      }
+
+    } on DioError catch (e) {
+      Get.log('registIpgo - error');
+      IpgoController controller = Get.find();
+      controller.isDbConnected.value = false;
+      // commonError(e);
+      a = '1111';
+    } catch (err) {
+      Get.log('registIpgo = ${err.toString()}');
+      a = '1111';
+    }
+    return ipgoSmallboxModel;
+  }
+
+  /// 입고 등록 멀티
+  Future<IpgoSmallboxModel> registIpgoMulti(var params) async {
+    var ipgoSmallboxModel = IpgoSmallboxModel();
+    String a = '0000';
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/ipgo_regist.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        ipgoSmallboxModel = IpgoSmallboxModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
             .post('/api/common/procedure/posts', data: jsonEncode(params),
           options: Options(
             headers: {

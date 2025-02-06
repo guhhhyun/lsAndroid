@@ -37,7 +37,6 @@ class LoginController extends GetxController {
     bLoading.value = true;
 
     var params = {
-      'programId': 'A1020',
       'userId': idTextController.text,
       'userPw': pwTextController.text,
     };

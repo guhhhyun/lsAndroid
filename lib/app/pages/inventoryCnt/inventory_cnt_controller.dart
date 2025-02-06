@@ -273,7 +273,7 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
     //cheburnIpgoList.clear();
 
     var params = {
-      'programId': 'A1020', //A4041
+
       'procedure': 'USP_GET_COMMON_CODE_R01',
       'params': [
         {

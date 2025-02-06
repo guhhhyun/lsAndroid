@@ -773,7 +773,6 @@ class OtherKitNewPage extends StatelessWidget {
               padding: MaterialStateProperty.all<EdgeInsets>(
                   const EdgeInsets.all(0))),
           onPressed: () async {
-            int cbxQty;
             if(text == '행 추가')
             {
               controller.isFocus.value = true;
@@ -810,7 +809,7 @@ class OtherKitNewPage extends StatelessWidget {
                 Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
                 return;
               }
-              if(controller.wrkCfmDt.value.trim() == '' || controller.wrkCfmDt.value.trim() == 'null') {
+              if(controller.wrkCfmDt.value.trim() == '' || controller.wrkCfmDt.value.trim() == 'null' || controller.wrkCfmDt.value == null) {
                 if(controller.isSaveClick.value == false) { // 중복방지 로직
                   controller.isSaveClick.value = true;
                   Get.log('저장할 리스트!: ${controller.smallBoxSaveList.length}');
@@ -823,6 +822,7 @@ class OtherKitNewPage extends StatelessWidget {
                     Get.dialog(CommonDialogWidget(contentText: '박스가 확정된 상태입니다.', pageFlag: 0));
                   }
                 }
+                controller.isSaveClick.value = false;
               }else {
                 Get.dialog(CommonDialogWidget(contentText: '확정된 박스입니다.', pageFlag: 0));
               }
@@ -968,6 +968,7 @@ class OtherKitNewPage extends StatelessWidget {
                   controller.isConfirmClick.value = false;
                 }
               }
+              controller.isConfirmClick.value = false;
             }
             else if(text == '확정 취소')
             {
@@ -1015,6 +1016,7 @@ class OtherKitNewPage extends StatelessWidget {
 
     try {
       if (controller.isDonggi.value == false) {
+        controller.isDonggi.value = true;
         controller.isColor.value = false;
         controller.isSaveColor.value = true;
         for (var dong = 0; dong < controller.smallBoxItemDataList.length; dong++) {
@@ -1108,7 +1110,7 @@ class OtherKitNewPage extends StatelessWidget {
         Get.log('이거이거 ${controller.smallBoxSaveList}');
 
         Get.log('동기화 is: ${controller.isDropdownEnabled.value}');
-        controller.isDonggi.value = true;
+        controller.isDonggi.value = false;
       }
     } catch (e) {
       Get.log('$e');

@@ -1623,6 +1623,73 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
   }
 
 
+  /// 자재선택 프로시저
+  Future<void> reqCommon4() async {
+
+    bLoading.value = true;
+    popUpDataList.clear();
+    //cheburnIpgoList.clear();
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A2060_R05',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_QR_NO',
+          'paramValue': smallBoxDataList[0]['qrNo'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_CBX_MA_NO',
+          'paramValue': cbxMaNo.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqMainKitNew(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          popUpDataList.addAll(retVal.body![1]);
+          for(var i = 0; i < popUpDataList.length; i++) {
+            isSelect.add(false);
+          }
+          isDbConnected.value = true;
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+        }
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('reqCommon3 catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+
+    }
+  }
+
+
 
   /// 메인박스 KIT 박스정보 조회
   Future<void> checkBoxData() async {

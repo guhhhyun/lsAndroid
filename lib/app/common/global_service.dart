@@ -32,7 +32,6 @@ class GlobalService extends GetxService {
           loginPassword.value = Utils.getStorage.read('userPw');
           await prefs.setString('userId', Utils.getStorage.read('userId'));
           var params = {
-            'programId': 'A1020',
             'loginId': loginId.value,
             'password': loginPassword.value,
           };

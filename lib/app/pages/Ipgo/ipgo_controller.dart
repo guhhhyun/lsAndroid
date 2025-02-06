@@ -63,6 +63,8 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
 
   RxList<dynamic> cheburnIpgoList = [].obs; // 채번리스트
 
+  RxList<dynamic> smallCheburnIpgoList = [].obs; // 소박스 채번리스트
+
 
 
   RxString saveTextInvnr = ''.obs;
@@ -113,8 +115,11 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxString statusText = ''.obs;
   RxString statusText2 = ''.obs;
   RxString cheburnDate = ''.obs; // 채번날짜
+  RxString smallCheburnDate = ''.obs; // 채번날짜
   RxString cheburnInbNumber = ''.obs; // 끝 6자리
   RxString cheburnLotNumber = ''.obs; // 끝 6자리
+  RxString smallCheburnInbNumber = ''.obs; // 끝 6자리
+  RxString smallCheburnLotNumber = ''.obs; // 끝 6자리
   RxBool isQr = false.obs;
   RxBool smallBoxIsQr = false.obs;
   RxBool isQr2 = false.obs;
@@ -296,8 +301,8 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           String numberPart2 = cheburnIpgoList[0]['inbLotNo'].toString().substring(cheburnIpgoList[0]['inbLotNo'].toString().length - 6); // "00001"
 
           // 숫자로 변환 후 1 증가
-          int number = int.parse(numberPart) + 1;
-          int number2 = int.parse(numberPart2) + 1;
+          int number = int.parse(numberPart);
+          int number2 = int.parse(numberPart2);
 
           // 다시 5자리 문자열로 변환
           String newNumberPart = number.toString().padLeft(6, '0'); // "000002"
@@ -305,6 +310,82 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           cheburnInbNumber.value = newNumberPart;
           cheburnLotNumber.value = newNumberPart2;
        //   cheburnLotNumber.value = (int.parse(cheburnIpgoList[0]['inbLotNo'].toString().replaceRange(0, 9, '')) + 1).toString();
+          isDbConnected.value = true;
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+        }
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('cheburnIpgoList catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+      isIpgoClick.value = false;
+    }
+  }
+
+  /// 소박스 입고 채번 조회
+  Future<void> reqCheburnIpgoSmall() async {
+
+    bLoading.value = true;
+    smallCheburnIpgoList.clear();
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A1020_R04',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_WH_CD',
+          'paramValue': 'WH01',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqCheburnIpgo(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          smallCheburnIpgoList.value.addAll(retVal.body![1]);
+          Get.log('채번 리스트 조회: ${smallCheburnIpgoList.toString()}');
+          Get.log('조회 성공');
+          smallCheburnDate.value = DateFormat('yyMMdd').format(DateTime.now());
+          int lastTwoDigits = int.parse(smallCheburnIpgoList[0]['inbNo'].toString().substring(smallCheburnIpgoList[0]['inbNo'].toString().length - 2));
+          //  cheburnInbNumber.value = (int.parse(cheburnIpgoList[0]['inbNo'].toString().replaceRange(0, 9, '')) + 1).toString();
+
+          // String prefix = cheburnIpgoList[0]['inbNo'].toString().substring(0, cheburnIpgoList[0]['inbNo'].toString().length - 5); // "INBN241121"
+          String numberPart = smallCheburnIpgoList[0]['inbNo'].toString().substring(smallCheburnIpgoList[0]['inbNo'].toString().length - 6); // "00001"
+          String numberPart2 = smallCheburnIpgoList[0]['inbLotNo'].toString().substring(smallCheburnIpgoList[0]['inbLotNo'].toString().length - 6); // "00001"
+
+          // 숫자로 변환 후 1 증가
+          int number = int.parse(numberPart);
+          int number2 = int.parse(numberPart2);
+
+          // 다시 5자리 문자열로 변환
+          String newNumberPart = number.toString().padLeft(6, '0'); // "000002"
+          String newNumberPart2 = number2.toString().padLeft(6, '0'); // "00002"
+          smallCheburnInbNumber.value = newNumberPart;
+          smallCheburnLotNumber.value = newNumberPart2;
+          //   cheburnLotNumber.value = (int.parse(cheburnIpgoList[0]['inbLotNo'].toString().replaceRange(0, 9, '')) + 1).toString();
           isDbConnected.value = true;
         }else{
           Get.log('${retVal.body![0]['resultMessage']}');
@@ -634,6 +715,15 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           ipgoQrBoxList.value.addAll(retVal.body![1]);
 
           ipgoQrBoxList[0].addAll({'no': '${ipgoBoxList.length + 1}'});
+          for(var i = 0; i < ipgoBoxList.length; i++) {
+            if(ipgoBoxList.isNotEmpty) {
+              if(ipgoBoxList[i]['qrNo'] == ipgoQrBoxList[0]['qrNo']) {
+                statusText2.value = '중복된 QR입니다.';
+                isDbConnected.value = false;
+                return;
+              }
+            }
+          }
           ipgoBoxList.add(ipgoQrBoxList[0]);
 
 
@@ -674,98 +764,101 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     Get.log('소박스 입고 등록 클릭');
 
     bLoading.value = true;
+    var paramList = [];
       for (var i = 0; i < ipgoBoxList.length; i++) {
+        paramList.add([
+          {
+            'paramName': 'p_work_type',
+            'paramValue': 'N',
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_PLANT',
+            'paramValue': '1302',
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_WH_CD',
+            'paramValue': 'WH01',
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_INB_NO',
+            'paramValue': 'INBN$smallCheburnDate$smallCheburnInbNumber',
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_INB_TYPE',
+            'paramValue': ipgoBoxList[i]['inbType'],
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_INB_DT',
+            'paramValue': DateFormat('yyyyMMdd').format(DateTime.now()),
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_INB_LOT_NO',
+            'paramValue': 'LINB$smallCheburnDate$smallCheburnLotNumber',
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_DOC_NO',
+            'paramValue': ipgoBoxList[i]['inbType'] == '20' ? null : ipgoBoxList[i]['doc1'],
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_QR_NO',
+            'paramValue': ipgoBoxList[i]['qrNo'],
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_QTY',
+            'paramValue': ipgoBoxList[i]['qty'],
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_FST_ROW_YN',
+            'paramValue': i == 0 ? 'Y' : 'N',
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_LOC_CD',
+            'paramValue': selectedSmallBoxContainer['CODE'],
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_USR_ID',
+            'paramValue': gs.loginId.value,
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          },
+          {
+            'paramName': 'p_USR_IP',
+            'paramValue': 'MOBILE',
+            'paramJdbcType': 'VARCHAR',
+            'paramMode': 'IN'
+          }
+
+
+        ]);
+      }
         var params = {
           'programId': 'A1020',
           'procedure': 'USP_A1020_S03',
-          'params': [
-            {
-              'paramName': 'p_work_type',
-              'paramValue': 'N',
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            },
-            {
-              'paramName': 'p_PLANT',
-              'paramValue': '1302',
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            },
-            {
-              'paramName': 'p_WH_CD',
-              'paramValue': 'WH01',
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            },
-            {
-              'paramName': 'p_INB_NO',
-              'paramValue': 'INBN$cheburnDate$cheburnInbNumber',
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            },
-            {
-              'paramName': 'p_INB_TYPE',
-              'paramValue': ipgoBoxList[i]['inbType'],
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            },
-            {
-              'paramName': 'p_INB_DT',
-              'paramValue': DateFormat('yyyyMMdd').format(DateTime.now()),
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            },
-            {
-              'paramName': 'p_INB_LOT_NO',
-              'paramValue': 'LINB$cheburnDate$cheburnLotNumber',
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            },
-            {
-              'paramName': 'p_DOC_NO',
-              'paramValue': ipgoBoxList[i]['inbType'] == '20' ? null : ipgoBoxList[i]['doc1'],
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            },
-            {
-              'paramName': 'p_QR_NO',
-              'paramValue': ipgoBoxList[i]['qrNo'],
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            },
-            {
-              'paramName': 'p_QTY',
-              'paramValue': ipgoBoxList[i]['qty'],
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            },
-            {
-              'paramName': 'p_FST_ROW_YN',
-              'paramValue': i == 0 ? 'Y' : 'N',
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            },
-            {
-              'paramName': 'p_LOC_CD',
-              'paramValue': selectedSmallBoxContainer['CODE'],
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            },
-            {
-              'paramName': 'p_USR_ID',
-              'paramValue': gs.loginId.value,
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            },
-            {
-              'paramName': 'p_USR_IP',
-              'paramValue': 'MOBILE',
-              'paramJdbcType': 'VARCHAR',
-              'paramMode': 'IN'
-            }
-
-
-          ]
+          'params': paramList
         };
 
         try {
@@ -779,7 +872,6 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
             statusText.value = retVal.body![0]['resultMessage'];
             Get.log('등록 실패');
             isSboxIpgo.value = false;
-
           }
         } catch (e) {
           Get.log('registIpgoBtn catch !!!!');
@@ -790,9 +882,9 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           bLoading.value = false;
           isIpgoClick.value = false;
         }
-      }
 
-
+      smallCheburnInbNumber.value = '';
+      smallCheburnLotNumber.value = '';
 
   }
 
@@ -908,18 +1000,158 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
           Get.log('등록 실패');
           successIpgo.value = false;
           statusText.value = retVal.body![0]['resultMessage'];
+          break;
         }
       } catch (e) {
         Get.log('registIpgoBtn catch !!!!');
         Get.log(e.toString());
         isDbConnected.value = false;
         successIpgo.value = false;
+        isIpgoClick.value = false;
       } finally {
         bLoading.value = false;
-        isIpgoClick.value = false;
       }
     }
+    ipgoQrList.clear();
+    ipgoList.clear();
+    isIpgoClick.value = false;
+    cheburnInbNumber.value = '';
+    cheburnLotNumber.value = '';
+    Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+  }
 
+
+  /// 입고 등록
+  Future<void> registIpgoBtnMulti() async {
+    Get.log('입고 등록 멀티 클릭');
+
+    bLoading.value = true;
+    var paramList = [];
+    for(var i = 0; i < ipgoList.length; i++) {
+      paramList.add([
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'N',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_WH_CD',
+          'paramValue': invnrList[selectedInvnrIndex.value]['whCd'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_INB_NO',
+          'paramValue': 'INBN$cheburnDate$cheburnInbNumber',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_INB_TYPE',
+          'paramValue': invnrList[selectedInvnrIndex.value]['inbType'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_INB_DT',
+          'paramValue': DateFormat('yyyyMMdd').format(DateTime.now()),
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_INB_LOT_NO',
+          'paramValue': 'LINB$cheburnDate$cheburnLotNumber',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_DOC_NO',
+          'paramValue': invnrList[selectedInvnrIndex.value]['inbType'] == '20' ? null : invnrList[selectedInvnrIndex.value]['doc1'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_QR_NO',
+          'paramValue': ipgoList[i]['qrNo'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_QTY',
+          'paramValue': ipgoList[i]['qty'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_FST_ROW_YN',
+          'paramValue': i == 0 ? 'Y' : 'N',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_LOC_CD',
+          'paramValue': selectedOneBoxContainer['CODE'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_ID',
+          'paramValue': gs.loginId.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_IP',
+          'paramValue': 'MOBILE',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+
+
+      ]);
+    }
+
+      var params = {
+        'programId': 'A1020',
+        'procedure': 'USP_A1020_S01',
+        'params': paramList
+      };
+
+      try {
+        final retVal = await HomeApi.to.registIpgo(params);
+
+        if (retVal.body![0]['resultMessage'] == '') {
+          Get.log('등록되었습니다');
+          isDbConnected.value = true;
+          successIpgo.value = true;
+        } else {
+          Get.log('등록 실패');
+          successIpgo.value = false;
+          statusText.value = retVal.body![0]['resultMessage'];
+        }
+      } catch (e) {
+        Get.log('registIpgoBtn catch !!!!');
+        Get.log(e.toString());
+        isDbConnected.value = false;
+        successIpgo.value = false;
+        isIpgoClick.value = false;
+      } finally {
+        bLoading.value = false;
+      }
+
+    ipgoQrList.clear();
+    ipgoList.clear();
+    isIpgoClick.value = false;
+    cheburnInbNumber.value = '';
+    cheburnLotNumber.value = '';
+    Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
   }
 
   /// 입고 QR 조회
@@ -1234,6 +1466,7 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
 
   final FocusNode focusNode = FocusNode();
 
+  /// 이거때문에 문제? 문제 시 -> 삭제처리
   void requestFocus() {
     Future.microtask(() => focusNode.requestFocus());
     if(focusCnt.value++ > 1) focusCnt.value = 0;
@@ -1269,11 +1502,10 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
     firstDayOfMonth = DateTime(now.year, now.month, 1);
     firstDayOfMonth2 = DateTime(now.year, now.month, 1);
     dayStartValue.value = DateFormat('yyyy-MM-dd').format(firstDayOfMonth);
-    dayStartValue2.value = DateFormat('yyyy-MM-dd').format(firstDayOfMonth2);
+   // dayStartValue2.value = DateFormat('yyyy-MM-dd').format(firstDayOfMonth2);
     tabController = TabController(length: 3, vsync: this);
     reqCommon();
     reqCommon2();
-    reqCheburnIpgo();
   }
 
   @override
