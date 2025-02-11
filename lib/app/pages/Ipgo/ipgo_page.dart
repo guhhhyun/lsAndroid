@@ -677,6 +677,14 @@ class IpgoPage extends StatelessWidget {
                if(controller.gridStateMgr.currentRowIdx == c.rowIdx) {
                  return AppTheme.blue_blue_50;
                }
+               for(var i = 0; i < controller.addInvnrItemCd.length; i++) {
+                 // controller.changedRows.value.add(controller.noList[i]);
+                 controller.changedRows.value.add(controller.addInvnrItemCd[i]);
+               }
+               if (controller.changedRows.contains(c.row.cells['itemCd']?.value.toString())) {
+                 return AppTheme.gray_c_gray_200; // 이미 변경된 색상 유지
+               }
+               Get.log('controller.changedRows 색색색: ${controller.changedRows}');
                return Colors.transparent;
              },
              configuration: PlutoGridConfiguration(
@@ -952,6 +960,8 @@ class IpgoPage extends StatelessWidget {
                          padding: MaterialStateProperty.all(
                              const EdgeInsets.all(0))),
                      onPressed: () async {
+                       controller.addInvnrItemCd.clear();
+                       controller.changedRows.clear();
                        if(controller.ipgoList.isNotEmpty) {
                          Get.dialog(
                            Center(child: CircularProgressIndicator()),
@@ -969,25 +979,33 @@ class IpgoPage extends StatelessWidget {
                            SchedulerBinding.instance!.addPostFrameCallback((_) {
                              Get.dialog(CommonDialogWidget(contentText: '저장되었습니다', pageFlag: 3,));
                            }) : Get.dialog(CommonDialogWidget(contentText: '등록에 실패하였습니다', pageFlag: 3,));
-                           controller.ipgoQrList.clear();
-                           controller.ipgoList.clear();
-                           controller.gridStateMgr2.removeAllRows();
+                         /*  controller.ipgoQrList.clear();
+                           controller.ipgoList.clear();*/
 
                            /// 거래명세서 재조회
                            await controller.checkBtn2(); // 조회
-                           controller.ipgoQrList.clear();
-                           controller.ipgoList.clear();
                            controller.gridStateMgr2.removeAllRows();
                            if(controller.gridStateMgr.rows.length == 1) {
                              controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 0);
                              controller.selectedInvnrIndex.value = 0;
                            }else {
+                             for(var i = 0; i < controller.invnrList.length; i++) {
+                               if(controller.invnrList[i]['itemCd'] == controller.ipgoList[0]['itemCd']) {
+                                 controller.addInvnrItemCd.add(controller.ipgoList[0]['itemCd']);
+                                 break;
+                               }
+                             }
                              controller.gridStateMgr.setCurrentCell(controller.gridStateMgr.firstCell, 1);
+                            // controller.gridStateMgr.scroll.bodyRowsVertical?.jumpTo(verticalOffset);
                              Get.log('현재위치: ${controller.gridStateMgr.currentRowIdx}');
                              controller.selectedInvnrIndex.value = controller.gridStateMgr.currentRowIdx!;
                            }
+                           controller.ipgoQrList.clear();
+                           controller.ipgoList.clear();
+                           controller.gridStateMgr2.removeAllRows();
                            controller.isSelectedInvnr.value = true;
                            controller.isQr.value = true;
+                           await controller.test();
                            ///
                          }
                        }
@@ -1584,6 +1602,7 @@ class IpgoPage extends StatelessWidget {
                        if (event is KeyDownEvent) {
                          if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
                            // 엔터 키 감지
+
                            await controller.checkBoxQR();
                            if(controller.ipgoQrBoxList.isNotEmpty) {
                              /* controller.ipgoQrBoxList[0].addAll({'no': '${controller.ipgoBoxList.length + 1}'});*/

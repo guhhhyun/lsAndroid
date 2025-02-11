@@ -1158,7 +1158,7 @@ class SmallKitController extends GetxController with GetSingleTickerProviderStat
           },
           {
             'paramName': 'p_BOX_WHT',
-            'paramValue': textWeightController.text,
+            'paramValue': textWeightController.text == '' ? null : textWeightController.text,
             'paramJdbcType': 'VARCHAR',
             'paramMode': 'IN'
           },

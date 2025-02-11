@@ -1742,7 +1742,8 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
 
           if(smallBoxDataList.isNotEmpty) {
             if(smallBoxDataList[0]['tagType'] == '20') {
-
+              textWeightController.text = '';
+              textWeightController2.text = '';
               smallBoxSave.clear();
               smallBoxSaveList.clear();
               smallBoxList.clear();
@@ -1765,6 +1766,7 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
               cbxMaNo.value = smallBoxDataList[0]['cbxMaNo'].toString();
               setQty.value = smallBoxDataList[0]['setQty'].toString();
               bcSts.value = smallBoxDataList[0]['bcSts'].toString();
+
             }
             tagType.value = smallBoxDataList[0]['tagType'].toString();
             if(smallBoxDataList.length > 1) {
@@ -2440,13 +2442,13 @@ class MainKitController extends GetxController with GetSingleTickerProviderState
         },
         {
           'paramName': 'p_BOX_WHT',
-          'paramValue': textWeightController.text == '' ? 0 : textWeightController.text,
+          'paramValue': textWeightController.text == '' ? null : textWeightController.text,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
         {
           'paramName': 'p_BOX_WHT2',
-          'paramValue': textWeightController2.text == '' ? 0 : textWeightController2.text,
+          'paramValue': textWeightController2.text == '' ? null : textWeightController2.text,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },

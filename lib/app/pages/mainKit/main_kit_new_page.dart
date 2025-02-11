@@ -1084,7 +1084,7 @@ class MainKitNewPage extends StatelessWidget {
                 Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
                 return;
               }
-              if(controller.wrkCfmDt.value == '' || controller.wrkCfmDt.value == 'null') {
+              if(controller.wrkCfmDt.value.trim() == '' || controller.wrkCfmDt.value.trim() == 'null'|| controller.wrkCfmDt.value == null) {
                 if (controller.isSaveClick.value == false) {
                   controller.isSaveClick.value = true;
                   Get.log('저장할 리스트!: ${controller.smallBoxSaveList.length}');
@@ -1093,7 +1093,8 @@ class MainKitNewPage extends StatelessWidget {
                   controller.isSave.value
                       ? Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0))
                       : Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
-                } 
+                }
+                controller.isSaveClick.value = false;
               }else {
                 Get.dialog(CommonDialogWidget(contentText: '확정된 박스입니다.', pageFlag: 0));
               }

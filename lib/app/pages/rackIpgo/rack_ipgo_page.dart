@@ -288,7 +288,7 @@ class RackIpgoPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
-          width: 750,
+          width: 630,
           padding: EdgeInsets.only(left: 24),
           child: Container(
             child: Row(
@@ -297,7 +297,6 @@ class RackIpgoPage extends StatelessWidget {
                 // _invnrTextForm('QR 코드', 3),
                 SizedBox(width: 16,),
                 Container(
-
                     child: _statusText()),
                 SizedBox(width: 8,),
               ],
@@ -316,6 +315,51 @@ class RackIpgoPage extends StatelessWidget {
               width: 40,
               height: 40,
             ),),
+            Container(
+              margin: EdgeInsets.only(right: 12),
+              width: 120,
+              height: 40,
+              child: TextButton(
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all<
+                        RoundedRectangleBorder>(
+                        const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10)))),
+                    padding: MaterialStateProperty.all(
+                        const EdgeInsets.all(0))),
+                onPressed: () {
+                  Get.log('행 삭제 클릭!');
+                  if(controller.gridStateMgr.currentRowIdx != null) {
+                    controller.rackIpgoList.removeAt(controller.gridStateMgr.currentRowIdx!);
+                    controller.gridStateMgr.removeAllRows();
+                    updateRows();
+                    controller.gridStateMgr.appendRows(controller.rowDatas.value);
+                  }
+
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: AppTheme.navy_navy_800,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppTheme.ae2e2e2)
+                  ),
+                  width: 120,
+                  height: 40,
+                  padding: const EdgeInsets.only(
+
+                  ),
+                  child: Center(
+                    child: Text('행 삭제',
+                        style: AppTheme.a18700.copyWith(
+                          color: AppTheme.white,
+                        )),
+                  ),
+                ),
+              ),
+            ),
+
             Container(
              // margin: EdgeInsets.only(right: 12),
               width: 120,
@@ -516,7 +560,7 @@ class RackIpgoPage extends StatelessWidget {
 
           padding: const EdgeInsets.only(top: 6, left: 8, right: 8),
           height: 40,
-          width: controller.statusText.value == '' ? 300 : null,
+          width: controller.statusText.value == '' ? 200 : null,
           decoration: BoxDecoration(
             color: AppTheme.gray_gray_100,
               borderRadius: BorderRadius.circular(10),
@@ -793,7 +837,44 @@ class RackIpgoPage extends StatelessWidget {
                               RoundedRectangleBorder>(
                               const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(15),
+                                    bottomLeft: Radius.circular(15),
+                                    /*bottomRight: Radius.circular(15)*/))),
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(0))),
+                      onPressed: () async {
+                        Get.log('닫기 클릭!');
+                        Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                right: BorderSide(color: const Color(0x5c3c3c43),)
+                            ),
+                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15)/*, bottomRight: Radius.circular(15)*/),
+                            color: AppTheme.white
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.only(
+                          top: AppTheme.spacing_s_12,
+                          bottom: AppTheme.spacing_s_12,
+                        ),
+                        child: Center(
+                          child: Text('닫기',
+                              style: AppTheme.titleHeadline.copyWith(
+                                  color: AppTheme.black,
+                                  fontSize: 17)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: TextButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
                                       bottomRight: Radius.circular(15)))),
                           padding: MaterialStateProperty.all(
                               const EdgeInsets.all(0))),
@@ -840,7 +921,8 @@ class RackIpgoPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                  )
+                  ),
+
                 ],
               ),
             ],

@@ -96,7 +96,7 @@ class RackIpgoMultiPage extends StatelessWidget {
           width: MediaQuery.of(context).size.width-32,
           height: height,
           child: PlutoGrid(
-          //  mode: PlutoGridMode.selectWithOneTap, // 탭 한번으로 반응하게?
+            mode: PlutoGridMode.selectWithOneTap, // 탭 한번으로 반응하게?
             columns: gridCols(context),
             rows: controller.rowDatas.value,
             onLoaded: (PlutoGridOnLoadedEvent event) {
@@ -143,7 +143,7 @@ class RackIpgoMultiPage extends StatelessWidget {
   }
   List<PlutoColumn> gridCols(BuildContext context) {
     final List<PlutoColumn> gridCols = <PlutoColumn>[
-      PlutoColumn(
+   /*   PlutoColumn(
         title: 'No',
         field: 'no',
         type: PlutoColumnType.text(),
@@ -157,7 +157,7 @@ class RackIpgoMultiPage extends StatelessWidget {
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
-      ),
+      ),*/
       PlutoColumn(
         title: '자재코드',
         field: 'ITEM_CD',
@@ -489,6 +489,50 @@ class RackIpgoMultiPage extends StatelessWidget {
                                 bottomRight: Radius.circular(10)))),
                     padding: MaterialStateProperty.all(
                         const EdgeInsets.all(0))),
+                onPressed: () {
+                  Get.log('행 삭제 클릭!');
+                  if(controller.gridStateMgr.currentRowIdx != null) {
+                    controller.registRackIpgoList.removeAt(controller.registRackIpgoList.length - 1 - controller.gridStateMgr.currentRowIdx!);
+                    controller.gridStateMgr.removeAllRows();
+                    updateRows();
+                    controller.gridStateMgr.appendRows(controller.rowDatas.value);
+                  }
+
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: AppTheme.navy_navy_800,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppTheme.ae2e2e2)
+                  ),
+                  width: 120,
+                  height: 40,
+                  padding: const EdgeInsets.only(
+
+                  ),
+                  child: Center(
+                    child: Text('행 삭제',
+                        style: AppTheme.a18700.copyWith(
+                          color: AppTheme.white,
+                        )),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(right: 12),
+              width: 120,
+              height: 40,
+              child: TextButton(
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all<
+                        RoundedRectangleBorder>(
+                        const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10)))),
+                    padding: MaterialStateProperty.all(
+                        const EdgeInsets.all(0))),
                 onPressed: () async {
                   if(controller.registRackIpgoList.isNotEmpty) {
                     for(var i = 0; i < controller.registRackIpgoList.length; i++) {
@@ -698,12 +742,12 @@ class RackIpgoMultiPage extends StatelessWidget {
   }
 
   void updateRows() {
-    controller.rowDatas.value = List<PlutoRow>.generate(controller.rackIpgoList.length, (index) =>
+    controller.rowDatas.value = List<PlutoRow>.generate(controller.registRackIpgoList.length, (index) =>
         PlutoRow(cells:
-        Map.from((controller.rackIpgoList[index]).map((key, value) =>
+        Map.from((controller.registRackIpgoList[index]).map((key, value) =>
             MapEntry(key, PlutoCell(value: value )),
         )))
-    );
+    ).reversed.toList();
   }
 
   Widget _qrCodeTextForm(BuildContext context) {
@@ -993,7 +1037,7 @@ class RackIpgoMultiPage extends StatelessWidget {
                             Map.from((controller.registRackIpgoList[index]).map((key, value) =>
                                 MapEntry(key, PlutoCell(value: value ?? '' )),
                             )))
-                        );
+                        ).reversed.toList();
                         controller.gridStateMgr.removeAllRows();
                         controller.gridStateMgr.appendRows(controller.rowDatas3.value);
                         Navigator.of(Get.overlayContext!, rootNavigator: true).pop();

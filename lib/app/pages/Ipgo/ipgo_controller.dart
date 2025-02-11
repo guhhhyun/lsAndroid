@@ -54,6 +54,8 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxList<dynamic> isSelect = [].obs;
   RxList<dynamic> isSelect2 = [].obs; //소박스등록
 
+  RxList<dynamic> addInvnrItemCd = [].obs; // 입고등록 후 거래명세서 리스트 색 표시
+
   RxList<dynamic> ipgoCancelList = [].obs; // 입고취소리스트
  // RxList<dynamic> selectedCancelList = [].obs; // 선택된 입고취소리스트
   RxList<dynamic> ipgoCancelBollList = [].obs;
@@ -133,6 +135,12 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
   RxInt currentRowIndex = 0.obs; // 소박스 등록에서 왼쪽 선택된 리스트의 자재들이 우측 리스트에 보여주기 위함
   RxBool isSboxIpgo = false.obs;
 
+  RxSet<String> changedRows = <String>{}.obs; // 동기화 시에
+  Future<void> test() async{
+    gridStateMgr.rowColorCallback!;
+    // 그리드 재렌더링
+    gridStateMgr.notifyListeners();
+  }
   /// 공통 드롭다운 조회(zone) -> 존 구분
   Future<void> reqCommon2() async {
 
@@ -1012,8 +1020,8 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
         bLoading.value = false;
       }
     }
-    ipgoQrList.clear();
-    ipgoList.clear();
+   /* ipgoQrList.clear();
+    ipgoList.clear();*/
     isIpgoClick.value = false;
     cheburnInbNumber.value = '';
     cheburnLotNumber.value = '';
@@ -1146,8 +1154,8 @@ class IpgoController extends GetxController with GetSingleTickerProviderStateMix
         bLoading.value = false;
       }
 
-    ipgoQrList.clear();
-    ipgoList.clear();
+/*    ipgoQrList.clear();
+    ipgoList.clear();*/
     isIpgoClick.value = false;
     cheburnInbNumber.value = '';
     cheburnLotNumber.value = '';

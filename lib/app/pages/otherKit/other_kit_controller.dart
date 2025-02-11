@@ -102,6 +102,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
   RxString boxNo = ''.obs;
   RxString bcSts = ''.obs;
   RxString wrkCfmDt = ''.obs;
+  RxString boxWht = ''.obs;
   RxString cbxMaNo = ''.obs;
   RxInt no = 990.obs;
   RxList<dynamic> noList = [].obs; // 색 구분을 위해 itemCd 담는 그릇
@@ -354,13 +355,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
         },
         {
           'paramName': 'p_BOX_WHT',
-          'paramValue': textWeightController.text,
-          'paramJdbcType': 'VARCHAR',
-          'paramMode': 'IN'
-        },
-        {
-          'paramName': 'p_BOX_WHT2',
-          'paramValue': textWeightController2.text,
+          'paramValue': textWeightController.text == '' ? null : textWeightController.text,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -2116,6 +2111,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
             wrkNo.value = retVal.body![1][0]['wrkNo'].toString();
             boxNo.value = textQrController.text;//retVal.body![1][''];
             wrkCfmDt.value = retVal.body![1][0]['wrkCfmDttm'].toString();
+            boxWht.value = smallBoxItemDataList[0]['boxWht'] == null ? '' : smallBoxItemDataList[0]['boxWht'].toString();
             // bcSts.value = retVal.body![1][0]['bcSts'].toString();
 
             Get.log(smallBoxItemDataList.toString());
@@ -3065,10 +3061,12 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
           smallBoxSave.addAll(retVal.body![1]);
           if(smallBoxSave.isNotEmpty) {
             if(smallBoxSave[0]['tagType'] == '21') {
+              wrkCfmDt.value = '';
               await checkBoxItemData();
               for (var i = 0; i < smallBoxItemDataList.length; i++) {
                 smallBoxItemDataList[i].addAll({'no': '${i + 1}'});
               }
+              textWeightController.text = '';
             }else {
               await checkBoxData();
             }

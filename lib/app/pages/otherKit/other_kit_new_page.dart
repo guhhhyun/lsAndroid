@@ -466,12 +466,15 @@ class OtherKitNewPage extends StatelessWidget {
                        SizedBox(width: 12,),
                        _subDataWeight(),
                        SizedBox(width: 12,),
-                       _subDataWeight2(),
+                      // _subDataWeight2(),
                      ],
                    ),
                     Row(
                       children: [
-
+                        Obx(()=>  _subData2('확정일', controller.wrkCfmDt.value ?? '', false),),
+                        SizedBox(width: 32,),
+                        Obx(() => _subData2('무게', controller.boxWht.value ?? '', false),),
+                        SizedBox(width: 32,),
                        /* Container(
                           margin: EdgeInsets.only(right: 12),
                           width: 120,
@@ -653,7 +656,7 @@ class OtherKitNewPage extends StatelessWidget {
       children: [
         Container(
           child: Text(
-            '무게(Net)',
+            '무게',
             style: AppTheme.a24700.copyWith(color: AppTheme.black),
           ),
         ),
@@ -805,22 +808,16 @@ class OtherKitNewPage extends StatelessWidget {
             }
             else if(text == '저장')
             {
-              if(controller.projectNm.value == '') {
-                Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요.', pageFlag: 0));
-                return;
-              }
+
               if(controller.wrkCfmDt.value.trim() == '' || controller.wrkCfmDt.value.trim() == 'null' || controller.wrkCfmDt.value == null) {
-                if(controller.isSaveClick.value == false) { // 중복방지 로직
+                if(controller.isSaveClick.value == false) {
                   controller.isSaveClick.value = true;
                   Get.log('저장할 리스트!: ${controller.smallBoxSaveList.length}');
-                  if(controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') {
-                    await controller.registMemoSmallKitSave();
-                    controller.isSave.value ?
-                    Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0)) :
-                    Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
-                  }else {
-                    Get.dialog(CommonDialogWidget(contentText: '박스가 확정된 상태입니다.', pageFlag: 0));
-                  }
+
+                  await controller.registMemoSmallKitSave(); // 메모 저장
+                  controller.isSave.value ?
+                  Get.dialog(CommonDialogWidget(contentText: '저장되었습니다.', pageFlag: 0)) :
+                  Get.dialog(CommonDialogWidget(contentText: '${controller.isSaveText.value}.', pageFlag: 0));
                 }
                 controller.isSaveClick.value = false;
               }else {
