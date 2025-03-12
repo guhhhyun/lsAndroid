@@ -799,7 +799,7 @@ mixin _$SubBodyItem {
   String? get setQty => throw _privateConstructorUsedError;
   String? get boxWht => throw _privateConstructorUsedError;
   String get qrNo => throw _privateConstructorUsedError;
-  double get qty => throw _privateConstructorUsedError;
+  int get qty => throw _privateConstructorUsedError;
   String? get vendCd => throw _privateConstructorUsedError;
   String get qtyUnit => throw _privateConstructorUsedError;
   String get tagTypeNm => throw _privateConstructorUsedError;
@@ -847,7 +847,7 @@ abstract class $SubBodyItemCopyWith<$Res> {
       String? setQty,
       String? boxWht,
       String qrNo,
-      double qty,
+      int qty,
       String? vendCd,
       String qtyUnit,
       String tagTypeNm,
@@ -1016,7 +1016,7 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
       qty: null == qty
           ? _value.qty
           : qty // ignore: cast_nullable_to_non_nullable
-              as double,
+              as int,
       vendCd: freezed == vendCd
           ? _value.vendCd
           : vendCd // ignore: cast_nullable_to_non_nullable
@@ -1081,7 +1081,7 @@ abstract class _$$SubBodyItemImplCopyWith<$Res>
       String? setQty,
       String? boxWht,
       String qrNo,
-      double qty,
+      int qty,
       String? vendCd,
       String qtyUnit,
       String tagTypeNm,
@@ -1248,7 +1248,7 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
       qty: null == qty
           ? _value.qty
           : qty // ignore: cast_nullable_to_non_nullable
-              as double,
+              as int,
       vendCd: freezed == vendCd
           ? _value.vendCd
           : vendCd // ignore: cast_nullable_to_non_nullable
@@ -1308,7 +1308,7 @@ class _$SubBodyItemImpl implements _SubBodyItem {
       this.setQty,
       this.boxWht,
       this.qrNo = '',
-      this.qty = 0.0,
+      this.qty = 0,
       this.vendCd,
       this.qtyUnit = '',
       this.tagTypeNm = '',
@@ -1389,7 +1389,7 @@ class _$SubBodyItemImpl implements _SubBodyItem {
   final String qrNo;
   @override
   @JsonKey()
-  final double qty;
+  final int qty;
   @override
   final String? vendCd;
   @override
@@ -1542,7 +1542,7 @@ abstract class _SubBodyItem implements SubBodyItem {
       final String? setQty,
       final String? boxWht,
       final String qrNo,
-      final double qty,
+      final int qty,
       final String? vendCd,
       final String qtyUnit,
       final String tagTypeNm,
@@ -1608,7 +1608,7 @@ abstract class _SubBodyItem implements SubBodyItem {
   @override
   String get qrNo;
   @override
-  double get qty;
+  int get qty;
   @override
   String? get vendCd;
   @override

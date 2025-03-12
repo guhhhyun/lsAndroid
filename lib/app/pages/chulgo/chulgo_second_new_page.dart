@@ -29,8 +29,7 @@ class ChulgoSecondNewPage extends StatefulWidget {
 class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
   @override
   void initState() {
-    controller.isQr.value == false ?
-    controller.requestFocus() : null;
+
     super.initState();
 
   }
@@ -40,6 +39,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
 
   @override
   Widget build(BuildContext context) {
+    controller.isQr.value == false ? controller.requestFocus() : null;
     return WillPopScope(
       onWillPop: () {
         Get.offAll(HomePage());
@@ -1173,7 +1173,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '판매오더번호',
+        title: '오더',
         field: 'soNo',
         type: PlutoColumnType.text(),
         width: 150,
@@ -1188,7 +1188,7 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '보관판매오더번호',
+        title: '원오더번호',
         field: 'soNo2',
         type: PlutoColumnType.text(),
         width: 180,
@@ -1248,8 +1248,23 @@ class _ChulgoSecondNewPageState extends State<ChulgoSecondNewPage> {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '출고예정일',
+        title: '출고예정(오더)',
         field: 'delPreDt',
+        type: PlutoColumnType.text(),
+        width: 120,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '출고예정(납품)',
+        field: 'delPreDt2',
         type: PlutoColumnType.text(),
         width: 120,
         enableSorting: false,

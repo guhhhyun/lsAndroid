@@ -171,7 +171,7 @@ class PickingPage extends StatelessWidget {
           }
       ),
       PlutoColumn(
-        title: '지시번호',
+        title: '피킹지시번호',
         field: 'pickNo',
         type: PlutoColumnType.text(),
         width: 200,
@@ -186,7 +186,7 @@ class PickingPage extends StatelessWidget {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '지시자',
+        title: '피킹지시자',
         field: 'pickUserNm',
         type: PlutoColumnType.text(),
         width: 90,
@@ -383,7 +383,7 @@ class PickingPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 16,),
-                _invnrTextForm2('지시번호', 0),
+                _invnrTextForm2('피킹지시번호', 0),
                 SizedBox(width: 16,),
                 _invnrTextForm2('프로젝트명', 1),
               ],
@@ -454,7 +454,7 @@ class PickingPage extends StatelessWidget {
               border: Border.all(color: AppTheme.ae2e2e2)),
           child: Center(
             child: TextFormField(
-              focusNode: title == '지시번호' ? controller.focusNode : null,
+              focusNode: title == '피킹지시번호' ? controller.focusNode : null,
               readOnly:  plag == 4 ? true : false,
               expands : true,
               minLines: null,

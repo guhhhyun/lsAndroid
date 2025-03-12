@@ -32,6 +32,61 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
 
   EtcIpgoController controller = Get.find();
 
+
+  /// 키보드 엔터 없이 그리드에서 업데이트된 항목 바로 적용 시켜주기 위한 로직 /////////////////////////////////////////////////////////////
+  void _listener() {
+    if (controller.gridStateMgr5.currentCell == controller.currentCell) {
+      return;
+    }
+
+    if (controller.gridStateMgr5.isEditing && controller.gridStateMgr5.currentCell != null) {
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        controller.initialValue = controller.gridStateMgr5.textEditingController?.text;
+
+        controller.gridStateMgr5.textEditingController!.addListener(_textEditingListener);
+        if (controller.gridStateMgr5.textEditingController?.selection != null) {
+          controller.gridStateMgr5.textEditingController!.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: controller.gridStateMgr5.textEditingController!.text.length,
+          );
+        }
+
+      });
+    } else {
+      controller.initialValue = null;
+
+      controller.gridStateMgr5.textEditingController?.removeListener(_textEditingListener);
+    }
+
+    controller.currentCell = controller.gridStateMgr5.currentCell;
+  }
+
+  void _textEditingListener() {
+    controller.debounce.debounce(callback: _update);
+  }
+
+  void _update() {
+    if (controller.initialValue == controller.gridStateMgr5.textEditingController?.text) {
+      return;
+    }
+
+    controller.initialValue = null;
+
+    if (controller.currentCell!.column.field == 'qty') {
+
+      print('선택한 값: ${controller.gridStateMgr5.textEditingController?.text}');
+
+      controller.etcIpgoQrDetailTotalList[controller.currentRowIndex2.value][controller.currentCell!.row!.sortIdx].addAll({'qty': controller.gridStateMgr5.textEditingController?.text});
+      controller.etcIpgoSaveQrList[controller.currentRowIndex2.value].addAll({'qty': controller.gridStateMgr5.textEditingController?.text});
+
+    }
+
+
+    print('이건가? ${controller.gridStateMgr5.textEditingController?.text}');
+  }
+
+
   @override
   Widget build(BuildContext context) {
     controller.isFocus.value == false ? controller.requestFocus() : null;
@@ -322,6 +377,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                           )))
                       );
 
+
                       controller.gridStateMgr3.removeAllRows();
                       controller.gridStateMgr3.appendRows(controller.rowDatas3.value);
                     }
@@ -372,7 +428,9 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                         const EdgeInsets.all(0))),
                 onPressed: () async {
                   Get.log('신규 클릭!');
+
                   showDialog(
+                    barrierDismissible: false,
                     context: context,
                     builder: (BuildContext context) {
                       return _alertDialog(context);
@@ -420,8 +478,9 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                         const EdgeInsets.all(0))),
                 onPressed: () async {
                   Get.log('삭제 클릭!');
-                  for(var i = 0; i < controller.etcIpgoQrCheckList.length; i++) {
-                    if(controller.etcIpgoQrCheckList[i] == true) {
+                  Get.log('길이: ${controller.etcIpgoCheckList.length}');
+                  for(var i = 0; i < controller.etcIpgoCheckList.length; i++) {
+                    if(controller.etcIpgoCheckList[i] == true) {
                       controller.isRowChecked.value = true;
                       break;
                     }else {
@@ -432,6 +491,8 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                   if(controller.isRowChecked.value) {
                     await controller.registCancelIpgoBtn('D');
                     await controller.checkQR();
+                    controller.itemTotalList.clear();
+                    controller.gridStateMgr3.removeAllRows();
                     Get.dialog(CommonDialogWidget(contentText: '삭제되었습니다.', pageFlag: 0));
                   }else {
                     Get.dialog(CommonDialogWidget(contentText: '선택된 항목이 없습니다.', pageFlag: 0));
@@ -467,7 +528,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
   Widget _inbTypeDropDownItem() {
     return Row(
       children: [
-        Text('입고구분', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
+        Text('입고유형', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
         SizedBox(width: 8,),
         Container(
           height: 40,
@@ -1099,7 +1160,29 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                           padding: MaterialStateProperty.all(
                               const EdgeInsets.all(0))),
                       onPressed: () {
-                        Get.log('취소 클릭!');
+                        Get.log('닫기 클릭!');
+                        controller.etcIpgoQrList.clear();
+                        controller.etcIpgoSaveQrList.clear();
+                        controller.etcIpgoQrDetailTotalList.clear();
+                        controller.gridStateMgr4.removeAllRows();
+                        controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcIpgoSaveQrList.length, (index) =>
+                            PlutoRow(cells:
+                            Map.from((controller.etcIpgoSaveQrList[index]).map((key, value) =>
+                                MapEntry(key, PlutoCell(value: value == null ? '' : value )),
+                            )))
+                        );
+                        controller.gridStateMgr4.appendRows(controller.rowDatas4.value);
+
+                        /// 우측 리스트 삭제
+                        controller.gridStateMgr5.removeAllRows();
+                        controller.rowDatas5.value = List<PlutoRow>.generate(controller.etcIpgoQrDetailTotalList.length, (index) =>
+                            PlutoRow(cells:
+                            Map.from((controller.etcIpgoQrDetailTotalList[index]).map((key, value) =>
+                                MapEntry(key, PlutoCell(value: value == null ? '' : value )),
+                            )))
+                        );
+                        controller.gridStateMgr5.appendRows(controller.rowDatas5.value);
+                        controller.statusText.value = '';
                         Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
                       },
                       child: Container(
@@ -1246,12 +1329,13 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                     onLoaded: (PlutoGridOnLoadedEvent event) {
                       controller.gridStateMgr5 = event.stateManager;
                       controller.gridStateMgr5.setSelectingMode(PlutoGridSelectingMode.none);
+                      controller.gridStateMgr5.addListener(_listener);
                       // Get.log('${controller.gridStateMgr2.currentRowIdx!}');
                       //gridStateMgr.setShowColumnFilter(true);
                     },
                     onChanged: (PlutoGridOnChangedEvent event) {
                       print(event);
-                      controller.etcIpgoQrDetailTotalList[controller.currentRowIndex2.value][event.rowIdx].addAll({'qty': event.value!});
+
                     },
                     onSelected: (c) {
                       print(controller.gridStateMgr5.currentRowIdx);
@@ -1704,6 +1788,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
         enableRowDrag: false,
         enableDropToResize: false,
         enableColumnDrag: false,
+        enableAutoEditing: true,
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
@@ -1950,22 +2035,11 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                             const EdgeInsets.all(0))),
                     onPressed: () async {
                       Get.log('저장 클릭!');
-                   //   await controller.reqCheburn();
-                    //  await controller.reqCheburn2();
-                    /*  for(var i = 0; i < controller.etcIpgoQrCheckList.length; i++) {
-                        if(controller.etcIpgoQrCheckList[i] == true) {
-                          controller.isEtcIpgoQrCheckList.value = true;
-                          controller.isEtcIpgoQrCheckListIdx.value = i;
-                          break;
-                        }else {
-                          controller.isEtcIpgoQrCheckList.value = false;
-                        }
-                      }
-                      if(controller.isEtcIpgoQrCheckList.value) {*/
+                      Get.dialog(
+                        Center(child: CircularProgressIndicator()),
+                        barrierDismissible: false, // 사용자가 다이얼로그를 닫을 수 없도록 설정
+                      );
                         await controller.registSaveIpgoBtn();
-                     /*   controller.etcIpgoSaveQrList.removeAt(controller.isEtcIpgoQrCheckListIdx.value); // 좌측리스트 삭제
-                        controller.etcIpgoQrDetailTotalList.removeAt(controller.isEtcIpgoQrCheckListIdx.value); // 우측 디테일 삭제
-                        controller.etcIpgoQrCheckList.removeAt(controller.isEtcIpgoQrCheckListIdx.value);*/
                         /// 좌측 리스트 삭제
                         controller.gridStateMgr4.removeAllRows();
                         controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcIpgoSaveQrList.length, (index) =>
@@ -2231,7 +2305,7 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                               )))
                           );
 
-                     //     controller.gridStateMgr4.removeAllRows();
+                           controller.gridStateMgr4.removeAllRows();
                           controller.gridStateMgr4.appendRows(controller.rowDatas4);
 
                           if(controller.etcIpgoQrDetailTotalList.isNotEmpty) {
@@ -2250,6 +2324,9 @@ class _EtcIpgoPageState extends State<EtcIpgoPage> {
                         controller.focusNode.requestFocus();
                       }
                     }
+
+
+
                   },
                   child: TextFormField(
                     expands :true,

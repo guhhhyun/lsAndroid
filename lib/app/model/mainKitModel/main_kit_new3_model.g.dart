@@ -79,6 +79,7 @@ _$SubBodyItemImpl _$$SubBodyItemImplFromJson(Map<String, dynamic> json) =>
       wrkQty: (json['wrkQty'] as num?)?.toInt() ?? 0,
       ncbxRmk: json['ncbxRmk'] as String? ?? '',
       sboxNo: json['sboxNo'] as String? ?? '',
+      remark: json['remark'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$SubBodyItemImplToJson(_$SubBodyItemImpl instance) =>
@@ -95,4 +96,5 @@ Map<String, dynamic> _$$SubBodyItemImplToJson(_$SubBodyItemImpl instance) =>
       'wrkQty': instance.wrkQty,
       'ncbxRmk': instance.ncbxRmk,
       'sboxNo': instance.sboxNo,
+      'remark': instance.remark,
     };

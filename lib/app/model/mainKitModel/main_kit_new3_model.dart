@@ -59,7 +59,8 @@ class SubBodyItem with _$SubBodyItem {
     @Default('') String btn,
     @Default(0) int wrkQty,
     @Default('') String ncbxRmk,
-    @Default('') String sboxNo
+    @Default('') String sboxNo,
+    @Default('') String remark
 
   }) = _SubBodyItem;
 

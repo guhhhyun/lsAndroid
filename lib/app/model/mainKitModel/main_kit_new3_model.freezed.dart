@@ -759,6 +759,7 @@ mixin _$SubBodyItem {
   int get wrkQty => throw _privateConstructorUsedError;
   String get ncbxRmk => throw _privateConstructorUsedError;
   String get sboxNo => throw _privateConstructorUsedError;
+  String get remark => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -784,7 +785,8 @@ abstract class $SubBodyItemCopyWith<$Res> {
       String btn,
       int wrkQty,
       String ncbxRmk,
-      String sboxNo});
+      String sboxNo,
+      String remark});
 }
 
 /// @nodoc
@@ -812,6 +814,7 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
     Object? wrkQty = null,
     Object? ncbxRmk = null,
     Object? sboxNo = null,
+    Object? remark = null,
   }) {
     return _then(_value.copyWith(
       scanNo: null == scanNo
@@ -862,6 +865,10 @@ class _$SubBodyItemCopyWithImpl<$Res, $Val extends SubBodyItem>
           ? _value.sboxNo
           : sboxNo // ignore: cast_nullable_to_non_nullable
               as String,
+      remark: null == remark
+          ? _value.remark
+          : remark // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -886,7 +893,8 @@ abstract class _$$SubBodyItemImplCopyWith<$Res>
       String btn,
       int wrkQty,
       String ncbxRmk,
-      String sboxNo});
+      String sboxNo,
+      String remark});
 }
 
 /// @nodoc
@@ -912,6 +920,7 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
     Object? wrkQty = null,
     Object? ncbxRmk = null,
     Object? sboxNo = null,
+    Object? remark = null,
   }) {
     return _then(_$SubBodyItemImpl(
       scanNo: null == scanNo
@@ -962,6 +971,10 @@ class __$$SubBodyItemImplCopyWithImpl<$Res>
           ? _value.sboxNo
           : sboxNo // ignore: cast_nullable_to_non_nullable
               as String,
+      remark: null == remark
+          ? _value.remark
+          : remark // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -981,7 +994,8 @@ class _$SubBodyItemImpl implements _SubBodyItem {
       this.btn = '',
       this.wrkQty = 0,
       this.ncbxRmk = '',
-      this.sboxNo = ''});
+      this.sboxNo = '',
+      this.remark = ''});
 
   factory _$SubBodyItemImpl.fromJson(Map<String, dynamic> json) =>
       _$$SubBodyItemImplFromJson(json);
@@ -1022,10 +1036,13 @@ class _$SubBodyItemImpl implements _SubBodyItem {
   @override
   @JsonKey()
   final String sboxNo;
+  @override
+  @JsonKey()
+  final String remark;
 
   @override
   String toString() {
-    return 'SubBodyItem(scanNo: $scanNo, sboxSpec: $sboxSpec, wrkSeq: $wrkSeq, qtyUnit: $qtyUnit, syncYn: $syncYn, itemCd: $itemCd, cbxMaNo: $cbxMaNo, itemNm: $itemNm, btn: $btn, wrkQty: $wrkQty, ncbxRmk: $ncbxRmk, sboxNo: $sboxNo)';
+    return 'SubBodyItem(scanNo: $scanNo, sboxSpec: $sboxSpec, wrkSeq: $wrkSeq, qtyUnit: $qtyUnit, syncYn: $syncYn, itemCd: $itemCd, cbxMaNo: $cbxMaNo, itemNm: $itemNm, btn: $btn, wrkQty: $wrkQty, ncbxRmk: $ncbxRmk, sboxNo: $sboxNo, remark: $remark)';
   }
 
   @override
@@ -1045,13 +1062,27 @@ class _$SubBodyItemImpl implements _SubBodyItem {
             (identical(other.btn, btn) || other.btn == btn) &&
             (identical(other.wrkQty, wrkQty) || other.wrkQty == wrkQty) &&
             (identical(other.ncbxRmk, ncbxRmk) || other.ncbxRmk == ncbxRmk) &&
-            (identical(other.sboxNo, sboxNo) || other.sboxNo == sboxNo));
+            (identical(other.sboxNo, sboxNo) || other.sboxNo == sboxNo) &&
+            (identical(other.remark, remark) || other.remark == remark));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, scanNo, sboxSpec, wrkSeq,
-      qtyUnit, syncYn, itemCd, cbxMaNo, itemNm, btn, wrkQty, ncbxRmk, sboxNo);
+  int get hashCode => Object.hash(
+      runtimeType,
+      scanNo,
+      sboxSpec,
+      wrkSeq,
+      qtyUnit,
+      syncYn,
+      itemCd,
+      cbxMaNo,
+      itemNm,
+      btn,
+      wrkQty,
+      ncbxRmk,
+      sboxNo,
+      remark);
 
   @JsonKey(ignore: true)
   @override
@@ -1080,7 +1111,8 @@ abstract class _SubBodyItem implements SubBodyItem {
       final String btn,
       final int wrkQty,
       final String ncbxRmk,
-      final String sboxNo}) = _$SubBodyItemImpl;
+      final String sboxNo,
+      final String remark}) = _$SubBodyItemImpl;
 
   factory _SubBodyItem.fromJson(Map<String, dynamic> json) =
       _$SubBodyItemImpl.fromJson;
@@ -1109,6 +1141,8 @@ abstract class _SubBodyItem implements SubBodyItem {
   String get ncbxRmk;
   @override
   String get sboxNo;
+  @override
+  String get remark;
   @override
   @JsonKey(ignore: true)
   _$$SubBodyItemImplCopyWith<_$SubBodyItemImpl> get copyWith =>

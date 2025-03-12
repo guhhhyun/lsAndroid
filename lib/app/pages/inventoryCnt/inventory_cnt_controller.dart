@@ -142,8 +142,8 @@ class InventoryCntController extends GetxController with GetSingleTickerProvider
   RxBool isFocus = false.obs;
   RxInt currentMasterIdx = 0.obs;
   RxBool duplicationLabel = false.obs;
-  RxBool isCheckBool = true.obs;
-  RxString isCheck = 'Y'.obs;
+  RxBool isCheckBool = false.obs;
+  RxString isCheck = 'N'.obs;
   RxString invType = ''.obs;
   RxString invTypeCode = ''.obs;
   RxList<dynamic> cheburnIpgoLotList = [].obs; //

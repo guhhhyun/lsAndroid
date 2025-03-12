@@ -143,7 +143,7 @@ class RackIpgoMultiPage extends StatelessWidget {
   }
   List<PlutoColumn> gridCols(BuildContext context) {
     final List<PlutoColumn> gridCols = <PlutoColumn>[
-   /*   PlutoColumn(
+      PlutoColumn(
         title: 'No',
         field: 'no',
         type: PlutoColumnType.text(),
@@ -157,7 +157,7 @@ class RackIpgoMultiPage extends StatelessWidget {
         titleTextAlign: PlutoColumnTextAlign.center,
         textAlign: PlutoColumnTextAlign.center,
         backgroundColor: AppTheme.gray_c_gray_200,
-      ),*/
+      ),
       PlutoColumn(
         title: '자재코드',
         field: 'ITEM_CD',

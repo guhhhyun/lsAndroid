@@ -71,6 +71,17 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
   RxList<dynamic> selectedItemPopContainer = [].obs;
   RxString selectedQrNo = ''.obs;
   RxInt noTagIdx = 0.obs;
+  /// 개별자재 아닌경우 수량 입력
+  var textWrkQtyControllers = <TextEditingController>[].obs;
+
+
+  final PlutoDebounce debounce = PlutoDebounce(
+    duration: const Duration(milliseconds: 300),
+  );
+
+  PlutoCell? currentCell;
+
+  dynamic initialValue;
 
 
 
@@ -155,7 +166,15 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
   RxString cbxSuSeqDonggihwa = ''.obs;
   RxString wrkQtyDonggihwa = ''.obs;
   RxString ncbxRmkDonggihwa = ''.obs;
+  RxString remarkDonggihwa = ''.obs;
   RxBool isSuccsessDong = true.obs;
+
+  /// 행추가 삭제
+  RxBool deleteYes = false.obs;
+
+  /// 투입취소 체크박스
+  RxBool isCheckBool = false.obs;
+  RxBool isCheck = false.obs;
 
   RxBool isCancelIpgo = false.obs;
 
@@ -1435,6 +1454,78 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
     }
   }
 
+  /// 행 추가 삭제
+  Future<void> deleteMainKitAddRow(int index) async {
+    Get.log('행추가 삭제 시작!!!');
+
+    bLoading.value = true;
+
+    var params = {
+      'programId': 'A1020', //A2065
+      'procedure': 'USP_A2065_S03',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'D1',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_CBX_EX_NO',
+          'paramValue': smallBoxSaveList[index]['cbxExNo'].toString(),
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_CBX_EX_SEQ',
+          'paramValue': smallBoxSaveList[index]['cbxExSeq'].toString(),
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_ID',
+          'paramValue': gs.loginId.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_USR_IP',
+          'paramValue': 'MOBILE',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }
+
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.registMainKitDonggihwa(params);
+
+      if (retVal.body![0]['resultMessage'] == '') {
+        Get.log('삭제되었습니다');
+        isDbConnected.value = true;
+        // isSave.value = true;
+      } else {
+        Get.log('행추가 삭제 실패');
+        //  isSave.value = false;
+      }
+    } catch (e) {
+      Get.log('registMainKitAddRow catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+      // isSave.value = false;
+    } finally {
+      bLoading.value = false;
+
+    }
+  }
+
 
   /// 확정 저장
   Future<void> registSmallKitConfirmNew(String confirmYn) async {
@@ -1560,6 +1651,12 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
         {
           'paramName': 'p_WRK_QTY_SYNC',
           'paramValue': wrkQtyDonggihwa.value,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_REMARK',
+          'paramValue': remarkDonggihwa.value == '' ? null : remarkDonggihwa.value,
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
         },
@@ -1815,6 +1912,12 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
           'paramMode': 'IN'
         },
         {
+          'paramName': 'p_INP_QTY',
+          'paramValue': popUpDataList[alertIndex.value]['wrkQty'] == null ? null : popUpDataList[alertIndex.value]['wrkQty'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
           'paramName': 'p_USR_ID',
           'paramValue': gs.loginId.value,
           'paramJdbcType': 'VARCHAR',
@@ -1836,7 +1939,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
       if (retVal.body![0]['returnMessage'] == '') {
         Get.log('자재 등록되었습니다');
         textQrController.text = smallBoxItemDataList[0]['cbxExNo'].toString();
-        await checkBoxItemSaveData('');
+        await checkBoxItemData();
 
         textQrController.text = '';
         isSave.value = true;
@@ -1907,6 +2010,12 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
           'paramMode': 'IN'
         },
         {
+          'paramName': 'p_INP_QTY',
+          'paramValue': 1,
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
           'paramName': 'p_USR_ID',
           'paramValue': gs.loginId.value,
           'paramJdbcType': 'VARCHAR',
@@ -1930,7 +2039,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
       if (retVal.body![0]['resultMessage'] == '') {
         Get.log('자재 등록되었습니다');
         textQrController.text = smallBoxItemDataList[0]['cbxExNo'].toString();
-        await checkBoxItemSaveData('');
+        await checkBoxItemData();
 
         textQrController.text = '';
         isSave.value = true;
@@ -1975,6 +2084,12 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
           'paramMode': 'IN'
         },
         {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
           'paramName': 'p_QR_NO',
           'paramValue': textQrController.text,
           'paramJdbcType': 'VARCHAR',
@@ -1985,8 +2100,13 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
           'paramValue': smallBoxItemDataList[0]['cbxExNo'],
           'paramJdbcType': 'VARCHAR',
           'paramMode': 'IN'
+        }, 
+        {
+          'paramName': 'p_CHK_DEL',
+          'paramValue': isCheckBool.value ? 'Y' : 'N',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
         }
-
       ]
     };
 
@@ -1994,11 +2114,13 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
       final retVal = await HomeApi.to.reqSmallKitNew(params);
 
       if (retVal.resultCode == '0000') {
-        if(retVal.body![0]['resultMessage'] == '') {
+        if(retVal.body![0]['returnMessage'] == '') {
 
           smallBoxDataList.addAll(retVal.body![1]);
           if(smallBoxDataList.isNotEmpty) {
-            if(smallBoxDataList.length == 1) {
+            isSmallBoxDataList.value = true;
+            statusText.value = '정상 조회 되었습니다.';
+            /*if(smallBoxDataList.length == 1) {
               if(smallBoxDataList[0]['cancleFlag'] > 0)
               {
                 isSmallBoxDataList.value = true;
@@ -2027,7 +2149,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
             }else {
               isSmallBoxDataList.value = true;
               statusText.value = '정상 조회 되었습니다.';
-            }
+            }*/
           }else {
             isSmallBoxDataList.value = false;
             statusText.value = '소박스 구성에 없는 품목입니다.';
@@ -2108,10 +2230,12 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
             textMemoController.text = retVal.body![1][0]['wrkCfmDttm'] ?? '';
             projectNm.value = retVal.body![1][0]['pjtNm2'].toString();
             itemCdNm.value = '${retVal.body![1][0]['itemCd'].toString()}/${retVal.body![1][0]['itemNm']}';
-            wrkNo.value = retVal.body![1][0]['wrkNo'].toString();
+            wrkNo.value = retVal.body![1][0]['wrkNo'] == null ? '' : retVal.body![1][0]['wrkNo'].toString();
             boxNo.value = textQrController.text;//retVal.body![1][''];
             wrkCfmDt.value = retVal.body![1][0]['wrkCfmDttm'].toString();
             boxWht.value = smallBoxItemDataList[0]['boxWht'] == null ? '' : smallBoxItemDataList[0]['boxWht'].toString();
+          //  wrkNo.value = smallBoxItemDataList[0]['wrkNo'].toString();
+            // bcSts.value = retVal.body![1][0]['bcSts'].toString();
             // bcSts.value = retVal.body![1][0]['bcSts'].toString();
 
             Get.log(smallBoxItemDataList.toString());
@@ -2192,7 +2316,8 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
             outerLoop:
             for(var ii = 0; ii < smallBoxItemDataList.length; ii++) {
               if(smallBoxItemSaveDataList[i]['itemCd'] == smallBoxItemDataList[ii]['itemCd']) {
-                if(smallBoxItemSaveDataList[i]['wrkQty'] >= smallBoxItemDataList[ii]['cbxQty']) {
+                if(smallBoxItemDataList[ii]['remainQty'] <= 0.0) {
+              //  if(smallBoxItemSaveDataList[i]['wrkQty'] >= smallBoxItemDataList[ii]['cbxQty']) {
                   /// 색 변경 로직 시작
                   isSaveColor.value = false;
                   isColor.value = true;
@@ -2253,6 +2378,7 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
 
     bLoading.value = true;
     popUpDataList.clear();
+    textWrkQtyControllers.clear();
     //cheburnIpgoList.clear();
 
     var params = {
@@ -2298,7 +2424,9 @@ class OtherKitController extends GetxController with GetSingleTickerProviderStat
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
           popUpDataList.addAll(retVal.body![1]);
+          textWrkQtyControllers.assignAll(List.generate(popUpDataList.length, (index) => TextEditingController()));
           for(var i = 0; i < popUpDataList.length; i++) {
+            popUpDataList[i].addAll({'wrkQty': 0});
             isSelect.add(false);
           }
           isDbConnected.value = true;

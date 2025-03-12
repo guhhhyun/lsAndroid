@@ -542,7 +542,7 @@ class RackIpgoMultiController extends GetxController with GetSingleTickerProvide
           rackIpgoList.value.addAll(retVal.body![1]);
           rackIpgoDupList.value.addAll(retVal.body![1]);
           for(var i = 0; i < rackIpgoDupList.length; i++) {
-            rackIpgoDupList[i].addAll({'no': rackIpgoDupList.length + 1});
+            rackIpgoDupList[i].addAll({'no': registRackIpgoList.length + 1});
           }
           rackIpgoList[0].addAll({'no': '${registRackIpgoList.length + 1}'});
           rackIpgoList[0].addAll({'LOC_CD_TO': ''});

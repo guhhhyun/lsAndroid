@@ -197,6 +197,13 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 padding: EdgeInsets.only(top: 16, bottom: 16),
                 width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text('ver250307', style: AppTheme.a16700.copyWith(color: AppTheme.white),),
+                    SizedBox(width: 24,)
+                  ],
+                ),
                 /*  child: Image.asset(
                         'assets/app/egu2.png', width: 200, height: 50,)*/),
               SizedBox(height: 16,),

@@ -48,6 +48,14 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
   RxList<dynamic> etcChulgoQrDetailList = [].obs;
   RxList<dynamic> etcChulgoQrDetailTotalList = [].obs;
 
+  /// 중복qr 자재 팝업 리스트
+  RxList<dynamic> popUpDataList2 = [].obs;
+  RxList<dynamic> selectedPopList2 = [].obs;
+  RxList<dynamic> selectedItemPopContainer2 = [].obs;
+  RxString selectedQrNo2 = ''.obs;
+  RxInt noTagIdx2 = 0.obs;
+  RxList<dynamic> isSelect2 = [].obs;
+  RxInt alertIndex = 0.obs;
 
   RxBool isEtcChulgoQrCheckList = false.obs;
   RxInt isEtcChulgoQrCheckListIdx = 0.obs;
@@ -125,6 +133,14 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
   RxDouble list3Qty = 0.0.obs;
   RxString chulgoDate = DateFormat('yyyyMMdd').format(DateTime.now()).obs;
 
+
+  final PlutoDebounce debounce = PlutoDebounce(
+    duration: const Duration(milliseconds: 300),
+  );
+
+  PlutoCell? currentCell;
+
+  dynamic initialValue;
 
   /// 채번 프로시저
   Future<void> reqCheburn() async {
@@ -406,6 +422,7 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
           bLoading.value = false;
         }
     }
+    Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
   }
 
   /// 첫번째 화면 취소
@@ -637,6 +654,71 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
     }
   }
 
+  Future<void> reqCommon4() async {
+
+    bLoading.value = true;
+    popUpDataList2.clear();
+    //cheburnIpgoList.clear();
+
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_SELECT_ITEM_R01',
+      'params': [
+        {
+          'paramName': 'p_work_type',
+          'paramValue': 'Q1',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_PLANT',
+          'paramValue': '1302',
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+        {
+          'paramName': 'p_ITEM_CD',
+          'paramValue': etcChulgoQrList[0]['itemCd'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        },
+      /*  {
+          'paramName': 'p_KIT_ID',
+          'paramValue': smallBoxItemDataList[0]['cbxSuNo'],
+          'paramJdbcType': 'VARCHAR',
+          'paramMode': 'IN'
+        }*/
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqSelectItem(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          popUpDataList2.addAll(retVal.body![1]);
+          for(var i = 0; i < popUpDataList2.length; i++) {
+            isSelect2.add(false);
+          }
+          isDbConnected.value = true;
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+        }
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('reqCommon4 catch !!!!');
+      Get.log(e.toString());
+      isDbConnected.value = false;
+    } finally {
+      bLoading.value = false;
+
+    }
+  }
+
 
   /// 기타출고 두번째 조회
   Future<void> reqChulThird() async {
@@ -666,6 +748,12 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
       if (retVal.resultCode == '0000') {
         if(retVal.body![0]['resultMessage'] == '') {
           etcChulgoQrList.addAll(retVal.body![1]);
+          if(etcChulgoQrList.length > 1) {
+            popUpDataList2.addAll(retVal.body![1]);
+            for(var i = 0; i < popUpDataList2.length; i++) {
+              isSelect2.add(false);
+            }
+          }
           for(var i = 0; i < etcChulgoQrList.length; i++) {
             etcChulgoQrList[i].addAll({'noV': ''});
           }
@@ -693,6 +781,8 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
     }
   }
 
+
+
   /// 기타출고 두번째 조회 상세
   Future<void> reqChulThirdDetail() async {
     Get.log('조회');
@@ -707,7 +797,60 @@ class EtcChulgoController extends GetxController with GetSingleTickerProviderSta
         { "paramName": "p_work_type", "paramValue": "Q2", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_PLANT", "paramValue": "1302", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_WH_CD", "paramValue": "WH01", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
-        { "paramName": "p_QR_NO", "paramValue": textQrController.text, "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_TAG_NO", "paramValue": etcChulgoQrList[0]['tagNo'], "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_OTB_NO", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_LOC_CD", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_OTB_USER_ID", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_REMARK", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"}
+      ]
+    };
+
+    try {
+      final retVal = await HomeApi.to.reqEtcChulgoQrDetail(params);
+
+      if (retVal.resultCode == '0000') {
+        if(retVal.body![0]['resultMessage'] == '') {
+          etcIpgoQrDetailListNew.addAll(retVal.body![1]);
+          for(var i = 0; i < etcIpgoQrDetailListNew.length; i++) {
+            etcIpgoQrDetailListNew[i].addAll({'qtyUse': etcIpgoQrDetailListNew[i]['qty']});
+          }
+          etcChulgoQrDetailTotalList.add(etcIpgoQrDetailListNew);
+
+          statusText.value = '정상 조회되었습니다.';
+          Get.log('조회 성공');
+        }else{
+          Get.log('${retVal.body![0]['resultMessage']}');
+          statusText.value = retVal.body![0]['resultMessage'];
+        }
+
+      } else {
+        Get.log('조회 실패');
+
+      }
+    } catch (e) {
+      Get.log('reqChulThirdDetail catch !!!!');
+      Get.log(e.toString());
+    } finally {
+      bLoading.value = false;
+
+    }
+  }
+
+  /// 기타출고 두번째 조회 상세 - 중복라벨
+  Future<void> reqChulThirdDetailMulti() async {
+    Get.log('조회');
+
+    bLoading.value = true;
+    chulThirdList.clear();
+    var etcIpgoQrDetailListNew = [];
+    var params = {
+      'programId': 'A1020',
+      'procedure': 'USP_A4030_R06',
+      'params': [
+        { "paramName": "p_work_type", "paramValue": "Q2", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_PLANT", "paramValue": "1302", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_WH_CD", "paramValue": "WH01", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
+        { "paramName": "p_TAG_NO", "paramValue": etcChulgoQrList[alertIndex.value]['tagNo'], "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_OTB_NO", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_LOC_CD", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"},
         { "paramName": "p_OTB_USER_ID", "paramValue": "", "paramJdbcType": "VARCHAR", "paramMode": "IN"},

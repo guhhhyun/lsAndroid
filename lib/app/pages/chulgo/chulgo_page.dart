@@ -128,8 +128,8 @@ class ChulgoPage extends StatelessWidget {
                         // 로직 넣기
                         await controller.checkQR2();
                         await controller.reqChulSecond();
-
-                        Get.to(ChulgoSecondNewPage());
+                        controller.isQr.value = false;
+                        Get.to(ChulgoSecondNewPage()); 
 
                       },
                       child: Container(
@@ -241,7 +241,7 @@ class ChulgoPage extends StatelessWidget {
         title: '출고유형',
         field: 'delOrdType',
         type: PlutoColumnType.text(),
-        width: 200,
+        width: 260,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -283,7 +283,7 @@ class ChulgoPage extends StatelessWidget {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '판매오더번호', 
+        title: '오더',
         field: 'soNo',
         type: PlutoColumnType.text(),
         width: 150,
@@ -298,7 +298,7 @@ class ChulgoPage extends StatelessWidget {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '보관판매오더번호',
+        title: '원오더번호',
         field: 'soNo2',
         type: PlutoColumnType.text(),
         width: 170,
@@ -358,10 +358,25 @@ class ChulgoPage extends StatelessWidget {
         backgroundColor: AppTheme.gray_c_gray_200,
       ),
       PlutoColumn(
-        title: '출고예정일',
+        title: '출고예정(오더)',
         field: 'delPreDt',
         type: PlutoColumnType.text(),
-        width: 120,
+        width: 140,
+        enableSorting: false,
+        enableEditingMode: false,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.center,
+        backgroundColor: AppTheme.gray_c_gray_200,
+      ),
+      PlutoColumn(
+        title: '출고예정(납품)',
+        field: 'delPreDt2',
+        type: PlutoColumnType.text(),
+        width: 140,
         enableSorting: false,
         enableEditingMode: false,
         enableContextMenu: false,
@@ -538,7 +553,7 @@ class ChulgoPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 16,),
-                _invnrTextForm2('판매오더번호', 0),
+                _invnrTextForm2('오더', 0),
                 SizedBox(width: 16,),
                 _invnrTextForm2('프로젝트명', 1), 
                // _joneDropDownItem('존 구분', 0),

@@ -48,6 +48,66 @@ class SmallKitNewPage extends StatelessWidget {
     );
   }
 
+  /// 키보드 엔터 없이 그리드에서 업데이트된 항목 바로 적용 시켜주기 위한 로직 /////////////////////////////////////////////////////////////
+  /// 사유 비고때문에 추가함
+  void _listener() {
+    if (controller.stateManager2.currentCell == controller.currentCell) {
+      return;
+    }
+
+    if (controller.stateManager2.isEditing && controller.stateManager2.currentCell != null) {
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        controller.initialValue = controller.stateManager2.textEditingController?.text;
+
+        controller.stateManager2.textEditingController!.addListener(_textEditingListener);
+        if (controller.stateManager2.textEditingController?.selection != null) {
+          controller.stateManager2.textEditingController!.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: controller.stateManager2.textEditingController!.text.length,
+          );
+        }
+
+      });
+    } else {
+      controller.initialValue = null;
+
+      controller.stateManager2.textEditingController?.removeListener(_textEditingListener);
+    }
+
+    controller.currentCell = controller.stateManager2.currentCell;
+  }
+
+  void _textEditingListener() {
+    controller.debounce.debounce(callback: _update);
+  }
+
+  void _update() {
+    if (controller.initialValue == controller.stateManager2.textEditingController?.text) {
+      return;
+    }
+
+    controller.initialValue = null;
+
+    /*  if (controller.currentCell!.column.field == 'cntLocCd') {
+       print('선택한 값: ${controller.gridStateMgr.textEditingController?.text}');
+       controller.inventoryCntDetailList[controller.inventoryCntDetailList.length - 1 - controller.currentCell!.row!.sortIdx].addAll({'cntLocCd': controller.gridStateMgr.textEditingController?.text});
+     }
+     if (controller.currentCell!.column.field == 'cntQty') {
+
+       print('선택한 값: ${controller.gridStateMgr.textEditingController?.text}');
+       controller.inventoryCntDetailList[controller.inventoryCntDetailList.length - 1 - controller.currentCell!.row!.sortIdx].addAll({'cntQty': controller.gridStateMgr.textEditingController?.text});
+       print('바뀐 값: ${controller.inventoryCntDetailList[controller.inventoryCntDetailList.length - 1 - controller.currentCell!.row!.sortIdx]['cntQty']}');
+
+     }*/
+    if (controller.currentCell!.column.field == 'remark') {
+     controller.smallBoxSaveList[controller.currentCell!.row!.sortIdx].addAll({'remark': controller.stateManager2.textEditingController?.text});
+    }
+    print('이건가? ${controller.stateManager2.textEditingController?.text}');
+  }
+
+
+
   Widget _grid(BuildContext context) {
 
     return SliverToBoxAdapter(
@@ -130,13 +190,13 @@ class SmallKitNewPage extends StatelessWidget {
             height: MediaQuery.of(context).size.height - 300, //controller.gridHeight.value,
             width: MediaQuery.of(context).size.width/2 - 20,
             child: PlutoGrid(
-
               //  mode: PlutoGridMode.select, // 탭 한번으로 반응하게?
               columns: gridCols2(context),
               rows: controller.rows2.value,
               // columnGroups: columnGroups,
               onLoaded: (PlutoGridOnLoadedEvent event) {
                 controller.stateManager2 = event.stateManager;
+                controller.stateManager2.addListener(_listener);
                 // stateManager.setShowColumnFilter(true);
               },
               onChanged: (PlutoGridOnChangedEvent event) async{
@@ -174,11 +234,32 @@ class SmallKitNewPage extends StatelessWidget {
                     /// 선택 후 선택된 리스트 클리어
                     controller.selectedPopList.clear();
                   }
+                }else if(event.column.field == 'remark') {
+                  controller.smallBoxSaveList[event.rowIdx].addAll({'remark': event.value});
                 }
 
-
-
               },
+
+              onRowDoubleTap: (PlutoGridOnRowDoubleTapEvent event) async{
+                Get.log('더블클릭!!');
+                /// 행추가라면 삭제 로직 ㄱ
+                if(controller.smallBoxSaveList[event.rowIdx]['exItemNm'] != null) {
+                  await showDialog(
+                    barrierDismissible: false,
+                    context: context, //context
+                    builder: (BuildContext context) {
+                      return _deleteAddRowAlertDialog(context, event.rowIdx);
+                    },
+                  );
+                  if(controller.deleteYes.value) {
+                    controller.textQrController.text = controller.smallBoxItemDataList[0]['cbxSuNo'].toString();
+                    await controller.checkBoxItemData();
+                    await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxSuNo'].toString());
+                    controller.textQrController.text = '';
+                  }
+                }
+              },
+
               configuration: PlutoGridConfiguration(
                 style: PlutoGridStyleConfig(
                   columnTextStyle: AppTheme.a18700.copyWith(color: AppTheme.black),
@@ -199,7 +280,7 @@ class SmallKitNewPage extends StatelessWidget {
 
     var orientation = MediaQuery.of(context).orientation;
 
-    double containerWidth = orientation == Orientation.portrait ? 300.0 : 680.0;
+    double containerWidth = orientation == Orientation.portrait ? 350.0 : 730.0;
     return SliverToBoxAdapter(
       child: Column(
         children: [
@@ -225,7 +306,7 @@ class SmallKitNewPage extends StatelessWidget {
                             ),
                             SizedBox(width: 12,),
                             Container(
-                              width: 200,
+                              width: 130,
                               height: 50,
                               child: Container(
                                 padding: const EdgeInsets.only(left: 16, right: 6),
@@ -250,34 +331,20 @@ class SmallKitNewPage extends StatelessWidget {
                                             if(controller.isSmallBoxDataList.value) {
                                               if(controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') { /// 확정일 경우 소박스 새로 읽는거만 조회되게 한다
                                                 // 자재 저장 프로시저 돌리기
-                                                if(controller.smallBoxDataList.length > 1) {
-                                                  await controller.reqCommon4();
-                                                  showDialog(
-                                                    barrierDismissible: false,
-                                                    context: context, //context
-                                                    builder: (BuildContext context) {
-                                                      return _dupAlertDialog(context);
-                                                    },
-                                                  ); // context가 왜?
-                                                  /*if(controller.smallBoxDataList[0]['cancleFlag'] > 0) {
-                                                    // 이미 스캔된 자재일 경우 취소 여부 물어볼 메세지처리
-                                                    await Get.dialog(CommonDialogBoxWidget(contentText: '이미 스캔된 자재입니다. 스캔 취소하시겠습니까?', pageFlag: 0));
-                                                    if(controller.isCancelIpgo.value) {
-                                                      await controller.reqCommon4();
-                                                      // 중복 qr이니 alert 띄우기
-                                                      showDialog(
-                                                        barrierDismissible: false,
-                                                        context: context, //context
-                                                        builder: (BuildContext context) {
-                                                          return _dupAlertDialog(context);
-                                                        },
-                                                      ); // context가 왜?
-
-                                                    }
+                                                if (controller.isCheckBool.value) {
+                                                    // 투입 취소
+                                                    await controller.registSmallKitCancel();
+                                                    controller.isSaveColor.value = false;
+                                                    await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxSuNo'].toString());
+                                                    await controller.test();
+                                                } else {
+                                                  // 투입
+                                                  if (controller.smallBoxDataList[0]['indScanYn'] == 'Y') { // 개별 자재
+                                                    /// 개별 자재일 경우에는 그냥 프로시저 돌리기
+                                                    await controller.registSmallKitItemSave();
                                                   }else {
-                                                    controller.isCancelIpgo.value = false;
+                                                    /// 개별 자재가 아닌 경우에는 팝업 창 열고 수량 입력
                                                     await controller.reqCommon4();
-                                                    // 중복 qr이니 alert 띄우기
                                                     showDialog(
                                                       barrierDismissible: false,
                                                       context: context, //context
@@ -286,7 +353,20 @@ class SmallKitNewPage extends StatelessWidget {
                                                       },
                                                     ); // context가 왜?
                                                   }
-*/
+                                                }
+
+
+
+                                             /*   if(controller.smallBoxDataList.length > 1) {
+                                                  await controller.reqCommon4();
+                                                  showDialog(
+                                                    barrierDismissible: false,
+                                                    context: context, //context
+                                                    builder: (BuildContext context) {
+                                                      return _dupAlertDialog(context);
+                                                    },
+                                                  ); // context가 왜?
+
                                                 }else {
                                                   // 중복 X
                                                   if(controller.smallBoxDataList[0]['cancleFlag'] > 0) {
@@ -296,13 +376,12 @@ class SmallKitNewPage extends StatelessWidget {
                                                       await controller.registSmallKitCancel();
                                                       controller.isSaveColor.value = false;
                                                       await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxSuNo'].toString());
-
                                                       await controller.test();
                                                     }
                                                   }else {
                                                     await controller.registSmallKitItemSave();
                                                   }
-                                                }
+                                                }*/
                                               }else {
                                                 Get.dialog(CommonDialogWidget(contentText: '확정된 상태입니다.', pageFlag: 3,));
                                               }
@@ -426,6 +505,7 @@ class SmallKitNewPage extends StatelessWidget {
                             child: Row(
                               children: [
                                 // _button('리스트 출력'),
+                                _button('행 추가', context),
                                 _button('저장', context),
                                 _button('동기화', context),
                                 _button('동기화 취소', context),
@@ -453,6 +533,8 @@ class SmallKitNewPage extends StatelessWidget {
                     child: Row(
                       // mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
+                        _subData2('소박스번호', controller.sboxNo.value, false),
+                        SizedBox(width: 32,),
                         _subData2('프로젝트명', controller.projectNm.value, true),
                         SizedBox(width: 32,),
                         _subData2('자재코드/자재명', controller.itemCdNm.value.trim(), true),
@@ -482,131 +564,148 @@ class SmallKitNewPage extends StatelessWidget {
                         SizedBox(width: 12,),
                         _subDataWeight(),
                         SizedBox(width: 12,),
+                        Row(
+                          children: [
+                            Obx(() => Checkbox(value: controller.isCheckBool.value, onChanged: (value) {
+                              controller.isCheckBool.value = value!;
 
+                            }),),
+                            Text('삭제', style: AppTheme.a18400.copyWith(color: AppTheme.black),)
+                          ],
+                        ),
                       ],
                     ),
-                    Row(
-                      children: [
-                       Obx(()=>  _subData2('확정일', controller.wrkCfmDt.value ?? '', false),),
-                        SizedBox(width: 32,),
-                        Obx(() => _subData2('무게', controller.boxWht.value ?? '', false),),
-                        SizedBox(width: 32,),
-                        /*Container(
-                          margin: EdgeInsets.only(right: 12),
-                          width: 120,
-                          height: 56,
-                          child: TextButton(
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                    const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(10),
-                                            bottomRight: Radius.circular(10)))),
-                                padding: MaterialStateProperty.all(
-                                    const EdgeInsets.all(0))),
-                            onPressed: () async {
-                              Get.log('조회 클릭!');
-                              // 소박스 지시 선택한게 없는 경우 리턴
-                              if(controller.smallBoxItemDataList.isEmpty){
-                                return;
-                              }
-                              if (controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') {
-                                Get.dialog(CommonDialogWidget(contentText: '확정 취소 후 진행해주세요', pageFlag: 3,));
-                                return;
-                              }
-                              await controller.registSmallKitBomChg(); // bom 변경적용 프로시저
+                    Container(
+                      width: 490,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Container(
+                          child: Row(
+                            children: [
+                             Obx(()=>  _subData2('확정일', controller.wrkCfmDt.value ?? '', false),),
+                              SizedBox(width: 32,),
+                              Obx(() => _subData2('무게', controller.boxWht.value ?? '', false),),
+                              SizedBox(width: 32,),
 
-                              /// 재조회
-                              controller.textQrController.text = controller.smallBoxItemDataList[0]['cbxSuNo'].toString();
-                              Get.dialog(CommonDialogWidget(contentText: '변경되었습니다.', pageFlag: 0));
-                              /// 전체 재조회 해야할듯?
-                              await controller.checkBoxItemData();
-                              for (var i = 0; i < controller.smallBoxItemDataList.length; i++) {
-                                controller.smallBoxItemDataList[i].addAll({'no': '${i + 1}'});
-                              }
-                              controller.textQrController.text = '';
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: AppTheme.navy_navy_800,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: AppTheme.ae2e2e2)
-                              ),
-                              width: 120,
-                              height: 56,
-                              padding: const EdgeInsets.only(
+                              /*Container(
+                                margin: EdgeInsets.only(right: 12),
+                                width: 120,
+                                height: 56,
+                                child: TextButton(
+                                  style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                          const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                  bottomLeft: Radius.circular(10),
+                                                  bottomRight: Radius.circular(10)))),
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.all(0))),
+                                  onPressed: () async {
+                                    Get.log('조회 클릭!');
+                                    // 소박스 지시 선택한게 없는 경우 리턴
+                                    if(controller.smallBoxItemDataList.isEmpty){
+                                      return;
+                                    }
+                                    if (controller.smallBoxItemDataList[0]['wrkCfmYn'] != 'Y') {
+                                      Get.dialog(CommonDialogWidget(contentText: '확정 취소 후 진행해주세요', pageFlag: 3,));
+                                      return;
+                                    }
+                                    await controller.registSmallKitBomChg(); // bom 변경적용 프로시저
 
-                              ),
-                              child: Center(
-                                child: Text('BOM변경적용', //입고취소 조회
-                                    style: AppTheme.a15700.copyWith(
-                                      color: AppTheme.white,
-                                    )),
-                              ),
-                            ),
-                          ),
-                        ),*/
-
-                        Container(
-                          margin: EdgeInsets.only(right: 12),
-                          width: 120,
-                          height: 56,
-                          child: TextButton(
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                    const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(10),
-                                            bottomRight: Radius.circular(10)))),
-                                padding: MaterialStateProperty.all(
-                                    const EdgeInsets.all(0))),
-                            onPressed: () async {
-                              Get.log('BOM변경확인 클릭!');
-                              if(controller.smallBoxItemDataList.isNotEmpty) {
-                                await controller.reqBom();
-                                if(controller.bomList.isNotEmpty) {
-                                  await controller.reqBomDetail();
-                                }
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return _alertDialog(context);
+                                    /// 재조회
+                                    controller.textQrController.text = controller.smallBoxItemDataList[0]['cbxSuNo'].toString();
+                                    Get.dialog(CommonDialogWidget(contentText: '변경되었습니다.', pageFlag: 0));
+                                    /// 전체 재조회 해야할듯?
+                                    await controller.checkBoxItemData();
+                                    for (var i = 0; i < controller.smallBoxItemDataList.length; i++) {
+                                      controller.smallBoxItemDataList[i].addAll({'no': '${i + 1}'});
+                                    }
+                                    controller.textQrController.text = '';
                                   },
-                                );
-                              }
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: AppTheme.navy_navy_800,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: AppTheme.ae2e2e2)
-                              ),
-                              width: 120,
-                              height: 56,
-                              padding: const EdgeInsets.only(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: AppTheme.navy_navy_800,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(color: AppTheme.ae2e2e2)
+                                    ),
+                                    width: 120,
+                                    height: 56,
+                                    padding: const EdgeInsets.only(
 
+                                    ),
+                                    child: Center(
+                                      child: Text('BOM변경적용', //입고취소 조회
+                                          style: AppTheme.a15700.copyWith(
+                                            color: AppTheme.white,
+                                          )),
+                                    ),
+                                  ),
+                                ),
+                              ),*/
+
+                              Container(
+                                margin: EdgeInsets.only(right: 12),
+                                width: 120,
+                                height: 56,
+                                child: TextButton(
+                                  style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                          const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                  bottomLeft: Radius.circular(10),
+                                                  bottomRight: Radius.circular(10)))),
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.all(0))),
+                                  onPressed: () async {
+                                    Get.log('BOM변경확인 클릭!');
+                                    if(controller.smallBoxItemDataList.isNotEmpty) {
+                                      await controller.reqBom();
+                                      if(controller.bomList.isNotEmpty) {
+                                        await controller.reqBomDetail();
+                                      }
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return _alertDialog(context);
+                                        },
+                                      );
+                                    }
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: AppTheme.navy_navy_800,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(color: AppTheme.ae2e2e2)
+                                    ),
+                                    width: 120,
+                                    height: 56,
+                                    padding: const EdgeInsets.only(
+
+                                    ),
+                                    child: Center(
+                                      child: Text('BOM변경확인', //입고취소 조회
+                                          style: AppTheme.a15700.copyWith(
+                                            color: AppTheme.white,
+                                          )),
+                                    ),
+                                  ),
+                                ),
                               ),
-                              child: Center(
-                                child: Text('BOM변경확인', //입고취소 조회
-                                    style: AppTheme.a15700.copyWith(
-                                      color: AppTheme.white,
-                                    )),
-                              ),
-                            ),
+                              Obx(() => Container(
+                                margin: EdgeInsets.only(right: 14),
+                                decoration: BoxDecoration(
+                                    color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.8) : Colors.redAccent.withOpacity(0.6),
+                                    borderRadius: BorderRadius.circular(8)
+                                ),
+                                width: 55,
+                                height: 55,
+                              ),),
+                            ],
                           ),
                         ),
-                        Obx(() => Container(
-                          margin: EdgeInsets.only(right: 14),
-                          decoration: BoxDecoration(
-                              color: controller.isDbConnected.value ? Colors.greenAccent.withOpacity(0.8) : Colors.redAccent.withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(8)
-                          ),
-                          width: 55,
-                          height: 55,
-                        ),),
-                      ],
+                      ),
                     )
                   ],
                 ),
@@ -822,12 +921,33 @@ class SmallKitNewPage extends StatelessWidget {
                 return;
               }
               if(controller.smallBoxItemDataList[0]['wrkCfmYn'].toString() != 'Y') {
+                controller.isQrFocus.value = true;
                 syncProcess();
               }else {
                 Get.dialog(CommonDialogWidget(contentText: '확정 처리된 상태입니다.', pageFlag: 0));
               }
             }
-
+            else if(text == '행 추가')
+            {
+              controller.isQrFocus.value = true;
+              controller.smallBoxItemDataList.isNotEmpty ?
+              controller.wrkCfmDt.value.trim() == '' || controller.wrkCfmDt.value.trim() == 'null' ?
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return _alertDialog3(context);
+                },
+              )   :  Get.dialog(CommonDialogWidget(contentText: '확정된 박스입니다.', pageFlag: 0))
+                  :  Get.dialog(CommonDialogWidget(contentText: '박스를 스캔해주세요', pageFlag: 0));
+              /*controller.insertRow.value = List<PlutoRow>.generate(controller.ipgoQrList.length, (index) =>
+            PlutoRow(cells:
+            Map.from((controller.ipgoQrList[index]).map((key, value) =>
+            MapEntry(key, PlutoCell(value: value ?? '' )),
+            )))
+            ),
+            //  controller.rowDatas2.add(controller.insertRow[0]);
+            controller.stateManager2.insertRows(controller.ipgoList.length, controller.insertRow)*/
+            }
             else if(text == '저장')
             {
               if(controller.itemCdNm.value == '') {
@@ -918,7 +1038,7 @@ class SmallKitNewPage extends StatelessWidget {
                 return;
               }
 
-              if(controller.smallBoxSaveList.length != controller.smallBoxItemDataList.length) {
+              if(controller.smallBoxSaveList.length < controller.smallBoxItemDataList.length) {
                 Get.dialog(CommonDialogWidget(contentText: '스캔하지않은 자재가 있습니다.', pageFlag: 0));
                 return;
               }
@@ -927,7 +1047,7 @@ class SmallKitNewPage extends StatelessWidget {
                   // 이미 오른쪽에 스캔된 자재가 있는데 수량이 작다면? -> 동기화 대상
                   if (controller.smallBoxItemDataList[dong]['itemCd'] == controller.smallBoxSaveList[dong2]['itemCd']) {
                     controller.noSync.value = false;
-                    if (int.parse(controller.smallBoxItemDataList[dong]['cbxQty'].toString()) > int.parse(controller.smallBoxSaveList[dong2]['wrkQty'].toString())) {
+                    if (double.parse(controller.smallBoxItemDataList[dong]['remainQty'].toString()) > 0.0) {
                       Get.dialog(CommonDialogWidget(contentText: '수량이 맞지않는 자재가 있습니다.', pageFlag: 0));
                       return;
                     }
@@ -957,7 +1077,7 @@ class SmallKitNewPage extends StatelessWidget {
                          controller.cbxSuSeqDonggihwa.value = controller.smallBoxSaveList[i]['cbxSuSeq'].toString();
                          controller.wrkQtyDonggihwa.value = controller.smallBoxSaveList[i]['wrkQty'].toString();
                          controller.ncbxRmkDonggihwa.value = controller.smallBoxSaveList[i]['ncbxRmk'].toString();
-
+                         controller.remarkDonggihwa.value = controller.smallBoxSaveList[i]['remark'] == null ? '' : controller.smallBoxSaveList[i]['remark'].toString();
                         // 동기화한 자재 저장처리!!!!!!!
                         await controller.registSmallKitDonggiSave();
                         if(controller.isSuccsessDong.value == false) {
@@ -1064,7 +1184,7 @@ class SmallKitNewPage extends StatelessWidget {
             // 이미 오른쪽에 스캔된 자재가 있는데 수량이 작다면? -> 동기화 대상
             if (controller.smallBoxItemDataList[dong]['itemCd'] == controller.smallBoxSaveList[dong2]['itemCd']) {
               controller.noSync.value = false;
-              if (int.parse(controller.smallBoxItemDataList[dong]['cbxQty'].toString()) > int.parse(controller.smallBoxSaveList[dong2]['wrkQty'].toString())) {
+              if (double.parse(controller.smallBoxItemDataList[dong]['cbxQty'].toString()) > double.parse(controller.smallBoxSaveList[dong2]['wrkQty'].toString())) {
                 controller.smallBoxSaveList[dong2].addAll({'savedWrkQty': controller.smallBoxSaveList[dong2]['wrkQty']});
                 controller.smallBoxSaveList[dong2].addAll({'ncbxRmk': ''});
                 controller.smallBoxSaveList[dong2].addAll({'syncYn': 'Y'});
@@ -1072,6 +1192,7 @@ class SmallKitNewPage extends StatelessWidget {
                 controller.smallBoxSaveList[dong2].addAll({'ncbxRmkName': ''});
                 controller.smallBoxSaveList[dong2].addAll({'wrkQty': controller.smallBoxItemDataList[dong]['cbxQty']});
                 controller.smallBoxSaveList[dong2].addAll({'sboxNo': controller.smallBoxItemDataList[dong]['cbxSuNo']});
+                controller.smallBoxSaveList[dong2].addAll({'remark': ''});
                 controller.noSync.value = false;
                 break;
               } else {
@@ -1095,6 +1216,7 @@ class SmallKitNewPage extends StatelessWidget {
             controller.smallBoxItemDataList[dong].addAll({'sboxNo': controller.smallBoxItemDataList[dong]['cbxSuNo']});
             controller.smallBoxItemDataList[dong].addAll({'chkRst': ''});
             controller.smallBoxItemDataList[dong].addAll({'chkQty': ''});
+            controller.smallBoxItemDataList[dong].addAll({'remark': ''});
             controller.smallBoxSaveList.add(controller.smallBoxItemDataList[dong]);
 
           }
@@ -1133,7 +1255,7 @@ class SmallKitNewPage extends StatelessWidget {
       Get.log('$e');
     } finally {
       // 로딩 다이얼로그 종료
-      Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+    //  Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
     }
   }
 
@@ -1457,6 +1579,24 @@ class SmallKitNewPage extends StatelessWidget {
               ),
             );
           }*/
+      ),
+      PlutoColumn(
+        enableSorting: false,
+        enableEditingMode: true,
+        enableContextMenu: false,
+        enableRowDrag: false,
+        enableDropToResize: false,
+        enableColumnDrag: false,
+        titleTextAlign: PlutoColumnTextAlign.center,
+        textAlign: PlutoColumnTextAlign.left,
+        width: 160,
+        title: '사유비고',
+        field: 'remark',
+        type: PlutoColumnType.text(),
+        checkReadOnly: (PlutoRow row, PlutoCell cell) {
+          return !(row.cells['prtNo']!.value == 'O');
+        },
+
       ),
       PlutoColumn(
           enableSorting: false,
@@ -2520,15 +2660,28 @@ class SmallKitNewPage extends StatelessWidget {
                               const EdgeInsets.all(0))),
                       onPressed: () async {
                         Get.log('선택 클릭!');
+                        if(controller.popUpDataList2[controller.alertIndex.value]['wrkQty'] <= 0)
+                        {
+                          Get.dialog(CommonDialogWidget(contentText: '수량이 없이 투입할 수 없습니다.', pageFlag: 0));
+                          return;
+                        }
+                        if(controller.popUpDataList2[controller.alertIndex.value]['remainQty'] < controller.popUpDataList2[controller.alertIndex.value]['wrkQty']){
+                          Get.dialog(CommonDialogWidget(contentText: '잔량을 초과하여 투입할 수 없습니다.', pageFlag: 0));
+                          return;
+                        }
                         Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
-                        if(controller.popUpDataList2[controller.alertIndex.value]['wrkYn'] == 'Y' ) {
+
+                        await controller.registSmallKitItemSaveDup();
+
+                        // 작업구분에서 Y인걸 선택 할 시에는 자재 취소처리
+                        /*if(controller.popUpDataList2[controller.alertIndex.value]['wrkYn'] == 'Y' ) {
                           await controller.registSmallKitCancelDup();
                           controller.isSaveColor.value = false;
                           await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxSuNo'].toString());
                           await controller.test();
                         }else{
                           await controller.registSmallKitItemSaveDup();
-                        }
+                        }*/
                      /*   if(controller.isCancelIpgo.value) {
                           await controller.registSmallKitCancelDup();
                           await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxSuNo'].toString());
@@ -2640,13 +2793,13 @@ class SmallKitNewPage extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text('작업여부: ', style: AppTheme.a16700.copyWith(
+                   /*   Text('작업여부: ', style: AppTheme.a16700.copyWith(
                         color: AppTheme.a1f1f1f,
                       ),),
                       Text('${controller.popUpDataList2[index]['wrkYn']}', style: AppTheme.a16700.copyWith(
                         color: AppTheme.a1f1f1f,
                       ),),
-                      SizedBox(width: 12,),
+                      SizedBox(width: 12,),*/
                       Text('QR코드: ', style: AppTheme.a16700.copyWith(
                         color: AppTheme.a1f1f1f,
                       ),),
@@ -2667,6 +2820,50 @@ class SmallKitNewPage extends StatelessWidget {
                       Text('${controller.popUpDataList2[index]['qty']}', style: AppTheme.a16400.copyWith(
                         color: AppTheme.a1f1f1f,
                       ),),
+                      SizedBox(width: 12,),
+                      Text('잔량: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.popUpDataList2[index]['remainQty']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      SizedBox(width: 12,),
+                      Text('입력수량: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Container(
+                        padding: EdgeInsets.only(top: 4, left: 8),
+                        height: 35,
+                        width:  100,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppTheme.ae2e2e2)),
+                        child: Center(
+                          child: TextFormField(
+                            expands: true,
+                            minLines: null,
+                            maxLines: null,
+                            style: AppTheme.a14400.copyWith(color: AppTheme.a6c6c6c),
+                            controller: controller.textWrkQtyControllers[index],
+                            textInputAction: TextInputAction.done,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(0),
+                              fillColor: Colors.white,
+                              hintText: '',
+                              hintStyle: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),
+                              border: InputBorder.none,
+                            ),
+                            showCursor: true,
+                            onTap: () {
+                              controller.isQrFocus.value = true;
+                            },
+                            onChanged: (value) {
+                              controller.popUpDataList2[index].addAll({'wrkQty': int.parse(value == '' ? '0' : value)});
+                            },
+                          ),
+                        ),
+                      ),
                     ],
                   ),
 
@@ -2987,6 +3184,410 @@ class SmallKitNewPage extends StatelessWidget {
     ),
 
     );
+  }
+  /// 행 추가 팝업
+  Widget _alertDialog3(BuildContext context) {
+
+    return AlertDialog(
+        backgroundColor: AppTheme.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0)),
+        title: Column(
+          children: [
+            const SizedBox(
+              height: AppTheme.spacing_l_20,
+            ),
+            Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 24, right: 12),
+                  child: Text(
+                    '행 추가',
+                    style: AppTheme.a22700
+                        .copyWith(color: AppTheme.black),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            Container(
+              width: double.infinity,
+              height: 1,
+              color: Colors.black,
+            ),
+
+          ],
+        ),
+
+        content: _alertBody3(context), /// 내부 메인body
+
+        buttonPadding: const EdgeInsets.all(0),
+        // insetPadding 이게 전체크기 조정
+        insetPadding: const EdgeInsets.only(left: 45, right: 45),
+        contentPadding: const EdgeInsets.all(0),
+        actionsPadding: const EdgeInsets.all(0),
+        titlePadding: const EdgeInsets.all(0),
+        //
+        actions: [
+          Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 1,
+                color: const Color(0x5c3c3c43),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15)))),
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(0))),
+                      onPressed: () async {
+                        controller.textQrController.text = controller.smallBoxItemDataList[0]['cbxSuNo'].toString();
+                        await controller.registMainKitAddRow();
+                        await controller.checkBoxItemData();
+                        await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxSuNo'].toString());
+                        controller.textQrController.text = '';
+
+                        /*controller.addRowList.clear();
+                        controller.addRowList.add({
+                          'itemCd': controller.textItemCdController.text,
+                          'itemNm': controller.textItemNmController.text,
+                          'wrkQty': int.parse(controller.textQtyController.text),
+                          'setQty': int.parse(controller.textSetController.text),
+                          'qtyUnit': controller.textUnitController.text,
+                          'prtNo': 'X',
+                          'itemNmNonKit': controller.textItemNmController.text,
+                          'syncYn': 'N',
+                          'scanYn': 'N',
+                          'ncbxRmk': '60',
+                          'ncbxRmkName': 'KIT 외 구성품',
+                          'cbxExNo': '${controller.smallBoxItemDataList[0]['cbxExNo']}-E',
+                          'cbxExSeq': controller.smallBoxSaveList.length+1,
+                          'setCbxQty': '0',
+                          'cbxQty': controller.textQtyController.text
+                        });
+                        controller.smallBoxSaveList.add(controller.addRowList[0]);
+                        // List<dynamic> withLeadingZero = controller.smallBoxSaveList.where((item) => item['no'].toString().startsWith('0')).toList();
+                        // controller.addRowList[0].addAll({'no': '0${withLeadingZero.length + 1}'});
+                        controller.addRowList[0].addAll({'no': '${controller.smallBoxItemDataList.length + 1}'});
+                        controller.insertRow.value = List<PlutoRow>.generate(
+                            controller.addRowList.length,
+                                (index) => PlutoRow(
+                                cells: Map.from((controller.addRowList[index]).map((key, value) {
+                                  {
+                                    return MapEntry(key, PlutoCell(value: value ?? '')); // 일반 셀은 기존 로직대로
+                                  }
+                                }))));
+                        controller.stateManager2.insertRows(controller.smallBoxSaveList.length, controller.insertRow);*/
+                        //  controller.addRowList[0].addAll({'cbxSuSeq': '${controller.smallBoxList[i]['cbxSuSeq']}'});
+                        //  controller.addRowList[0].addAll({'scanSeq': '${controller.smallBoxList[i]['scanSeq']}'});
+                        Get.dialog(CommonDialogWidget(
+                          contentText: '추가되었습니다',
+                          pageFlag: 10,
+                        ));
+                        controller.textAddRowItemCdController.text = '';
+                        controller.textAddRowItemNmController.text = '';
+                        controller.textAddRowQtyController.text = '';
+                        controller.textAddRowSetController.text = '';
+                        controller.textAddRowUnitController.text = '';
+
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                right: BorderSide(color: const Color(0x5c3c3c43),)
+                            ),
+                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15)),
+                            color: AppTheme.navy_navy_900
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.only(
+                          top: AppTheme.spacing_s_12,
+                          bottom: AppTheme.spacing_s_12,
+                        ),
+                        child: Center(
+                          child: Text('저장',
+                              style: AppTheme.titleHeadline.copyWith(
+                                  color: AppTheme.white,
+                                  fontSize: 17)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12,),
+                  Expanded(
+                    child: TextButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15)))),
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(0))),
+                      onPressed: () {
+                        Get.log('닫기 클릭!');
+                        controller.isQrFocus.value = false;
+                        Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.only(
+                          top: AppTheme.spacing_s_12,
+                          bottom: AppTheme.spacing_s_12,
+                        ),
+                        child: Center(
+                          child: Text('닫기',
+                              style: AppTheme.titleHeadline.copyWith(
+                                  color: AppTheme.black,
+                                  fontSize: 17)),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          )
+        ]);
+  }
+
+  Widget _alertBody3(BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.only(left: 16, bottom: 16, right: 16),
+        width: 350,
+        height: 400,
+        child: Column(
+          children: [
+            Container(
+              color: AppTheme.dark_text_secondary,
+              height: 1,
+            ),
+            SizedBox(height: 8,),
+            Container(
+              width: MediaQuery.of(context).size.width - 10,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _subData2('프로젝트명', controller.projectNm.value, true),
+                    SizedBox(width: 32,),
+                    _subData2('자재코드/자재명', controller.itemCdNm.value.trim(), true),
+                  ],
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                _subData2('박스번호', controller.boxNo.value, false),
+                /*    SizedBox(width: 32,),
+                _subData2('확정일', controller.wrkCfmDt.value ?? '', false),*/
+              ],
+            ),
+            SizedBox(width: 32,),
+
+            SizedBox(height: 4,),
+            Container(
+              color: AppTheme.dark_text_secondary,
+              height: 1,
+            ),
+            SizedBox(height: 12,),
+            _alertInput3('자재코드'),
+            SizedBox(height: 4,),
+            _alertInput3('자재명'),
+            SizedBox(height: 4,),
+            _alertInput3('수량'),
+            SizedBox(height: 4,),
+            /*  _alertInput('세트'),
+            SizedBox(height: 4,),*/
+            _alertInput3('단위'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _alertInput3(String title) {
+    return Row(
+      children: [
+        Container(
+          width: 100,
+          child: Text(title, style: AppTheme.a24700.copyWith(color: AppTheme.black), textAlign: TextAlign.right, ),
+        ),
+        SizedBox(width: 12,),
+        Expanded(
+          child: Container(
+            width: 200,
+            padding: const EdgeInsets.only(left: 16, right: 6),
+            decoration: BoxDecoration(
+                border: Border.all(color: AppTheme.ae2e2e2),
+                borderRadius: BorderRadius.circular(10),
+                color: AppTheme.white
+            ),
+            child: Center(
+              child: TextFormField(
+                minLines: null,
+                maxLines: null,
+                style:  AppTheme.a20400.copyWith(color: AppTheme.a6c6c6c),
+                controller: title == '자재코드' ? controller.textAddRowItemCdController : title == '자재명' ? controller.textAddRowItemNmController : title == '수량' ? controller.textAddRowQtyController
+                    : title == '세트' ? controller.textAddRowSetController : title == '단위' ? controller.textAddRowUnitController : controller.textAddRowItemCdController,
+                textAlignVertical: TextAlignVertical.center,
+                textInputAction: TextInputAction.done,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+
+                  contentPadding: const EdgeInsets.only(bottom: 8),
+                  fillColor: AppTheme.white,
+                  filled: true,
+                  // hintText: 'BC 번호를 입력해주세요',
+                  hintStyle: AppTheme.a16400.copyWith(color: AppTheme.aBCBCBC),
+                  border: InputBorder.none,
+                ),
+                showCursor: true,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+
+  Widget _deleteAddRowAlertDialog(BuildContext context, int rowIdx) {
+
+    return AlertDialog(
+        backgroundColor: AppTheme.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0)),
+        title: Container(
+          height: 0,
+        ),
+
+        content: Container(
+          width: 400,
+          height: 100,
+          child: Center(
+            child: Text('행추가 건을 삭제하시겠습니까?', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
+          ),
+        ), /// 내부 메인body
+
+        buttonPadding: const EdgeInsets.all(0),
+        // insetPadding 이게 전체크기 조정
+        insetPadding: const EdgeInsets.only(left: 45, right: 45),
+        contentPadding: const EdgeInsets.all(0),
+        actionsPadding: const EdgeInsets.all(0),
+        titlePadding: const EdgeInsets.all(0),
+        //
+        actions: [
+          Container(
+            width: 400,
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 1,
+                  color: const Color(0x5c3c3c43),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                                const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(15),
+                                    ))),
+                            padding: MaterialStateProperty.all(
+                                const EdgeInsets.all(0))),
+                        onPressed: () async {
+                          Get.log('닫기 클릭!');
+                          controller.deleteYes.value = false;
+                          Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  right: BorderSide(color: const Color(0x5c3c3c43),)
+                              ),
+                              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15)),
+                              color: AppTheme.white
+                          ),
+                          width: MediaQuery.of(context).size.width,
+                          padding: const EdgeInsets.only(
+                            top: AppTheme.spacing_s_12,
+                            bottom: AppTheme.spacing_s_12,
+                          ),
+                          child: Center(
+                            child: Text('닫기',
+                                style: AppTheme.titleHeadline.copyWith(
+                                    color: AppTheme.black,
+                                    fontSize: 17)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: TextButton(
+                        style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                                const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(15)))),
+                            padding: MaterialStateProperty.all(
+                                const EdgeInsets.all(0))),
+                        onPressed: () async {
+                          Get.log('삭제 클릭!');
+                          await controller.deleteMainKitAddRow(rowIdx);
+                          // 전체 재조회
+                          controller.deleteYes.value = true;
+                          Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  right: BorderSide(color: const Color(0x5c3c3c43),)
+                              ),
+                              borderRadius: BorderRadius.only(bottomRight: Radius.circular(15)),
+                              color: AppTheme.navy_navy_900
+                          ),
+                          width: MediaQuery.of(context).size.width,
+                          padding: const EdgeInsets.only(
+                            top: AppTheme.spacing_s_12,
+                            bottom: AppTheme.spacing_s_12,
+                          ),
+                          child: Center(
+                            child: Text('삭제',
+                                style: AppTheme.titleHeadline.copyWith(
+                                    color: AppTheme.white,
+                                    fontSize: 17)),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          )
+        ]);
   }
 }
 

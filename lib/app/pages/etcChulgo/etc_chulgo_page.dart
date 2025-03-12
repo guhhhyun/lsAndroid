@@ -31,6 +31,61 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
 
   EtcChulgoController controller = Get.find();
 
+
+  /// 키보드 엔터 없이 그리드에서 업데이트된 항목 바로 적용 시켜주기 위한 로직 /////////////////////////////////////////////////////////////
+  void _listener() {
+    if (controller.gridStateMgr5.currentCell == controller.currentCell) {
+      return;
+    }
+
+    if (controller.gridStateMgr5.isEditing && controller.gridStateMgr5.currentCell != null) {
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        controller.initialValue = controller.gridStateMgr5.textEditingController?.text;
+
+        controller.gridStateMgr5.textEditingController!.addListener(_textEditingListener);
+        if (controller.gridStateMgr5.textEditingController?.selection != null) {
+          controller.gridStateMgr5.textEditingController!.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: controller.gridStateMgr5.textEditingController!.text.length,
+          );
+        }
+
+      });
+    } else {
+      controller.initialValue = null;
+
+      controller.gridStateMgr5.textEditingController?.removeListener(_textEditingListener);
+    }
+
+    controller.currentCell = controller.gridStateMgr5.currentCell;
+  }
+
+  void _textEditingListener() {
+    controller.debounce.debounce(callback: _update);
+  }
+
+  void _update() {
+    if (controller.initialValue == controller.gridStateMgr5.textEditingController?.text) {
+      return;
+    }
+
+    controller.initialValue = null;
+
+    if (controller.currentCell!.column.field == 'qty') {
+
+      print('선택한 값: ${controller.gridStateMgr5.textEditingController?.text}');
+
+      controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][controller.currentCell!.row!.sortIdx].addAll({'qty': controller.gridStateMgr5.textEditingController?.text});
+      controller.etcChulgoSaveQrList[controller.currentRowIndex2.value].addAll({'qty': controller.gridStateMgr5.textEditingController?.text});
+
+    }
+
+
+    print('이건가? ${controller.gridStateMgr5.textEditingController?.text}');
+  }
+
+
   @override
   Widget build(BuildContext context) {
     controller.isFocus.value == false ? controller.requestFocus() : null;
@@ -1068,7 +1123,29 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                           padding: MaterialStateProperty.all(
                               const EdgeInsets.all(0))),
                       onPressed: () {
-                        Get.log('취소 클릭!');
+                        Get.log('닫기 클릭!');
+                        controller.etcChulgoQrList.clear();
+                        controller.etcChulgoSaveQrList.clear();
+                        controller.etcChulgoQrDetailTotalList.clear();
+                        controller.statusText.value = '';
+                        /// 좌측 리스트 삭제
+                        controller.gridStateMgr4.removeAllRows();
+                        controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcChulgoSaveQrList.length, (index) =>
+                            PlutoRow(cells:
+                            Map.from((controller.etcChulgoSaveQrList[index]).map((key, value) =>
+                                MapEntry(key, PlutoCell(value: value == null ? '' : value )),
+                            )))
+                        );
+                        controller.gridStateMgr4.appendRows(controller.rowDatas4.value);
+
+                        /// 우측 리스트 삭제
+                        controller.gridStateMgr5.removeAllRows();
+                        controller.rowDatas5.value = List<PlutoRow>.generate(controller.etcChulgoQrDetailTotalList.length, (index) =>
+                            PlutoRow(cells:
+                            Map.from((controller.etcChulgoQrDetailTotalList[index]).map((key, value) =>
+                                MapEntry(key, PlutoCell(value: value == null ? '' : value )),
+                            )))
+                        );
                         Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
                       },
                       child: Container(
@@ -1702,16 +1779,10 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                             const EdgeInsets.all(0))),
                     onPressed: () async {
                       Get.log('저장 클릭!');
-                      /*for(var i = 0; i < controller.etcChulgoQrCheckList.length; i++) {
-                        if(controller.etcChulgoQrCheckList[i] == true) {
-                          controller.isEtcChulgoQrCheckList.value = true;
-                          controller.isEtcChulgoQrCheckListIdx.value = i;
-                          break;
-                        }else {
-                          controller.isEtcChulgoQrCheckList.value = false;
-                        }
-                      }
-                      if(controller.isEtcChulgoQrCheckList.value) {*/
+                      Get.dialog(
+                        Center(child: CircularProgressIndicator()),
+                        barrierDismissible: false, // 사용자가 다이얼로그를 닫을 수 없도록 설정
+                      );
                         await controller.registSaveIpgoBtn();
                        /* controller.etcChulgoSaveQrList.removeAt(controller.isEtcChulgoQrCheckListIdx.value); // 좌측리스트 삭제
                         controller.etcChulgoQrDetailTotalList.removeAt(controller.isEtcChulgoQrCheckListIdx.value); // 우측 디테일 삭제
@@ -1960,7 +2031,7 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
         Container(
           padding: EdgeInsets.only(top: 5, left: 8),
           height: 40,
-          width: plag == 1 ? 100 : plag == 2 ? 130 : 150,
+          width: plag == 1 ? 100 : plag == 2 ? 130 : 130,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppTheme.ae2e2e2)),
@@ -2035,28 +2106,41 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
                           controller.textQrController.text = '';
                         }else{
                           await controller.reqChulThird(); // 조회
-                          if(controller.etcChulgoQrList.isNotEmpty) {
-                            await controller.reqChulThirdDetail(); // 디테일 조회
-                            controller.etcChulgoSaveQrList.add(controller.etcChulgoQrList[0]);
-                            controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcChulgoSaveQrList.length, (index) =>
-                                PlutoRow(cells:
-                                Map.from((controller.etcChulgoSaveQrList[index]).map((key, value) =>
-                                    MapEntry(key, PlutoCell(value: value == null ? '' : value )),
-                                )))
-                            );
-                            controller.textQrController.text = '';
-                            controller.gridStateMgr4.removeAllRows();
-                            controller.gridStateMgr4.appendRows(controller.rowDatas4);
+                          /// 자재선택 추가
+                          if(controller.etcChulgoQrList.length > 1) {
+                            controller.alertIndex.value = 0;
+                            await showDialog(
+                              barrierDismissible: false,
+                              context: context, //context
+                              builder: (BuildContext context) {
+                                return _dupAlertDialog(context);
+                              },
+                            ); // context가 왜?
+                          }else {
+                            if(controller.etcChulgoQrList.isNotEmpty) {
+                              await controller.reqChulThirdDetail(); // 디테일 조회
 
-                            controller.rowDatas5.value = List<PlutoRow>.generate(controller.etcChulgoQrDetailTotalList[controller.etcChulgoQrDetailTotalList.length - 1].length, (index) =>
-                                PlutoRow(cells:
-                                Map.from((controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][index]).map((key, value) =>
-                                    MapEntry(key, PlutoCell(value: value ?? '' )),
-                                )))
-                            );
+                              controller.etcChulgoSaveQrList.add(controller.etcChulgoQrList[0]);
+                              controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcChulgoSaveQrList.length, (index) =>
+                                  PlutoRow(cells:
+                                  Map.from((controller.etcChulgoSaveQrList[index]).map((key, value) =>
+                                      MapEntry(key, PlutoCell(value: value == null ? '' : value )),
+                                  )))
+                              );
+                              controller.textQrController.text = '';
+                              controller.gridStateMgr4.removeAllRows();
+                              controller.gridStateMgr4.appendRows(controller.rowDatas4);
 
-                            controller.gridStateMgr5.removeAllRows();
-                            controller.gridStateMgr5.appendRows(controller.rowDatas5);
+                              controller.rowDatas5.value = List<PlutoRow>.generate(controller.etcChulgoQrDetailTotalList[controller.etcChulgoQrDetailTotalList.length - 1].length, (index) =>
+                                  PlutoRow(cells:
+                                  Map.from((controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][index]).map((key, value) =>
+                                      MapEntry(key, PlutoCell(value: value ?? '' )),
+                                  )))
+                              );
+
+                              controller.gridStateMgr5.removeAllRows();
+                              controller.gridStateMgr5.appendRows(controller.rowDatas5);
+                            }
                           }
 
                           controller.focusNode.requestFocus();
@@ -2170,6 +2254,295 @@ class _EtcChulgoPageState extends State<EtcChulgoPage> {
       ],
     );
   }
+
+  Widget _dupAlertDialog(BuildContext context) {
+
+    return AlertDialog(
+        backgroundColor: AppTheme.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0)),
+        title: Column(
+          children: [
+            const SizedBox(
+              height: AppTheme.spacing_l_20,
+            ),
+            Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 24, right: 12),
+                  child: Text(
+                    'QR 선택',
+                    style: AppTheme.a18700
+                        .copyWith(color: AppTheme.black),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            Container(
+              width: double.infinity,
+              height: 1,
+              color: Colors.black,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+
+        content: _dupAlertList(context), /// 내부 메인body
+
+        buttonPadding: const EdgeInsets.all(0),
+        // insetPadding 이게 전체크기 조정
+        insetPadding: const EdgeInsets.only(left: 45, right: 45),
+        contentPadding: const EdgeInsets.all(0),
+        actionsPadding: const EdgeInsets.all(0),
+        titlePadding: const EdgeInsets.all(0),
+        //
+        actions: [
+          Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 1,
+                color: const Color(0x5c3c3c43),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(15),
+                                    /*bottomRight: Radius.circular(15)*/))),
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(0))),
+                      onPressed: () async {
+                        Get.log('닫기 클릭!');
+                        controller.textQrController.text = '';
+                        controller.statusText.value = '';
+                        controller.etcChulgoQrList.clear();
+                        controller.alertIndex.value = 0;
+                        Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                right: BorderSide(color: const Color(0x5c3c3c43),)
+                            ),
+                            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15)/*, bottomRight: Radius.circular(15)*/),
+                            color: AppTheme.white
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.only(
+                          top: AppTheme.spacing_s_12,
+                          bottom: AppTheme.spacing_s_12,
+                        ),
+                        child: Center(
+                          child: Text('닫기',
+                              style: AppTheme.titleHeadline.copyWith(
+                                  color: AppTheme.black,
+                                  fontSize: 17)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: TextButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    /*bottomLeft: Radius.circular(15),*/
+                                      bottomRight: Radius.circular(15)))),
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(0))),
+                      onPressed: () async {
+                        Get.log('선택 클릭!');
+                        if(controller.etcChulgoQrList.isNotEmpty) {
+                          await controller.reqChulThirdDetailMulti(); // 디테일 조회
+
+                          controller.etcChulgoSaveQrList.add(controller.etcChulgoQrList[controller.alertIndex.value]);
+                          controller.rowDatas4.value = List<PlutoRow>.generate(controller.etcChulgoSaveQrList.length, (index) =>
+                              PlutoRow(cells:
+                              Map.from((controller.etcChulgoSaveQrList[index]).map((key, value) =>
+                                  MapEntry(key, PlutoCell(value: value == null ? '' : value )),
+                              )))
+                          );
+                          controller.textQrController.text = '';
+                          controller.gridStateMgr4.removeAllRows();
+                          controller.gridStateMgr4.appendRows(controller.rowDatas4);
+
+                          controller.rowDatas5.value = List<PlutoRow>.generate(controller.etcChulgoQrDetailTotalList[controller.etcChulgoQrDetailTotalList.length - 1].length, (index) =>
+                              PlutoRow(cells:
+                              Map.from((controller.etcChulgoQrDetailTotalList[controller.currentRowIndex2.value][index]).map((key, value) =>
+                                  MapEntry(key, PlutoCell(value: value ?? '' )),
+                              )))
+                          );
+
+                          controller.gridStateMgr5.removeAllRows();
+                          controller.gridStateMgr5.appendRows(controller.rowDatas5);
+                        }
+                        Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                right: BorderSide(color: const Color(0x5c3c3c43),)
+                            ),
+                            borderRadius: BorderRadius.only(/*bottomLeft: Radius.circular(15),*/ bottomRight: Radius.circular(15)),
+                            color: AppTheme.navy_navy_900
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.only(
+                          top: AppTheme.spacing_s_12,
+                          bottom: AppTheme.spacing_s_12,
+                        ),
+                        child: Center(
+                          child: Text('선택',
+                              style: AppTheme.titleHeadline.copyWith(
+                                  color: AppTheme.white,
+                                  fontSize: 17)),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          )
+        ]);
+  }
+
+  Widget _dupAlertList(BuildContext context) {
+    return Container(
+      height: 300,
+      width: 300,
+      child: CustomScrollView(
+        slivers: [
+          _listArea()
+        ],
+      ),
+    );
+  }
+
+
+  Widget _listArea() {
+    return Obx(() => SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
+          return _listItem(index: index, context: context);
+        }, childCount: controller.popUpDataList2.length)));
+  }
+
+
+  Widget _listItem({required BuildContext context, required int index}) {
+    return  TextButton(
+        style: ButtonStyle(shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(5)))),
+            /*backgroundColor: MaterialStateProperty.all<Color>(
+                AppTheme.light_primary,
+              ),*/
+            padding:
+            MaterialStateProperty.all(const EdgeInsets.all(0))),
+        onPressed: () async{
+          if(controller.isSelect2[index] == true) {
+            controller.isSelect2[index] = false;
+
+          }else {
+            for(var i = 0; i < controller.isSelect2.length; i++) {
+              controller.isSelect2[i] = false;
+            }
+            controller.isSelect2[index] = true;
+
+          }
+          /*for(var i = 0; i < controller.smallBoxDataList.length; i++) {
+            if(controller.smallBoxDataList[i]['tagNo'] == controller.popUpDataList[index]['tagNo']) {
+              controller.alertIndex.value = i;
+            }
+          }*/
+          controller.alertIndex.value = index;
+          //  Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
+        },
+        child: Obx(() => Container(
+          margin: const EdgeInsets.only(left: 18, right: 18, bottom: 18),
+          padding: const EdgeInsets.only(top: 18, bottom: 18, left: 18, right: 18),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: controller.isSelect2[index] ? Border.all(color: AppTheme.black, width: 3) : Border.all(color: AppTheme.ae2e2e2),
+              color: AppTheme.white,
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.gray_c_gray_100.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(0, 3), // changes position of shadow
+                ),
+              ]
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text('라벨번호: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.popUpDataList2[index]['tagNo']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      SizedBox(width: 12,),
+                      Text('자재코드: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.popUpDataList2[index]['itemCd']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      SizedBox(width: 12,),
+                      Text('수량: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.popUpDataList2[index]['qty']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      SizedBox(width: 12,),
+                      Text('존: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.popUpDataList2[index]['zoneNm']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      SizedBox(width: 12,),
+                      Text('현재위치: ', style: AppTheme.a16700.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                      Text('${controller.popUpDataList2[index]['locCd']}', style: AppTheme.a16400.copyWith(
+                        color: AppTheme.a1f1f1f,
+                      ),),
+                    ],
+                  ),
+
+                ],
+              )
+
+            ],
+          ),
+        ),)
+    );
+  }
+
 }
 
 

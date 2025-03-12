@@ -227,7 +227,7 @@ class SmallKitPage extends StatelessWidget {
                                     controller.isQrFocus.value = false;
                                     if(controller.smallBoxList.isEmpty)
                                     {
-                                      await controller.checkQR();
+                                   //   await controller.checkQR();
                                       if(controller.smallBoxList.isNotEmpty) {
                                         for(var i = 0; i < controller.smallBoxList.length; i++) {
                                           controller.smallBoxList[i].addAll({'setQty': controller.smallBoxList[i]['setQty'] ?? 0});

@@ -94,7 +94,7 @@ _$SubBodyItemImpl _$$SubBodyItemImplFromJson(Map<String, dynamic> json) =>
       setQty: json['setQty'] as String?,
       boxWht: json['boxWht'] as String?,
       qrNo: json['qrNo'] as String? ?? '',
-      qty: (json['qty'] as num?)?.toDouble() ?? 0.0,
+      qty: (json['qty'] as num?)?.toInt() ?? 0,
       vendCd: json['vendCd'] as String?,
       qtyUnit: json['qtyUnit'] as String? ?? '',
       tagTypeNm: json['tagTypeNm'] as String? ?? '',

@@ -78,7 +78,7 @@ class SubBodyItem with _$SubBodyItem {
     String? setQty,
     String? boxWht,
     @Default('') String qrNo,
-    @Default(0.0) double qty,
+    @Default(0) int qty,
     String? vendCd,
     @Default('') String qtyUnit,
     @Default('') String tagTypeNm,

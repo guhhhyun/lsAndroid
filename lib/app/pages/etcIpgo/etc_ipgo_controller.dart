@@ -133,6 +133,15 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
   RxInt noTagIdx = 0.obs;
 
 
+  final PlutoDebounce debounce = PlutoDebounce(
+    duration: const Duration(milliseconds: 300),
+  );
+
+  PlutoCell? currentCell;
+
+  dynamic initialValue;
+
+
   /// 공통 드롭다운 입고구분
   Future<void> reqCommon2() async {
 
@@ -528,7 +537,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
             Get.log('기타입고 저장되었습니다');
             etcIpgoSaveQrList.removeAt(e); // 좌측리스트 삭제
             etcIpgoQrDetailTotalList.removeAt(e); // 우측 디테일 삭제
-            etcIpgoQrCheckList.removeAt(e);
+            etcIpgoQrCheckList.clear();
             statusText.value = '';
           } else {
             Get.log('저장 실패');
@@ -541,6 +550,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
           bLoading.value = false;
         }
     }
+    Navigator.of(Get.overlayContext!, rootNavigator: true).pop();
   }
 
   /// 첫번째 화면 취소
@@ -813,6 +823,7 @@ class EtcIpgoController extends GetxController with GetSingleTickerProviderState
           for(var i = 0; i < etcIpgoList.length; i++) {
             etcIpgoList[i].addAll({'noV': ''});
             etcIpgoCheckList.add(false);
+
           }
           /*etcIpgoListTotal.addAll(retVal.body![1]);
           if(selectedInbTypeDropdown['NAME'] == '전체') {

@@ -283,7 +283,7 @@ class IpgoPage extends StatelessWidget {
              scrollDirection: Axis.horizontal,
              child: Row(
                children: [
-                 Text('입고일자', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
+                 Text('ERP 입고일자', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
                  SizedBox(width: 8,),
                  Container(
                      child: InkWell(
@@ -396,7 +396,7 @@ class IpgoPage extends StatelessWidget {
                  _invnrTextForm3(),
                  //_invnrTextForm('거래명세서 번호', 0),
                  SizedBox(width: 16,),
-                 _invnrTextForm('품목코드', 1),
+                 _invnrTextForm('자재코드', 1),
                  SizedBox(width: 16,),
                  _invnrTextForm('프로젝트명', 2),
 
@@ -736,10 +736,10 @@ class IpgoPage extends StatelessWidget {
        backgroundColor: AppTheme.gray_c_gray_200,
      ),
      PlutoColumn(
-       title: '입고일자',
+       title: 'ERP 입고일자',
        field: 'grDt',
        type: PlutoColumnType.text(),
-       width: 120,
+       width: 140,
        enableSorting: false,
        enableEditingMode: false,
        enableContextMenu: false,
@@ -751,7 +751,7 @@ class IpgoPage extends StatelessWidget {
        backgroundColor: AppTheme.gray_c_gray_200,
      ),
      PlutoColumn(
-       title: '품목코드',
+       title: '자재코드',
        field: 'itemCd',
        type: PlutoColumnType.text(),
        width: 130,
@@ -766,7 +766,7 @@ class IpgoPage extends StatelessWidget {
        backgroundColor: AppTheme.gray_c_gray_200,
      ),
      PlutoColumn(
-       title: '품목명',
+       title: '자재명',
        field: 'itemNm',
        type: PlutoColumnType.text(),
        width: 500,
@@ -1483,7 +1483,7 @@ class IpgoPage extends StatelessWidget {
          backgroundColor: AppTheme.gray_c_gray_200,
        ),
        PlutoColumn(
-         title: '품목코드',
+         title: '자재코드',
          field: 'itemCd',
          type: PlutoColumnType.text(),
          width: 130,
@@ -1498,7 +1498,7 @@ class IpgoPage extends StatelessWidget {
          backgroundColor: AppTheme.gray_c_gray_200,
        ),
        PlutoColumn(
-         title: '품목명',
+         title: '자재명',
          field: 'itemNm',
          type: PlutoColumnType.text(),
          width: test2,
@@ -2323,7 +2323,7 @@ class IpgoPage extends StatelessWidget {
          backgroundColor: AppTheme.gray_c_gray_200,
        ),
        PlutoColumn(
-         title: '품목코드',
+         title: '자재코드',
          field: 'itemCd',
          type: PlutoColumnType.text(),
          width: 120,
@@ -2338,7 +2338,7 @@ class IpgoPage extends StatelessWidget {
          backgroundColor: AppTheme.gray_c_gray_200,
        ),
        PlutoColumn(
-         title: '품목명',
+         title: '자재명',
          field: 'itemNm',
          type: PlutoColumnType.text(),
          width: MediaQuery.of(context).size.width/2 - 280,
@@ -2443,7 +2443,7 @@ class IpgoPage extends StatelessWidget {
              scrollDirection: Axis.horizontal,
              child: Row(
                children: [
-                 Text('입고일자', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
+                 Text('WMS 입고일자', style: AppTheme.a20700.copyWith(color: AppTheme.black),),
                  SizedBox(width: 8,),
                  Container(
                    child: InkWell(
@@ -2639,7 +2639,7 @@ class IpgoPage extends StatelessWidget {
                    //_invnrTextForm3(),
                    _invnrTextForm2('거래명세서 번호', 0),
                    SizedBox(width: 16,),
-                   _invnrTextForm2('품목코드', 1),
+                   _invnrTextForm2('자재코드', 1),
                    SizedBox(width: 16,),
                    _invnrTextForm2('프로젝트명', 2)
                  ],
@@ -2894,7 +2894,6 @@ class IpgoPage extends StatelessWidget {
 
 
    Widget _ipgoCancelList(BuildContext context) {
-
      return Column(children: [
        Obx(() => Container(
            width: MediaQuery.of(context).size.width-32,
@@ -2995,10 +2994,10 @@ class IpgoPage extends StatelessWidget {
        ),
 
        PlutoColumn(
-         title: '입고일자',
+         title: 'WMS 입고일자',
          field: 'InbDt',
          type: PlutoColumnType.text(),
-         width: 120,
+         width: 140,
          enableSorting: false,
          enableEditingMode: false,
          enableContextMenu: false,
@@ -3025,7 +3024,7 @@ class IpgoPage extends StatelessWidget {
          backgroundColor: AppTheme.gray_c_gray_200,
        ),
        PlutoColumn(
-         title: '품목코드',
+         title: '자재코드',
          field: 'itemCd',
          type: PlutoColumnType.text(),
          width: 130,
@@ -3040,7 +3039,7 @@ class IpgoPage extends StatelessWidget {
          backgroundColor: AppTheme.gray_c_gray_200,
        ),
        PlutoColumn(
-         title: '품목명',
+         title: '자재명',
          field: 'itemNm',
          type: PlutoColumnType.text(),
          width: test,
