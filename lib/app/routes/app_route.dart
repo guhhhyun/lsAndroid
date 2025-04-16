@@ -17,21 +17,19 @@ import 'package:lsandroid/app/pages/main/main_binding.dart';
 import 'package:lsandroid/app/pages/main/main_page.dart';
 import 'package:lsandroid/app/pages/mainKit/main_kit_binding.dart';
 import 'package:lsandroid/app/pages/mainKit/main_kit_new_page.dart';
-import 'package:lsandroid/app/pages/mainKit/main_kit_page.dart';
 import 'package:lsandroid/app/pages/otherKit/other_kit_binding.dart';
 import 'package:lsandroid/app/pages/otherKit/other_kit_new_page.dart';
-import 'package:lsandroid/app/pages/otherKit/other_kit_page.dart';
 import 'package:lsandroid/app/pages/picking/picking_binding.dart';
 import 'package:lsandroid/app/pages/picking/picking_page.dart';
+import 'package:lsandroid/app/pages/qaCheck/qa_check_binding.dart';
+import 'package:lsandroid/app/pages/qaCheck/qa_check_page.dart';
 import 'package:lsandroid/app/pages/rackIpgo/rack_ipgo_binding.dart';
 import 'package:lsandroid/app/pages/rackIpgo/rack_ipgo_page.dart';
 import 'package:lsandroid/app/pages/rackIpgoMulti/rack_ipgo_multi_binding.dart';
 import 'package:lsandroid/app/pages/rackIpgoMulti/rack_ipgo_multi_page.dart';
 import 'package:lsandroid/app/pages/smallKit/small_kit_binding.dart';
 import 'package:lsandroid/app/pages/smallKit/small_kit_new_page.dart';
-import 'package:lsandroid/app/pages/smallKit/small_kit_page.dart';
-import 'package:lsandroid/app/pages/test/yellow_sound_binding.dart';
-import 'package:lsandroid/app/pages/test/yellow_sound_page.dart';
+
 
 import '../pages/splash/splash_binding.dart';
 import '../pages/splash/splash_page.dart';
@@ -53,6 +51,7 @@ abstract class Routes {
   static const ETC_CHULGO = _PathName.ETC_CHULGO;
   static const INVENTORY_CNT = _PathName.INVENTORY_CNT;
   static const YELLOW_SOUND = _PathName.YELLOW_SOUND;
+  static const QA_CHECK = _PathName.QA_CHECK;
 
 }
 
@@ -73,6 +72,7 @@ abstract class _PathName {
   static const String ETC_CHULGO = '/etc_chulgo'; // 기타출고 페이지
   static const String INVENTORY_CNT = '/inventory_cnt'; // 재고실사 페이지
   static const String YELLOW_SOUND = '/yellow_sound';
+  static const String QA_CHECK = '/qa_check';
 
 
 }
@@ -110,40 +110,8 @@ class AppRoute {
     GetPage(
         name: _PathName.INVENTORY_CNT, page: () => InventoryCntPage(), binding: InventoryCntBinding()),
     GetPage(
-        name: _PathName.YELLOW_SOUND, page: () => YellowSoundPage(), binding: YellowSoundBinding()),
-  /*    GetPage(
-        name: _PathName.FACILITY, page: () => FacilityPage(), binding: FacilityBinding()),
-    GetPage(
-        name: _PathName.FACILITY_FIRST, page: () => FacilityFirstStep1Page(), binding: FacilityFirstBinding()),
-    GetPage(
-        name: _PathName.PRODUCT_LOCATION, page: () => ProductLocationPage(), binding: ProductLocationBinding()),
-    GetPage(
-        name: _PathName.INVENTORY_COUNTING, page: () => InventoryCountingPage(), binding: InventoryCountingBinding()),
-    GetPage(
-        name: _PathName.PROCESS_TRANSFER, page: () => ProcessTransferPage(), binding: ProcessTransferBinding()),
-    GetPage(
-        name: _PathName.INVENTORY_CHECK, page: () => InventoryCheckPage(), binding: InventoryCheckBinding()),
-    GetPage(
-        name: _PathName.PROCESS_CHECK, page: () => ProcessCheckPage(), binding: ProcessCheckBinding()),
-    GetPage(
-        name: _PathName.FACILITY_MONITORING, page: () => FacilityMonitoringPage(), binding: FacilityMonitoringBinding()),
-    GetPage(
-        name: _PathName.PACKAGING_INSPEC, page: () => PackagingInspecPage(), binding: PackagingInspecBinding()),
-    GetPage(
-        name: _PathName.SCRAP_LABEL, page: () => ScrapLabelPage(), binding: ScrapLabelBinding()),
-    GetPage(
-        name: _PathName.LOGIN_PAGE, page: () => LoginPage(), binding: LoginBinding()),
-    GetPage(
-        name: _PathName.ALARM, page: () => AlarmPage(), binding: AlarmBinding()),
-   *//* GetPage(
-        name: _PathName.BLUETOOTH_PRINTER, page: () => BluetoothPrinter(), binding: ScrapLabelBinding()),*//*
-    GetPage(
-        name: _PathName.NOTICE, page: () => NoticePage(), binding: NoticeBinding()),
-    GetPage(
-        name: _PathName.GONGJUNG_CHHECK, page: () => GongjungCheckPage(), binding:  GongjungCheckBinding()),
-    GetPage(
-        name: _PathName.GAGONG_FACILITY, page: () => GagongFacilityPage(), binding:  GagongFacilityBinding()),
-*/
+        name: _PathName.QA_CHECK, page: () => QaCheckPage(), binding: QaCheckBinding()),
+
   ];
 }
 

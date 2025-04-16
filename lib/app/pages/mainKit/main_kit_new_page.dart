@@ -33,7 +33,10 @@ class MainKitNewPage extends StatelessWidget {
           child: Stack(
             children: [
               CustomScrollView(
-                slivers: [CommonAppbarWidget(title: '메인 박스 KIT 작업', isLogo: false, isFirstPage: true), _main(context), Obx(() => _grid(context))],
+                slivers: [
+                  CommonAppbarWidget(title: '메인 박스 KIT 작업', isLogo: false, isFirstPage: true),
+                  _main(context),
+                  Obx(() => _grid(context))],
               ),
               //  Obx(() => CommonLoading(bLoading: controller.isLoading.value))
             ],

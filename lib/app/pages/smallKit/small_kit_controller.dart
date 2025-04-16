@@ -3262,7 +3262,7 @@ Future<void> registSmallKitItemSave() async {
       //  plutoRow();
     }
   }*/
-  Future<void> test() async{
+  Future<void> reRendering() async{
      stateManager.rowColorCallback!;
     // 그리드 재렌더링
     stateManager.notifyListeners();

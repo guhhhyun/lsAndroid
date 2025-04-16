@@ -1,3 +1,4 @@
+/*
 import 'dart:async';
 import 'dart:ffi';
 
@@ -87,9 +88,11 @@ class SmallKitPage extends StatelessWidget {
                     for(var i = 0; i < controller.noList2.length; i++) {
                       // controller.changedRows.value.add(controller.noList[i]);
                       controller.changedRows2.value.add(controller.noList2[i]);
-                   /*   if (controller.changedRows2.contains(controller.smallBoxList[0]['itemCd'])) {
+                   */
+/*   if (controller.changedRows2.contains(controller.smallBoxList[0]['itemCd'])) {
                         return Colors.white; // 이미 변경된 색상 유지
-                      }*/
+                      }*//*
+
                     }
                     if (controller.changedRows2.contains(c.row.cells['itemCd']?.value.toString())) {
                       return Colors.white; // 이미 변경된 색상 유지
@@ -250,12 +253,14 @@ class SmallKitPage extends StatelessWidget {
                                                 MapEntry(key, PlutoCell(value: value ?? '' )),
                                             )))
                                         );
-                                     /*   for(var i = 0; i < controller.rows.length; i++) {
+                                     */
+/*   for(var i = 0; i < controller.rows.length; i++) {
                                           controller.rows[i].cells['itemNm']?.value = controller.rows[i].cells['itemNm']?.value.toString().trim();
                                           controller.rows[i].cells['setQty']?.value = (controller.rows[i].cells['setQty']?.value ?? 0 * controller.rows[i].cells['setCbxQty']?.value?? 0).toInt();
                                          // controller.rows[i].cells['setQty']?.value = controller.rows[i].cells['setQty']?.value.toInt(),
                                           Get.log('구구: ${ controller.rows[i].cells['setQty']?.value}');
-                                        };*/
+                                        };*//*
+
                                         //  controller.rowDatas2.add(controller.insertRow[0]);
                                         controller.stateManager.removeAllRows();
                                         controller.stateManager.appendRows(controller.rows.value);
@@ -361,9 +366,11 @@ class SmallKitPage extends StatelessWidget {
                                       await controller.test();
                                     }
 
-                                   /* Future.delayed(const Duration(), (){
+                                   */
+/* Future.delayed(const Duration(), (){
                                       Future.delayed(const Duration(), () => SystemChannels.textInput.invokeMethod('TextInput.hide'));
-                                    });*/
+                                    });*//*
+
                                   },
                                   keyboardType: TextInputType.text,
                                   decoration: InputDecoration(
@@ -584,11 +591,13 @@ class SmallKitPage extends StatelessWidget {
           }
         }
         /// 새로 qty 단위를 계산해서 써야할 때 적용
-        /* if(controller.smallBoxSave[0]['qtyUnit'] == '') {
+        */
+/* if(controller.smallBoxSave[0]['qtyUnit'] == '') {
 
           }else {
             // 여기에 기존 로직
-          }*/
+          }*//*
+
 
 
         // 우측리스트에 들어가있는 자재를 또 스캔했고 왼쪽 수량보다 작을 시
@@ -1048,9 +1057,11 @@ class SmallKitPage extends StatelessWidget {
               controller.isDonggi.value = false;
               Get.log('동기화 취소');
               Get.log('동기화 취소1: ${controller.smallBoxSaveList.length}');
-              /*controller.smallBoxSaveList.value = controller.smallBoxSaveList
+              */
+/*controller.smallBoxSaveList.value = controller.smallBoxSaveList
                   .where((item) => !(item['remark'] == '' && item['prtNo'] == 'O'))
-                  .toList(),*/
+                  .toList(),*//*
+
              // smallBoxSaveList의 리스트에 changedRows에 {1,2} 가 있는데 smallBoxSaveList[1]이 존재하지않으면 ch
 
 
@@ -1446,7 +1457,8 @@ class SmallKitPage extends StatelessWidget {
           type: PlutoColumnType.select(controller.reasonNames
               ),
 
-          /*renderer: (rendererContext) {
+          */
+/*renderer: (rendererContext) {
             return Container(
               margin: EdgeInsets.all(0),
               padding: EdgeInsets.all(2),
@@ -1463,7 +1475,8 @@ class SmallKitPage extends StatelessWidget {
                   ],
               ),
             );
-          }*/
+          }*//*
+
       ),
       PlutoColumn(
           enableSorting: false,
@@ -1821,7 +1834,9 @@ class SmallKitPage extends StatelessWidget {
              ),
 
 
-           /* Text(subTitle, style: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),)*/
+           */
+/* Text(subTitle, style: AppTheme.a14400.copyWith(color: AppTheme.aBCBCBC),)*//*
+
 
          ),
        ],
@@ -1842,8 +1857,10 @@ class SmallKitPage extends StatelessWidget {
                  _invnrTextForm2('판매오더', 0),
                  SizedBox(width: 12,),
                  _invnrTextForm2('제품코드', 1),
-               /*  SizedBox(width: 12,),
-                 _invnrTextForm2('생산오더', 2),*/
+               */
+/*  SizedBox(width: 12,),
+                 _invnrTextForm2('생산오더', 2),*//*
+
                ],
              ),
            ),
@@ -2341,3 +2358,4 @@ class SmallKitPage extends StatelessWidget {
 }
 
 
+*/

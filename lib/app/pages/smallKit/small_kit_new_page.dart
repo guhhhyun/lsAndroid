@@ -336,7 +336,7 @@ class SmallKitNewPage extends StatelessWidget {
                                                     await controller.registSmallKitCancel();
                                                     controller.isSaveColor.value = false;
                                                     await controller.checkBoxItemSaveData(controller.smallBoxItemDataList[0]['cbxSuNo'].toString());
-                                                    await controller.test();
+                                                    await controller.reRendering();
                                                 } else {
                                                   // 투입
                                                   if (controller.smallBoxDataList[0]['indScanYn'] == 'Y') { // 개별 자재
@@ -399,7 +399,7 @@ class SmallKitNewPage extends StatelessWidget {
 
                                         controller.textQrController.text = '';
 
-                                        await controller.test();
+                                        await controller.reRendering();
                                         controller.focusNode.requestFocus();
                                         Future.delayed(const Duration(), () {
                                           controller.focusNode.requestFocus();
@@ -993,10 +993,10 @@ class SmallKitNewPage extends StatelessWidget {
                     if(item['ncbxRmk'] == '') {
                       if (item['savedWrkQty'] == null) {
                         controller.noList.remove(item['itemCd']);
-                        controller.test();
+                        controller.reRendering();
                         controller.stateManager.rowColorCallback!;
                         shouldRemove = true;
-                        controller.test();
+                        controller.reRendering();
                       } else {
                         int index = controller.smallBoxItemDataList.indexWhere((element) => element['no'] == item['no']);
                         controller.smallBoxSaveList[index].addAll({'qty': '${controller.smallBoxSaveList[index]['savedWrkQty']}'});
@@ -1005,7 +1005,7 @@ class SmallKitNewPage extends StatelessWidget {
                         Get.log('qty::: ${controller.smallBoxSaveList[index]['qty']}');
                         controller.noList.remove(item['itemCd']);
                         shouldRemove = false;
-                        controller.test();
+                        controller.reRendering();
                       }
                     } else if(item['ncbxRmk'] != '') {
                       Get.log('동기화취소 안돼!');
@@ -1015,7 +1015,7 @@ class SmallKitNewPage extends StatelessWidget {
                   }
                   return shouldRemove;
                 });
-                await controller.test();
+                await controller.reRendering();
 
                 controller.rows2.value = List<PlutoRow>.generate(
                     controller.smallBoxSaveList.length,
@@ -1245,7 +1245,7 @@ class SmallKitNewPage extends StatelessWidget {
         });
         controller.stateManager2.removeAllRows();
         controller.stateManager2.appendRows(controller.rows2.value);
-        await controller.test();
+        await controller.reRendering();
         Get.log('이거이거 ${controller.smallBoxSaveList}');
 
         Get.log('동기화 is: ${controller.isDropdownEnabled.value}');

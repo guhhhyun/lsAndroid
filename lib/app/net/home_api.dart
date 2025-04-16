@@ -68,6 +68,47 @@ class HomeApi extends NetworkManager{
   static HomeApi get to => Get.find();
 
 
+  /// 메인박스 KIT 박스 조회 - 류
+  Future<MainKitNewModel> reqQrCheck(var params) async {
+    var mainKitNewModel = MainKitNewModel();
+
+    try {
+      if (APP_CONST.LOCAL_JSON_MODE) {
+        var urlPath = 'assets/json/small_kit.json';
+        final jsonResponse = await localJsonPaser(urlPath);
+        mainKitNewModel = MainKitNewModel.fromJson(jsonResponse);
+      } else {
+
+        final response = await HttpUtil.getDio()
+            .post('/api/common/procedure/posts', data: jsonEncode(params),
+          options: Options(
+            headers: {
+              'mng-bo-token':  await Utils.getStorage.read('token'),  // 실제 토큰 값 사용
+              'mng-bo-rtoken': await Utils.getStorage.read('rtoken'),  // 실제 rtoken 값 사용
+            },
+          ),
+        );
+        if (response.statusCode == 200) {
+          var token = response.headers['mng-bo-token'];
+          var rtoken = response.headers['mng-bo-rtoken'];
+          var jsonData = response.data;
+
+          mainKitNewModel = MainKitNewModel.fromJson(jsonData);
+
+          await Utils.getStorage.write('token', token);
+          await Utils.getStorage.write('rtoken', rtoken);
+        }
+      }
+
+    } on DioError catch (e) {
+      Get.log('reqQrCheck - error');
+    } catch (err) {
+      Get.log('reqQrCheck = ${err.toString()}');
+    }
+    return mainKitNewModel;
+  }
+
+
   /// 로케이션 조회
   Future<LocationModel> reqLocation(var params) async {
     var locationModel = LocationModel();
