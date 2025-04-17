@@ -566,28 +566,30 @@ class _QaCheckPageState extends State<QaCheckPage> {
               backgroundColor: MaterialStateProperty.all<Color>(AppTheme.dongkuk_blue),
               padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(0))),
           onPressed: () async {
-              if(text == '검사결과 등록') {
-                controller.isFocus.value = true;
-                await controller.registNewSave();
-                await showDialog(
-                  barrierDismissible: false,
-                  context: context, //context
-                  builder: (BuildContext context) {
-                    return _qaRegistDialog(context, 2);
-                  },
-                );
-              }else if(text == '저장') {
-                await controller.registMainKitDonggihwaNewSave();
-              }else if(text == '신규 검사결과 등록') {
-                controller.isFocus.value = true;
-                await controller.registNewSave();
-                await showDialog(
-                  barrierDismissible: false,
-                  context: context, //context
-                  builder: (BuildContext context) {
-                    return _qaRegistDialog(context, 1);
-                  },
-                );
+              if(controller.cbxMaNo.value != '') {
+                if(text == '검사결과 등록') {
+                  controller.isFocus.value = true;
+                  await controller.registNewSave();
+                  await showDialog(
+                    barrierDismissible: false,
+                    context: context, //context
+                    builder: (BuildContext context) {
+                      return _qaRegistDialog(context, 2);
+                    },
+                  );
+                }else if(text == '저장') {
+                  await controller.registMainKitDonggihwaNewSave();
+                }else if(text == '신규 검사결과 등록') {
+                  controller.isFocus.value = true;
+                  await controller.registNewSave();
+                  await showDialog(
+                    barrierDismissible: false,
+                    context: context, //context
+                    builder: (BuildContext context) {
+                      return _qaRegistDialog(context, 1);
+                    },
+                  );
+                }
               }
 
           },
